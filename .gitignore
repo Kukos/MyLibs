@@ -14,16 +14,12 @@
 *.la
 *.lo
 
-# Shared objects (inc. Windows DLLs)
-*.dll
+# Shared objects
 *.so
 *.so.*
-*.dylib
 
 # Executables
-*.exe
 *.out
-*.app
 *.i*86
 *.x86_64
 *.hex
@@ -31,3 +27,6 @@
 # Debug files
 *.dSYM/
 *.su
+
+# Atom config
+.clang_complete
