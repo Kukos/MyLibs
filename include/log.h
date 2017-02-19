@@ -33,25 +33,25 @@
 #define __LOG__     "[LOG]\tFUNC: %s\tLINE: %d\n", __func__, __LINE__
 
 #define TRACE(...) \
-    do{ \
+    do { \
         __trace_call__(__TRACE__, ##__VA_ARGS__); \
-    }while(0)
+    } while (0)
 
 #define LOG(msg, ...) \
-    do{ \
+    do { \
         __log__(__LOG__); \
         __log__("\t"); \
         __log__(msg, ##__VA_ARGS__); \
-    }while(0)
+    } while (0)
 
 #define ERROR(msg, errno, ...) \
-    do{ \
+    do { \
         __error__(__ERROR__); \
         __error__("\t"); \
         __error__(msg, ##__VA_ARGS__); \
         \
         return errno; \
-    }while(0)
+    } while (0)
 
 #define NO_LOG_TO_FILE  0
 #define LOG_TO_FILE     1

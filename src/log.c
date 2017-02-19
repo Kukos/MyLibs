@@ -18,7 +18,7 @@ void __log__(const char *msg, ...)
 	va_list args;
 
     va_start(args, msg);
-	(void)vfprintf(logfd, msg, args);
+	(void)vfprintf(logfd == NULL ? stderr : logfd, msg, args);
 	va_end(args);
 
 	if (logfile != NULL)
@@ -38,7 +38,7 @@ void __trace_call__(const char *msg, ...)
     va_list args;
 
     va_start(args, msg);
-	(void)vfprintf(logfd, msg, args);
+	(void)vfprintf(logfd == NULL ? stderr : logfd, msg, args);
 	va_end(args);
 
 	if (logfile != NULL)
@@ -58,7 +58,7 @@ void __error__(const char *msg, ...)
 	va_list args;
 
     va_start(args, msg);
-	(void)vfprintf(logfd, msg, args);
+	(void)vfprintf(logfd == NULL ? stderr : logfd, msg, args);
 	va_end(args);
 
 	if (logfile != NULL)
