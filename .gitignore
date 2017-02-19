@@ -30,3 +30,5 @@
 
 # Atom config
 .clang_complete
+
+libs/*
