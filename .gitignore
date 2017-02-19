@@ -32,3 +32,4 @@
 .clang_complete
 
 libs/*
+!libs/.gitkeeper
