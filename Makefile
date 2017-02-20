@@ -9,7 +9,7 @@ IDIR := $(PROJECT_DIR)/include
 SDIR := $(PROJECT_DIR)/src
 ODIR := $(PROJECT_DIR)/libs
 
-all: filebuffer getch
+all: filebuffer getch sort
 
 filebuffer:
 	mkdir -p $(ODIR)/filebuffer && $(MAKE) -f $(SDIR)/filebuffer/Makefile
@@ -17,6 +17,10 @@ filebuffer:
 getch:
 	mkdir -p $(ODIR)/getch && $(MAKE) -f $(SDIR)/getch/Makefile
 
+sort:
+	mkdir -p $(ODIR)/sort && $(MAKE) -f $(SDIR)/sort/Makefile
+
 clean:
 	$(MAKE) -f $(SDIR)/filebuffer/Makefile clean
 	$(MAKE) -f $(SDIR)/getch/Makefile clean
+	$(MAKE) -f $(SDIR)/sort/Makefile clean
