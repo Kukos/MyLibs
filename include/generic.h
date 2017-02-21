@@ -55,24 +55,24 @@
 #endif
 
 /* buffer for swapping */
-static BYTE __buffer__[MAXWORD];
+__attribute__ ((unused)) static BYTE __buffer__[MAXWORD];
 
 /* swap A and B with size = S, use SSE if possible */
-#define __SWAP__(A,B,S) \
+#define __SWAP__(A, B, S) \
 	do{ \
     	if( &A != &B) \
         { \
-            memcpy(__buffer__,&A,S); \
-            memcpy(&A,&B,S); \
-            memcpy(&B,__buffer__,S); \
+            (void)memcpy(__buffer__, &A, S); \
+            (void)memcpy(&A, &B, S); \
+            (void)memcpy(&B, __buffer__, S); \
         } \
-    }while(0);
+    }while(0)
 
 /* A = B, A, B has size S, use SSE if possible */
-#define __ASSIGN__(A,B,S) \
+#define __ASSIGN__(A, B, S) \
 	do{ \
         if( &A != &B) \
-            memcpy(&A,&B,S); \
-    }while(0);
+            (void)memcpy(&A, &B, S); \
+    }while(0)
 
 #endif
