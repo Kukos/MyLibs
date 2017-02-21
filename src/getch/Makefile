@@ -1,11 +1,12 @@
 all: libgetch
 
-THIS_DIR := $(SDIR)/getch
+NAME := getch
+THIS_DIR := $(SDIR)/$(NAME)
 
-libgetch: $(THIS_DIR)/*.c $(IDIR)/getch.h
-	$(CC) $(CFLAGS) -I $(IDIR) $(THIS_DIR)/*.c -c && ar rcs $@.a *.o && \
-	rm -f *.o && cp $(IDIR)/getch.h $(ODIR)/getch && \
-	mv $@.a $(ODIR)/getch
+libgetch: $(THIS_DIR)/*.c $(IDIR)/$(NAME).h
+	$(CC) $(CFLAGS) -I $(IDIR) $(THIS_DIR)/*.c $(SDIR)/log.c -c && ar rcs $@.a *.o && \
+	rm -f *.o && cp $(IDIR)/$(NAME).h $(ODIR)/$(NAME) && \
+	mv $@.a $(ODIR)/$(NAME)
 
 clean:
-	rm -f $(ODIR)/getch/*
+	rm -f $(ODIR)/$(NAME)/*
