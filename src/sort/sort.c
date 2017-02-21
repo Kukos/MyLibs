@@ -196,7 +196,7 @@ static int merge(       void    *t,
     /* merge 2 subarray until both have entries to merge */
     while (offset_i <= offset_middle && offset_j <= offset_right)
     {
-        if (cmp((void *)&_t[offset_i], (void *)&_t[offset_j]) == -1)
+        if (cmp((void *)&_t[offset_i], (void *)&_t[offset_j]) < 0)
         {
             __ASSIGN__(_buffer[offset_k], _t[offset_i], size_of);
             offset_k += size_of;
@@ -245,16 +245,16 @@ static int medians_of_3(    void   *t,
 
     _t = (BYTE *)t;
 
-    if (cmp((void *)&_t[offset_index1], (void *)&_t[offset_index2]) == -1)
+    if (cmp((void *)&_t[offset_index1], (void *)&_t[offset_index2]) < 0)
     {
-        if (cmp((void *)&_t[offset_index2], (void *)&_t[offset_index3]) == -1)
+        if (cmp((void *)&_t[offset_index2], (void *)&_t[offset_index3]) < 0)
         {
             *median_pos = offset_index2;
             return 0;
         }
         else
         {
-            if (cmp((void *)&_t[offset_index1], (void *)&_t[offset_index3]) == -1)
+            if (cmp((void *)&_t[offset_index1], (void *)&_t[offset_index3]) < 0)
             {
                 *median_pos = offset_index3;
                 return 0;
@@ -268,14 +268,14 @@ static int medians_of_3(    void   *t,
     }
     else
     {
-        if (cmp((void *)&_t[offset_index3], (void *)&_t[offset_index2]) == -1)
+        if (cmp((void *)&_t[offset_index3], (void *)&_t[offset_index2]) < 0)
         {
             *median_pos = offset_index2;
             return 0;
         }
         else
         {
-            if (cmp((void *)&_t[offset_index3], (void *)&_t[offset_index1]) == -1)
+            if (cmp((void *)&_t[offset_index3], (void *)&_t[offset_index1]) < 0)
             {
                 *median_pos = offset_index3;
                 return 0;
@@ -382,10 +382,10 @@ static int partition_bentley(   void *t,
     while (offset_index1 <= offset_index2)
     {
         while (offset_index1 < offset_index2
-                && cmp((void *)&_t[offset_index1], (void *)pivot ) == - 1)
+                && cmp((void *)&_t[offset_index1], (void *)pivot ) < 0)
             offset_index1 += size_of;
 
-        while (cmp((void *)&_t[offset_index2], (void *)pivot) == 1)
+        while (cmp((void *)&_t[offset_index2], (void *)pivot) < 0)
             offset_index2 -= size_of;
 
         /* move element to part of elements == pivot */
@@ -559,7 +559,7 @@ int insort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of)
         offset_j = offset_i - size_of;
 
         /* while j >= 0 && temp  <= t[j] */
-        while (offset_j >= 0 && cmp((void *)&_t[offset_j], (void *)buffer) == 1)
+        while (offset_j >= 0 && cmp((void *)&_t[offset_j], (void *)buffer) > 0)
             offset_j -= size_of;
 
         /* if we move someone */
@@ -635,7 +635,7 @@ int binsort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of)
         {
             bs_offset_middle = ((bs_offset_left / size_of + bs_offset_right
                                 / size_of) >> 1) * size_of;
-            if (cmp((void *)&array[bs_offset_middle], (void *)buffer) == -1)
+            if (cmp((void *)&array[bs_offset_middle], (void *)buffer) > 0)
                 bs_offset_left = bs_offset_middle;
             else
                 bs_offset_right = bs_offset_middle;
