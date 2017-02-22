@@ -49,7 +49,7 @@ typedef struct Darray_iterator
     int     size_of;        /* sizeof element in array */
     int     array_length;   /* array length */
 
-}Darray_iterator
+}Darray_iterator;
 
 IT_FUNC(Darray, darray)
 

@@ -9,7 +9,7 @@ IDIR := $(PROJECT_DIR)/include
 SDIR := $(PROJECT_DIR)/src
 ODIR := $(PROJECT_DIR)/libs
 
-all: filebuffer getch sort darray
+all: filebuffer getch sort darray stack
 
 filebuffer:
 	mkdir -p $(ODIR)/filebuffer && $(MAKE) -f $(SDIR)/filebuffer/Makefile
@@ -23,8 +23,12 @@ sort:
 darray:
 	mkdir -p $(ODIR)/darray && $(MAKE) -f $(SDIR)/darray/Makefile
 
+stack:
+	mkdir -p $(ODIR)/stack && $(MAKE) -f $(SDIR)/stack/Makefile
+
 clean:
 	$(MAKE) -f $(SDIR)/filebuffer/Makefile clean
 	$(MAKE) -f $(SDIR)/getch/Makefile clean
 	$(MAKE) -f $(SDIR)/sort/Makefile clean
 	$(MAKE) -f $(SDIR)/darray/Makefile clean
+	$(MAKE) -f $(SDIR)/stack/Makefile clean
