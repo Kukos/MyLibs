@@ -42,14 +42,14 @@ typedef struct Darray
 /*
    Darray_iterator
 */
-typedef struct IT_STRUCT_NAME(Darray)
+typedef struct Darray_iterator
 {
     void    *array;         /* pointer to array */
     int     index;          /* index of array */
     int     size_of;        /* sizeof element in array */
     int     array_length;   /* array length */
 
-}IT_STRUCT_NAME(Darray);
+}Darray_iterator
 
 IT_FUNC(Darray, darray)
 

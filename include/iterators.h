@@ -22,12 +22,12 @@
                 int f2;
             }Mystruct;
 
-    2. In header file use macro: IT_STRUCT_NAME to create iterator structure
+    2. In header file create iterator structure with name: Struct_iterator
        Example:
-            typedef struct IT_STRUCT_NAME(Mystruct)
+            typedef struct Mystruct_iterator
             {
                 int pos;
-            }IT_STRUCT_NAME(Mystruct);
+            }Mystruct_iterator;
 
     3. In header file use macro: IT_FUNC to create definision of needed functions
        Example:
@@ -161,5 +161,5 @@
     BOOL CONCAT(PREFIX, _iterator_end)(IT_STRUCT_NAME(STRUCT) *); \
     int CONCAT(PREFIX, _iterator_get_data)(IT_STRUCT_NAME(STRUCT) *, void *);
 
-    
+
 #endif
