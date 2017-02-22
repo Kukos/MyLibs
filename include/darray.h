@@ -80,8 +80,8 @@ IT_FUNC(Darray, darray)
         else you can put NULL ( functions needed cmp wont work )
 
     RETURN:
-    %NULL if failure
-    %Pointer to Darray if success
+    %NULL iff failure
+    %Pointer to Darray iff success
 */
 Darray *darray_create(ARRAY_TYPE type, int size, int size_of,
                 int (*cmp)(void *a, void*b));
@@ -105,8 +105,8 @@ void darray_destroy(Darray *darray);
     @IN entry - inserted entry (void *)&var
 
     RETURN:
-  	%0 if success
-    %Non-zero value if failure
+  	%0 iff success
+    %Non-zero value iff failure
 */
 int darray_insert(Darray *darray, void *entry);
 
@@ -119,8 +119,8 @@ int darray_insert(Darray *darray, void *entry);
     @IN pos - index where insert
 
     RETURN:
-    %0 if success
-    %Non-zero value if failure
+    %0 iff success
+    %Non-zero value iff failure
 */
 int darray_insert_pos(Darray *darray, void *entry, int pos);
 
@@ -131,8 +131,8 @@ int darray_insert_pos(Darray *darray, void *entry, int pos);
     @IN darray - pointer to Darray
 
     RETURN:
-   	%0 if success
-    %Non-zero value if failure
+   	%0 iff success
+    %Non-zero value iff failure
 */
 int darray_delete(Darray *darray);
 
@@ -144,8 +144,8 @@ int darray_delete(Darray *darray);
     @IN pos - position of deleted entry
 
     RETURN:
-    %0 if success
-    %Non-zero value if failure
+    %0 iff success
+    %Non-zero value iff failure
 */
 int darray_delete_pos(Darray *darray, int pos);
 
@@ -158,8 +158,8 @@ int darray_delete_pos(Darray *darray, int pos);
     @IN val - value
 
     RETURN:
-    %-1 if failure or value doesn't exists
-    %position of value if success
+    %-1 iff failure or value doesn't exists
+    %position of value iff success
 */
 int darray_search_first(Darray *darray, void *val);
 
@@ -173,8 +173,8 @@ int darray_search_first(Darray *darray, void *val);
     @IN val - value
 
     RETURN:
-    %-1 if failure or value doesn't exists
-    %position of value if success
+    %-1 iff failure or value doesn't exists
+    %position of value iff success
 */
 int darray_search_last(Darray *darray, void *val);
 
@@ -185,8 +185,8 @@ int darray_search_last(Darray *darray, void *val);
     @IN darray -pointer to darray
 
     RETURN
-    %0 if success
-    %Non-zero value if failure
+    %0 iff success
+    %Non-zero value iff failure
 */
 int darray_sort(Darray *darray);
 
@@ -197,8 +197,8 @@ int darray_sort(Darray *darray);
     @IN darray - pointer to darray
 
     RETURN
-    %-1 if failure
-    %Pos if success
+    %-1 iff failure
+    %Pos iff success
 */
 int darray_min(Darray *darray);
 
@@ -209,8 +209,8 @@ int darray_min(Darray *darray);
     @IN darray - pointer to darray
 
     RETURN
-    %-1 if failure
-    %Pos if success
+    %-1 iff failure
+    %Pos iff success
 */
 int darray_max(Darray *darray);
 
