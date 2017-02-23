@@ -32,6 +32,9 @@ fifo:
 arraylist:
 	mkdir -p $(ODIR)/arraylist && $(MAKE) -f $(SDIR)/arraylist/Makefile
 
+list:
+	mkdir -p $(ODIR)/list && $(MAKE) -f $(SDIR)/list/Makefile
+
 clean:
 	$(MAKE) -f $(SDIR)/filebuffer/Makefile clean
 	$(MAKE) -f $(SDIR)/getch/Makefile clean
@@ -40,3 +43,4 @@ clean:
 	$(MAKE) -f $(SDIR)/stack/Makefile clean
 	$(MAKE) -f $(SDIR)/fifo/Makefile clean
 	$(MAKE) -f $(SDIR)/arraylist/Makefile clean
+	$(MAKE) -f $(SDIR)/list/Makefile clean
