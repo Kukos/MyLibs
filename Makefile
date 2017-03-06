@@ -9,31 +9,32 @@ IDIR := $(PROJECT_DIR)/include
 SDIR := $(PROJECT_DIR)/src
 ODIR := $(PROJECT_DIR)/libs
 
-all: filebuffer getch sort darray stack fifo
+all: filebuffer getch sort darray stack fifo list list2d
 
 filebuffer:
-	mkdir -p $(ODIR)/filebuffer && $(MAKE) -f $(SDIR)/filebuffer/Makefile
+	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
 
 getch:
-	mkdir -p $(ODIR)/getch && $(MAKE) -f $(SDIR)/getch/Makefile
+	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
 
 sort:
-	mkdir -p $(ODIR)/sort && $(MAKE) -f $(SDIR)/sort/Makefile
+	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
 
 darray:
-	mkdir -p $(ODIR)/darray && $(MAKE) -f $(SDIR)/darray/Makefile
+	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
 
 stack:
-	mkdir -p $(ODIR)/stack && $(MAKE) -f $(SDIR)/stack/Makefile
+	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
 
 fifo:
-	mkdir -p $(ODIR)/fifo && $(MAKE) -f $(SDIR)/fifo/Makefile
+	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
 
 arraylist:
-	mkdir -p $(ODIR)/arraylist && $(MAKE) -f $(SDIR)/arraylist/Makefile
+	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
 
 list:
-	mkdir -p $(ODIR)/list && $(MAKE) -f $(SDIR)/list/Makefile
+	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+
 
 clean:
 	$(MAKE) -f $(SDIR)/filebuffer/Makefile clean
