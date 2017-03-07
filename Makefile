@@ -35,6 +35,8 @@ arraylist:
 list:
 	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
 
+list2d:
+	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
 
 clean:
 	$(MAKE) -f $(SDIR)/filebuffer/Makefile clean
