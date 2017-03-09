@@ -98,8 +98,8 @@ IT_FUNC(List2D, list2d)
     @IN diff - diff function
 
     RETURN:
-    NULL if failure
-    Pointer if success
+    NULL iff failure
+    Pointer iff success
 */
 List2D *list2d_create(int size_of, int (*cmp)(void* a,void *b),
     int (*diff)(void* a, void* b));
@@ -123,8 +123,8 @@ void list2d_destroy(List2D *list);
     @IN entry - entry
 
     RETURN:
-    0 if success
-	Non-zero value if failure
+    0 iff success
+	Non-zero value iff failure
 */
 int list2d_insert(List2D *list, void *entry);
 
@@ -136,8 +136,8 @@ int list2d_insert(List2D *list, void *entry);
     @IN entry -  entry
 
     RETURN:
-	0 if success
-	Non-zero value if failure ( e.i entry doesn't exist in list )
+	0 iff success
+	Non-zero value iff failure ( e.i entry doesn't exist in list )
 */
 int list2d_delete(List2D *list, void *entry);
 
@@ -149,8 +149,8 @@ int list2d_delete(List2D *list, void *entry);
     @IN entry - entry
 
     RETURN:
-    -1 if failure ( e.i entry doesn't exist in list )
-    Number of delete entries if success
+    -1 iff failure ( e.i entry doesn't exist in list )
+    Number of delete entries iff success
 */
 int list2d_delete_all(List2D *list, void *entry);
 
@@ -162,8 +162,8 @@ int list2d_delete_all(List2D *list, void *entry);
     @IN list2 - pointer to second list
 
     RETURN:
-    NULL if failure
-    Pointer to list if success
+    NULL iff failure
+    Pointer to list iff success
 */
 List2D *list2d_merge(List2D *list1, List2D *list2);
 
@@ -191,8 +191,8 @@ List2D *list2d_merge(List2D *list1, List2D *list2);
     @OUT entry - entry with val == val
 
     RETURN:
-    0 if success
-	Non-zero value if failure
+    0 iff success
+	Non-zero value iff failure
 */
 int list2d_search(List2D *list, void *val, void *entry);
 
@@ -205,8 +205,8 @@ int list2d_search(List2D *list, void *val, void *entry);
     @OUT size - size of  returned array
 
     RETURN:
-    0 if success
-	Non-zero value if failure
+    0 iff success
+	Non-zero value iff failure
 */
 int list2d_to_array(List2D *list, void *array, int *size);
 
