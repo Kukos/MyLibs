@@ -9,7 +9,7 @@ IDIR := $(PROJECT_DIR)/include
 SDIR := $(PROJECT_DIR)/src
 ODIR := $(PROJECT_DIR)/libs
 
-all: filebuffer getch sort darray stack fifo list list2d
+all: filebuffer getch sort darray stack fifo list list2d heap
 
 filebuffer:
 	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
@@ -38,6 +38,9 @@ list:
 list2d:
 	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
 
+heap:
+	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+
 clean:
 	$(MAKE) -f $(SDIR)/filebuffer/Makefile clean
 	$(MAKE) -f $(SDIR)/getch/Makefile clean
@@ -46,4 +49,5 @@ clean:
 	$(MAKE) -f $(SDIR)/stack/Makefile clean
 	$(MAKE) -f $(SDIR)/fifo/Makefile clean
 	$(MAKE) -f $(SDIR)/arraylist/Makefile clean
-	$(MAKE) -f $(SDIR)/list/Makefile clean
+	$(MAKE) -f $(SDIR)/list2d/Makefile clean
+	$(MAKE) -f $(SDIR)/heap/Makefile clean
