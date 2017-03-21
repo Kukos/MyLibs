@@ -4,26 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
-#define FREE(PTR) \
-    do { \
-        if (PTR != NULL) \
-        { \
-            free(PTR); \
-            PTR = NULL; \
-        } \
-    } while (0)
-
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-
-#define SWAP(a, b) \
-    do { \
-        typeof(a) _temp = a; \
-        a = b; \
-        b = _temp; \
-    } while (0)
-
-#define ODD(X) (X & 1)
+#include <compiler.h>
+#include <common.h>
+#include <assert.h>
 
 #define MERGESORT_CUTOFF 8
 
@@ -51,13 +34,13 @@
     %0 if success
     %Non-zero value if failure
 */
-static int merge(   void    *t,
-                    int     offset_left,
-                    int     offset_middle,
-                    int     offset_right,
-                    int     (*cmp)(void *a, void *b),
-                    int     size_of,
-                    void    *buffer);
+__inline__ static int merge(    void        *t,
+                                size_t      offset_left,
+                                size_t      offset_middle,
+                                size_t      offset_right,
+                                int         (*cmp)(void *a, void *b),
+                                int         size_of,
+                                void        *buffer);
 
 /*
     Count medians of 3 element of array t using cmp function to compare elements
@@ -74,12 +57,12 @@ static int merge(   void    *t,
     %0 if success
     %Non-zero value if failure
 */
-static int medians_of_3(    void    *t,
-                            int     offset_index1,
-                            int     offset_index2,
-                            int     offset_index3,
-                            int     (*cmp)(void *a, void *b),
-                            int     *median_pos);
+__inline__ static int medians_of_3(     void        *t,
+                                        size_t      offset_index1,
+                                        size_t      offset_index2,
+                                        size_t      offset_index3,
+                                        int         (*cmp)(void *a, void *b),
+                                        size_t      *median_pos);
 
 
 /*
@@ -99,13 +82,13 @@ static int medians_of_3(    void    *t,
     %Non-zero value if failure
 
 */
-static int tukey_medians(   void    *t,
-                            int     offset_left,
-                            int     offset_right,
-                            int     epsilon,
-                            int     (*cmp)(void *a, void *b),
-                            int     size_of,
-                            int     *median_pos);
+__inline__ static int tukey_medians(    void        *t,
+                                        size_t      offset_left,
+                                        size_t      offset_right,
+                                        size_t      epsilon,
+                                        int         (*cmp)(void *a, void *b),
+                                        int         size_of,
+                                        size_t      *median_pos);
 
 
 /*
@@ -124,13 +107,13 @@ static int tukey_medians(   void    *t,
     %0 if success
     %Non-zero value if failure
 */
-static int partition_bentley(   void    *t,
-                                int     offset_left,
-                                int     offset_right,
-                                int     (*cmp)(void *a, void *b),
-                                int     size_of,
-                                int     *offset_left_index,
-                                int     *offset_right_index);
+static int partition_bentley(   void        *t,
+                                size_t      offset_left,
+                                size_t      offset_right,
+                                int         (*cmp)(void *a, void *b),
+                                int         size_of,
+                                size_t      *offset_left_index,
+                                size_t      *offset_right_index);
 
 /*
     Main body of quicksort
@@ -147,20 +130,20 @@ static int partition_bentley(   void    *t,
     %0 if success
     %Non-zero value if failure
 */
-static int _quicksort(  void    *t,
-                        int     offset_left,
-                        int     offset_right,
-                        int     (*cmp)(void *a, void *b),
-                        int     size_of);
+static int _quicksort(  void        *t,
+                        size_t      offset_left,
+                        size_t      offset_right,
+                        int         (*cmp)(void *a, void *b),
+                        int         size_of);
 
 
-static int merge(       void    *t,
-                        int     offset_left,
-                        int     offset_middle,
-                        int     offset_right,
-                        int     (*cmp)(void *a, void *b),
-                        int     size_of,
-                        void    *buffer)
+__inline__ static int merge(    void        *t,
+                                size_t      offset_left,
+                                size_t      offset_middle,
+                                size_t      offset_right,
+                                int         (*cmp)(void *a, void *b),
+                                int         size_of,
+                                void        *buffer)
 {
 
     BYTE *_t;
@@ -168,23 +151,17 @@ static int merge(       void    *t,
 
     /* 1st subarray t[left;middle] */
     /* 2nd subarray t[middle + 1;right] */
-    int offset_i; /* counter of 1st subarray */
-    int offset_j; /* counter of 2nd subarray */
-    int offset_k; /* counter of buffer */
+    size_t offset_i; /* counter of 1st subarray */
+    size_t offset_j; /* counter of 2nd subarray */
+    size_t offset_k; /* counter of buffer */
 
     TRACE("");
 
-    if (t == NULL || buffer == NULL || cmp == NULL)
-        ERROR("t == NULL || buffer == NULL || cmp == NULL\n", 1, "");
-
-    if (offset_left < 0 || offset_middle < 0 || offset_right < 0 || size_of < 0)
-        ERROR("offset_left < 0 || offset_middle < 0"
-              "|| offset_right < 0 || size_of < 0\n", 1, "");
-
-    if (offset_middle < offset_left || offset_right < offset_middle
-    || offset_right < offset_left)
-        ERROR("offset_middle < offset_left || offset_right < offset_middle"
-			  "|| offset_right < offset_left\n", 1, "");
+    assert(t == NULL || buffer == NULL || cmp == NULL);
+    assert(offset_left < 0 || offset_middle < 0
+            || offset_right < 0 || size_of < 0);
+    assert(offset_middle < offset_left || offset_right < offset_middle
+            || offset_right < offset_left);
 
     _t = (BYTE *)t;
     _buffer = (BYTE *)buffer;
@@ -225,23 +202,19 @@ static int merge(       void    *t,
     return 0;
 }
 
-static int medians_of_3(    void   *t,
-                            int     offset_index1,
-                            int     offset_index2,
-                            int     offset_index3,
-                            int     (*cmp)(void *a, void *b),
-                            int     *median_pos)
+__inline__ static int medians_of_3(     void        *t,
+                                        size_t      offset_index1,
+                                        size_t      offset_index2,
+                                        size_t      offset_index3,
+                                        int         (*cmp)(void *a, void *b),
+                                        size_t      *median_pos)
 {
     BYTE *_t;
 
     TRACE("");
 
-    if (t == NULL || median_pos == NULL || cmp == NULL)
-        ERROR("t == NULL || median_pos == NULL || cmp == NULL\n", 1, "");
-
-    if (offset_index1 < 0 || offset_index2 < 0 || offset_index3 < 0)
-        ERROR("offset_index1 < 0 || offset_index2 < 0 || offset_index3 < 0\n",
-                1, "");
+    assert(t == NULL || median_pos == NULL || cmp == NULL);
+    assert(offset_index1 < 0 || offset_index2 < 0 || offset_index3 < 0);
 
     _t = (BYTE *)t;
 
@@ -289,29 +262,25 @@ static int medians_of_3(    void   *t,
     }
 }
 
-static int tukey_medians(   void    *t,
-                            int     offset_left,
-                            int     offset_right,
-                            int     epsilon,
-                            int     (*cmp)(void *a, void *b),
-                            int     size_of,
-                            int     *median_pos)
+__inline__ static int tukey_medians(    void        *t,
+                                        size_t      offset_left,
+                                        size_t      offset_right,
+                                        size_t      epsilon,
+                                        int         (*cmp)(void *a, void *b),
+                                        int         size_of,
+                                        size_t      *median_pos)
 {
-    int offset_middle;
-    int m1;
-    int m2;
-    int m3;
-    int median;
+    size_t offset_middle;
+    size_t m1;
+    size_t m2;
+    size_t m3;
+    size_t median;
 
     TRACE("");
 
-    if (t == NULL || median_pos == NULL || cmp ==NULL)
-        ERROR("t == NULL || median_pos == NULL || cmp ==NULL\n", 1, "");
-
-    if (offset_left < 0 || offset_right < 0 || offset_left > offset_right
-    || epsilon < 0 )
-        ERROR("|| offset_left < 0 || offset_right < 0"
-            "|| offset_left > offset_right || epsilon < 0\n", 1, "");
+    assert(t == NULL || median_pos == NULL || cmp ==NULL);
+    assert(offset_left < 0 || offset_right < 0 || offset_left > offset_right
+            || epsilon < 0 );
 
     offset_middle = ((offset_left / size_of + offset_right / size_of) >> 1 ) * size_of;
 
@@ -336,22 +305,22 @@ static int tukey_medians(   void    *t,
     return 0;
 }
 
-static int partition_bentley(   void *t,
-                                int offset_left,
-                                int offset_right,
-                                int(*cmp)(void *a,void *b),
-                                int size_of,
-                                int *offset_left_index,
-                                int *offset_right_index)
+static int partition_bentley(   void        *t,
+                                size_t      offset_left,
+                                size_t      offset_right,
+                                int         (*cmp)(void *a,void *b),
+                                int         size_of,
+                                size_t      *offset_left_index,
+                                size_t      *offset_right_index)
 {
 
     /* normal indexes for main loop */
-    int offset_index1;
-    int offset_index2;
+    size_t offset_index1;
+    size_t offset_index2;
 
     /* indexes for element == to pivot */
-    int offset_equal_left;
-    int offset_equal_right;
+    size_t offset_equal_left;
+    size_t offset_equal_right;
 
     BYTE *_t;
     BYTE pivot[MAXWORD];
@@ -360,14 +329,9 @@ static int partition_bentley(   void *t,
 
     TRACE("");
 
-    if (t == NULL || cmp == NULL || offset_left_index == NULL
-    || offset_right_index == NULL)
-        ERROR("t == NULL || cmp == NULL || offset_left_index == NULL"
-              "|| offset_right_index == NULL\n", 1, "");
-
-    if (offset_left < 0 || offset_right < offset_left || offset_right < 0)
-        ERROR("offset_left < 0 || offset_right < offset_left || offset_right < 0"
-			  "|| offset_right_index == NULL\n", 1, "");
+    assert(t == NULL || cmp == NULL || offset_left_index == NULL
+                || offset_right_index == NULL);
+    assert(offset_left < 0 || offset_right < offset_left || offset_right < 0);
 
     offset_index1 = offset_left + size_of;
     offset_index2 = offset_right;
@@ -446,33 +410,30 @@ static int partition_bentley(   void *t,
     return 0;
 }
 
-static int _quicksort(  void    *t,
-                        int     offset_left,
-                        int     offset_right,
-                        int     (*cmp)(void *a, void *b),
-                        int size_of)
+static int _quicksort(  void        *t,
+                        size_t      offset_left,
+                        size_t      offset_right,
+                        int         (*cmp)(void *a, void *b),
+                        int         size_of)
 {
     BYTE *_t;
-    int m;
+    size_t m;
 
-    int offset_left_index;
-    int offset_right_index;
+    size_t offset_left_index;
+    size_t offset_right_index;
+    size_t range;
 
     TRACE("");
 
-    if (t == NULL || cmp == NULL)
-        ERROR("t == NULL || cmp == NULL\n", 1, "");
-
-    if (offset_left < 0 || offset_right < 0 || offset_left >= offset_right
-    || size_of < 0)
-        ERROR("offset_left < 0 || offset_right < 0"
-              "|| offset_left >= offset_right|| size_of < 0\n", 1, "");
+    assert(t == NULL || cmp == NULL);
+    assert(offset_left < 0 || offset_right < 0 || offset_left >= offset_right
+            || size_of < 0);
 
     _t = (BYTE *)t;
 
     while (offset_right - offset_left >= QUICKSORT_CUTOFF)
     {
-        int range = (offset_right - offset_left) / size_of + 1;
+        range = (offset_right - offset_left) / size_of + 1;
 
         if (range < TUKEY_MIN)
         {
@@ -526,16 +487,16 @@ static int _quicksort(  void    *t,
     return 0;
 }
 
-int insort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of)
+int insort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
 {
     /* we use buffer instead of temporary variable */
     BYTE buffer[MAXWORD];
     BYTE *_t;
 
-    int offset_i;
-    int offset_j;
+    size_t offset_i;
+    size_t  offset_j;
 
-    int max;
+    size_t max;
 
     TRACE("");
 
@@ -579,23 +540,23 @@ int insort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of)
     return 0;
 }
 
-int binsort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of)
+int binsort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
 {
-    int size;
+    size_t size;
 
     /* temporary array for 2-directional binsort */
     BYTE *array;
 
-    int offset_middle;
-    int offset_left;
-    int offset_right;
+    size_t offset_middle;
+    size_t offset_left;
+    size_t offset_right;
 
     /* binary search offsets */
-    int bs_offset_left;
-    int bs_offset_right;
-    int bs_offset_middle;
+    size_t bs_offset_left;
+    size_t bs_offset_right;
+    size_t bs_offset_middle;
 
-    int offset_i;
+    size_t offset_i;
 
     BYTE *_t;
     BYTE buffer[MAXWORD];
@@ -675,16 +636,16 @@ int binsort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of)
     return 0;
 }
 
-int mergesort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of)
+int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
 {
-    int i;
-    int offset_i;
+    size_t i;
+    size_t offset_i;
 
     int loop_counter;
-    int size;
+    size_t size;
 
-    int offset_k;
-    int d_offset_k;
+    size_t offset_k;
+    size_t d_offset_k;
     int k;
     int dk;
 
@@ -705,7 +666,7 @@ int mergesort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_o
     /* sort small subarrays using insort */
     for (i = 0; i < num_elements; i += MERGESORT_CUTOFF)
         if (insort(_t + (i * size_of),
-        MIN((MERGESORT_CUTOFF), (num_elements - i)), cmp, size_of))
+        MIN((size_t)(MERGESORT_CUTOFF), (num_elements - i)), cmp, size_of))
             ERROR("insort error\n", 1, "");
 
     buffer = (BYTE *)malloc(size);
@@ -746,7 +707,7 @@ int mergesort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_o
     return 0;
 }
 
-int quicksort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of)
+int quicksort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
 {
     TRACE("");
 
@@ -759,7 +720,7 @@ int quicksort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_o
     return _quicksort(t, 0, (num_elements - 1) * size_of, cmp, size_of);
 }
 
-int sort(void *t,int num_elements,int(*cmp)(void *a,void *b),int size_of)
+int sort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
 {
     TRACE("");
 

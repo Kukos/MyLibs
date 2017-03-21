@@ -5,7 +5,7 @@
 	Author: Michal Kukowski
 	email: michalkukowski10@gmail.com
 
-	LICENCE: GPL 2.0+
+	LICENCE: GPL 3.0
 */
 
 /*

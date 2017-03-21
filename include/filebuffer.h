@@ -7,7 +7,7 @@
 	Author: Michal Kukowski
 	email: michalkukowski10@gmail.com
 
-	LICENCE: GPL3
+	LICENCE: GPL 3.0
 */
 
 #ifndef _GNU_SOURCE
@@ -15,6 +15,7 @@
 #endif
 
 #include<sys/mman.h>
+#include <stddef.h> /* size_t */
 
 /*
 	Buffer use mmap so you can pass those flags as protect_flag
@@ -32,7 +33,7 @@
 typedef struct file_buffer
 {
     char 			*buffer;
-    int 			size;
+    size_t 			size;
     int 			fd; /* file descriptor of buffered file */
     int 			protect_flag;
 

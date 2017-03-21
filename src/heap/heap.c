@@ -1,20 +1,15 @@
-#include  <stdlib.h>
-#include  <log.h>
-#include  <heap.h>
-#include  <generic.h>
+#include <stdlib.h>
+#include <log.h>
+#include <heap.h>
+#include <generic.h>
+#include <common.h>
+#include <compiler.h>
+#include <assert.h>
 
 #define PARENT(n, d) (((n) - 1) / (d))
-#define SON(n, d, k) (((n) *(d) + (k)))
+#define SON(n, d, k) (((n) * (d) + (k)))
 
-#define FREE(T) do { free(T); T = NULL; } while (0)
-#define SWAP(a, b) \
-    do{ \
-        typeof(a) __temp = a; \
-        a = b; \
-        b = __temp; \
-    } while (0)
-
-#define SWAP_ENTRY(a,b) \
+#define SWAP_ENTRY(a, b) \
     do { \
         SWAP(a, b); \
         SWAP(a->pos, b->pos); \
@@ -75,7 +70,7 @@ static int __max_heap_cmp(Heap_entry *a, Heap_entry *b,
     %0 iff success
     %Non-zero value iff failure
 */
-static int __heap_heapify(Heap *heap, int index,
+__inline__ static int __heap_heapify(Heap *heap, size_t index,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
 /*
@@ -91,7 +86,7 @@ static int __heap_heapify(Heap *heap, int index,
     %0 if success
     %Non-zero value if failure
 */
-static int __heap_build(Heap *heap, Heap_entry **array, int n,
+__inline__ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
 
@@ -107,7 +102,7 @@ static int __heap_build(Heap *heap, Heap_entry **array, int n,
     %0 if success
     %Non-zero value if failure
 */
-static int __heap_insert(Heap *heap, Heap_entry *entry,
+__inline__ static int __heap_insert(Heap *heap, Heap_entry *entry,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
 /*
@@ -121,7 +116,7 @@ static int __heap_insert(Heap *heap, Heap_entry *entry,
     %NULL if failure
     %pointer if success
 */
-static Heap_entry *__heap_extract_top(Heap *heap,
+__inline__ static Heap_entry *__heap_extract_top(Heap *heap,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
 /*
@@ -136,7 +131,7 @@ static Heap_entry *__heap_extract_top(Heap *heap,
     %pointer if success
 
 */
-static Heap_entry *__heap_get_top(Heap *heap,
+__inline__ static Heap_entry *__heap_get_top(Heap *heap,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
 /*
@@ -154,27 +149,24 @@ static Heap_entry *__heap_get_top(Heap *heap,
     %0 if success
     %Non-zero value if failure
 */
-static int __heap_change_key(Heap *heap, int index, void *new_data,
+__inline__ static int __heap_change_key(Heap *heap, size_t index, void *new_data,
         int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
-static int __heap_heapify(Heap *heap, int index,
+__inline__ static int __heap_heapify(Heap *heap, size_t index,
         int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 {
     Heap_entry **array;
     Heap_entry *temp;
 
-    int size;
-    int next;
+    size_t size;
+    size_t next;
+    size_t son;
     int k;
-    int son;
 
     TRACE("");
 
-    if (heap == NULL)
-        ERROR("heap == NULL\n", 1, "");
-
-    if (index < 0 || index >= heap->darray->num_entries)
-        ERROR("index < 0 || index >= heap->heap->num_entries\n", 1, "");
+    assert(heap == NULL);
+    assert(index < 0 || index >= heap->darray->num_entries);
 
     size = heap->darray->num_entries;
     array = (Heap_entry **)heap->darray->array;
@@ -205,15 +197,14 @@ static int __heap_heapify(Heap *heap, int index,
     return 0;
 }
 
-static int __heap_build(Heap *heap, Heap_entry **array, int n,
+__inline__ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 {
-    int i;
+    size_t i;
 
     TRACE("");
 
-    if (heap == NULL || array == NULL || n < 0 )
-        ERROR("heap == NULL || array == NULL || n < 0\n", 1, "");
+    assert(heap == NULL || array == NULL || n < 0);
 
     /* create heap */
     for (i = 0; i < n; ++i)
@@ -231,16 +222,15 @@ static int __heap_build(Heap *heap, Heap_entry **array, int n,
     return 0;
 }
 
-static int __heap_insert(Heap *heap, Heap_entry *entry,
+__inline__ static int __heap_insert(Heap *heap, Heap_entry *entry,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 {
     Heap_entry **array;
-    int i;
+    size_t i;
 
     TRACE("");
 
-    if (heap == NULL || entry == NULL)
-        ERROR("heap == NULL || entry == NULL\n", 1, "");
+    assert(heap == NULL || entry == NULL);
 
     entry->pos = heap->darray->num_entries;
 
@@ -259,18 +249,17 @@ static int __heap_insert(Heap *heap, Heap_entry *entry,
     return 0;
 }
 
-static Heap_entry *__heap_get_top(Heap *heap,
+__inline__ static Heap_entry *__heap_get_top(Heap *heap,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 {
     TRACE("");
 
-    if (heap == NULL || heap_is_empty(heap))
-        ERROR("heap is empty\n", NULL, "");
+    assert(heap == NULL || heap_is_empty(heap));
 
     return ((Heap_entry **)(heap->darray->array))[0];
 }
 
-static Heap_entry *__heap_extract_top(Heap *heap,
+__inline__ static Heap_entry *__heap_extract_top(Heap *heap,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 
 {
@@ -279,8 +268,7 @@ static Heap_entry *__heap_extract_top(Heap *heap,
 
     TRACE("");
 
-    if (heap == NULL || heap_is_empty(heap))
-        ERROR("heap is empty\n", NULL, "");
+    assert(heap == NULL || heap_is_empty(heap));
 
     entry = ((Heap_entry **)(heap->darray->array))[0];
     entry->pos = OUT_OF_HEAP;
@@ -298,19 +286,16 @@ static Heap_entry *__heap_extract_top(Heap *heap,
     return entry;
 }
 
-static int __heap_change_key(Heap *heap, int index, void *new_data,
+__inline__ static int __heap_change_key(Heap *heap, size_t index, void *new_data,
         int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 {
     Heap_entry **array;
-    int i;
+    size_t i;
 
     TRACE("");
 
-    if (heap == NULL)
-        ERROR("heap == NULL\n", 1, "");
-
-    if (index < 0 || index >= heap->darray->num_entries)
-        ERROR("index < 0 || index >= heap->heap->num_entries\n", 1 ,"");
+    assert(heap == NULL);
+    assert(index < 0 || index >= heap->darray->num_entries);
 
     array = (Heap_entry **)heap->darray->array;
 
@@ -332,8 +317,7 @@ Heap_entry *heap_entry_create(void *data, int size_of)
 
     TRACE("");
 
-    if (data == NULL || size_of < 0)
-        ERROR("data == NULL || size_of < 0\n", NULL, "");
+    assert(data == NULL || size_of < 0);
 
     entry = (Heap_entry *)malloc(sizeof(Heap_entry));
     if (entry == NULL)
@@ -359,11 +343,7 @@ void heap_entry_destroy(Heap_entry *entry)
     TRACE("");
 
     if (entry == NULL)
-    {
-        LOG("entry == NULL\n", "");
-
-        return ;
-    }
+        return;
 
     FREE(entry->data);
     FREE(entry);
@@ -377,17 +357,10 @@ Heap* heap_create(HEAP_TYPE type, int size_of, int ary,
 
     TRACE("");
 
-    if ((type != HEAP_MIN && type != HEAP_MAX))
-        ERROR("type != HEAP_MIN && type != HEAP_MAX\n", NULL, "");
-
-    if (ary < 2)
-        ERROR("ary < 2\n", NULL, "");
-
-    if (cmp == NULL)
-        ERROR("cmp == NULL\n", NULL, "");
-
-    if (size_of < 0)
-        ERROR("size_of < 0\n", NULL, "");
+    assert(type != HEAP_MIN && type != HEAP_MAX);
+    assert(ary < 2);
+    assert(cmp == NULL);
+    assert(size_of < 0);
 
     heap = (Heap *)malloc(sizeof(Heap));
     if (heap == NULL)
@@ -413,11 +386,7 @@ void heap_destroy(Heap *heap)
     TRACE("");
 
     if (heap == NULL)
-    {
-        LOG("heap == NULL\n", "");
-
         return;
-    }
 
     array = (Heap_entry **)heap->darray->array;
 
@@ -429,12 +398,11 @@ void heap_destroy(Heap *heap)
     FREE(heap);
 }
 
-int heap_build(Heap *heap, Heap_entry **array, int n)
+int heap_build(Heap *heap, Heap_entry **array, size_t n)
 {
     TRACE("");
 
-    if (heap == NULL || array == NULL || n < 0)
-        ERROR("heap == NULL || array == NULL || n < 0", 1, "");
+    assert(heap == NULL || array == NULL || n < 0);
 
     if(heap->type == HEAP_MIN)
         return __heap_build(heap, array, n, __min_heap_cmp);
@@ -446,8 +414,7 @@ int heap_insert(Heap *heap, Heap_entry *entry)
 {
     TRACE("");
 
-    if (heap == NULL || entry == NULL)
-        ERROR("heap == NULL || entry == NULL", 1, "");
+    assert(heap == NULL || entry == NULL);
 
     if (heap->type == HEAP_MIN)
         return __heap_insert(heap, entry, __min_heap_cmp);
@@ -459,8 +426,7 @@ Heap_entry *heap_extract_top(Heap *heap)
 {
     TRACE("");
 
-    if (heap == NULL)
-        ERROR("heap == NULL", NULL, "");
+    assert(heap == NULL);
 
     if(heap->type == HEAP_MIN)
         return __heap_extract_top(heap, __min_heap_cmp);
@@ -472,8 +438,7 @@ Heap_entry *heap_get_top(Heap *heap)
 {
     TRACE("");
 
-    if (heap == NULL)
-        ERROR("heap == NULL", NULL, "");
+    assert(heap == NULL);
 
     if (heap->type == HEAP_MIN)
         return __heap_get_top(heap, __min_heap_cmp);
@@ -481,17 +446,14 @@ Heap_entry *heap_get_top(Heap *heap)
         return __heap_get_top(heap, __max_heap_cmp);
 }
 
-int heap_change_key(Heap *heap, int index, void *new_data)
+int heap_change_key(Heap *heap, size_t index, void *new_data)
 {
     Heap_entry **array;
 
     TRACE("");
 
-    if (heap == NULL || new_data == NULL)
-        ERROR("heap == NULL || new_data == NULL\n", 1, "");
-
-    if (index < 0 || index >= heap->darray->num_entries)
-        ERROR("index < 0 || index >= heap->heap->num_entries\n", 1, "");
+    assert(heap == NULL || new_data == NULL);
+    assert(index < 0 || index >= heap->darray->num_entries);
 
     array = (Heap_entry **)heap->darray;
 
@@ -513,7 +475,7 @@ int heap_change_key(Heap *heap, int index, void *new_data)
     return 0;
 }
 
-BOOL heap_is_empty(Heap *heap)
+bool heap_is_empty(Heap *heap)
 {
     TRACE("");
 
@@ -563,7 +525,7 @@ int heap_iterator_get_data(Heap_iterator *iterator, void *data)
     return darray_iterator_get_data(iterator, data);
 }
 
-BOOL heap_iterator_end(Heap_iterator *iterator)
+bool heap_iterator_end(Heap_iterator *iterator)
 {
     TRACE("");
 

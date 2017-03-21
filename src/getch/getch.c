@@ -18,20 +18,20 @@ int getch()
 
 	if (memcpy((void *)&new_attr, (void *)&old_attr,
 			sizeof(struct termios)) == NULL)
-		return (int)-1;
+		return -1;
 
 	/* reset waiting for enter */
     new_attr.c_lflag &= ~(ICANON | ECHO);
 
 	/* set new settings */
     if (tcsetattr(STDIN_FILENO, TCSANOW, &new_attr) == -1)
-		return (int)-1;
+		return -1;
 
     ch = getchar();
 
 	/* restore old */
     if (tcsetattr(STDIN_FILENO, TCSANOW, &old_attr) == -1)
-		return (int)-1;
+		return -1;
 
     return ch;
 }

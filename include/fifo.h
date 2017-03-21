@@ -7,23 +7,20 @@
 
     Fifo using resize array
 
-    LICENCE: GPL3
+    LICENCE: GPL 3.0
 */
 
-#ifndef BOOL
-    #define BOOL unsigned char
-    #define TRUE 1
-    #define FALSE 0
-#endif
+#include <stdbool.h>
+#include <stddef.h> /* size_t */
 
 typedef struct Fifo
 {
     void    *array;     /* resizing array */
 
-    int     head;       /* head postion in array */
-    int     tail;       /* tail posiion in array */
+    size_t     head;       /* head postion in array */
+    size_t     tail;       /* tail posiion in array */
+    size_t     size;       /* size of allocated array */
     int     size_of;    /* size of element in array */
-    int     size;       /* size of allocated array */
 }Fifo;
 
 /*
@@ -99,7 +96,7 @@ int fifo_dequeue(Fifo *fifo, void *val);
 	%0 iff success
 	%Non-zero value iff failure
 */
-int fifo_to_array(Fifo *fifo, void *array, int *size);
+int fifo_to_array(Fifo *fifo, void *array, size_t *size);
 
 /*
     PARAMS
@@ -109,7 +106,7 @@ int fifo_to_array(Fifo *fifo, void *array, int *size);
     %TRUE iff fifo is empty
     %FALSE iff fifo is not empty or failure
 */
-BOOL fifo_is_empty(Fifo *fifo);
+bool fifo_is_empty(Fifo *fifo);
 
 /*
     GET element from queue head

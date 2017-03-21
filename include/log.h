@@ -7,7 +7,7 @@
 	Author: Michal Kukowski
 	email: michalkukowski10@gmail.com
 
-	LICENCE: GPL3
+	LICENCE: GPL 3.0
 */
 
 #include <stdio.h>
@@ -40,15 +40,13 @@
 #define LOG(msg, ...) \
     do { \
         __log__(__LOG__); \
-        __log__("\t"); \
-        __log__(msg, ##__VA_ARGS__); \
+        __log__("\t" msg, ##__VA_ARGS__); \
     } while (0)
 
 #define ERROR(msg, errno, ...) \
     do { \
         __error__(__ERROR__); \
-        __error__("\t"); \
-        __error__(msg, ##__VA_ARGS__); \
+        __error__("\t" msg, ##__VA_ARGS__); \
         \
         return errno; \
     } while (0)

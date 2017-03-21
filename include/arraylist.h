@@ -8,10 +8,11 @@
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com
 
-    LICENCE: GPL 3.0+
+    LICENCE: GPL 3.0
 */
 
 #include <iterators.h>
+#include <stddef.h> /* size_t */
 
 typedef struct Arraylist_node
 {
@@ -25,7 +26,7 @@ typedef struct Arraylist_node
 typedef struct Arraylist
 {
     int                 size_of;    /* size of element */
-    unsigned long       length;     /* length of list */
+    size_t              length;     /* length of list */
 
     Arraylist_node      *head;
     Arraylist_node      *tail;
@@ -55,7 +56,6 @@ IT_FUNC(Arraylist, arraylist)
     do { \
         PTR = arraylist_create(sizeof(TYPE)); \
     } while (0)
-
 
 /*
     Create alist
@@ -119,7 +119,7 @@ int arraylist_insert_last(Arraylist *alist, void *data);
     0 iff success
     Non-zero value of failure
 */
-int arraylist_insert_pos(Arraylist *alist, unsigned long pos, void *data);
+int arraylist_insert_pos(Arraylist *alist, size_t pos, void *data);
 
 /*
     Delete first data od alist
@@ -157,7 +157,7 @@ int arraylist_delete_last(Arraylist *alist);
     0 iff success
     Non-zero value of failure
 */
-int arraylist_delete_pos(Arraylist *alist, unsigned long pos);
+int arraylist_delete_pos(Arraylist *alist, size_t pos);
 
 
 /*
@@ -172,7 +172,7 @@ int arraylist_delete_pos(Arraylist *alist, unsigned long pos);
     0 iff success
     Non-zero value of failure
 */
-int arraylist_get_pos(Arraylist *alist, unsigned long pos, void *data);
+int arraylist_get_pos(Arraylist *alist, size_t pos, void *data);
 
 /*
     Allocate new alist and merge alist1 & alist2 to the new alist
@@ -199,6 +199,6 @@ Arraylist *arraylist_merge(Arraylist *alist1, Arraylist *alist2);
     0 if success
 	Non-zero value if failure
 */
-int arraylist_to_array(Arraylist *alist, void *array, int *size);
+int arraylist_to_array(Arraylist *alist, void *array, size_t *size);
 
 #endif

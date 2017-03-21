@@ -5,7 +5,7 @@
     Author Michal Kukowski
     email: michalkukowski10@gmail.com
 
-    LICENCE: GPL3
+    LICENCE: GPL 3.0
 
     This is sort header file, every sort are "template sort"
     I use cmp function for compare elements
@@ -36,6 +36,8 @@
 
 */
 
+#include <stddef.h> /* size_t */
+
 /*
     Define for insort, please check insort funciton description
 */
@@ -54,7 +56,7 @@
     %0 if success
     %Non-zero value if failure
 */
-int insort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of);
+int insort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
 
 /*
     Define for binsort, please check binsort funciton description
@@ -74,7 +76,7 @@ int insort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of);
    	%0 if success
     %Non-zero value if failure
 */
-int binsort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of);
+int binsort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
 
 
 /*
@@ -95,7 +97,7 @@ int binsort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of)
     %0 if success
     %Non-zero value if failure
 */
-int mergesort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of);
+int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
 
 
 /*
@@ -116,7 +118,7 @@ int mergesort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_o
     %0 if success
     %Non-zero value if failure
 */
-int quicksort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of);
+int quicksort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
 
 /*
     Define for sort, please check sort funciton description
@@ -136,6 +138,6 @@ int quicksort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_o
     %0 if success
     %Non-zero value if failure
 */
-int sort(void *t, int num_elements, int(*cmp)(void *a, void *b), int size_of);
+int sort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
 
 #endif

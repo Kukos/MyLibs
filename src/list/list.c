@@ -2,12 +2,9 @@
 #include <generic.h>
 #include <stdlib.h>
 #include <log.h>
-
-#define FREE(PTR) \
-    do { \
-        free(PTR); \
-        PTR = NULL; \
-    } while (0)
+#include <common.h>
+#include <compiler.h>
+#include <assert.h>
 
 /*
     Create new list node with ptr next and value val
@@ -21,7 +18,8 @@
     NULL iff failure
     Pointer to List_node iff success
 */
-static List_node *list_node_create(List_node *next, void* data, int size_of);
+__inline__ static List_node *list_node_create(List_node *next, void* data,
+                int size_of);
 
 
 /*
@@ -33,20 +31,18 @@ static List_node *list_node_create(List_node *next, void* data, int size_of);
     RETURN:
     This is void function
 */
-static void list_node_destroy(List_node *node);
+__inline__ static void list_node_destroy(List_node *node);
 
 
-static List_node *list_node_create(List_node *next, void *data, int size_of)
+__inline__ static List_node *list_node_create(List_node *next, void *data,
+     int size_of)
 {
     List_node *node;
 
     TRACE("");
 
-    if (data == NULL)
-        ERROR("data == NULL\n", NULL, "");
-
-    if (size_of < 1)
-        ERROR("size_of < 1\n", NULL, "");
+    assert(data == NULL);
+    assert(size_of < 1);
 
     node = (List_node *)malloc(sizeof(List_node));
     if (node == NULL)
@@ -70,10 +66,7 @@ static void list_node_destroy(List_node *node)
     TRACE("");
 
     if (node == NULL)
-    {
-        LOG("node == NULL\n", "");
         return;
-    }
 
     FREE(node->data);
     FREE(node);
@@ -85,8 +78,7 @@ List_iterator *list_iterator_create(List *list, ITI_MODE mode)
 
     TRACE("");
 
-    if (list == NULL)
-        ERROR("list == NULL\n", NULL, "");
+    assert(list == NULL);
 
     iterator = (List_iterator *)malloc(sizeof(List_iterator));
     if (iterator == NULL)
@@ -105,10 +97,7 @@ void list_iterator_destroy(List_iterator *iterator)
     TRACE("");
 
     if (iterator == NULL)
-    {
-        LOG("iterator == NULL\n", "");
         return;
-    }
 
     FREE(iterator);
 }
@@ -117,8 +106,7 @@ int list_iterator_init(List *list, List_iterator *iterator, ITI_MODE mode)
 {
     TRACE("");
 
-    if (list == NULL || iterator == NULL)
-        ERROR("list || iterator == NULL\n", 1, "");
+    assert(list == NULL || iterator == NULL);
 
     iterator->node = list->head;
     iterator->size_of = list->size_of;
@@ -132,8 +120,7 @@ int list_iterator_next(List_iterator *iterator)
 {
     TRACE("");
 
-    if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+    assert(iterator == NULL);
 
     iterator->node = iterator->node->next;
 
@@ -144,20 +131,18 @@ int list_iterator_get_data(List_iterator *iterator, void *val)
 {
     TRACE("");
 
-    if (iterator == NULL || val == NULL)
-        ERROR("iterator || val  == NULL\n", 1, "");
+    assert(iterator == NULL || val == NULL);
 
     __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->node->data, iterator->size_of);
 
     return 0;
 }
 
-BOOL list_iterator_end(List_iterator *iterator)
+bool list_iterator_end(List_iterator *iterator)
 {
     TRACE("");
 
-    if (iterator == NULL)
-        ERROR("iterator ==NULL\n", TRUE, "");
+    assert(iterator == NULL);
 
     return iterator->node == NULL;
 }
@@ -168,11 +153,8 @@ List *list_create(int size_of, int (*cmp)(void* a, void *b))
 
     TRACE("");
 
-    if (size_of < 1)
-        ERROR("size_of < 1\n", NULL, "");
-
-     if (cmp == NULL)
-        ERROR("cmp == NULL\n", NULL, "");
+    assert(size_of < 1);
+    assert(cmp == NULL);
 
     list = (List *)malloc(sizeof(List));
     if (list == NULL)
@@ -196,13 +178,9 @@ void list_destroy(List *list)
     TRACE("");
 
     if (list == NULL)
-    {
-        LOG("list == NULL\n", "");
         return;
-    }
 
     ptr = list->head;
-
     while (ptr != NULL)
     {
         next = ptr->next;
@@ -225,8 +203,7 @@ int list_insert(List *list, void *entry)
 
     TRACE("");
 
-    if (list == NULL || entry == NULL)
-        ERROR("list == NULL || entry == NULL\n", 1, "");
+    assert(list == NULL || entry == NULL);
 
     if (list->head == NULL)
     {
@@ -297,8 +274,7 @@ int list_delete(List *list, void *entry)
 
     TRACE("");
 
-    if (list == NULL || entry == NULL)
-        ERROR("list == NULL || entry == NULL\n", 1, "");
+    assert(list == NULL || entry == NULL);
 
 	if (list->head == NULL )
 		ERROR("Nothing to delete\n", 0, "");
@@ -364,12 +340,11 @@ int list_delete_all(List *list, void *entry)
     List_node *prev;
     List_node *guard;
 
-    int deleted;
+    size_t deleted;
 
     TRACE("");
 
-    if (list == NULL || entry == NULL)
-        ERROR("list == NULL || entry == NULL\n", -1, "");
+    assert(list == NULL || entry == NULL);
 
     ptr = list->head;
     prev= NULL;
@@ -391,7 +366,7 @@ int list_delete_all(List *list, void *entry)
     deleted = 0;
 
     /* we find entry to delete */
-    if (ptr != guard && list->cmp(ptr->data,entry) == 0)
+    if (ptr != guard && list->cmp(ptr->data, entry) == 0)
     {
         /* we delete head node */
         if (prev ==  NULL)
@@ -450,11 +425,8 @@ List *list_merge(List *list1, List *list2)
 
     TRACE("");
 
-    if (list1 == NULL || list2 == NULL)
-        ERROR("list1 == NULL || list2 == NULL\n", NULL, "");
-
-    if (list1->size_of != list2->size_of)
-        ERROR("size_of are diffrent\n", NULL, "");
+    assert(list1 == NULL || list2 == NULL);
+    assert(list1->size_of != list2->size_of);
 
     list3 = list_create(list1->size_of, list1->cmp);
     if(list3 == NULL)
@@ -540,8 +512,7 @@ int list_search(List *list, void *val, void *entry)
 
     TRACE("");
 
-    if (list == NULL || val == NULL || entry == NULL)
-        ERROR("list == NULL || val == NULL || entry  == NULL\n", 1, "");
+    assert(list == NULL || val == NULL || entry == NULL);
 
     ptr = list->head;
 
@@ -575,17 +546,16 @@ int list_search(List *list, void *val, void *entry)
     }
 }
 
-int list_to_array(List *list, void *array, int *size)
+int list_to_array(List *list, void *array, size_t *size)
 {
     List_node *ptr;
     BYTE *t;
 
-    int offset;
+    size_t offset;
 
     TRACE("");
 
-    if (list == NULL || array == NULL || size == NULL)
-        ERROR("list == NULL || array == NULL || size  == NULL\n", 1, "");
+    assert(list == NULL || array == NULL || size == NULL);
 
     t = (BYTE *)malloc(list->length * list->size_of);
     if (t == NULL)

@@ -11,12 +11,7 @@
 */
 
 #include <iterators.h>
-
-#ifndef BOOL
-    #define BOOL    char
-    #define TRUE    1
-    #define FALSE   0
-#endif
+#include <stddef.h> /* size_t */
 
 typedef struct List_node
 {
@@ -28,7 +23,7 @@ typedef struct List_node
 typedef struct List
 {
     int             size_of;    /* size of element */
-    unsigned long   length;     /* length of list */
+    size_t          length;     /* length of list */
 
     List_node       *head;
     List_node       *tail;      /* needed for insert guardian */
@@ -180,6 +175,6 @@ int list_search(List *list, void *val, void *entry);
     0 iff success
 	Non-zero value iff failure
 */
-int list_to_array(List *list, void *array, int *size);
+int list_to_array(List *list, void *array, size_t *size);
 
 #endif

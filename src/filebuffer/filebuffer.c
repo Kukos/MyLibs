@@ -6,15 +6,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <log.h>
+#include <compiler.h>
+#include <common.h>
+#include <assert.h>
 
 /* size to map empty file */
 #define FAKE_FILE_SIZE	sizeof(char)
-
-#define FREE(T) \
-	do{ \
-		 free(T); \
-		 T = NULL; \
-	}while (0)
 
 file_buffer *file_buffer_create(int fd, int protect_flag)
 {
@@ -68,7 +65,7 @@ int file_buffer_destroy(file_buffer *fb)
 	TRACE("");
 
     if (fb == NULL)
-		ERROR("fb == NULL", 1, "");
+		return 1;
 
     /* before detach sunchronize */
     if ((msync((void *)fb->buffer, fb->size, MS_SYNC)) == -1)
@@ -91,8 +88,7 @@ int file_buffer_append(file_buffer *fb, const char *data)
 
 	TRACE("");
 
-    if (fb == NULL || data == NULL)
-		ERROR("fb == NULL || data == NULL\n", 1, "");
+    assert(fb == NULL || data == NULL);
 
 	length = strlen(data);
 	new_size = fb->size + length;
@@ -119,8 +115,7 @@ int file_buffer_synch(file_buffer *fb)
 {
 	TRACE("");
 
-    if (fb == NULL)
-        ERROR("fb == NULL\n", 1, "");
+    assert(fb == NULL);
 
     if ((msync((void *)fb->buffer, fb->size, MS_SYNC)) == -1)
         ERROR("msync error\n", 1, "");

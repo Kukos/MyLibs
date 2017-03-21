@@ -3,12 +3,8 @@
 #include <log.h>
 #include <darray.h>
 #include <stdlib.h>
-
-#define FREE(PTR) \
-    do { \
-        free(PTR); \
-        PTR = NULL; \
-    } while (0)
+#include <assert.h>
+#include <common.h>
 
 Stack *stack_create(int size_of)
 {
@@ -16,8 +12,7 @@ Stack *stack_create(int size_of)
 
     TRACE("");
 
-    if (size_of < 0)
-        ERROR("size_of < 0\n", NULL, "");
+    assert(size_of < 0);
 
     s = (Stack *)malloc(sizeof(Stack));
     if (s == NULL)
@@ -39,10 +34,7 @@ void stack_destroy(Stack *stack)
     TRACE("");
 
     if (stack == NULL)
-    {
-        LOG("stack == NULL\n", "");
         return;
-    }
 
     darray_destroy(stack->darray);
     FREE(stack);
@@ -52,8 +44,7 @@ int stack_push(Stack *stack, void *val)
 {
     TRACE("");
 
-    if (stack == NULL || stack->darray == NULL || val == NULL)
-        ERROR("stack == NULL || stack->darray == NULL  || val == NULL\n", 1, "");
+    assert(stack == NULL || stack->darray == NULL || val == NULL);
 
     return darray_insert(stack->darray,val);
 }
@@ -64,9 +55,7 @@ int stack_pop(Stack *stack, void* val)
 
     TRACE("");
 
-    if (stack == NULL || stack->darray == NULL || val == NULL)
-        ERROR("stack == NULL || stack->darray == NULL  || val == NULL\n", 1, "");
-
+    assert(stack == NULL || stack->darray == NULL || val == NULL);
 
     if (stack_is_empty(stack))
         ERROR("stack is empty\n", 1, "");
@@ -80,7 +69,7 @@ int stack_pop(Stack *stack, void* val)
     return darray_delete(stack->darray);
 }
 
-BOOL stack_is_empty(Stack *stack)
+bool stack_is_empty(Stack *stack)
 {
     TRACE("");
 
@@ -94,9 +83,7 @@ int stack_get_top(Stack *stack, void *val)
 
     TRACE("");
 
-    if (stack == NULL || stack->darray == NULL || val == NULL)
-        ERROR("stack == NULL || stack->darray == NULL  || val == NULL\n", 1, "");
-
+    assert(stack == NULL || stack->darray == NULL || val == NULL);
 
     if (stack_is_empty(stack))
         ERROR("stack is empty\n", 1, "");
@@ -110,15 +97,14 @@ int stack_get_top(Stack *stack, void *val)
     return 0;
 }
 
-int stack_to_array(Stack *stack, void *array, int *size)
+int stack_to_array(Stack *stack, void *array, size_t *size)
 {
     void *t;
 
     TRACE("");
 
-    if (stack == NULL || stack->darray == NULL || array == NULL || size == NULL)
-        ERROR("stack == NULL || stack->darray == NULL || array == NULL"
-            "|| size  == NULL\n", 1, "");
+    assert(stack == NULL || stack->darray == NULL
+         || array == NULL || size == NULL);
 
     if (stack_is_empty(stack))
         ERROR("stack is empty\n",1 ,"");

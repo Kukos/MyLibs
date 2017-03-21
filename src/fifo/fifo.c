@@ -3,17 +3,11 @@
 #include <fifo.h>
 #include <generic.h>
 #include <log.h>
+#include <common.h>
+#include <compiler.h>
+#include <assert.h>
 
 #define INIT_SIZE 1024
-
-#define FREE(PTR) \
-    do { \
-        free(PTR); \
-        PTR = NULL; \
-    } while (0)
-
-
-#define MIN(A, B)((A) < (B) ? (A) : (B))
 
 Fifo *fifo_create(int size_of)
 {
@@ -21,11 +15,9 @@ Fifo *fifo_create(int size_of)
 
     TRACE("");
 
-    if (size_of < 0)
-        ERROR("size_of < 0\n", NULL, "");
+    assert(size_of < 0);
 
     fifo = (Fifo *)malloc(sizeof(Fifo));
-
     if (fifo == NULL)
         ERROR("malloc error\n", NULL, "");
 
@@ -50,16 +42,13 @@ void fifo_destroy(Fifo *fifo)
     TRACE("");
 
     if (fifo == NULL)
-    {
-        LOG("fifo == NULL\n", "");
         return;
-    }
 
     FREE(fifo->array);
     FREE(fifo);
 }
 
-BOOL fifo_is_empty(Fifo *fifo)
+bool fifo_is_empty(Fifo *fifo)
 {
     TRACE("");
 
@@ -71,20 +60,18 @@ int fifo_enqueue(Fifo *fifo, void *val)
     BYTE *_t;
     BYTE *_val;
 
-    int entries_head;
-    int entries_tail;
-    int to_move;
+    size_t entries_head;
+    size_t entries_tail;
+    size_t to_move;
 
     TRACE("");
 
-    if (fifo == NULL || fifo->array == NULL || val == NULL)
-        ERROR("fifo == NULL|| fifo->array == NULL || val  == NULL\n", 1, "");
-
+    assert(fifo == NULL || fifo->array == NULL || val == NULL);
 
     _t = (BYTE *)fifo->array;
     _val = (BYTE *)val;
 
-    __ASSIGN__(_t[fifo->tail * fifo->size_of], *_val,fifo->size_of);
+    __ASSIGN__(_t[fifo->tail * fifo->size_of], *_val, fifo->size_of);
 
     fifo->tail = (fifo->tail + 1) % fifo->size;
 
@@ -138,8 +125,7 @@ int fifo_get_head(Fifo *fifo, void *val)
 
     TRACE("");
 
-    if (fifo == NULL || fifo->array == NULL || val == NULL)
-        ERROR("fifo == NULL || fifo->array == NULL  || val == NULL\n", 1, "");
+    assert(fifo == NULL || fifo->array == NULL || val == NULL);
 
     if (fifo_is_empty(fifo))
         ERROR("fifo is empty\n", 1, "");
@@ -156,16 +142,14 @@ int fifo_dequeue(Fifo *fifo, void *val)
     BYTE *_t;
     BYTE *buffer;
 
-    int entries;
-    int entries_head;
-    int entries_tail;
-    int buffer_entries;
-
+    size_t entries;
+    size_t entries_head;
+    size_t entries_tail;
+    size_t buffer_entries;
 
     TRACE("");
 
-    if (fifo == NULL || fifo->array == NULL || val == NULL)
-        ERROR("fifo == NULL || fifo->array == NULL  || val == NULL\n", 1, "");
+    assert(fifo == NULL || fifo->array == NULL || val == NULL);
 
     if (fifo_is_empty(fifo))
         ERROR("fifo is empty\n", 1, "");
@@ -236,19 +220,17 @@ int fifo_dequeue(Fifo *fifo, void *val)
     return 0;
 }
 
-int fifo_to_array(Fifo *fifo, void *array, int *size)
+int fifo_to_array(Fifo *fifo, void *array, size_t *size)
 {
-    int entries;
-    int bytes_to_move;
+    size_t entries;
+    size_t bytes_to_move;
 
     void *t;
     BYTE *_t;
 
     TRACE("");
 
-    if (fifo == NULL || fifo->array == NULL || array == NULL || size == NULL)
-        ERROR("fifo == NULL || fifo->array == NULL"
-              "|| array == NULL || size  == NULL\n", 1, "");
+    assert(fifo == NULL || fifo->array == NULL || array == NULL || size == NULL);
 
     if (fifo_is_empty(fifo))
         ERROR("fifo is empty\n", 1, "");

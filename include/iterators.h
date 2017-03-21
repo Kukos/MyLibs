@@ -7,7 +7,7 @@
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com
 
-    LICENCE: GPL3
+    LICENCE: GPL 3.0
 
 */
 
@@ -119,7 +119,7 @@
         %FALSE if not end
         %TRUE if end
 
-        BOOL Struct_iterator_end(Struct_iterator *iterator);
+        bool Struct_iterator_end(Struct_iterator *iterator);
 
     7)
 
@@ -136,16 +136,10 @@
         int Struct_iterator_get_data(Struct_iterator *iterator,void *val);
 */
 
-#ifndef BOOL
-    #define BOOL    char
-    #define TRUE    1
-    #define FALSE   0
-#endif
+#include <stdbool.h>
+#include <compiler.h>
 
-#define _CONCAT(x, y) x ## y
-#define CONCAT(x, y) _CONCAT(x, y)
-
-#define IT_STRUCT_NAME(PREFIX) CONCAT(PREFIX, _iterator)
+#define IT_STRUCT_NAME(PREFIX) concat(PREFIX, _iterator)
 
 #define ITI_MODE    char
 #define ITI_BEGIN   0
@@ -153,13 +147,13 @@
 #define ITI_ROOT    2
 
 #define IT_FUNC(STRUCT, PREFIX) \
-    IT_STRUCT_NAME(STRUCT) *CONCAT(PREFIX, _iterator_create)(STRUCT *, ITI_MODE); \
-    int CONCAT(PREFIX, _iterator_init)(STRUCT *, IT_STRUCT_NAME(STRUCT) *, ITI_MODE); \
-    void CONCAT(PREFIX, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *); \
-    int CONCAT(PREFIX, _iterator_next)(IT_STRUCT_NAME(STRUCT) *); \
-    int CONCAT(PREFIX, _iterator_prev)(IT_STRUCT_NAME(STRUCT) *); \
-    BOOL CONCAT(PREFIX, _iterator_end)(IT_STRUCT_NAME(STRUCT) *); \
-    int CONCAT(PREFIX, _iterator_get_data)(IT_STRUCT_NAME(STRUCT) *, void *);
+    IT_STRUCT_NAME(STRUCT) *concat(PREFIX, _iterator_create)(STRUCT *, ITI_MODE); \
+    int concat(PREFIX, _iterator_init)(STRUCT *, IT_STRUCT_NAME(STRUCT) *, ITI_MODE); \
+    void concat(PREFIX, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *); \
+    int concat(PREFIX, _iterator_next)(IT_STRUCT_NAME(STRUCT) *); \
+    int concat(PREFIX, _iterator_prev)(IT_STRUCT_NAME(STRUCT) *); \
+    bool concat(PREFIX, _iterator_end)(IT_STRUCT_NAME(STRUCT) *); \
+    int concat(PREFIX, _iterator_get_data)(IT_STRUCT_NAME(STRUCT) *, void *);
 
 
 #endif

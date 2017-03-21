@@ -4,12 +4,9 @@
 #include <generic.h>
 #include <sort.h>
 #include <log.h>
-
-#define FREE(PTR) \
-    do{ \
-        free(PTR); \
-        PTR = NULL; \
-    } while (0)
+#include <common.h>
+#include <compiler.h>
+#include <assert.h>
 
 #define INIT_SIZE 1024
 
@@ -22,7 +19,7 @@
     %-1 iff failure
     %Pos iff success
 */
-static int darray_unsorted_search_first(Darray *darray, void *val);
+__inline__ static int darray_unsorted_search_first(Darray *darray, void *val);
 
 /*
     PARAMS
@@ -33,7 +30,7 @@ static int darray_unsorted_search_first(Darray *darray, void *val);
     %-1 iff failure
     %Pos iff success
 */
-static int darray_unsorted_search_last(Darray *darray, void *val);
+__inline__ static int darray_unsorted_search_last(Darray *darray, void *val);
 
 /*
     PARAMS
@@ -44,7 +41,7 @@ static int darray_unsorted_search_last(Darray *darray, void *val);
     %-1 iff failure
     %Pos iff success
 */
-static int darray_sorted_search_first(Darray *darray, void *val);
+__inline__ static int darray_sorted_search_first(Darray *darray, void *val);
 
 /*
     PARAMS
@@ -55,7 +52,7 @@ static int darray_sorted_search_first(Darray *darray, void *val);
     %-1 iff failure
     %Pos iff success
 */
-static int darray_sorted_search_last(Darray *darray, void *val);
+__inline__ static int darray_sorted_search_last(Darray *darray, void *val);
 
 /*
     Find pos where val i MAX ( <= val )
@@ -68,24 +65,20 @@ static int darray_sorted_search_last(Darray *darray, void *val);
     %-1 iff failure
     %Pos iff success
 */
-static int upper_bound(Darray *darray, void *val);
+__inline__ static int upper_bound(Darray *darray, void *val);
 
-
-static int darray_unsorted_search_first(Darray *darray, void *val)
+__inline__ static int darray_unsorted_search_first(Darray *darray, void *val)
 {
     BYTE *_t;
-    int offset_i;
+    size_t offset_i;
     int max;
 
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL || val == NULL
-    || darray->cmp == NULL)
-        ERROR("darray == NULL || darray->array == NULL"
- 			  "|| val == NULL || darray->cmp == NULL\n", -1, "");
+    assert( darray == NULL || darray->array == NULL || val == NULL
+            || darray->cmp == NULL);
 
-    if (darray->num_entries < 0)
-        ERROR("darray->num_entries < 0\n", -1, "");
+    assert(darray->num_entries < 0);
 
     _t = (BYTE *)darray->array;
     max = darray->num_entries * darray->size_of;
@@ -97,20 +90,17 @@ static int darray_unsorted_search_first(Darray *darray, void *val)
     return -1;
 }
 
-static int darray_unsorted_search_last(Darray *darray, void *val)
+__inline__ static int darray_unsorted_search_last(Darray *darray, void *val)
 {
     BYTE *_t;
-    int offset_i;
+    size_t offset_i;
 
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL || val == NULL
-    || darray->cmp == NULL)
-        ERROR("darray == NULL || darray->array == NULL"
- 			  "|| val == NULL || darray->cmp == NULL\n", -1, "");
+    assert( darray == NULL || darray->array == NULL || val == NULL
+            || darray->cmp == NULL);
 
-    if (darray->num_entries < 0)
-        ERROR("darray->num_entries < 0\n", -1, "");
+    assert(darray->num_entries < 0);
 
     _t = (BYTE *)darray->array;
     offset_i = darray->num_entries * darray->size_of - darray->size_of;
@@ -123,23 +113,20 @@ static int darray_unsorted_search_last(Darray *darray, void *val)
     return -1;
 }
 
-static int darray_sorted_search_first(Darray *darray, void *val)
+__inline__ static int darray_sorted_search_first(Darray *darray, void *val)
 {
     BYTE *_t;
 
-    int offset_left;
-    int offset_right;
-    int offset_middle;
+    size_t offset_left;
+    size_t offset_right;
+    size_t offset_middle;
 
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL || val == NULL
-    || darray->cmp == NULL)
-        ERROR("darray == NULL || darray->array == NULL"
-              "|| val == NULL || darray->cmp == NULL\n", -1, "");
+    assert( darray == NULL || darray->array == NULL || val == NULL
+            || darray->cmp == NULL);
 
-    if (darray->num_entries < 0)
-        ERROR("darray->num_entries < 0\n", -1, "");
+    assert(darray->num_entries < 0);
 
     _t = (BYTE *)darray->array;
 
@@ -163,23 +150,20 @@ static int darray_sorted_search_first(Darray *darray, void *val)
          return -1;
 }
 
-static int darray_sorted_search_last(Darray *darray, void *val)
+__inline__ static int darray_sorted_search_last(Darray *darray, void *val)
 {
     BYTE *_t;
 
-    int offset_left;
-    int offset_right;
-    int offset_middle;
+    size_t offset_left;
+    size_t offset_right;
+    size_t offset_middle;
 
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL || val == NULL
-    || darray->cmp == NULL)
-        ERROR("darray == NULL || darray->array == NULL"
- 			  "|| val == NULL || darray->cmp == NULL\n", -1, "");
+    assert( darray == NULL || darray->array == NULL || val == NULL
+            || darray->cmp == NULL);
 
-    if (darray->num_entries < 0)
-        ERROR("darray->num_entries < 0\n", -1, "");
+    assert(darray->num_entries < 0);
 
     _t = (BYTE *)darray->array;
 
@@ -203,20 +187,18 @@ static int darray_sorted_search_last(Darray *darray, void *val)
          return -1;
 }
 
-static int upper_bound(Darray *darray, void *val)
+__inline__ static int upper_bound(Darray *darray, void *val)
 {
-    int offset_left;
-    int offset_right;
-    int offset_middle;
+    size_t offset_left;
+    size_t offset_right;
+    size_t offset_middle;
 
     BYTE *_t;
 
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL || val == NULL
-    || darray->cmp == NULL)
-        ERROR("darray == NULL || darray->array == NULL"
-              "|| val == NULL || darray->cmp == NULL\n", -1, "");
+    assert( darray == NULL || darray->array == NULL || val == NULL
+            || darray->cmp == NULL);
 
     offset_left = - darray->size_of;
     offset_right = (darray->num_entries - 1) * darray->size_of;
@@ -251,11 +233,8 @@ Darray_iterator *darray_iterator_create(Darray *darray, ITI_MODE mode)
 
     TRACE("");
 
-    if (darray == NULL)
-        ERROR("darray == NULL\n", NULL, "");
-
-    if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("mode != ITI_BEGIN && mode != ITI_END\n", NULL, "");
+    assert(darray == NULL);
+    assert(mode != ITI_BEGIN && mode != ITI_END);
 
     iterator = (Darray_iterator *)malloc(sizeof(Darray_iterator));
     if (iterator == NULL)
@@ -279,11 +258,7 @@ void darray_iterator_destroy(Darray_iterator *iterator)
     TRACE("");
 
     if (iterator == NULL)
-    {
-        LOG("iterator == NULL\n","");
-
         return;
-    }
 
     FREE(iterator);
 }
@@ -292,11 +267,8 @@ int darray_iterator_init(Darray *darray, Darray_iterator *iterator,ITI_MODE mode
 {
     TRACE("");
 
-    if (darray == NULL || iterator == NULL)
-        ERROR("darray || iterator == NULL\n", 1, "");
-
-    if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("mode != ITI_BEGIN && mode != ITI_END)\n", 1, "");
+    assert(darray == NULL || iterator == NULL);
+    assert(mode != ITI_BEGIN && mode != ITI_END);
 
     iterator->array = darray->array;
     iterator->array_length = darray->num_entries;
@@ -315,8 +287,7 @@ int darray_iterator_next(Darray_iterator *iterator)
 {
     TRACE("");
 
-    if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+    assert(iterator == NULL);
 
     ++iterator->index;
 
@@ -327,8 +298,7 @@ int darray_iterator_prev(Darray_iterator *iterator)
 {
     TRACE("");
 
-    if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+    assert(iterator == NULL);
 
     --iterator->index;
 
@@ -341,8 +311,7 @@ int darray_iterator_get_data(Darray_iterator *iterator, void *val)
 
     TRACE("");
 
-    if (iterator == NULL || val == NULL)
-        ERROR("iterator || val == NULL\n", 1, "");
+    assert(iterator == NULL || val == NULL);
 
     t = (BYTE *)iterator->array;
     __ASSIGN__(*(BYTE *)val, t[iterator->index * iterator->size_of],
@@ -351,31 +320,27 @@ int darray_iterator_get_data(Darray_iterator *iterator, void *val)
     return 0;
 }
 
-BOOL darray_iterator_end(Darray_iterator *iterator)
+bool darray_iterator_end(Darray_iterator *iterator)
 {
     TRACE("");
 
-    if (iterator == NULL)
-        ERROR("iterator == NULL\n", TRUE, "");
+    assert(iterator == NULL);
 
     return (iterator->index >= iterator->array_length || iterator->index < 0);
 }
 
-Darray *darray_create(ARRAY_TYPE type, int size, int size_of,
+Darray *darray_create(ARRAY_TYPE type, size_t size, int size_of,
         int (*cmp)(void *a, void*b))
 {
     Darray *da;
 
     TRACE("");
 
-    if (type != SORTED && type != UNSORTED)
-        ERROR("type is invalid\n", NULL,"");
+    assert(type != SORTED && type != UNSORTED);
+    assert(size < 0 || size_of < 0);
 
     if (type == SORTED && cmp == NULL)
         ERROR("cmp is needed for sorted array\n", NULL, "");
-
-    if (size < 0 || size_of < 0)
-        ERROR("size < 0 || size_of < 0\n", NULL, "");
 
     da = (Darray *)malloc(sizeof(Darray));
     if (da == NULL)
@@ -409,11 +374,7 @@ void darray_destroy(Darray *darray)
     TRACE("");
 
     if (darray == NULL)
-    {
-        LOG("darray == NULL\n","");
-
         return;
-    }
 
     FREE(darray->array);
     FREE(darray);
@@ -426,8 +387,7 @@ int darray_insert(Darray *darray, void *entry)
 
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL || entry == NULL)
-        ERROR("darray || array || entry  == NULL\n", 1, "");
+    assert(darray == NULL || darray->array == NULL || entry == NULL);
 
     if(darray->type == UNSORTED)
         status = darray_insert_pos(darray, entry, darray->num_entries);
@@ -450,18 +410,15 @@ int darray_insert(Darray *darray, void *entry)
     return 0;
 }
 
-int darray_insert_pos(Darray *darray, void *entry,int pos)
+int darray_insert_pos(Darray *darray, void *entry, size_t pos)
 {
     BYTE *_t;
     BYTE *_entry;
 
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL)
-        ERROR("darray == NULL || darray->array == NULL\n", 1, "");
-
-    if (pos < 0 || pos > darray->num_entries)
-        ERROR("pos < 0 || pos > darray->num_entries\n", 1, "");
+    assert(darray == NULL || darray->array == NULL);
+    assert(pos < 0 || pos > darray->num_entries);
 
     /* resize array */
     if (darray->num_entries + 1 >= darray->size)
@@ -492,10 +449,9 @@ int darray_insert_pos(Darray *darray, void *entry,int pos)
 
 int darray_delete(Darray *darray)
 {
-     TRACE("");
+    TRACE("");
 
-    if (darray == NULL || darray->array == NULL)
-        ERROR("darray || darray->array == NULL\n", 1, "");
+    assert(darray == NULL || darray->array == NULL);
 
     if (darray_delete_pos(darray, darray->num_entries))
         ERROR("darray_delete_pos error\n",1,"");
@@ -503,19 +459,16 @@ int darray_delete(Darray *darray)
     return 0;
 }
 
-int darray_delete_pos(Darray *darray, int pos)
+int darray_delete_pos(Darray *darray, size_t pos)
 {
     BYTE *_t;
 
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL)
-        ERROR("darray == NULL || darray->array == NULL\n", 1, "");
+    assert(darray == NULL || darray->array == NULL);
+    assert(pos < 0 || pos > darray->num_entries);
 
-    if (pos < 0 || pos > darray->num_entries)
-        ERROR("pos < 0 || pos > darray->num_entries\n", 1, "");
-
-	if(darray->num_entries == 0)
+	if (darray->num_entries == 0)
 		ERROR("Nothing to delete\n", 1, "");
 
     _t = (BYTE *)darray->array;
@@ -545,12 +498,8 @@ int darray_search_first(Darray *darray, void *val)
 {
      TRACE("");
 
-     if (darray == NULL || darray->array == NULL || val == NULL)
-         ERROR("darray == NULL || darray->array == NULL || val == NULL\n",
-                -1, "");
-
-     if (darray->num_entries <= 0)
-         ERROR("darray->num_entries <= 0\n", -1, "");
+     assert(darray == NULL || darray->array == NULL || val == NULL);
+     assert(darray->num_entries <= 0);
 
      if (darray->type == UNSORTED)
         return darray_unsorted_search_first(darray, val);
@@ -567,12 +516,8 @@ int darray_search_last(Darray *darray, void *val)
 {
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL || val == NULL)
-        ERROR("darray == NULL || darray->array == NULL || val == NULL\n",
-               -1, "");
-
-    if (darray->num_entries <= 0)
-        ERROR("darray->num_entries <= 0\n", -1, "");
+    assert(darray == NULL || darray->array == NULL || val == NULL);
+    assert(darray->num_entries <= 0);
 
     if (darray->type == UNSORTED)
         return darray_unsorted_search_last(darray, val);
@@ -589,8 +534,7 @@ int darray_sort(Darray *darray)
 {
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL)
-        ERROR("darray == NULL || darray->array == NULL\n", 1, "");
+    assert(darray == NULL || darray->array == NULL);
 
     if (darray->cmp == NULL)
         ERROR("CMP is needed\n", -1, "");
@@ -603,18 +547,17 @@ int darray_sort(Darray *darray)
 
 int darray_min(Darray *darray)
 {
-    int pos;
+    size_t pos;
 
     BYTE min[MAXWORD];
     BYTE *_t;
 
-    int offset_i;
-    int offset_max;
+    size_t offset_i;
+    size_t offset_max;
 
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL)
-        ERROR("darray == NULL || darray->array == NULL\n", 1, "");
+    assert(darray == NULL || darray->array == NULL);
 
     if (darray->cmp == NULL)
         ERROR("CMP is needed\n", -1, "");
@@ -639,18 +582,17 @@ int darray_min(Darray *darray)
 
 int darray_max(Darray *darray)
 {
-    int pos;
+    size_t pos;
 
     BYTE max[MAXWORD];
     BYTE *_t;
 
-    int offset_i;
-    int offset_max;
+    size_t offset_i;
+    size_t offset_max;
 
     TRACE("");
 
-    if (darray == NULL || darray->array == NULL)
-         ERROR("darray == NULL || darray->array == NULL\n", 1, "");
+    assert(darray == NULL || darray->array == NULL);
 
     if (darray->cmp == NULL)
         ERROR("CMP is needed\n", -1, "");

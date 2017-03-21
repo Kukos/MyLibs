@@ -2,6 +2,8 @@
 #define STACK_H
 
 #include <darray.h>
+#include <stdbool.h>
+#include <stddef.h> /* size_t */
 
 /*
     Author: Michal Kukowski
@@ -9,15 +11,8 @@
 
     Stack using dynamic array
 
-    LICENCE GPL3
+    LICENCE: GPL 3.0
 */
-
-
-#ifndef BOOL
-    #define BOOL unsigned char
-    #define TRUE 1
-    #define FALSE 0
-#endif
 
 typedef struct Stack
 {
@@ -109,7 +104,7 @@ int stack_get_top(Stack *stack, void *val);
     %TRUE iff stack is empty
     %FALSE iff is not empty of failure
 */
-BOOL stack_is_empty(Stack *stack);
+bool stack_is_empty(Stack *stack);
 
 /*
     Convert stack to array
@@ -123,6 +118,6 @@ BOOL stack_is_empty(Stack *stack);
 	%0 if success
 	%Non-zero value iff failure
 */
-int stack_to_array(Stack *stack, void *array, int *size);
+int stack_to_array(Stack *stack, void *array, size_t *size);
 
 #endif

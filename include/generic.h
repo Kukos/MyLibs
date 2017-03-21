@@ -7,10 +7,12 @@
 	Author: Michal Kukowski
 	email: michalkukowski10@gmail.com
 
-	LICENCE: GPL 3.0+
+	LICENCE: GPL 3.0
 */
 
 #include <string.h> /* SSE instruction */
+#include <stdint.h>
+#include <compiler.h>
 
 /* get void* size to get architecture */
 #if __SIZEOF_POINTER__ == 8
@@ -22,11 +24,11 @@
 /* define types like "asm" */
 #ifdef __ARCH_64__
 
-    #define BYTE			char
-    #define HALF_WORD 		short
-    #define WORD 			int
-    #define DWORD 			long
-    #define QWORD 			long double
+    #define BYTE			int8_t
+    #define HALF_WORD 		int16_t
+    #define WORD 			int32_t
+    #define DWORD 			int64_t
+    #define QWORD 			__int128_t /* gcc extensions */
 
     #define BYTE_SIZE 		sizeof(BYTE)
     #define HALF_WORD_SIZE	sizeof(HALF_WORD)
@@ -38,24 +40,22 @@
 
 #elif defined(__ARCH_32__)
 
-    #define BYTE 			char
-    #define WORD 			short
-    #define DWORD 			long
-    #define QWORD 			long long
-    #define SIXWORD 		long double
+    #define BYTE 			int8_t
+    #define WORD 			int16_t
+    #define DWORD 			int32_t
+    #define QWORD 			int64_t
 
     #define BYTE_SIZE		sizeof(BYTE)
     #define WORD_SIZE		sizeof(WORD)
     #define DWORD_SIZE		sizeof(DWORD)
     #define QWORD_SIZE		sizeof(QWORD)
-    #define SIXWORD_SIZE	sizeof(SIXWORD)
 
-    #define MAXWORD			sizeof(SIXWORD)
+    #define MAXWORD			sizeof(QWORD)
 
 #endif
 
 /* buffer for swapping */
-__attribute__ ((unused)) static BYTE __buffer__[MAXWORD];
+__unused__ static BYTE __buffer__[MAXWORD];
 
 /* swap A and B with size = S, use SSE if possible */
 #define __SWAP__(A, B, S) \

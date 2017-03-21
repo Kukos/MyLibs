@@ -7,16 +7,11 @@
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com
 
-    LICENCE: GPL3
+    LICENCE: GPL 3.0
 */
 
 #include <iterators.h>
-
-#ifndef BOOL
-    #define BOOL    char
-    #define TRUE    1
-    #define FALSE   0
-#endif
+#include <stddef.h> /* size_t */
 
 #define ARRAY_TYPE  char
 #define SORTED      0
@@ -30,9 +25,9 @@ typedef struct Darray
     void    *array;         /* main array */
 
     int     size_of;        /* size of element */
-    int     size;           /* current allocated size ( num of entries ) */
-    int     num_entries;    /* num of entries in array */
-    int     init_size;      /* minimum size using on init ( num of entries ) */
+    size_t  size;           /* current allocated size ( num of entries ) */
+    size_t  num_entries;    /* num of entries in array */
+    size_t  init_size;      /* minimum size using on init ( num of entries ) */
 
     int (*cmp)(void *a,void*b); /* pointer to compare function */
     ARRAY_TYPE type;        /* type of array ( sorted or unsorted ) */
@@ -45,9 +40,9 @@ typedef struct Darray
 typedef struct Darray_iterator
 {
     void    *array;         /* pointer to array */
-    int     index;          /* index of array */
+    size_t  index;          /* index of array */
     int     size_of;        /* sizeof element in array */
-    int     array_length;   /* array length */
+    size_t  array_length;   /* array length */
 
 }Darray_iterator;
 
@@ -83,7 +78,7 @@ IT_FUNC(Darray, darray)
     %NULL iff failure
     %Pointer to Darray iff success
 */
-Darray *darray_create(ARRAY_TYPE type, int size, int size_of,
+Darray *darray_create(ARRAY_TYPE type, size_t size, int size_of,
                 int (*cmp)(void *a, void*b));
 
 /*
@@ -122,7 +117,7 @@ int darray_insert(Darray *darray, void *entry);
     %0 iff success
     %Non-zero value iff failure
 */
-int darray_insert_pos(Darray *darray, void *entry, int pos);
+int darray_insert_pos(Darray *darray, void *entry, size_t pos);
 
 /*
     Delete the last entry from array
@@ -147,7 +142,7 @@ int darray_delete(Darray *darray);
     %0 iff success
     %Non-zero value iff failure
 */
-int darray_delete_pos(Darray *darray, int pos);
+int darray_delete_pos(Darray *darray, size_t pos);
 
 /*
     Search for val in array

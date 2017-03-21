@@ -36,6 +36,8 @@
 */
 
 #include <iterators.h>
+#include <stdbool.h>
+#include <stddef.h> /* size_t */
 
 typedef struct List2D_node
 {
@@ -49,7 +51,7 @@ typedef struct List2D_node
 typedef struct List2D
 {
     int             size_of;
-    unsigned long   length;
+    size_t          length;
 
     List2D_node     *head;
 
@@ -58,18 +60,12 @@ typedef struct List2D
 
 }List2D;
 
-#ifndef BOOL
-    #define BOOL    char
-    #define TRUE    1
-    #define FALSE   0
-#endif
-
 typedef struct List2D_iterator
 {
     List2D_node     *node;
     List2D_node     *end_node;
     int             size_of;
-    BOOL            first_time;
+    bool            first_time;
 
 }List2D_iterator;
 
@@ -208,6 +204,6 @@ int list2d_search(List2D *list, void *val, void *entry);
     0 iff success
 	Non-zero value iff failure
 */
-int list2d_to_array(List2D *list, void *array, int *size);
+int list2d_to_array(List2D *list, void *array, size_t *size);
 
 #endif

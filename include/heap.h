@@ -2,6 +2,8 @@
 #define HEAP_H
 
 #include <darray.h>
+#include <stdbool.h>
+#include <stddef.h> /* size_t */
 
 /*
     Simple D-ary heap
@@ -12,7 +14,7 @@
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com
 
-    LICENCE: GPL3
+    LICENCE: GPL 3.0
 */
 
 #define HEAP_TYPE       char
@@ -20,16 +22,10 @@
 #define HEAP_MAX        1
 #define OUT_OF_HEAP    -1
 
-#ifndef BOOL
-    #define BOOL        char
-    #define TRUE        1
-    #define FALSE       0
-#endif
-
 typedef struct Heap_entry
 {
-    void             *data;
-    unsigned long     pos;    /* index in Heap */
+    void        *data;
+    size_t      pos;    /* index in Heap */
 
 }Heap_entry;
 
@@ -124,7 +120,7 @@ void heap_destroy(Heap *heap);
     %0 iff success
     %Non-zero value iff failure
 */
-int heap_build(Heap *heap, Heap_entry **array, int n);
+int heap_build(Heap *heap, Heap_entry **array, size_t n);
 
 /*
     Insert entry to heap
@@ -186,7 +182,7 @@ Heap_entry *heap_get_top(Heap *heap);
     %0 iff success
     %Non-zero value iff failure
 */
-int heap_change_key(Heap *heap, int index, void *new_data);
+int heap_change_key(Heap *heap, size_t index, void *new_data);
 
 /*
     Check heap capacity
@@ -198,6 +194,6 @@ int heap_change_key(Heap *heap, int index, void *new_data);
     %FALSE iff not empty
     %TRUE iff empty or heap is null
 */
-BOOL heap_is_empty(Heap *heap);
+bool heap_is_empty(Heap *heap);
 
 #endif
