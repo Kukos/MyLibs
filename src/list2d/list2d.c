@@ -239,6 +239,35 @@ void list2d_destroy(List2D *list)
     return;
 }
 
+
+void list2d_destroy_with_entries(List2D *list, void (*destructor)(void *data))
+{
+    List2D_node *ptr;
+    List2D_node *end;
+    List2D_node *next;
+
+    TRACE("");
+
+    if (list == NULL)
+        return;
+
+    ptr = list->head;
+    end = list->head->prev;
+
+    while (ptr != end)
+    {
+        next = ptr->next;
+        destructor(ptr->data);
+        list2d_node_destroy(ptr);
+        ptr = next;
+    }
+
+    list2d_node_destroy(end);
+    FREE(list);
+
+    return;
+}
+
 int list2d_insert(List2D *list, void *entry)
 {
     List2D_node *node;

@@ -194,6 +194,31 @@ void list_destroy(List *list)
     return;
 }
 
+void list_destroy_with_entries(List *list, void (*destructor)(void *data))
+{
+    List_node *ptr;
+    List_node *next;
+
+    TRACE("");
+
+    if (list == NULL)
+        return;
+
+    ptr = list->head;
+    while (ptr != NULL)
+    {
+        next = ptr->next;
+        destructor(ptr->data);
+        list_node_destroy(ptr);
+
+        ptr = next;
+    }
+
+    FREE(list);
+
+    return;
+}
+
 int list_insert(List *list, void *entry)
 {
     List_node *node;

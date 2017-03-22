@@ -9,7 +9,8 @@
     Simple D-ary heap
     Please note that heap is "generic" and storing only pointers to structures
     ( if data is not simple type )
-    So you must deallocate your data manually, heap only dealoate own memory
+    So you must deallocate your data manually, heap only dealoate own memory,
+    or you can call heap_destroy_with_entries and pass destructor function
 
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com
@@ -108,6 +109,17 @@ Heap *heap_create(HEAP_TYPE type, int size_of, int ary,
 */
 void heap_destroy(Heap *heap);
 
+/*
+    Destroy Heap and all entries
+
+    PARAMS
+    @IN heap - pointer to heap
+    @IN destructor - your object destructor
+
+    RETURN:
+    This is a void function
+*/
+void heap_destroy_with_entries(Heap *heap, void (*destructor)(void *data));
 /*
     Build heap from array
 

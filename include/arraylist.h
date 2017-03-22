@@ -80,6 +80,18 @@ Arraylist *arraylist_create(int size_of);
 */
 void arraylist_destroy(Arraylist *alist);
 
+/*
+    Destroy arraylist with all entries ( call destructor for each entries )
+
+    PARAMS
+    @IN alist - pointer to arraylist
+    @IN desturctor -  your object destructor
+
+    RETURN:
+    This is a void function
+*/
+void arraylist_destroy_with_entries(Arraylist *alist,
+        void (*destructor)(void *data));
 
 /*
     Insert Data at the begining of the alist

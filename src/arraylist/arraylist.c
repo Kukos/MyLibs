@@ -214,6 +214,33 @@ void arraylist_destroy(Arraylist *alist)
     return;
 }
 
+void arraylist_destroy_with_entries(Arraylist *alist,
+        void (*destructor)(void *data))
+{
+    Arraylist_node *ptr;
+    Arraylist_node *next;
+
+    TRACE("");
+
+    if (alist == NULL)
+        return;
+
+    ptr = alist->head;
+
+    while (ptr != NULL)
+    {
+        next = ptr->next;
+        destructor(ptr->data);
+        arraylist_node_destroy(ptr);
+
+        ptr = next;
+    }
+
+    FREE(alist);
+
+    return;
+}
+
 int arraylist_insert_first(Arraylist *alist, void *data)
 {
     Arraylist_node *node;

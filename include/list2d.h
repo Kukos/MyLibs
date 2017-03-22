@@ -112,6 +112,18 @@ List2D *list2d_create(int size_of, int (*cmp)(void* a,void *b),
 void list2d_destroy(List2D *list);
 
 /*
+    Destroy list with all entries ( call destructor for each entries)
+
+    PARAMS
+    @IN list - pointer to list
+    @IN desturctor -  your object destructor
+
+    RETURN:
+    This is a void function
+*/
+void list2d_destroy_with_entries(List2D *list, void (*destructor)(void *data));
+
+/*
     Insert an element to sorted list
 
     PARAMS

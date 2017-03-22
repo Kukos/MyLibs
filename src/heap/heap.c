@@ -398,6 +398,29 @@ void heap_destroy(Heap *heap)
     FREE(heap);
 }
 
+void heap_destroy_with_entries(Heap *heap, void (*destructor)(void *data))
+{
+    Heap_entry **array;
+    int i;
+
+    TRACE("");
+
+    if (heap == NULL)
+        return;
+
+    array = (Heap_entry **)heap->darray->array;
+
+    for(i = 0; i < heap->darray->num_entries; ++i)
+    {
+        destructor(array[i]->data);
+        heap_entry_destroy(array[i]);
+    }
+
+    darray_destroy(heap->darray);
+
+    FREE(heap);
+}
+
 int heap_build(Heap *heap, Heap_entry **array, size_t n)
 {
     TRACE("");
