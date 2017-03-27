@@ -17,14 +17,19 @@
 /* PRIVATE MACRO */
 #define ____MOCK_F____(func) concat(___mock___, func)
 
+typedef int test_t;
+
+#define PASSED 0
+#define FAILED 1
+
 /*
     Use this macro to call your test func,
 
     example:
-    int test1(void)
+    test_t test1(void)
     {
         ...
-        return ret;
+        return PASSED;
     }
 
     TEST(test1());
@@ -32,7 +37,7 @@
 */
 #define TEST(func) \
     do { \
-        if (func) \
+        if (func == FAILED) \
             printf("[TEST]\t%s\t" RED "FAILED" RESET "\n", #func); \
         else \
             printf("[TEST]\t%s\t" GREEN "PASSED" RESET "\n", #func); \
