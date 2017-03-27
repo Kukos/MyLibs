@@ -64,8 +64,9 @@
         __x < 0 ? -__x : __x; \
     })
 
-#define ODD(x)  ((x) & 1)
-#define EVEN(x) (!((x) & 1))
+#define ODD(x)          ((x) & 1)
+#define EVEN(x)         (!((x) & 1))
+#define CAST_TO_BOOL(x) (!!(x))
 
 /* hamming weight */
 #define HAMM_WEIGHT_int(n)          (number_1_int(n))
@@ -100,5 +101,11 @@
 #define BOLDMAGENTA     "\033[1m\033[35m"
 #define BOLDCYAN        "\033[1m\033[36m"
 #define BOLDWHITE       "\033[1m\033[37m"
+
+#define printf_color(color, fmt, ...) \
+    print(color fmt RESET, ##__VA_ARGS__);
+
+#define fprintf_color(color, fd, fmt, ...) \
+    fprintf(fd, color fmt RESET, ##__VA_ARGS__);
 
 #endif
