@@ -9,9 +9,12 @@ IDIR := $(PROJECT_DIR)/include
 SDIR := $(PROJECT_DIR)/src
 ODIR := $(PROJECT_DIR)/libs
 
-all: arraylist darray fifo filebuffer getch heap list list2d sort stack trie ufset
+all: arraylist bst darray fifo filebuffer getch heap list list2d sort stack trie ufset
 
 arraylist:
+	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+
+bst:
 	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
 
 darray:
@@ -49,6 +52,7 @@ ufset:
 
 clean:
 	$(MAKE) -f $(SDIR)/arraylist/Makefile clean
+	$(MAKE) -f $(SDIR)/bst/Makefile clean
 	$(MAKE) -f $(SDIR)/darray/Makefile clean
 	$(MAKE) -f $(SDIR)/fifo/Makefile clean
 	$(MAKE) -f $(SDIR)/filebuffer/Makefile clean
