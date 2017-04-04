@@ -23,17 +23,17 @@ typedef struct Tree
     void    *tree; /* pointer to tree */
 
     /* private functions */
-    void        ____destroy(void *tree);
-    int         ____insert(void *tree, void *data);
-    int         ____delete(void *tree, void *data);
-    int         ____min(void *tree);
-    int         ____max(void *tree);
-    int         ____search(void *tree, void *data_in, void *data_out);
-    bool        ____key_exist(void *tree, void *data);
-    int         ____balance(void *tree);
-    int         ____toarray(void *tree, void **array, size_t *size);
-    size_t      ____num_entries(void *tree);
-    int         ____height(void *tree);
+    void        (*____destroy)(void *tree);
+    int         (*____insert)(void *tree, void *data);
+    int         (*____delete)(void *tree, void *data);
+    int         (*____min)(void *tree);
+    int         (*____max)(void *tree);
+    int         (*____search)(void *tree, void *data_in, void *data_out);
+    bool        (*____key_exist)(void *tree, void *data);
+    int         (*____balance)(void *tree);
+    int         (*____toarray)(void *tree, void **array, size_t *size);
+    size_t      (*____num_entries)(void *tree);
+    int         (*____height)(void *tree);
 }Tree;
 
 /*
