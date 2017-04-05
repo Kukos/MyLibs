@@ -72,6 +72,7 @@ void __error__(const char *msg, ...)
 void __error__(const char *msg, ...) { }
 #endif
 
+#ifdef DEBUG_MODE
 int log_init(FILE *fd, int to_file)
 {
 	struct stat st;
@@ -140,7 +141,11 @@ int log_init(FILE *fd, int to_file)
 
 	return 0;
 }
+#else
+int log_init(FILE *fd, int to_file) { return 0; }
+#endif
 
+#ifdef DEBUG_MODE
 void log_deinit(void)
 {
 	if (logfile != NULL)
@@ -151,3 +156,6 @@ void log_deinit(void)
 
 	logfd = NULL;
 }
+#else
+void log_deinit(void) { }
+#endif
