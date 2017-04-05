@@ -112,11 +112,13 @@
 /*f is used so many times so put it at the begining of text */
 #define __likely_use__ __attribute__(( hot ))
 
-/* f is call before main ( init global data in this f ) */
-#define __before_main__(prio) __attribute__(( constructor(prio) ))
+#define PRIO_RESERVED 100
 
-/* f is call after main or in exit() (dealloc global data in this f) */
-#define __after_main__(prio) __attribute__(( destructor(prio) ))
+/* f is call before main ( init global data in this f ) prio >= 0 */
+#define __before_main__(prio) __attribute__(( constructor(prio + PRIO_RESERVED + 1) ))
+
+/* f is call after main or in exit() (dealloc global data in this f) prio >= 0 */
+#define __after_main__(prio) __attribute__(( destructor(prio + PRIO_RESERVED + 1) ))
 
 /* this function could be compiled in few version with smid support */
 #define __simd__ __attribute__(( simd ))
