@@ -5,10 +5,11 @@
 #include <time.h> 		/* strftime */
 #include <string.h> 	/* strlen, SSE  */
 #include <fcntl.h>
+#include <compiler.h>
 
-static FILE *logfd = NULL;
-static FILE *logfile = NULL;
-static const char const *logdir = "./logs";
+static __unused__ FILE *logfd = NULL;
+static __unused__ FILE *logfile = NULL;
+static __unused__ const char const *logdir = "./logs";
 
 #define LOGBUF_SIZE	128
 
