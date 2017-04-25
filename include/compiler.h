@@ -30,10 +30,11 @@
 
 /* use this macro to get parent struct from member struct */
 #define container_of(ptr, type, member) \
-({ \
-    const typeof(((type *)0)->member) *__mptr = (ptr);     \
-    (type *) ((char *) __mptr - offsetof(type, member)); \
-})
+    __extension__ \
+    ({ \
+        const typeof(((type *)0)->member) *__mptr = (ptr);     \
+        (type *) ((char *) __mptr - offsetof(type, member)); \
+    })
 
 /* use this macro to assert types */
 #define type_check(t1, t2) (!((t1 *)0 - (t2 *)0))
