@@ -22,9 +22,9 @@
 #define SWAP(a ,b) \
     do{ \
         (void)type_var_check(a, b); \
-        typeof(a) __temp = a; \
+        typeof(a) ______temp = a; \
         a = b; \
-        b = __temp; \
+        b = ______temp; \
     } while (0);
 
 /* free & NULL */
@@ -42,9 +42,9 @@
     __extension__ \
      ({ \
         (void)type_var_check(a ,b); \
-        typeof(a) __a = (a); \
-        typeof(b) __b = (b); \
-        __a < __b ? __a : __b; \
+        typeof(a) ______a = (a); \
+        typeof(b) ______b = (b); \
+        ______a < ______b ? ______a : ______b; \
     })
 
 /* get max IFF types are the same */
@@ -52,16 +52,16 @@
     __extension__ \
     ({ \
         (void)type_var_check(a ,b); \
-        typeof(a) __a = (a); \
-        typeof(b) __b = (b); \
-        __a > __b ? __a : __b; \
+        typeof(a) ______a = (a); \
+        typeof(b) ______b = (b); \
+        ______a > ______b ? ______a : ______b; \
     })
 
 #define ABS(x) \
     __extension__ \
     ({ \
-        typeof(x) __x = (x); \
-        __x < 0 ? -__x : __x; \
+        typeof(x) ________x = (x); \
+        ______x < 0 ? -______x : ______x; \
     })
 
 #define ODD(x)          ((x) & 1)

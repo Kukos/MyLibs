@@ -16,8 +16,8 @@
 #define tostring(s)	#s
 
 /* CONCAT use this macro to concat words in one string */
-#define _concat(x, y) x ## y
-#define concat(x, y) _concat(x, y)
+#define ____concat____(x, y) x ## y
+#define concat(x, y) ____concat____(x, y)
 
 /* set if () { } at the begining of pipeline */
 #define likely(x) __builtin_expect(!!(x), 1)
@@ -32,8 +32,8 @@
 #define container_of(ptr, type, member) \
     __extension__ \
     ({ \
-        const typeof(((type *)0)->member) *__mptr = (ptr);     \
-        (type *) ((char *) __mptr - offsetof(type, member)); \
+        const typeof(((type *)0)->member) *______mptr = (ptr); \
+        (type *) ((char *) ______mptr - offsetof(type, member)); \
     })
 
 /* use this macro to assert types */
