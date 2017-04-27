@@ -50,8 +50,8 @@
     	@IN mode - iterator init mode
 
         RETURN:
-        %NULL if failure
-        %Pointer to new iterator if success
+        %NULL iff failure
+        %Pointer to new iterator iff success
 
         Struct *Struct_iterator_create(Struct *struct, ITI_MODE mode);
 
@@ -65,8 +65,8 @@
     	@IN mode - iterator init mode
 
         RETURN:
-        %0 if success
-        %Non-zero value if failure
+        %0 iff success
+        %Non-zero value iff failure
 
         int Struct_iterator_init(Struct *struct, Struct_iterator *iterator, ITI_MODE mode);
 
@@ -90,8 +90,8 @@
         @IN iterator - pointer iterator
 
         RETURN:
-        %0 if success
-        %Non-zero value if failure
+        %0 iff success
+        %Non-zero value iff failure
 
         int Struct_iterator_next(Struct_iterator *iterator);
 
@@ -103,8 +103,8 @@
         @IN iterator - pointer iterator
 
         RETURN:
-        %0 if success
-        %Non-zero value if failure
+        %0 iff success
+        %Non-zero value iff failure
 
         int Struct_iterator_prev(Struct_iterator *iterator);
 
@@ -116,8 +116,8 @@
         @IN iterator - pointer to iterator
 
         RETURN:
-        %FALSE if not end
-        %TRUE if end
+        %FALSE iff not end
+        %TRUE iff end
 
         bool Struct_iterator_end(Struct_iterator *iterator);
 
@@ -130,8 +130,8 @@
         @OUT val - pointer to value ( (void *)&struct )
 
         RETURN:
-        %0 if success
-        %Non-zero value if failure
+        %0 iff success
+        %Non-zero value iff failure
 
         int Struct_iterator_get_data(Struct_iterator *iterator, void *val);
 
@@ -144,10 +144,56 @@
         @OUT node - pointer to node ( (void *)&struct )
 
         RETURN:
-        %0 if success
-        %Non-zero value if failure
+        %0 iff success
+        %Non-zero value iff failure
 
         int Struct_iterator_get_node(Struct_iterator *iterator, void *node);
+
+
+    Macros:
+
+    @PARAMS
+        __struct --> instance of your struct
+        __node  --> instance of your node (or NULL)
+        __data  --> instance of your data (or NULL)
+
+    1)
+        for_each(__struct, __node, __data)  ---> from BEGIN to END
+
+    2)
+        for_each_prev(__struct, __node, __data) --> from END to BEGIN
+
+    3)
+        for_each_root(__struct, __node, __data) --> from ROOT to END
+
+    4)
+        for_each_root_prev(__struct, __node, __data) --> from ROOT to BEGIN
+
+    5)
+        for_each_data(__struct, __data) --> from BEGIN to END, return only data
+
+    6)
+        for_each_data_prev(__struct, __data) --> from END to BEGIN, return only data
+
+    7)
+        for_each_data_root(__struct, __data) --> from ROOT to END, return only data
+
+    8)
+        for_each_data_root_prev(__struct, __data) --> from ROOT to BEGIN, return only data
+
+    9)
+        for_each_node(__struct, __node) --> from BEGIN to END, return only node
+
+    10)
+        for_each_node_prev(__struct, __node) --> from END to BEGIN, return only node
+
+    11)
+        for_each_node_root(__struct, __node) --> from ROOT to END, return only node
+
+    12)
+        for_each_node_root_prev(__struct, __node) --> from ROOT to BEGIN, return only node
+
+
 */
 
 #include <stdbool.h>
