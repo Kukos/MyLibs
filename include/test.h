@@ -17,10 +17,38 @@
 /* PRIVATE MACRO */
 #define ____MOCK_F____(func) concat(___mock___, func)
 
+/* PRIVATE MACRO */
+#define ____TEST_SUMMARY(COLOR, STR_RESULT) \
+    do { \
+        printf(COLOR "==========" \
+                     " TEST SUMMARY " \
+                     "==========\n"); \
+        printf("TESTS EXECUTED:\t%ld\n", ______passed_counter + ______failed_counter); \
+        printf("PASSED:\t\t%ld / %ld\n", ______passed_counter, ______passed_counter + ______failed_counter); \
+        printf("FAILED:\t\t%ld / %ld\n", ______failed_counter, ______passed_counter + ______failed_counter); \
+        printf(STR_RESULT); \
+        printf("==================================\n" RESET); \
+    } while(0);
+
+/* private type */
+typedef unsigned long ____test_counter_t;
+
+/* PRIVATE counters for testing, needed in summary */
+____test_counter_t ______passed_counter;
+____test_counter_t ______failed_counter;
+
+/* use this type for test functions */
 typedef int test_t;
 
 #define PASSED 0
 #define FAILED 1
+
+/*
+    USe this macro before call test functions
+*/
+#define TEST_INIT \
+    ______passed_counter = 0; \
+    ______failed_counter = 0;
 
 /*
     Use this macro to call your test func,
@@ -38,16 +66,36 @@ typedef int test_t;
 #define TEST(func) \
     do { \
         if (func == FAILED) \
-            printf("[TEST]\t%s\t" RED "FAILED" RESET "\n", #func); \
+        { \
+            printf(CYAN "[TEST]\t%s\t" RED "FAILED" RESET "\n", #func); \
+            ++______failed_counter; \
+        } \
         else \
-            printf("[TEST]\t%s\t" GREEN "PASSED" RESET "\n", #func); \
+        { \
+            printf(CYAN "[TEST]\t%s\t" GREEN "PASSED" RESET "\n", #func); \
+            ++______passed_counter; \
+        } \
     } while(0);
 
+/*
+    Use this macro at the end of your tests to get tests summary
+*/
+#define TEST_SUMMARY \
+    do { \
+        if (______failed_counter) \
+        { \
+            ____TEST_SUMMARY(RED, "TESTS FAILED\n"); \
+        } \
+        else \
+        { \
+            ____TEST_SUMMARY(GREEN, "TESTS PASSED\n"); \
+        } \
+    } while(0);
 
 /*
     Use this macro to call funtion @func and cmp ret value with @val
 */
-#define EXPECT(func, val) \
+#define T_EXPECT(func, val) \
     __extension__ ({ \
             (func != val) ? \
             (CAST_TO_BOOL(printf("[TEXPECT]\t%s return bad value\n", #func))) : 0; \
@@ -56,7 +104,7 @@ typedef int test_t;
 /*
     Use this macro to compare val and expected val
 */
-#define ASSERT(val, expt) \
+#define T_ASSERT(val, expt) \
     __extension__ ({ \
         (val != expt) ? \
         (CAST_TO_BOOL(printf("[TASSERT]\t%s bad value\n", __func__))) : 0; \
@@ -65,19 +113,19 @@ typedef int test_t;
 /*
     Use this macro to mock funtion
 */
-#define MOCK(func, val) \
+#define T_MOCK(func, val) \
     typeof(val) ____MOCK_F____(func)(__unused__ int guard, ...) { return val; }
 
 /*
     Use this macro to mock void funtion
 */
-#define MOCK_V(func) \
+#define T_MOCK_V(func) \
     void ____MOCK_F____(func)(__unused__ int guard, ...) { }
 
 /*
     Use this macro to call mock fuction
 */
-#define CALL(func, ...) \
+#define T_CALL(func, ...) \
     ____MOCK_F____(func)(0, ##__VA_ARGS__)
 
 
