@@ -7,68 +7,68 @@ PROJECT_DIR := $(shell pwd)
 
 IDIR := $(PROJECT_DIR)/include
 SDIR := $(PROJECT_DIR)/src
-ODIR := $(PROJECT_DIR)/libs
+ODIR := $(PROJECT_DIR)/obj
+O_LIBS := $(ODIR)/libs
+O_HEADERS := $(ODIR)/include
 
-all: arraylist avl bst darray fifo filebuffer getch heap list list2d rbt sort stack trie ufset
+all: prepare arraylist avl bst darray fifo filebuffer getch heap list list2d rbt sort stack trie ufset final
+
+prepare:
+	mkdir -p $(ODIR) && mkdir -p $(O_LIBS) && mkdir -p $(O_HEADERS)
 
 arraylist:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 avl:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 bst:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 darray:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 fifo:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 filebuffer:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 getch:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 heap:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 list:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 list2d:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 rbt:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 sort:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 stack:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 trie:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
 
 ufset:
-	mkdir -p $(ODIR)/$@ && $(MAKE) -f $(SDIR)/$@/Makefile
+	$(MAKE) -f $(SDIR)/$@/Makefile
+
+final:
+	cp $(IDIR)/common.h $(O_HEADERS) && \
+	cp $(IDIR)/compiler.h $(O_HEADERS) && \
+	cp $(IDIR)/assert.h $(O_HEADERS) && \
+	cp $(IDIR)/log.h $(O_HEADERS) && \
+	cp $(IDIR)/iterators.h $(O_HEADERS) && \
+	cp $(IDIR)/test.h $(O_HEADERS) && \
+	cp $(SDIR)/log.c $(O_LIBS)
 
 clean:
-	$(MAKE) -f $(SDIR)/arraylist/Makefile clean
-	$(MAKE) -f $(SDIR)/avl/Makefile clean
-	$(MAKE) -f $(SDIR)/bst/Makefile clean
-	$(MAKE) -f $(SDIR)/darray/Makefile clean
-	$(MAKE) -f $(SDIR)/fifo/Makefile clean
-	$(MAKE) -f $(SDIR)/filebuffer/Makefile clean
-	$(MAKE) -f $(SDIR)/getch/Makefile clean
-	$(MAKE) -f $(SDIR)/heap/Makefile clean
-	$(MAKE) -f $(SDIR)/list/Makefile clean
-	$(MAKE) -f $(SDIR)/list2d/Makefile clean
-	$(MAKE) -f $(SDIR)/rbt/Makefile clean
-	$(MAKE) -f $(SDIR)/sort/Makefile clean
-	$(MAKE) -f $(SDIR)/stack/Makefile clean
-	$(MAKE) -f $(SDIR)/trie/Makefile clean
-	$(MAKE) -f $(SDIR)/ufset/Makefile clean
+	rm -rf $(ODIR)

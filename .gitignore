@@ -31,5 +31,4 @@
 # Atom config
 .clang_complete
 
-libs/*
-!libs/.gitkeeper
+obj/
