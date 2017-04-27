@@ -102,10 +102,4 @@
 #define BOLDCYAN        "\033[1m\033[36m"
 #define BOLDWHITE       "\033[1m\033[37m"
 
-#define printf_color(color, fmt, ...) \
-    print(color fmt RESET, ##__VA_ARGS__);
-
-#define fprintf_color(color, fd, fmt, ...) \
-    fprintf(fd, color fmt RESET, ##__VA_ARGS__);
-
 #endif
