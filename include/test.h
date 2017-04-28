@@ -38,7 +38,7 @@ ____test_counter_t ______passed_counter;
 ____test_counter_t ______failed_counter;
 
 /* use this type for test functions */
-typedef int test_t;
+typedef unsigned long long test_t;
 
 #define PASSED 0
 #define FAILED 1
@@ -97,8 +97,9 @@ typedef int test_t;
 */
 #define T_EXPECT(func, val) \
     __extension__ ({ \
-            (func != val) ? \
-            (CAST_TO_BOOL(printf("[TEXPECT]\t%s return bad value\n", #func))) : 0; \
+            test_t ______ret = func; \
+            (______ret != val) ? \
+            (CAST_TO_BOOL(printf("[TEXPECT]\t%s return bad value\nRETURN %#llx\tEXPECTED %#llx\n", #func, ______ret, (test_t)(val)))) : 0; \
     })
 
 /*
@@ -107,7 +108,7 @@ typedef int test_t;
 #define T_ASSERT(val, expt) \
     __extension__ ({ \
         (val != expt) ? \
-        (CAST_TO_BOOL(printf("[TASSERT]\t%s bad value\n", __func__))) : 0; \
+        (CAST_TO_BOOL(printf("[TASSERT]\t%s bad value\nRETURN %#llx\tEXPECTED %#llx\n", __func__, (test_t)(val), (test_t)(expt)))) : 0; \
     })
 
 /*
