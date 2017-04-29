@@ -44,30 +44,82 @@
 
 /* BUILTIN FUNC */
 
-/* get index of least bit ( from left ) of -1 iff X == 0  */
+/* get index of least bit ( from left ) or -1 iff X == 0  */
 #define least_1_int(x)          (__builtin_ffs(x) - 1)
 #define least_1_long(x)         (__builtin_ffsl(x) - 1)
 #define least_1_longlong(x)     (__builtin_ffsll(x) - 1)
 
 /* get number of leading zeros */
-#define leading_0_int(x)        (x ? __builtin_clz(x) : 0)
-#define leading_0_long(x)       (x ? __builitn_clzl(x) : 0)
-#define leading_0_longlong(x)   (x ? __builitn_clzll(x) : 0)
+#define leading_0_int(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (______x) ? __builtin_clz(______x) : sizeof(typeof(______x)) << 3; \
+    })
+
+#define leading_0_long(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (______x) ? __builtin_clzl(______x) : sizeof(typeof(______x)) << 3; \
+    })
+
+#define leading_0_longlong(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (______x) ? __builtin_clzll(______x) : sizeof(typeof(______x)) << 3; \
+    })
+
 
 /* get number of trailing zeros */
-#define trailing_0_int(x)       (x ? __builtin_ctz(x) : 0)
-#define trailing_0_long(x)      (x ? __builtin_ctzl(x) : 0)
-#define trailing_0_longlong(x)  (x ? __builtin_ctzll(x) : 0)
+#define trailing_0_int(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (______x) ? __builtin_ctz(______x) : sizeof(typeof(______x)) << 3; \
+    })
+
+#define trailing_0_long(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (______x) ? __builtin_ctzl(______x) : sizeof(typeof(______x)) << 3; \
+    })
+
+#define trailing_0_longlong(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (______x) ? __builtin_ctzll(______x) : sizeof(typeof(______x)) << 3; \
+    })
 
 /* get number of ones */
-#define number_1_int(x)         (x ? __builtin_popcount(x) : 0)
-#define number_1_long(x)        (x ? __builtin_popcountl(x) : 0)
-#define number_1_longlong(x)    (x ? __builtin_popcountll(x) : 0)
+#define number_1_int(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (______x) ? __builtin_popcount(______x) : 0; \
+    })
+
+#define number_1_long(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (______x) ? __builtin_popcountl(______x) : 0; \
+    })
+
+#define number_1_longlong(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (______x) ? __builtin_popcountll(______x) : 0; \
+    })
 
 /* get parity number of 1 ( number of 1 % 2) */
-#define parity_1_int(x)         (!__builtin_parity(x))
-#define parity_1_long(x)        (!__builtin_parityl(x))
-#define parit_1_longlong(x)     (!__builtin_parityll(x))
+#define parity_1_int(x)         (!!!__builtin_parity(x))
+#define parity_1_long(x)        (!!!__builtin_parityl(x))
+#define parity_1_longlong(x)     (!!!__builtin_parityll(x))
 
 /* swap bytes in variable */
 #define swap_bytes16(x)         (__builtin_bswap16(x))

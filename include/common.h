@@ -14,24 +14,24 @@
 
 /* bits operations */
 #define BIT(n)          (1ull << (n))
-#define GET_BIT(n ,k)   (((n) & BIT(k) >> k)
+#define GET_BIT(n ,k)   (((n) & BIT(k)) >> (k))
 #define SET_BIT(n, k)   ((n) |= BIT(k))
-#define CLEAR_BIT(n, k) ((n) &= BIT(k))
+#define CLEAR_BIT(n, k) ((n) &= ~BIT(k))
 
 /* swap a with b IFF types are the same */
 #define SWAP(a ,b) \
     do{ \
         (void)type_var_check(a, b); \
-        typeof(a) ______temp = a; \
-        a = b; \
-        b = ______temp; \
+        typeof(a) ______temp = (a); \
+        (a) = (b); \
+        (b) = ______temp; \
     } while (0);
 
 /* free & NULL */
 #define FREE(PTR) \
     do { \
         free(PTR); \
-        PTR = NULL; \
+        (PTR) = NULL; \
     } while (0);
 
 /* get array size IFF is declared on stack */
@@ -41,9 +41,9 @@
 #define MIN(a, b) \
     __extension__ \
      ({ \
-        (void)type_var_check(a ,b); \
         typeof(a) ______a = (a); \
         typeof(b) ______b = (b); \
+        (void)type_var_check(______a, ______b); \
         ______a < ______b ? ______a : ______b; \
     })
 
@@ -51,9 +51,9 @@
 #define MAX(a, b) \
     __extension__ \
     ({ \
-        (void)type_var_check(a ,b); \
         typeof(a) ______a = (a); \
         typeof(b) ______b = (b); \
+        (void)type_var_check(______a, ______b); \
         ______a > ______b ? ______a : ______b; \
     })
 

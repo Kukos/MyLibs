@@ -14,6 +14,16 @@
 #include <stdio.h>
 #include <compiler.h>
 
+/* private simple strlen to avoid including string.h */
+__inline__ long ______test_strlen______(const char *str)
+{
+    long len = 0;
+    while (*str++ != '\0')
+        ++len;
+
+    return len;
+}
+
 /* PRIVATE MACRO */
 #define ____MOCK_F____(func) concat(___mock___, func)
 
@@ -36,6 +46,11 @@ typedef unsigned long ____test_counter_t;
 /* PRIVATE counters for testing, needed in summary */
 ____test_counter_t ______passed_counter;
 ____test_counter_t ______failed_counter;
+
+#define __TEST_MAX_STRING_LENGTH__ 40
+
+/* to fill gap with ' ' */
+const char const *______spaces = "                                              ";
 
 /* use this type for test functions */
 typedef unsigned long long test_t;
@@ -67,12 +82,20 @@ typedef unsigned long long test_t;
     do { \
         if (func == FAILED) \
         { \
-            printf(CYAN "[TEST]\t%s\t" RED "FAILED" RESET "\n", #func); \
+            printf(CYAN "[TEST]\t%s%.*s" RED "FAILED" RESET "\n", \
+                        tostring(func), \
+                        (int)(__TEST_MAX_STRING_LENGTH__ - \
+                            ______test_strlen______(tostring(func))), \
+                        ______spaces); \
             ++______failed_counter; \
         } \
         else \
         { \
-            printf(CYAN "[TEST]\t%s\t" GREEN "PASSED" RESET "\n", #func); \
+            printf(CYAN "[TEST]\t%s%.*s" GREEN "PASSED" RESET "\n", \
+                        tostring(func), \
+                        (int)( __TEST_MAX_STRING_LENGTH__ - \
+                            ______test_strlen______(tostring(func))), \
+                        ______spaces); \
             ++______passed_counter; \
         } \
     } while(0);
@@ -97,9 +120,14 @@ typedef unsigned long long test_t;
 */
 #define T_EXPECT(func, val) \
     __extension__ ({ \
-            test_t ______ret = func; \
-            (______ret != val) ? \
-            (CAST_TO_BOOL(printf("[TEXPECT]\t%s return bad value\nRETURN %#llx\tEXPECTED %#llx\n", #func, ______ret, (test_t)(val)))) : 0; \
+            typeof(func) ______ret = func; \
+            (______ret != (val)) ? \
+            (CAST_TO_BOOL(printf( "[TEXPECT]\t%s return bad value\n" \
+                                  "RETURN %#llx\tEXPECTED %#llx\n", \
+                                  tostring(func), \
+                                  (test_t)(______ret), \
+                                  (test_t)(val) \
+                                ))) : 0; \
     })
 
 /*
@@ -107,15 +135,21 @@ typedef unsigned long long test_t;
 */
 #define T_ASSERT(val, expt) \
     __extension__ ({ \
-        (val != expt) ? \
-        (CAST_TO_BOOL(printf("[TASSERT]\t%s bad value\nRETURN %#llx\tEXPECTED %#llx\n", __func__, (test_t)(val), (test_t)(expt)))) : 0; \
+        ((val) != (expt)) ? \
+        (CAST_TO_BOOL(printf( "[TASSERT]\t%s != %s\n" \
+                              "RETURN %#llx\tEXPECTED %#llx\n", \
+                              tostring(val), \
+                              tostring(expt), \
+                              (test_t)(val), \
+                              (test_t)(expt) \
+                            ))) : 0; \
     })
 
 /*
     Use this macro to mock funtion
 */
 #define T_MOCK(func, val) \
-    typeof(val) ____MOCK_F____(func)(__unused__ int guard, ...) { return val; }
+    typeof(val) ____MOCK_F____(func)(__unused__ int guard, ...) { return (val); }
 
 /*
     Use this macro to mock void funtion
