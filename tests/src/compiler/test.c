@@ -280,9 +280,9 @@ test_f test_swap_bytes(void)
     int32_t b = 0x1234ABCD;
     int64_t c = 0x12345678ABCDEF10;
 
-     T_EXPECT(swap_bytes16(a), 0x2B1A);
-     T_EXPECT(swap_bytes32(b), 0xCDAB3412);
-     T_EXPECT(swap_bytes64(c), 0x10EFCDAB78563412);
+    T_EXPECT(swap_bytes16(a), 0x2B1A);
+    T_EXPECT(swap_bytes32(b), 0xCDAB3412);
+    T_EXPECT(swap_bytes64(c), 0x10EFCDAB78563412);
 }
 
 int test(void)
