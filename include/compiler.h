@@ -11,6 +11,7 @@
 */
 
 #include <stddef.h> /* offsetof */
+#include <stdint.h>
 
 /* use thic macro to convert to string  */
 #define tostring(s)	#s
@@ -54,6 +55,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), int); \
         (______x) ? __builtin_clz(______x) : sizeof(typeof(______x)) << 3; \
     })
 
@@ -61,6 +63,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), long); \
         (______x) ? __builtin_clzl(______x) : sizeof(typeof(______x)) << 3; \
     })
 
@@ -68,6 +71,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), long long); \
         (______x) ? __builtin_clzll(______x) : sizeof(typeof(______x)) << 3; \
     })
 
@@ -77,6 +81,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), int); \
         (______x) ? __builtin_ctz(______x) : sizeof(typeof(______x)) << 3; \
     })
 
@@ -84,6 +89,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), long); \
         (______x) ? __builtin_ctzl(______x) : sizeof(typeof(______x)) << 3; \
     })
 
@@ -91,6 +97,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), long long); \
         (______x) ? __builtin_ctzll(______x) : sizeof(typeof(______x)) << 3; \
     })
 
@@ -99,6 +106,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), int); \
         (______x) ? __builtin_popcount(______x) : 0; \
     })
 
@@ -106,6 +114,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), long); \
         (______x) ? __builtin_popcountl(______x) : 0; \
     })
 
@@ -113,18 +122,59 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), long long); \
         (______x) ? __builtin_popcountll(______x) : 0; \
     })
 
 /* get parity number of 1 ( number of 1 % 2) */
-#define parity_1_int(x)         (!!!__builtin_parity(x))
-#define parity_1_long(x)        (!!!__builtin_parityl(x))
-#define parity_1_longlong(x)     (!!!__builtin_parityll(x))
+#define parity_1_int(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), int); \
+        !!!__builtin_parity(______x); \
+    })
+
+#define parity_1_long(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), long); \
+        !!!__builtin_parityl(______x); \
+    })
+
+#define parity_1_longlong(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), long long); \
+        !!!__builtin_parityll(______x); \
+    })
 
 /* swap bytes in variable */
-#define swap_bytes16(x)         (__builtin_bswap16(x))
-#define swap_bytes32(x)         (__builtin_bswap32(x))
-#define swap_bytes64(x)         (__builtin_bswap64(x))
+#define swap_bytes16(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), int16_t); \
+        __builtin_bswap16(______x); \
+    })
+
+#define swap_bytes32(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), int32_t); \
+        __builtin_bswap32(______x); \
+    })
+
+#define swap_bytes64(x) \
+    __extension__ \
+    ({ \
+        typeof(x) ______x = (x); \
+        (void)type_check(typeof(______x), int64_t); \
+        __builtin_bswap64(______x); \
+    })
 
 /* alloc on stack by resize stack frame in init f call */
 #define alloc_on_stack(size) __builtin_alloca(size)
