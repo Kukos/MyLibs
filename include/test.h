@@ -14,6 +14,10 @@
 #include <stdio.h>
 #include <compiler.h>
 
+#define __TEST_COLOR_INFO__     COLOR_CYAN
+#define __TEST_COLOR_PASSED__   COLOR_GREEN
+#define __TEST_COLOR_FAILED__   COLOR_RED
+
 /* private simple strlen to avoid including string.h */
 __inline__ long ______test_strlen______(const char *str)
 {
@@ -33,27 +37,32 @@ __inline__ long ______test_strlen______(const char *str)
         printf(COLOR "==========" \
                      " TEST SUMMARY " \
                      "==========\n"); \
-        printf("TESTS EXECUTED:\t%ld\n", ______passed_counter + ______failed_counter); \
-        printf("PASSED:\t\t%ld / %ld\n", ______passed_counter, ______passed_counter + ______failed_counter); \
-        printf("FAILED:\t\t%ld / %ld\n", ______failed_counter, ______passed_counter + ______failed_counter); \
+        printf("TESTS EXECUTED:\t%ld\n", ________passed_counter + ________failed_counter); \
+        printf("PASSED:\t\t%ld / %ld\n", ________passed_counter, ________passed_counter + ________failed_counter); \
+        printf("FAILED:\t\t%ld / %ld\n", ________failed_counter, ________passed_counter + ________failed_counter); \
         printf(STR_RESULT); \
-        printf("==================================\n" RESET); \
+        printf("==================================\n" COLOR_RESET); \
     } while(0);
 
 /* private type */
 typedef unsigned long ____test_counter_t;
 
 /* PRIVATE counters for testing, needed in summary */
-____test_counter_t ______passed_counter;
-____test_counter_t ______failed_counter;
+____test_counter_t ________passed_counter;
+____test_counter_t ________failed_counter;
 
 #define __TEST_MAX_STRING_LENGTH__ 40
 
 /* to fill gap with ' ' */
-const char const *______spaces = "                                              ";
+const char const *________spaces = "                                              ";
 
-/* use this type for test functions */
+/* use this type for internal test variables */
 typedef unsigned long long test_t;
+
+/* use this type for test function type */
+typedef void test_f;
+
+test_t ________ret;
 
 #define PASSED 0
 #define FAILED 1
@@ -61,9 +70,12 @@ typedef unsigned long long test_t;
 /*
     USe this macro before call test functions
 */
-#define TEST_INIT \
-    ______passed_counter = 0; \
-    ______failed_counter = 0;
+#define TEST_INIT(fmt) \
+    do { \
+        ________passed_counter = 0; \
+        ________failed_counter = 0; \
+        printf(__TEST_COLOR_INFO__ fmt COLOR_RESET "\n"); \
+    } while (0);
 
 /*
     Use this macro to call your test func,
@@ -80,23 +92,28 @@ typedef unsigned long long test_t;
 */
 #define TEST(func) \
     do { \
-        if (func == FAILED) \
+        ________ret = 0; \
+        func; \
+        test_t ______ret = ________ret ? FAILED : PASSED; \
+        if (______ret == FAILED) \
         { \
-            printf(CYAN "[TEST]\t%s%.*s" RED "FAILED" RESET "\n", \
+            printf( __TEST_COLOR_INFO__ "[TEST]\t%s%.*s" \
+                    __TEST_COLOR_FAILED__ "FAILED" COLOR_RESET "\n", \
                         tostring(func), \
                         (int)(__TEST_MAX_STRING_LENGTH__ - \
                             ______test_strlen______(tostring(func))), \
-                        ______spaces); \
-            ++______failed_counter; \
+                        ________spaces); \
+            ++________failed_counter; \
         } \
         else \
         { \
-            printf(CYAN "[TEST]\t%s%.*s" GREEN "PASSED" RESET "\n", \
+            printf( __TEST_COLOR_INFO__ "[TEST]\t%s%.*s" \
+                    __TEST_COLOR_PASSED__ "PASSED" COLOR_RESET "\n", \
                         tostring(func), \
                         (int)( __TEST_MAX_STRING_LENGTH__ - \
                             ______test_strlen______(tostring(func))), \
-                        ______spaces); \
-            ++______passed_counter; \
+                        ________spaces); \
+            ++________passed_counter; \
         } \
     } while(0);
 
@@ -105,13 +122,13 @@ typedef unsigned long long test_t;
 */
 #define TEST_SUMMARY \
     do { \
-        if (______failed_counter) \
+        if (________failed_counter) \
         { \
-            ____TEST_SUMMARY(RED, "TESTS FAILED\n"); \
+            ____TEST_SUMMARY(__TEST_COLOR_FAILED__, "TESTS FAILED\n"); \
         } \
         else \
         { \
-            ____TEST_SUMMARY(GREEN, "TESTS PASSED\n"); \
+            ____TEST_SUMMARY(__TEST_COLOR_PASSED__, "TESTS PASSED\n"); \
         } \
     } while(0);
 
@@ -119,8 +136,11 @@ typedef unsigned long long test_t;
     Use this macro to call funtion @func and cmp ret value with @val
 */
 #define T_EXPECT(func, val) \
-    __extension__ ({ \
+    __extension__ \
+    ({ \
             typeof(func) ______ret = func; \
+            if ((______ret != (val))) \
+                ++________ret; \
             (______ret != (val)) ? \
             (CAST_TO_BOOL(printf( "[TEXPECT]\t%s return bad value\n" \
                                   "RETURN %#llx\tEXPECTED %#llx\n", \
@@ -134,7 +154,10 @@ typedef unsigned long long test_t;
     Use this macro to compare val and expected val
 */
 #define T_ASSERT(val, expt) \
-    __extension__ ({ \
+    __extension__ \
+    ({ \
+        if (((val) != (expt))) \
+            ++________ret; \
         ((val) != (expt)) ? \
         (CAST_TO_BOOL(printf( "[TASSERT]\t%s != %s\n" \
                               "RETURN %#llx\tEXPECTED %#llx\n", \
