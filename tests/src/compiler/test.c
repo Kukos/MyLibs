@@ -18,7 +18,7 @@ test_f test_to_string(void)
     T_EXPECT(strcmp(tostring(C_MASTER), str2), 0);
 
 #undef KUKOS
-#undef MASTER_C
+#undef C_MASTER
 }
 
 typedef struct MyStruct2
