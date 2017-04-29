@@ -1,8 +1,8 @@
-THIS_DIR := $(TEST_SRC)/compiler_and_common
+THIS_DIR := $(TEST_SRC)/common
 
 all: test
 
-test: $(THIS_DIR)/test.c $(IDIR)/common.h $(IDIR)/compiler.h
+test: $(THIS_DIR)/test.c $(IDIR)/compiler.h $(IDIR)/common.h
 	$(CC) $(CFLAGS) -I $(IDIR) $(THIS_DIR)/test.c -o $(THIS_DIR)/$(TEST_EXEC_NAME)
 
 run:
