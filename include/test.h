@@ -17,6 +17,7 @@
 #define __TEST_COLOR_INFO__     COLOR_CYAN
 #define __TEST_COLOR_PASSED__   COLOR_GREEN
 #define __TEST_COLOR_FAILED__   COLOR_RED
+#define __TEST_SUMMARY_TEXT__   " TEST SUMMARY "
 
 /* private simple strlen to avoid including string.h */
 __inline__ long ______test_strlen______(const char *str)
@@ -34,14 +35,19 @@ __inline__ long ______test_strlen______(const char *str)
 /* PRIVATE MACRO */
 #define ____TEST_SUMMARY(COLOR, STR_RESULT) \
     do { \
-        printf(COLOR "==========" \
-                     " TEST SUMMARY " \
-                     "==========\n"); \
+        printf( COLOR "%.*s" __TEST_SUMMARY_TEXT__ "%.*s\n", \
+                ((int)(__TEST_MAX_STRING_LENGTH__ - \
+                    ______test_strlen______(__TEST_SUMMARY_TEXT__)) >> 1), \
+                ________chars, \
+                ((int)(__TEST_MAX_STRING_LENGTH__ - \
+                    ______test_strlen______(__TEST_SUMMARY_TEXT__) + 1) >> 1), \
+                ________chars \
+               ); \
         printf("TESTS EXECUTED:\t%ld\n", ________passed_counter + ________failed_counter); \
         printf("PASSED:\t\t%ld / %ld\n", ________passed_counter, ________passed_counter + ________failed_counter); \
         printf("FAILED:\t\t%ld / %ld\n", ________failed_counter, ________passed_counter + ________failed_counter); \
         printf(STR_RESULT); \
-        printf("==================================\n" COLOR_RESET); \
+        printf("%.*s\n" COLOR_RESET, __TEST_MAX_STRING_LENGTH__, ________chars); \
     } while(0);
 
 /* private type */
@@ -55,6 +61,7 @@ ____test_counter_t ________failed_counter;
 
 /* to fill gap with ' ' */
 const char const *________spaces = "                                              ";
+const char const *________chars = "===============================================";
 
 /* use this type for internal test variables */
 typedef unsigned long long test_t;
@@ -74,7 +81,15 @@ test_t ________ret;
     do { \
         ________passed_counter = 0; \
         ________failed_counter = 0; \
-        printf(__TEST_COLOR_INFO__ fmt COLOR_RESET "\n"); \
+        printf( __TEST_COLOR_INFO__ "%.*s %s %.*s\n" COLOR_RESET, \
+                ((int)(__TEST_MAX_STRING_LENGTH__ - \
+                    ______test_strlen______(fmt) - 2) >> 1), \
+                ________chars, \
+                fmt, \
+                ((int)(__TEST_MAX_STRING_LENGTH__ - \
+                    ______test_strlen______(fmt) - 1) >> 1), \
+                ________chars \
+               ); \
     } while (0);
 
 /*
