@@ -184,6 +184,19 @@ test_t ________ret;
     })
 
 /*
+    Use this macro like assert, if expr is true then test failed
+*/
+#define T_ERROR(expr) \
+    do { \
+        if (expr) \
+        { \
+            printf("[T_ERROR]\t%s\n", tostring(expr)); \
+            ++________ret; \
+            return; \
+        } \
+    } while (0);
+
+/*
     Use this macro to mock funtion
 */
 #define T_MOCK(func, val) \
