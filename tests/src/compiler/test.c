@@ -285,7 +285,7 @@ test_f test_swap_bytes(void)
     T_EXPECT(swap_bytes64(c), 0x10EFCDAB78563412);
 }
 
-int test(void)
+void test(void)
 {
     TEST(test_to_string());
     TEST(test_container_of());
@@ -296,8 +296,6 @@ int test(void)
     TEST(test_number_ones());
     TEST(test_ones_parity());
     TEST(test_swap_bytes());
-
-    return 0;
 }
 
 int main(void)

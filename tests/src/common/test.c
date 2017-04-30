@@ -295,7 +295,7 @@ test_f test_log2(void)
     T_EXPECT(LOG2_longlong(c), -1);
 }
 
-int test(void)
+void test(void)
 {
     TEST(test_bits_operations());
     TEST(test_macro_swap());
@@ -306,8 +306,6 @@ int test(void)
     TEST(test_hamming_weight());
     TEST(test_hamming_distance());
     TEST(test_log2());
-
-    return 0;
 }
 
 int main(void)
