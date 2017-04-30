@@ -9,6 +9,7 @@
 #include <compiler.h>
 #include <common.h>
 #include <assert.h>
+#include <fcntl.h>
 
 /* size to map empty file */
 #define FAKE_FILE_SIZE	sizeof(char)
@@ -60,6 +61,19 @@ file_buffer *file_buffer_create(int fd, int protect_flag)
     return fb;
 }
 
+file_buffer *file_buffer_create_from_path(const char *path, int protect_flag, int open_flag)
+{
+	int fd;
+
+	TRACE("");
+
+	if (path == NULL)
+		ERROR("path == NULL\n", NULL, "");
+
+	fd = open(path, open_flag, 0644);
+	return file_buffer_create(fd, protect_flag);
+}
+
 int file_buffer_destroy(file_buffer *fb)
 {
 	TRACE("");
@@ -106,7 +120,7 @@ int file_buffer_append(file_buffer *fb, const char *data)
     if (memcpy((void *)(fb->buffer + fb->size), data, length) == NULL)
 		ERROR("memcpy error\n", 1, "");
 
-    fb->size = (int)new_size;
+    fb->size = new_size;
 
     return 0;
 }

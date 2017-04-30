@@ -14,7 +14,7 @@
 	#define _GNU_SOURCE /* needed to use feature.h */
 #endif
 
-#include<sys/mman.h>
+#include <sys/mman.h>
 #include <stddef.h> /* size_t */
 
 /*
@@ -47,10 +47,24 @@ typedef struct file_buffer
 	@IN protect_flag - flags
 
 	RETURN:
-	%NULL if failure
-	%Pointer to file_buffer if success
+	%NULL iff failure
+	%Pointer to file_buffer iff success
 */
 file_buffer *file_buffer_create(int fd, int protect_flag);
+
+/*
+    MAP file to RAM with flag
+
+	PARAMS
+	@IN path - path to file
+	@IN protect_flag - flags
+	@IN open_flag - flags to open file
+
+	RETURN:
+	%NULL iff failure
+	%Pointer to file_buffer iff success
+*/
+file_buffer *file_buffer_create_from_path(const char *path, int protect_flag, int open_flag);
 
 /*
     Detached file and destroy structure
@@ -59,8 +73,8 @@ file_buffer *file_buffer_create(int fd, int protect_flag);
 	@IN fb - pointer to file buffer
 
 	RETURN:
-	%0 if success
-	%Non-zero value if failure
+	%0 iff success
+	%Non-zero value iff failure
 */
 int file_buffer_destroy(file_buffer *fb);
 
@@ -72,8 +86,8 @@ int file_buffer_destroy(file_buffer *fb);
 	@IN data - data in char format ( expected '/0' at the end )
 
 	RETURN:
-	%0 if success
-	%Non-zero value if failure
+	%0 iff success
+	%Non-zero value iff failure
 */
 int file_buffer_append(file_buffer *fb, const char *data);
 
@@ -84,8 +98,8 @@ int file_buffer_append(file_buffer *fb, const char *data);
 	@IN fb - pointer to file buffer
 
 	REUTRN:
-	%0 if success
-	%Non-zero value if failure
+	%0 iff success
+	%Non-zero value iff failure
 */
 int file_buffer_synch(file_buffer *fb);
 
