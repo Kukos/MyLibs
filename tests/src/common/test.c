@@ -313,6 +313,4 @@ int main(void)
     TEST_INIT("COMMON");
     test();
     TEST_SUMMARY;
-
-    return 0;
 }

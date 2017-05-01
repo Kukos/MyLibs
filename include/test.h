@@ -140,10 +140,12 @@ test_t ________ret;
         if (________failed_counter) \
         { \
             ____TEST_SUMMARY(__TEST_COLOR_FAILED__, "TESTS FAILED\n"); \
+            return ________failed_counter; \
         } \
         else \
         { \
             ____TEST_SUMMARY(__TEST_COLOR_PASSED__, "TESTS PASSED\n"); \
+            return 0; \
         } \
     } while(0);
 

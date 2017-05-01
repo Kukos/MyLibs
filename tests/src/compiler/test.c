@@ -303,6 +303,4 @@ int main(void)
     TEST_INIT("COMPILER");
     test();
     TEST_SUMMARY;
-
-    return 0;
 }
