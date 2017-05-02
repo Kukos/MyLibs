@@ -230,10 +230,8 @@ test_f test_create_from_fd(void)
     fb = file_buffer_create(fd1, PROT_READ | PROT_WRITE);
     T_ERROR(fb == NULL);
 
-    T_ASSERT(fb->fd, fd1);
-    T_ASSERT(fb->protect_flag, PROT_READ | PROT_WRITE);
-    T_CHECK(fb->buffer != NULL);
-    T_ASSERT(fb->size, file_size);
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_ASSERT(file_buffer_get_size(fb), file_size);
 
     file_buffer_destroy(fb);
 
@@ -287,10 +285,8 @@ test_f test_create_from_path(void)
     fb = file_buffer_create_from_path(path1, PROT_READ | PROT_WRITE, O_RDWR);
     T_ERROR(fb == NULL);
 
-    T_CHECK(fb->fd != -1);
-    T_CHECK(fb->buffer != NULL);
-    T_ASSERT(fb->protect_flag, PROT_READ | PROT_WRITE);
-    T_ASSERT(fb->size, file_size);
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_ASSERT(file_buffer_get_size(fb), file_size);
 
     file_buffer_destroy(fb);
 
@@ -343,10 +339,8 @@ test_f test_read_file(void)
     fb = file_buffer_create(fd1, PROT_READ | PROT_WRITE);
     T_ERROR(fb == NULL);
 
-    T_ASSERT(fb->fd, fd1);
-    T_CHECK(fb->buffer != NULL);
-    T_ASSERT(fb->protect_flag, PROT_READ | PROT_WRITE);
-    T_ASSERT(fb->size, file_size);
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_ASSERT(file_buffer_get_size(fb), file_size);
 
     /* create file */
     T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __FUNCTION__) == -1);
@@ -397,10 +391,8 @@ test_f test_write_to_file(void)
     fb = file_buffer_create(fd1, PROT_READ | PROT_WRITE);
     T_ERROR(fb == NULL);
 
-    T_ASSERT(fb->fd, fd1);
-    T_CHECK(fb->buffer != NULL);
-    T_ASSERT(fb->protect_flag, PROT_READ | PROT_WRITE);
-    T_ASSERT(fb->size, file_size);
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_ASSERT(file_buffer_get_size(fb), file_size);
 
     /* add data to file */
     T_EXPECT(file_buffer_append(fb, data), 0);
@@ -468,14 +460,12 @@ test_f test_read_write(void)
     fb = file_buffer_create(fd1, PROT_READ | PROT_WRITE);
     T_ERROR(fb == NULL);
 
-    T_ASSERT(fb->fd, fd1);
-    T_CHECK(fb->buffer != NULL);
-    T_ASSERT(fb->protect_flag, PROT_READ | PROT_WRITE);
-    T_ASSERT(fb->size, file_size);
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_ASSERT(file_buffer_get_size(fb), file_size);
 
     /* add data to file */
     T_EXPECT(file_buffer_append(fb, data), 0);
-    T_ASSERT(fb->size, strlen(data) + file_size);
+    T_ASSERT(file_buffer_get_size(fb), strlen(data) + file_size);
 
     /* sync data */
     T_EXPECT(file_buffer_synch(fb), 0);
@@ -539,14 +529,12 @@ test_f test_work_on_big_file(void)
     fb = file_buffer_create(fd1, PROT_READ | PROT_WRITE);
     T_ERROR(fb == NULL);
 
-    T_ASSERT(fb->fd, fd1);
-    T_CHECK(fb->buffer != NULL);
-    T_ASSERT(fb->protect_flag, PROT_READ | PROT_WRITE);
-    T_ASSERT(fb->size, file_size);
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_ASSERT(file_buffer_get_size(fb), file_size);
 
     /* add data to file */
     T_EXPECT(file_buffer_append(fb, data), 0);
-    T_ASSERT(fb->size, strlen(data) + file_size);
+    T_ASSERT(file_buffer_get_size(fb), strlen(data) + file_size);
 
     /* sync data */
     T_EXPECT(file_buffer_synch(fb), 0);

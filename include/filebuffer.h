@@ -16,6 +16,7 @@
 
 #include <sys/mman.h>
 #include <stddef.h> /* size_t */
+#include <sys/types.h> /* ssize_t */
 
 /*
 	Buffer use mmap so you can pass those flags as protect_flag
@@ -33,7 +34,8 @@
 typedef struct file_buffer
 {
     char 			*buffer;
-    size_t 			size;
+    size_t 			size; /* size visible by user */
+	size_t			mapped_size; /* mapped size including padding */
     int 			fd; /* file descriptor of buffered file */
     int 			protect_flag;
 
@@ -102,5 +104,29 @@ int file_buffer_append(file_buffer *fb, const char *data);
 	%Non-zero value iff failure
 */
 int file_buffer_synch(file_buffer *fb);
+
+/*
+	Get Buffer
+
+	PARAMS
+	@IN fb - pointer to file buffer
+
+	RETURN:
+	%Pointer to buffer iff success
+	%NULL iff failure
+*/
+char *file_buffer_get_buff(file_buffer *fb);
+
+/*
+	Get Size of buffered file
+
+	PARAMS
+	@IN fb - pointer to file buffer
+
+	RETURN:
+	%Size iff success
+	%-1 iff failure
+*/
+ssize_t file_buffer_get_size(file_buffer *fb);
 
 #endif

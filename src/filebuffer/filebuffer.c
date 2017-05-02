@@ -10,9 +10,42 @@
 #include <common.h>
 #include <assert.h>
 #include <fcntl.h>
+#include <stdbool.h>
 
-/* size to map empty file */
-#define FAKE_FILE_SIZE	sizeof(char)
+__inline__ static bool is_aligned(size_t size)
+{
+	/* pagesize is always power of 2 */
+	return !(CAST_TO_BOOL(size & ((size_t)getpagesize())));
+}
+
+__inline__ static size_t align_size(size_t size)
+{
+	/* page size is always power of two */
+	size_t page_size = (size_t)getpagesize();
+
+	if (size == 0)
+		return page_size;
+
+	if (is_aligned(size))
+		return size;
+
+	/*
+    	A little magic here, but it is rly fast
+
+    	Example:
+    	1010 1100 -> to 1011 0000
+
+    	size & 1111 -> 0000 1100
+    	so ~(size & 1111) -> 1111 0011
+    	so 1111 0011 & 1111 -> 0000 0011
+    	so size | 0000 0011 -> 1010 1111
+    	so ++size -> 1011 0000
+	*/
+    size |= (~(size & (page_size - 1)) & (page_size - 1));
+    ++size;
+
+	return size;
+}
 
 file_buffer *file_buffer_create(int fd, int protect_flag)
 {
@@ -39,24 +72,14 @@ file_buffer *file_buffer_create(int fd, int protect_flag)
 	}
 
     fb->size = ft.st_size;
+	fb->mapped_size = align_size(fb->size);
 
-    if (fb->size == 0)
-    {
-		/* map virtual "fake" file */
-        if ((fb->buffer = (char *)mmap(NULL, FAKE_FILE_SIZE,
-			 	protect_flag, MAP_SHARED, fd, 0)) == MAP_FAILED)
-		{
-			FREE(fb);
-			ERROR("mmap error\n", NULL, "");
-		}
-    }
-    else
-        if ((fb->buffer = (char *)mmap(NULL, fb->size, protect_flag,
-				MAP_SHARED, fd, 0)) == MAP_FAILED)
-		{
-			FREE(fb);
-			ERROR("mmap error\n", NULL, "");
-		}
+    if ((fb->buffer = (char *)mmap(NULL, fb->mapped_size,
+			 protect_flag, MAP_SHARED, fd, 0)) == MAP_FAILED)
+	{
+		FREE(fb);
+		ERROR("mmap error\n", NULL, "");
+	}
 
     return fb;
 }
@@ -82,12 +105,11 @@ int file_buffer_destroy(file_buffer *fb)
 		return 1;
 
     /* before detach sunchronize */
-    if ((msync((void *)fb->buffer, fb->size, MS_SYNC)) == -1)
-         ERROR("msync error\n", 1, "");
+    if (file_buffer_synch(fb))
+		ERROR("msync error\n", 1, "");
 
     /* unmap file */
-    if (munmap((void *)fb->buffer,
-	 		fb->size == 0 ? FAKE_FILE_SIZE : fb->size) == -1)
+    if (munmap((void *)fb->buffer, fb->mapped_size) == -1)
        	ERROR("munmap error\n", 1, "");
 
     FREE(fb);
@@ -112,9 +134,10 @@ int file_buffer_append(file_buffer *fb, const char *data)
         ERROR("ftruncate error\n", 1, "");
 
 	/* realloc mapped file in RAM */
-    if ((fb->buffer = (char *)mremap((void *)fb->buffer, fb->size,
-	 		new_size, MREMAP_MAYMOVE)) == MAP_FAILED)
-     	ERROR("mremap error\n", 1, "");
+	if (new_size > fb->mapped_size)
+    	if ((fb->buffer = (char *)mremap((void *)fb->buffer, fb->size,
+	 			new_size, MREMAP_MAYMOVE)) == MAP_FAILED)
+     		ERROR("mremap error\n", 1, "");
 
 	/* write data to buffer */
     if (memcpy((void *)(fb->buffer + fb->size), data, length) == NULL)
@@ -135,4 +158,18 @@ int file_buffer_synch(file_buffer *fb)
         ERROR("msync error\n", 1, "");
 
     return 0;
+}
+
+char *file_buffer_get_buff(file_buffer *fb)
+{
+	assert(fb == NULL);
+
+	return fb->buffer;
+}
+
+ssize_t file_buffer_get_size(file_buffer *fb)
+{
+	assert(fb == NULL);
+
+	return (size_t)fb->size;
 }
