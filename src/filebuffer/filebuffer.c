@@ -61,8 +61,8 @@ file_buffer *file_buffer_create(int fd, int protect_flag)
     if (fb == NULL)
 		ERROR("malloc error\n", NULL, "");
 
-    fb->fd = fd;
-    fb->protect_flag = protect_flag;
+    fb->____fd = fd;
+    fb->____protect_flag = protect_flag;
 
     /* read size of file ( in bytes ) */
     if (fstat(fd, &ft) == -1)
@@ -71,10 +71,10 @@ file_buffer *file_buffer_create(int fd, int protect_flag)
 		ERROR("fstat error\n", NULL, "");
 	}
 
-    fb->size = ft.st_size;
-	fb->mapped_size = align_size(fb->size);
+    fb->____size = ft.st_size;
+	fb->____mapped_size = align_size(fb->____size);
 
-    if ((fb->buffer = (char *)mmap(NULL, fb->mapped_size,
+    if ((fb->____buffer = (char *)mmap(NULL, fb->____mapped_size,
 			 protect_flag, MAP_SHARED, fd, 0)) == MAP_FAILED)
 	{
 		FREE(fb);
@@ -109,7 +109,7 @@ int file_buffer_destroy(file_buffer *fb)
 		ERROR("msync error\n", 1, "");
 
     /* unmap file */
-    if (munmap((void *)fb->buffer, fb->mapped_size) == -1)
+    if (munmap((void *)fb->____buffer, fb->____mapped_size) == -1)
        	ERROR("munmap error\n", 1, "");
 
     FREE(fb);
@@ -128,29 +128,29 @@ int file_buffer_append(file_buffer *fb, const char *data)
     assert(fb == NULL || data == NULL);
 
 	length = strlen(data);
-	new_size = fb->size + length;
+	new_size = fb->____size + length;
 
 	/* resize file */
-    if (ftruncate(fb->fd, new_size) == -1)
+    if (ftruncate(fb->____fd, new_size) == -1)
         ERROR("ftruncate error\n", 1, "");
 
 	new_aligned_size = align_size((size_t)new_size);
 
 	/* realloc mapped file in RAM */
-	if (new_aligned_size > fb->mapped_size)
+	if (new_aligned_size > fb->____mapped_size)
 	{
-    	if ((fb->buffer = (char *)mremap((void *)fb->buffer, fb->mapped_size,
+    	if ((fb->____buffer = (char *)mremap((void *)fb->____buffer, fb->____mapped_size,
 	 			new_aligned_size, MREMAP_MAYMOVE)) == MAP_FAILED)
      		ERROR("mremap error\n", 1, "");
 
-		fb->mapped_size = new_aligned_size;
+		fb->____mapped_size = new_aligned_size;
 	}
 
 	/* write data to buffer */
-    if (memcpy((void *)(fb->buffer + fb->size), data, length) == NULL)
+    if (memcpy((void *)(fb->____buffer + fb->____size), data, length) == NULL)
 		ERROR("memcpy error\n", 1, "");
 
-    fb->size = new_size;
+    fb->____size = new_size;
 
     return 0;
 }
@@ -161,7 +161,7 @@ int file_buffer_synch(file_buffer *fb)
 
     assert(fb == NULL);
 
-    if ((msync((void *)fb->buffer, fb->size, MS_SYNC)) == -1)
+    if ((msync((void *)fb->____buffer, fb->____size, MS_SYNC)) == -1)
         ERROR("msync error\n", 1, "");
 
     return 0;
@@ -171,12 +171,12 @@ char *file_buffer_get_buff(file_buffer *fb)
 {
 	assert(fb == NULL);
 
-	return fb->buffer;
+	return fb->____buffer;
 }
 
 ssize_t file_buffer_get_size(file_buffer *fb)
 {
 	assert(fb == NULL);
 
-	return (size_t)fb->size;
+	return (ssize_t)fb->____size;
 }

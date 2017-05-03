@@ -33,11 +33,11 @@
 
 typedef struct file_buffer
 {
-    char 			*buffer;
-    size_t 			size; /* size visible by user */
-	size_t			mapped_size; /* mapped size including padding */
-    int 			fd; /* file descriptor of buffered file */
-    int 			protect_flag;
+    char 			*____buffer;
+    size_t 			____size; /* size visible by user */
+	size_t			____mapped_size; /* mapped size including padding */
+    int 			____fd; /* file descriptor of buffered file */
+    int 			____protect_flag;
 
 }file_buffer;
 
