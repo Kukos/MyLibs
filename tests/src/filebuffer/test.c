@@ -351,7 +351,7 @@ test_f test_read_file(void)
     T_ERROR(fd2 == -1);
 
     /* write to new file */
-    T_ERROR(write(fd2, fb->buffer, fb->size) == -1);
+    T_ERROR(write(fd2, file_buffer_get_buff(fb), file_buffer_get_size(fb)) == -1);
 
     /* cmp files */
     T_EXPECT(file_cmp(fd1, fd2), 0);
@@ -396,7 +396,7 @@ test_f test_write_to_file(void)
 
     /* add data to file */
     T_EXPECT(file_buffer_append(fb, data), 0);
-    T_ASSERT(fb->size, strlen(data));
+    T_ASSERT(file_buffer_get_size(fb), strlen(data));
 
     /* sync data */
     T_EXPECT(file_buffer_synch(fb), 0);
