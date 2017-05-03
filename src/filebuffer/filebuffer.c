@@ -121,6 +121,7 @@ int file_buffer_append(file_buffer *fb, const char *data)
 {
 	size_t length;
     off_t new_size;
+	size_t new_aligned_size;
 
 	TRACE("");
 
@@ -133,11 +134,17 @@ int file_buffer_append(file_buffer *fb, const char *data)
     if (ftruncate(fb->fd, new_size) == -1)
         ERROR("ftruncate error\n", 1, "");
 
+	new_aligned_size = align_size((size_t)new_size);
+
 	/* realloc mapped file in RAM */
-	if (new_size > fb->mapped_size)
-    	if ((fb->buffer = (char *)mremap((void *)fb->buffer, fb->size,
-	 			new_size, MREMAP_MAYMOVE)) == MAP_FAILED)
+	if (new_aligned_size > fb->mapped_size)
+	{
+    	if ((fb->buffer = (char *)mremap((void *)fb->buffer, fb->mapped_size,
+	 			new_aligned_size, MREMAP_MAYMOVE)) == MAP_FAILED)
      		ERROR("mremap error\n", 1, "");
+
+		fb->mapped_size = new_aligned_size;
+	}
 
 	/* write data to buffer */
     if (memcpy((void *)(fb->buffer + fb->size), data, length) == NULL)
