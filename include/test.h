@@ -160,10 +160,11 @@ test_t ________ret;
                 ++________ret; \
             (______ret != (val)) ? \
             (CAST_TO_BOOL(printf( "[TEXPECT]\t%s return bad value\n" \
-                                  "RETURN %#llx\tEXPECTED %#llx\n", \
+                                  "RETURN %#llx\tEXPECTED %#llx\t\tLINE = %d\n", \
                                   tostring(func), \
                                   (test_t)(______ret), \
-                                  (test_t)(val) \
+                                  (test_t)(val), \
+                                  __LINE__ \
                                 ))) : 0; \
     })
 
@@ -177,11 +178,12 @@ test_t ________ret;
             ++________ret; \
         ((val) != (expt)) ? \
         (CAST_TO_BOOL(printf( "[TASSERT]\t%s != %s\n" \
-                              "RETURN %#llx\tEXPECTED %#llx\n", \
+                              "RETURN %#llx\tEXPECTED %#llx\t\tLINE = %d\n", \
                               tostring(val), \
                               tostring(expt), \
                               (test_t)(val), \
-                              (test_t)(expt) \
+                              (test_t)(expt), \
+                              __LINE__ \
                             ))) : 0; \
     })
 
@@ -192,7 +194,7 @@ test_t ________ret;
     do { \
         if (!(expr)) \
         { \
-            printf("[T_CHECK]\tNOT\t%s\n", tostring(expr)); \
+            printf("[T_CHECK]\tNOT\t%s\nLINE = %d\n", tostring(expr), __LINE__); \
             ++________ret; \
         } \
     } while (0);
@@ -204,7 +206,7 @@ test_t ________ret;
     do { \
         if (expr) \
         { \
-            printf("[T_ERROR]\t%s\n", tostring(expr)); \
+            printf("[T_ERROR]\t%s\nLINE = %d\n", tostring(expr), __LINE__); \
             ++________ret; \
             return; \
         } \

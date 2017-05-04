@@ -19,7 +19,7 @@ Stack *stack_create(int size_of)
         ERROR("malloc error\n", NULL, "");
 
     /* Stack is a unsorted dynamic array */
-    s->darray = darray_create(UNSORTED, 0, size_of, NULL);
+    s->darray = darray_create(DARRAY_UNSORTED, 0, size_of, NULL);
     if (s->darray == NULL)
     {
         FREE(s);
@@ -60,11 +60,11 @@ int stack_pop(Stack *stack, void* val)
     if (stack_is_empty(stack))
         ERROR("stack is empty\n", 1, "");
 
-    _t = (BYTE *)stack->darray->array;
+    _t = (BYTE *)darray_get_array(stack->darray);
 
     __ASSIGN__(*(BYTE *)val,
-        _t[(stack->darray->num_entries - 1) * stack->darray->size_of],
-        stack->darray->size_of);
+        _t[(darray_get_num_entries(stack->darray) - 1) * darray_get_size_of(stack->darray)],
+        darray_get_size_of(stack->darray));
 
     return darray_delete(stack->darray);
 }
@@ -74,7 +74,7 @@ bool stack_is_empty(Stack *stack)
     TRACE("");
 
     return (stack == NULL || stack->darray == NULL
-         || stack->darray->num_entries == 0);
+         || darray_get_num_entries(stack->darray) == 0);
 }
 
 int stack_get_top(Stack *stack, void *val)
@@ -88,11 +88,11 @@ int stack_get_top(Stack *stack, void *val)
     if (stack_is_empty(stack))
         ERROR("stack is empty\n", 1, "");
 
-    _t = (BYTE *)stack->darray->array;
+    _t = (BYTE *)darray_get_array(stack->darray);
 
     __ASSIGN__(*(BYTE *)val,
-        _t[(stack->darray->num_entries - 1) * stack->darray->size_of],
-        stack->darray->size_of);
+        _t[(darray_get_num_entries(stack->darray) - 1) * darray_get_size_of(stack->darray)],
+        darray_get_size_of(stack->darray));
 
     return 0;
 }
@@ -109,15 +109,15 @@ int stack_to_array(Stack *stack, void *array, size_t *size)
     if (stack_is_empty(stack))
         ERROR("stack is empty\n",1 ,"");
 
-    t = malloc(stack->darray->num_entries * stack->darray->size_of);
+    t = malloc(darray_get_num_entries(stack->darray) * darray_get_size_of(stack->darray));
     if (t == NULL)
         ERROR("malloc error\n", 1, "");
 
     if (memcpy(t, stack->darray,
-    stack->darray->num_entries * stack->darray->size_of) == NULL)
+    darray_get_num_entries(stack->darray) * darray_get_size_of(stack->darray)) == NULL)
         ERROR("memcpy error\n", 1 ,"");
 
-    *size = stack->darray->num_entries;
+    *size = darray_get_num_entries(stack->darray);
     *(void **)array = t;
 
     return 0;

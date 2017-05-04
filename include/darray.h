@@ -12,25 +12,26 @@
 
 #include <iterators.h>
 #include <stddef.h> /* size_t */
+#include <sys/types.h>
 
-#define ARRAY_TYPE  char
-#define SORTED      0
-#define UNSORTED    1
+#define DARRAY_TYPE         char
+#define DARRAY_SORTED       0
+#define DARRAY_UNSORTED     1
 
 /*
     Dynamic array, use binary realloc
 */
 typedef struct Darray
 {
-    void    *array;         /* main array */
+    void    *____array;         /* main array */
 
-    int     size_of;        /* size of element */
-    size_t  size;           /* current allocated size ( num of entries ) */
-    size_t  num_entries;    /* num of entries in array */
-    size_t  init_size;      /* minimum size using on init ( num of entries ) */
+    int     ____size_of;        /* size of element */
+    size_t  ____size;           /* current allocated size ( num of entries ) */
+    size_t  ____num_entries;    /* num of entries in array */
+    size_t  ____init_size;      /* minimum size using on init ( num of entries ) */
 
-    int (*cmp)(void *a,void*b); /* pointer to compare function */
-    ARRAY_TYPE type;        /* type of array ( sorted or unsorted ) */
+    int (*____cmp)(void *a, void *b); /* pointer to compare function */
+    DARRAY_TYPE ____type;        /* type of array ( sorted or unsorted ) */
 
 }Darray;
 
@@ -39,10 +40,10 @@ typedef struct Darray
 */
 typedef struct Darray_iterator
 {
-    void    *array;         /* pointer to array */
-    size_t  index;          /* index of array */
-    int     size_of;        /* sizeof element in array */
-    size_t  array_length;   /* array length */
+    void    *____array;         /* pointer to array */
+    size_t  ____index;          /* index of array */
+    int     ____size_of;        /* sizeof element in array */
+    size_t  ____array_length;   /* array length */
 
 }Darray_iterator;
 
@@ -55,9 +56,9 @@ IT_FUNC(Darray, darray)
     PARAMS
     @OUT PTR - pointer to array wchich we allocate the structure
     @IN TYPE - type of element ( int, double ...)
-    @IN ARRAY_TYPE - type of array ( sorted or unsorted )
+    @IN DARRAY_TYPE - type of array ( sorted or unsorted )
     @IN SIZE - begining size, if 0 array will be create with default size
-    @IN CMP - compare function, if TYPE == SORTED cmp is needed, else you can put NULL ( functions needed cmp wont work )
+    @IN CMP - compare function, if TYPE == DARRAY_SORTED cmp is needed, else you can put NULL ( functions needed cmp wont work )
 */
 #define DARRAY_CREATE(PTR, TYPE, ARRAYTYPE, SIZE, CMP) \
     do { \
@@ -71,15 +72,15 @@ IT_FUNC(Darray, darray)
     @IN type - type of array ( sorted or unsorted )
     @IN size - begining size, if 0 array will be create with default size
     @IN size_of - size of element
-    @IN cmp - compare function, if TYPE == SORTED cmp is needed,
+    @IN cmp - compare function, if TYPE == DARRAY_SORTED cmp is needed,
         else you can put NULL ( functions needed cmp wont work )
 
     RETURN:
     %NULL iff failure
     %Pointer to Darray iff success
 */
-Darray *darray_create(ARRAY_TYPE type, size_t size, int size_of,
-                int (*cmp)(void *a, void*b));
+Darray *darray_create(DARRAY_TYPE type, size_t size, int size_of,
+                int (*cmp)(void *a, void *b));
 
 /*
     Deallocate darray
@@ -93,7 +94,7 @@ Darray *darray_create(ARRAY_TYPE type, size_t size, int size_of,
 void darray_destroy(Darray *darray);
 
 /*
-    Insert an entry at the end of array
+    Insert an entry at the end of array or insert to the sorted array
 
     PARAMS
     @IN darray - pointer to Darray
@@ -106,7 +107,7 @@ void darray_destroy(Darray *darray);
 int darray_insert(Darray *darray, void *entry);
 
 /*
-    Insert an entry to array ( unsorted ) in array[pos]
+    Insert an entry to array ( only unsorted ) in array[pos]
 
     PARAMS
     @IN darray - pointer to Darray
@@ -150,13 +151,14 @@ int darray_delete_pos(Darray *darray, size_t pos);
 
     PARAMS
     @IN darray - pointer to Darray
-    @IN val - value
+    @IN val_in - value with key
+    @IN val_out - value from array or NULL
 
     RETURN:
     %-1 iff failure or value doesn't exists
     %position of value iff success
 */
-int darray_search_first(Darray *darray, void *val);
+ssize_t darray_search_first(Darray *darray, void *val_in, void *val_out);
 
 
 /*
@@ -165,13 +167,14 @@ int darray_search_first(Darray *darray, void *val);
 
     PARAMS
     @IN darray - pointer to Darray
-    @IN val - value
+    @IN val_in - value with key
+    @IN val_out - value from array or NULL
 
     RETURN:
     %-1 iff failure or value doesn't exists
     %position of value iff success
 */
-int darray_search_last(Darray *darray, void *val);
+ssize_t darray_search_last(Darray *darray, void *val_in, void *val_out);
 
 /*
     If array is unsorted sort the array
@@ -190,23 +193,73 @@ int darray_sort(Darray *darray);
 
     PARAMS
     @IN darray - pointer to darray
+    @IN val - minimum value or NULL
 
     RETURN
     %-1 iff failure
     %Pos iff success
 */
-int darray_min(Darray *darray);
+ssize_t darray_min(Darray *darray, void *val);
 
 /*
     Find Maximum and return pos
 
     PARAMS
     @IN darray - pointer to darray
+    @IN val - minimum value or NULL
 
     RETURN
     %-1 iff failure
     %Pos iff success
 */
-int darray_max(Darray *darray);
+ssize_t darray_max(Darray *darray, void *val);
+
+/*
+    Get Array
+
+    PARAMS
+    @IN darray - pointer to darray
+
+    RETURN
+    %NULL iff failure
+    %Pointer to array iff success
+*/
+void *darray_get_array(Darray *darray);
+
+/*
+    Get number of entries in array
+
+    PARAMS
+    @IN darray - pointer to darray
+
+    RETURN
+    %-1 iff failure
+    %Num of entries iff success
+*/
+ssize_t darray_get_num_entries(Darray *darray);
+
+/*
+    Get Array Type (DARRAY_SORTED / DARRAY_UNSORTED)
+
+    PARAMS
+    @IN darray - pointer to darray
+
+    RETURN
+    %-1 iff failure
+    %type iff success
+*/
+DARRAY_TYPE darray_get_type(Darray *darray);
+
+/*
+    Get size of
+
+    PARAMS
+    @IN darray - pointer to darray
+
+    RETURN
+    %-1 iff failure
+    %sizeof iff success
+*/
+int darray_get_size_of(Darray *darray);
 
 #endif

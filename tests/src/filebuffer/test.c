@@ -231,7 +231,7 @@ test_f test_create_from_fd(void)
     T_ERROR(fb == NULL);
 
     T_CHECK(file_buffer_get_buff(fb) != NULL);
-    T_ASSERT(file_buffer_get_size(fb), file_size);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
 
     file_buffer_destroy(fb);
 
@@ -286,7 +286,7 @@ test_f test_create_from_path(void)
     T_ERROR(fb == NULL);
 
     T_CHECK(file_buffer_get_buff(fb) != NULL);
-    T_ASSERT(file_buffer_get_size(fb), file_size);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
 
     file_buffer_destroy(fb);
 
@@ -340,7 +340,7 @@ test_f test_read_file(void)
     T_ERROR(fb == NULL);
 
     T_CHECK(file_buffer_get_buff(fb) != NULL);
-    T_ASSERT(file_buffer_get_size(fb), file_size);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
 
     /* create file */
     T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __FUNCTION__) == -1);
@@ -392,11 +392,11 @@ test_f test_write_to_file(void)
     T_ERROR(fb == NULL);
 
     T_CHECK(file_buffer_get_buff(fb) != NULL);
-    T_ASSERT(file_buffer_get_size(fb), file_size);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
 
     /* add data to file */
     T_EXPECT(file_buffer_append(fb, data), 0);
-    T_ASSERT(file_buffer_get_size(fb), strlen(data));
+    T_EXPECT(file_buffer_get_size(fb), strlen(data));
 
     /* sync data */
     T_EXPECT(file_buffer_synch(fb), 0);
@@ -461,11 +461,11 @@ test_f test_read_write(void)
     T_ERROR(fb == NULL);
 
     T_CHECK(file_buffer_get_buff(fb) != NULL);
-    T_ASSERT(file_buffer_get_size(fb), file_size);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
 
     /* add data to file */
     T_EXPECT(file_buffer_append(fb, data), 0);
-    T_ASSERT(file_buffer_get_size(fb), strlen(data) + file_size);
+    T_EXPECT(file_buffer_get_size(fb), strlen(data) + file_size);
 
     /* sync data */
     T_EXPECT(file_buffer_synch(fb), 0);
@@ -530,11 +530,11 @@ test_f test_work_on_big_file(void)
     T_ERROR(fb == NULL);
 
     T_CHECK(file_buffer_get_buff(fb) != NULL);
-    T_ASSERT(file_buffer_get_size(fb), file_size);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
 
     /* add data to file */
     T_EXPECT(file_buffer_append(fb, data), 0);
-    T_ASSERT(file_buffer_get_size(fb), strlen(data) + file_size);
+    T_EXPECT(file_buffer_get_size(fb), strlen(data) + file_size);
 
     /* sync data */
     T_EXPECT(file_buffer_synch(fb), 0);
