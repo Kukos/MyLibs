@@ -125,15 +125,21 @@ int stack_to_array(Stack *stack, void *array, size_t *size)
 
 void *stack_get_array(Stack *stack)
 {
+    assert(stack == NULL);
+
     return darray_get_array(stack->____darray);
 }
 
 ssize_t stack_get_num_entries(Stack *stack)
 {
+    assert(stack == NULL);
+
     return darray_get_num_entries(stack->____darray);
 }
 
 int stack_get_size_of(Stack *stack)
 {
+    assert(stack == NULL);
+
     return darray_get_size_of(stack->____darray);
 }
