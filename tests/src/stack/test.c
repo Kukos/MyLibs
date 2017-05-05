@@ -252,6 +252,89 @@ test_f test_delete(void)
     FREE(t3);
 }
 
+test_f test_insert_delete(void)
+{
+    Stack *s;
+
+    int *t;
+    int *rt;
+
+    int i;
+    int val;
+
+    size_t array_size = BIT(12);
+    size_t rsize;
+
+    srand(time(NULL));
+
+    t = (int *)malloc(sizeof(int) * array_size);
+    T_ERROR(t == NULL);
+
+    for (i = 0; i < array_size; ++i)
+        t[i] = rand();
+
+    s = stack_create(sizeof(int));
+    T_ERROR(s == NULL);
+    T_EXPECT(stack_get_num_entries(s), 0);
+    T_EXPECT(stack_get_size_of(s), sizeof(int));
+
+    for (i = 0; i < array_size; ++i)
+        T_EXPECT(stack_push(s, (void *)&t[i]), 0);
+
+    T_EXPECT(stack_get_num_entries(s), array_size);
+
+    /* delete half */
+    for (i = array_size - 1; i >= array_size >> 1; --i)
+    {
+        T_EXPECT(stack_is_empty(s), false);
+        T_EXPECT(stack_get_top(s, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
+
+        T_EXPECT(stack_pop(s, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
+    }
+
+    T_EXPECT(stack_get_num_entries(s), array_size >> 1);
+    T_EXPECT(array_equal_int(stack_get_array(s), t, array_size), true);
+
+    T_EXPECT(stack_to_array(s, (void *)&rt, &rsize), 0);
+    T_ASSERT(rsize, array_size >> 1);
+    T_EXPECT(array_equal_int(t, rt, array_size >> 1), true);
+
+    FREE(rt);
+    /* insert half */
+    for (i = array_size >> 1; i < array_size; ++i)
+            T_EXPECT(stack_push(s, (void *)&t[i]), 0);
+
+    T_EXPECT(stack_get_num_entries(s), array_size);
+    T_EXPECT(array_equal_int(stack_get_array(s), t, array_size), true);
+
+    T_EXPECT(stack_to_array(s, (void *)&rt, &rsize), 0);
+    T_ASSERT(rsize, array_size);
+    T_EXPECT(array_equal_int(t, rt, array_size), true);
+
+    /* delete all */
+    for (i = array_size - 1; i >= 0; --i)
+    {
+        T_EXPECT(stack_is_empty(s), false);
+        T_EXPECT(stack_get_top(s, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
+
+        T_EXPECT(stack_pop(s, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
+    }
+
+    T_EXPECT(stack_get_num_entries(s), 0);
+    T_EXPECT(stack_is_empty(s), true);
+    T_CHECK(stack_get_top(s, (void *)&val) != 0);
+    T_CHECK(stack_pop(s, (void *)&val) != 0);
+
+    stack_destroy(s);
+
+    FREE(t);
+    FREE(rt);
+}
+
 test_f test_convert_to_array(void)
 {
     Stack *s[3];
@@ -290,12 +373,12 @@ test_f test_convert_to_array(void)
         T_EXPECT(stack_push(s[counter], (void *)&t1[i]), 0);
 
     T_EXPECT(stack_get_num_entries(s[counter]), array_size);
-    array_reverse_char(t1, array_size);
-    T_EXPECT(array_equal_char((char *)stack_get_array(s[counter]), t1, array_size), 0);
+    T_EXPECT(array_equal_char((char *)stack_get_array(s[counter]), t1, array_size), true);
 
+    array_reverse_char(t1, array_size);
     T_EXPECT(stack_to_array(s[counter], (void *)&rt1, &rs1), 0);
     T_ASSERT(rs1, array_size);
-    T_EXPECT(array_equal_char(rt1, t1, array_size), 0);
+    T_EXPECT(array_equal_char(rt1, t1, array_size), false);
     ++counter;
 
     t2 = (int *)malloc(sizeof(int) * array_size);
@@ -313,12 +396,12 @@ test_f test_convert_to_array(void)
         T_EXPECT(stack_push(s[counter], (void *)&t2[i]), 0);
 
     T_EXPECT(stack_get_num_entries(s[counter]), array_size);
-    array_reverse_int(t2, array_size);
-    T_EXPECT(array_equal_int((int *)stack_get_array(s[counter]), t2, array_size), 0);
+    T_EXPECT(array_equal_int((int *)stack_get_array(s[counter]), t2, array_size), true);
 
+    array_reverse_int(t2, array_size);
     T_EXPECT(stack_to_array(s[counter], (void *)&rt2, &rs2), 0);
     T_ASSERT(rs2, array_size);
-    T_EXPECT(array_equal_int(rt2, t2, array_size), 0);
+    T_EXPECT(array_equal_int(rt2, t2, array_size), false);
     ++counter;
 
     t3 = (double *)malloc(sizeof(double) * array_size);
@@ -336,12 +419,12 @@ test_f test_convert_to_array(void)
         T_EXPECT(stack_push(s[counter], (void *)&t3[i]), 0);
 
     T_EXPECT(stack_get_num_entries(s[counter]), array_size);
-    array_reverse_double(t3, array_size);
-    T_EXPECT(array_equal_double((double *)stack_get_array(s[counter]), t3, array_size), 0);
+    T_EXPECT(array_equal_double((double *)stack_get_array(s[counter]), t3, array_size), true);
 
+    array_reverse_double(t3, array_size);
     T_EXPECT(stack_to_array(s[counter], (void *)&rt3, &rs3), 0);
     T_ASSERT(rs3, array_size);
-    T_EXPECT(array_equal_double(rt3, t3, array_size), 0);
+    T_EXPECT(array_equal_double(rt3, t3, array_size), false);
     ++counter;
 
     for (i = 0; i < counter; ++i)
@@ -361,6 +444,7 @@ void test(void)
     TEST(test_create());
     TEST(test_insert());
     TEST(test_delete());
+    TEST(test_insert_delete());
     TEST(test_convert_to_array());
 }
 

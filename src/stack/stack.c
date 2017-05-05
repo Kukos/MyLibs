@@ -113,7 +113,7 @@ int stack_to_array(Stack *stack, void *array, size_t *size)
     if (t == NULL)
         ERROR("malloc error\n", 1, "");
 
-    if (memcpy(t, stack->____darray,
+    if (memcpy(t, darray_get_array(stack->____darray),
     darray_get_num_entries(stack->____darray) * darray_get_size_of(stack->____darray)) == NULL)
         ERROR("memcpy error\n", 1 ,"");
 
