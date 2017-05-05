@@ -405,7 +405,7 @@ test_f test_insert_pos(void)
     T_EXPECT(darray_get_num_entries(da), 0);
 
     /* expected error */
-    T_EXPECT(darray_insert_pos(da, (void *)&t[0], 0), 1);
+    T_CHECK(darray_insert_pos(da, (void *)&t[0], 0) != 0);
 
     darray_destroy(da);
 

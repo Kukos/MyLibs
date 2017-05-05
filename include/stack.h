@@ -4,6 +4,7 @@
 #include <darray.h>
 #include <stdbool.h>
 #include <stddef.h> /* size_t */
+#include <sys/types.h>
 
 /*
     Author: Michal Kukowski
@@ -16,7 +17,7 @@
 
 typedef struct Stack
 {
-    Darray *darray;
+    Darray *____darray;
 
 }Stack;
 
@@ -119,5 +120,41 @@ bool stack_is_empty(Stack *stack);
 	%Non-zero value iff failure
 */
 int stack_to_array(Stack *stack, void *array, size_t *size);
+
+/*
+    Get Array
+
+    PARAMS
+    @IN stack - pointer to Stack
+
+    RETURN
+    %NULL iff failure
+    %Pointer to array iff success
+*/
+void *stack_get_array(Stack *stack);
+
+/*
+    Get number of entries in stack
+
+    PARAMS
+    @IN stack - pointer to Stack
+
+    RETURN
+    %-1 iff failure
+    %Num of entries iff success
+*/
+ssize_t stack_get_num_entries(Stack *stack);
+
+/*
+    Get size of
+
+    PARAMS
+    @IN stack - pointer to Stack
+
+    RETURN
+    %-1 iff failure
+    %sizeof iff success
+*/
+int stack_get_size_of(Stack *stack);
 
 #endif

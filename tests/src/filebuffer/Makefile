@@ -5,7 +5,7 @@ SRCS = $(wildcard $(SDIR)/$(NAME)/*.c)
 all: test
 
 test: FORCE
-	$(CC) $(CFLAGS) -D_GNU_SOURCE -I $(IDIR) $(SDIR)/$(NAME)/*.c $(SDIR)/log.c \
+	$(CC) $(CFLAGS) -DSILENT_ERROR -D_GNU_SOURCE -I $(IDIR) $(SDIR)/$(NAME)/*.c $(SDIR)/log.c \
 	$(SDIR)/assert.c $(THIS_DIR)/test.c -o $(THIS_DIR)/$(TEST_EXEC_NAME)
 
 FORCE:

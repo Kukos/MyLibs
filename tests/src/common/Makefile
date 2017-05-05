@@ -3,7 +3,7 @@ THIS_DIR := $(TEST_SRC)/common
 all: test
 
 test: FORCE
-	$(CC) $(CFLAGS) -I $(IDIR) $(THIS_DIR)/test.c -o $(THIS_DIR)/$(TEST_EXEC_NAME)
+	$(CC) $(CFLAGS) -DSILENT_ERROR -I $(IDIR) $(THIS_DIR)/test.c -o $(THIS_DIR)/$(TEST_EXEC_NAME)
 
 FORCE:
 
