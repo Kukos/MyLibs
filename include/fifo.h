@@ -12,15 +12,16 @@
 
 #include <stdbool.h>
 #include <stddef.h> /* size_t */
+#include <sys/types.h>
 
 typedef struct Fifo
 {
-    void    *array;     /* resizing array */
+    void        *____array;     /* resizing array */
 
-    size_t     head;       /* head postion in array */
-    size_t     tail;       /* tail posiion in array */
-    size_t     size;       /* size of allocated array */
-    int     size_of;    /* size of element in array */
+    size_t      ____head;       /* head postion in array */
+    size_t      ____tail;       /* tail posiion in array */
+    size_t      ____size;       /* size of allocated array */
+    int         ____size_of;    /* size of element in array */
 }Fifo;
 
 /*
@@ -120,5 +121,29 @@ bool fifo_is_empty(Fifo *fifo);
 	%Non-zero value iff failure
 */
 int fifo_get_head(Fifo *fifo, void *val);
+
+/*
+    Get number of entries in fifo
+
+    PARAMS
+    @IN fifo - pointer to Fifo
+
+    RETURN
+    %-1 iff failure
+    %Num of entries iff success
+*/
+ssize_t fifo_get_num_entries(Fifo *fifo);
+
+/*
+    Get size of
+
+    PARAMS
+    @IN fifo - pointer to Fifo
+
+    RETURN
+    %-1 iff failure
+    %sizeof iff success
+*/
+int fifo_get_size_of(Fifo *fifo);
 
 #endif
