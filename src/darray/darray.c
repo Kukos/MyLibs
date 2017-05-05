@@ -582,7 +582,7 @@ ssize_t darray_max(Darray *darray, void *val)
 
     for (offset_i = darray->____size_of; offset_i < offset_max;
          offset_i += darray->____size_of)
-        if (darray->____cmp((void *)max, (void *)&_t[offset_i]) < 0)
+        if (darray->____cmp((void *)max, (void *)&_t[offset_i]) <= 0)
         {
             __ASSIGN__(max[0], _t[offset_i], darray->____size_of);
             pos = offset_i;
