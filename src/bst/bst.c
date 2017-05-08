@@ -19,7 +19,7 @@
     NULL iff failure
     Pointer to node iff success
 */
-static __inline__ Bst_node *bst_node_create(void *data, int size_of, Bst_node *parent);
+static ___inline___ Bst_node *bst_node_create(void *data, int size_of, Bst_node *parent);
 
 /*
     Deallocate bst node
@@ -30,7 +30,7 @@ static __inline__ Bst_node *bst_node_create(void *data, int size_of, Bst_node *p
     RETURN:
     This is a void function
 */
-static __inline__ void bst_node_destroy(Bst_node *node);
+static ___inline___ void bst_node_destroy(Bst_node *node);
 
 
 /*
@@ -43,7 +43,7 @@ static __inline__ void bst_node_destroy(Bst_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-static __inline__  Bst_node* bst_min_node(Bst_node *node);
+static ___inline___  Bst_node* bst_min_node(Bst_node *node);
 
 /*
     Search for node with max key
@@ -55,7 +55,7 @@ static __inline__  Bst_node* bst_min_node(Bst_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-static __inline__  Bst_node *bst_max_node(Bst_node *node);
+static ___inline___  Bst_node *bst_max_node(Bst_node *node);
 
 /*
     Search for node with key equals @data_key ( using cmp )
@@ -67,7 +67,7 @@ static __inline__  Bst_node *bst_max_node(Bst_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-static __inline__ Bst_node *bst_node_search(Bst *tree, void *data_key);
+static ___inline___ Bst_node *bst_node_search(Bst *tree, void *data_key);
 
 /*
     Get successor of node
@@ -79,7 +79,7 @@ static __inline__ Bst_node *bst_node_search(Bst *tree, void *data_key);
     NULL iff failure
     Pointer to node iff success
 */
-static __inline__ Bst_node *bst_successor(Bst_node *node);
+static ___inline___ Bst_node *bst_successor(Bst_node *node);
 
 /*
     Get predecessor of node
@@ -92,7 +92,7 @@ static __inline__ Bst_node *bst_successor(Bst_node *node);
     Pointer to node iff success
 */
 
-static __inline__ Bst_node *bst_predecessor(Bst_node *node);
+static ___inline___ Bst_node *bst_predecessor(Bst_node *node);
 
 /*
     Right tree rotate
@@ -104,7 +104,7 @@ static __inline__ Bst_node *bst_predecessor(Bst_node *node);
     RETURN:
     This is a void function
 */
-static __inline__  void bst_rotate_right(Bst *tree, Bst_node *node);
+static ___inline___  void bst_rotate_right(Bst *tree, Bst_node *node);
 
 /*
     Left tree rotate
@@ -116,10 +116,10 @@ static __inline__  void bst_rotate_right(Bst *tree, Bst_node *node);
     RETURN:
     This is a void function
 */
-static __inline__ void bst_rotate_left(Bst *tree, Bst_node *node);
+static ___inline___ void bst_rotate_left(Bst *tree, Bst_node *node);
 
 
-static __inline__ Bst_node *bst_node_create(void *data, int size_of, Bst_node *parent)
+static ___inline___ Bst_node *bst_node_create(void *data, int size_of, Bst_node *parent)
 {
     Bst_node *node;
 
@@ -148,7 +148,7 @@ static __inline__ Bst_node *bst_node_create(void *data, int size_of, Bst_node *p
     return node;
 }
 
-static __inline__ void bst_node_destroy(Bst_node *node)
+static ___inline___ void bst_node_destroy(Bst_node *node)
 {
     TRACE("");
 
@@ -159,7 +159,7 @@ static __inline__ void bst_node_destroy(Bst_node *node)
     FREE(node);
 }
 
-static __inline__ Bst_node *bst_successor(Bst_node *node)
+static ___inline___ Bst_node *bst_successor(Bst_node *node)
 {
     Bst_node *parent;
 
@@ -180,7 +180,7 @@ static __inline__ Bst_node *bst_successor(Bst_node *node)
     return parent;
 }
 
-static __inline__ Bst_node *bst_predecessor(Bst_node *node)
+static ___inline___ Bst_node *bst_predecessor(Bst_node *node)
 {
     Bst_node *parent;
 
@@ -201,7 +201,7 @@ static __inline__ Bst_node *bst_predecessor(Bst_node *node)
     return parent;
 }
 
-static __inline__ Bst_node *bst_node_search(Bst *tree, void *data_key)
+static ___inline___ Bst_node *bst_node_search(Bst *tree, void *data_key)
 {
     Bst_node *node;
 
@@ -225,7 +225,7 @@ static __inline__ Bst_node *bst_node_search(Bst *tree, void *data_key)
     return NULL;
 }
 
-static __inline__ Bst_node *bst_max_node(Bst_node *node)
+static ___inline___ Bst_node *bst_max_node(Bst_node *node)
 {
     Bst_node *parent;
 
@@ -243,7 +243,7 @@ static __inline__ Bst_node *bst_max_node(Bst_node *node)
     return parent;
 }
 
-static __inline__ Bst_node *bst_min_node(Bst_node *node)
+static ___inline___ Bst_node *bst_min_node(Bst_node *node)
 {
     Bst_node *parent;
 
@@ -271,7 +271,7 @@ static __inline__ Bst_node *bst_min_node(Bst_node *node)
   X      Y                                    Y       right_son
 
 */
-static __inline__ void bst_rotate_right(Bst *tree, Bst_node *node)
+static ___inline___ void bst_rotate_right(Bst *tree, Bst_node *node)
 {
     Bst_node *left_son;
 
@@ -313,7 +313,7 @@ left_son   right_son   ---->     node       Y
            X       Y        left_son  X
 
 */
-static __inline__ void bst_rotate_left(Bst *tree, Bst_node *node)
+static ___inline___ void bst_rotate_left(Bst *tree, Bst_node *node)
 {
     Bst_node *right_son;
 

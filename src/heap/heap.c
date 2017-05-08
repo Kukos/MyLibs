@@ -70,7 +70,7 @@ static int __max_heap_cmp(Heap_entry *a, Heap_entry *b,
     %0 iff success
     %Non-zero value iff failure
 */
-__inline__ static int __heap_heapify(Heap *heap, size_t index,
+___inline___ static int __heap_heapify(Heap *heap, size_t index,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
 /*
@@ -86,7 +86,7 @@ __inline__ static int __heap_heapify(Heap *heap, size_t index,
     %0 if success
     %Non-zero value if failure
 */
-__inline__ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
+___inline___ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
 
@@ -102,7 +102,7 @@ __inline__ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
     %0 if success
     %Non-zero value if failure
 */
-__inline__ static int __heap_insert(Heap *heap, Heap_entry *entry,
+___inline___ static int __heap_insert(Heap *heap, Heap_entry *entry,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
 /*
@@ -116,7 +116,7 @@ __inline__ static int __heap_insert(Heap *heap, Heap_entry *entry,
     %NULL if failure
     %pointer if success
 */
-__inline__ static Heap_entry *__heap_extract_top(Heap *heap,
+___inline___ static Heap_entry *__heap_extract_top(Heap *heap,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
 /*
@@ -131,7 +131,7 @@ __inline__ static Heap_entry *__heap_extract_top(Heap *heap,
     %pointer if success
 
 */
-__inline__ static Heap_entry *__heap_get_top(Heap *heap,
+___inline___ static Heap_entry *__heap_get_top(Heap *heap,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
 /*
@@ -149,10 +149,10 @@ __inline__ static Heap_entry *__heap_get_top(Heap *heap,
     %0 if success
     %Non-zero value if failure
 */
-__inline__ static int __heap_change_key(Heap *heap, size_t index, void *new_data,
+___inline___ static int __heap_change_key(Heap *heap, size_t index, void *new_data,
         int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
 
-__inline__ static int __heap_heapify(Heap *heap, size_t index,
+___inline___ static int __heap_heapify(Heap *heap, size_t index,
         int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 {
     Heap_entry **array;
@@ -197,7 +197,7 @@ __inline__ static int __heap_heapify(Heap *heap, size_t index,
     return 0;
 }
 
-__inline__ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
+___inline___ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 {
     size_t i;
@@ -222,7 +222,7 @@ __inline__ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
     return 0;
 }
 
-__inline__ static int __heap_insert(Heap *heap, Heap_entry *entry,
+___inline___ static int __heap_insert(Heap *heap, Heap_entry *entry,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 {
     Heap_entry **array;
@@ -249,7 +249,7 @@ __inline__ static int __heap_insert(Heap *heap, Heap_entry *entry,
     return 0;
 }
 
-__inline__ static Heap_entry *__heap_get_top(Heap *heap,
+___inline___ static Heap_entry *__heap_get_top(Heap *heap,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 {
     TRACE("");
@@ -259,7 +259,7 @@ __inline__ static Heap_entry *__heap_get_top(Heap *heap,
     return ((Heap_entry **)(darray_get_array(heap->darray)))[0];
 }
 
-__inline__ static Heap_entry *__heap_extract_top(Heap *heap,
+___inline___ static Heap_entry *__heap_extract_top(Heap *heap,
     int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 
 {
@@ -286,7 +286,7 @@ __inline__ static Heap_entry *__heap_extract_top(Heap *heap,
     return entry;
 }
 
-__inline__ static int __heap_change_key(Heap *heap, size_t index, void *new_data,
+___inline___ static int __heap_change_key(Heap *heap, size_t index, void *new_data,
         int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
 {
     Heap_entry **array;

@@ -55,7 +55,7 @@
 #endif
 
 /* buffer for swapping */
-__unused__ static BYTE __buffer__[MAXWORD];
+___unused___ static BYTE __buffer__[MAXWORD];
 
 /* swap A and B with size = S, use SSE if possible */
 #define __SWAP__(A, B, S) \

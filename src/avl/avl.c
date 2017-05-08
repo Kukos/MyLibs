@@ -22,7 +22,7 @@
     NULL iff failure
     Pointer to node iff success
 */
-__inline__ static Avl_node *avl_node_create(void *data, int size_of, Avl_node *parent);
+___inline___ static Avl_node *avl_node_create(void *data, int size_of, Avl_node *parent);
 
 /*
     Deallocate Avl node
@@ -33,7 +33,7 @@ __inline__ static Avl_node *avl_node_create(void *data, int size_of, Avl_node *p
     RETURN:
     This is a void function
 */
-__inline__ static void avl_node_destroy(Avl_node *node);
+___inline___ static void avl_node_destroy(Avl_node *node);
 
 
 /*
@@ -46,7 +46,7 @@ __inline__ static void avl_node_destroy(Avl_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-__inline__ static Avl_node* avl_min_node(Avl_node *node);
+___inline___ static Avl_node* avl_min_node(Avl_node *node);
 
 /*
     Search for node with max key
@@ -58,7 +58,7 @@ __inline__ static Avl_node* avl_min_node(Avl_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-__inline__ static Avl_node *avl_max_node(Avl_node *node);
+___inline___ static Avl_node *avl_max_node(Avl_node *node);
 
 /*
     Search for node with key equals @data_key ( using cmp )
@@ -70,7 +70,7 @@ __inline__ static Avl_node *avl_max_node(Avl_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-__inline__ static Avl_node *avl_node_search(Avl *tree, void *data_key);
+___inline___ static Avl_node *avl_node_search(Avl *tree, void *data_key);
 
 /*
     Get successor of node
@@ -82,7 +82,7 @@ __inline__ static Avl_node *avl_node_search(Avl *tree, void *data_key);
     NULL iff failure
     Pointer to node iff success
 */
-__inline__ static Avl_node *avl_successor(Avl_node *node);
+___inline___ static Avl_node *avl_successor(Avl_node *node);
 
 /*
     Get predecessor of node
@@ -95,7 +95,7 @@ __inline__ static Avl_node *avl_successor(Avl_node *node);
     Pointer to node iff success
 */
 
-__inline__ static Avl_node *avl_predecessor(Avl_node *node);
+___inline___ static Avl_node *avl_predecessor(Avl_node *node);
 
 /*
     Double Left Roation, start from @node
@@ -107,7 +107,7 @@ __inline__ static Avl_node *avl_predecessor(Avl_node *node);
     RETURN:
     This is a void function
 */
-__inline__ static void avl_rotate_ll(Avl *tree, Avl_node *node);
+___inline___ static void avl_rotate_ll(Avl *tree, Avl_node *node);
 
 /*
     Double Right Roation, start from @node
@@ -119,7 +119,7 @@ __inline__ static void avl_rotate_ll(Avl *tree, Avl_node *node);
     RETURN:
     This is a void function
 */
-__inline__ static void avl_rotate_rr(Avl *tree, Avl_node *node);
+___inline___ static void avl_rotate_rr(Avl *tree, Avl_node *node);
 
 
 /*
@@ -132,7 +132,7 @@ __inline__ static void avl_rotate_rr(Avl *tree, Avl_node *node);
     RETURN:
     This is a void function
 */
-__inline__ static void avl_rotate_lr(Avl *tree, Avl_node *node);
+___inline___ static void avl_rotate_lr(Avl *tree, Avl_node *node);
 
 
 /*
@@ -145,7 +145,7 @@ __inline__ static void avl_rotate_lr(Avl *tree, Avl_node *node);
     RETURN:
     This is a void function
 */
-__inline__ static void avl_rotate_rl(Avl *tree, Avl_node *node);
+___inline___ static void avl_rotate_rl(Avl *tree, Avl_node *node);
 
 /*
     Fix AVL Properties after insert, start from new_node
@@ -174,7 +174,7 @@ static int avl_insert_fixup(Avl *tree, Avl_node *new_node);
 */
 static int avl_delete_fixup(Avl *tree, Avl_node *parent, Avl_node *node);
 
-__inline__ static Avl_node *avl_node_create(void *data, int size_of, Avl_node *parent)
+___inline___ static Avl_node *avl_node_create(void *data, int size_of, Avl_node *parent)
 {
     Avl_node *node;
 
@@ -205,7 +205,7 @@ __inline__ static Avl_node *avl_node_create(void *data, int size_of, Avl_node *p
     return node;
 }
 
-__inline__ static void avl_node_destroy(Avl_node *node)
+___inline___ static void avl_node_destroy(Avl_node *node)
 {
     TRACE("");
 
@@ -216,7 +216,7 @@ __inline__ static void avl_node_destroy(Avl_node *node)
     FREE(node);
 }
 
-__inline__ static Avl_node *avl_successor(Avl_node *node)
+___inline___ static Avl_node *avl_successor(Avl_node *node)
 {
     Avl_node *parent;
 
@@ -237,7 +237,7 @@ __inline__ static Avl_node *avl_successor(Avl_node *node)
     return parent;
 }
 
-__inline__ static Avl_node *avl_predecessor(Avl_node *node)
+___inline___ static Avl_node *avl_predecessor(Avl_node *node)
 {
     Avl_node *parent;
 
@@ -258,7 +258,7 @@ __inline__ static Avl_node *avl_predecessor(Avl_node *node)
     return parent;
 }
 
-__inline__ static Avl_node *avl_node_search(Avl *tree, void *data_key)
+___inline___ static Avl_node *avl_node_search(Avl *tree, void *data_key)
 {
     Avl_node *node;
 
@@ -282,7 +282,7 @@ __inline__ static Avl_node *avl_node_search(Avl *tree, void *data_key)
     return NULL;
 }
 
-__inline__ static Avl_node *avl_max_node(Avl_node *node)
+___inline___ static Avl_node *avl_max_node(Avl_node *node)
 {
     Avl_node *parent;
 
@@ -300,7 +300,7 @@ __inline__ static Avl_node *avl_max_node(Avl_node *node)
     return parent;
 }
 
-__inline__ static Avl_node *avl_min_node(Avl_node *node)
+___inline___ static Avl_node *avl_min_node(Avl_node *node)
 {
     Avl_node *parent;
 
@@ -329,7 +329,7 @@ __inline__ static Avl_node *avl_min_node(Avl_node *node)
              XL    XR                node_left    XL
 
 */
-__inline__ static void avl_rotate_rr(Avl *tree, Avl_node *node)
+___inline___ static void avl_rotate_rr(Avl *tree, Avl_node *node)
 {
     Avl_node *x;
 
@@ -383,7 +383,7 @@ __inline__ static void avl_rotate_rr(Avl *tree, Avl_node *node)
  XL   XR                                        XR      node_right
 */
 
-__inline__ static void avl_rotate_ll(Avl *tree, Avl_node *node)
+___inline___ static void avl_rotate_ll(Avl *tree, Avl_node *node)
 {
     Avl_node *x;
 
@@ -438,7 +438,7 @@ node_left   X             node_left   Y                         node     X
         YL   YR                         YR    XR
 */
 
-__inline__ static void avl_rotate_rl(Avl *tree, Avl_node *node)
+___inline___ static void avl_rotate_rl(Avl *tree, Avl_node *node)
 {
     Avl_node *x;
     Avl_node *y;
@@ -510,7 +510,7 @@ __inline__ static void avl_rotate_rl(Avl *tree, Avl_node *node)
     YL   YR                     XL   YL
 */
 
-__inline__ static void avl_rotate_lr(Avl *tree, Avl_node *node)
+___inline___ static void avl_rotate_lr(Avl *tree, Avl_node *node)
 {
     Avl_node *x;
     Avl_node *y;

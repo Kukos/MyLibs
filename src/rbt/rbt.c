@@ -15,9 +15,9 @@
 #define SENTINEL_COLOR          RBT_BLACK
 
 /* sentinel for all RBTs */
-static __unused__ char ____sentinel_buffer[SENTINEL_BUFFER_SIZE] = { SENTINEL_VALUE };
+static ___unused___ char ____sentinel_buffer[SENTINEL_BUFFER_SIZE] = { SENTINEL_VALUE };
 
-static __unused__ Rbt_node ____sentinel =
+static ___unused___ Rbt_node ____sentinel =
 {
     .data       = (void *)&____sentinel_buffer,
     .left_son   = &____sentinel,
@@ -39,7 +39,7 @@ static Rbt_node *sentinel = &____sentinel;
     NULL iff failure
     Pointer to node iff success
 */
-__inline__ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node *parent);
+___inline___ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node *parent);
 
 /*
     Deallocate rbt node
@@ -50,7 +50,7 @@ __inline__ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node *p
     RETURN:
     This is a void function
 */
-__inline__ static void rbt_node_destroy(Rbt_node *node);
+___inline___ static void rbt_node_destroy(Rbt_node *node);
 
 
 /*
@@ -63,7 +63,7 @@ __inline__ static void rbt_node_destroy(Rbt_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-__inline__ static Rbt_node* rbt_min_node(Rbt_node *node);
+___inline___ static Rbt_node* rbt_min_node(Rbt_node *node);
 
 /*
     Search for node with max key
@@ -75,7 +75,7 @@ __inline__ static Rbt_node* rbt_min_node(Rbt_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-__inline__ static Rbt_node *rbt_max_node(Rbt_node *node);
+___inline___ static Rbt_node *rbt_max_node(Rbt_node *node);
 
 /*
     Search for node with key equals @data_key ( using cmp )
@@ -87,7 +87,7 @@ __inline__ static Rbt_node *rbt_max_node(Rbt_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-__inline__ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key);
+___inline___ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key);
 
 /*
     Get successor of node
@@ -99,7 +99,7 @@ __inline__ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key);
     NULL iff failure
     Pointer to node iff success
 */
-__inline__ static Rbt_node *rbt_successor(Rbt_node *node);
+___inline___ static Rbt_node *rbt_successor(Rbt_node *node);
 
 /*
     Get predecessor of node
@@ -112,7 +112,7 @@ __inline__ static Rbt_node *rbt_successor(Rbt_node *node);
     Pointer to node iff success
 */
 
-__inline__ static Rbt_node *rbt_predecessor(Rbt_node *node);
+___inline___ static Rbt_node *rbt_predecessor(Rbt_node *node);
 
 /*
     Right tree rotate
@@ -124,7 +124,7 @@ __inline__ static Rbt_node *rbt_predecessor(Rbt_node *node);
     RETURN:
     This is a void function
 */
-__inline__ static void rbt_rotate_right(Rbt *tree, Rbt_node *node);
+___inline___ static void rbt_rotate_right(Rbt *tree, Rbt_node *node);
 
 /*
     Left tree rotate
@@ -136,7 +136,7 @@ __inline__ static void rbt_rotate_right(Rbt *tree, Rbt_node *node);
     RETURN:
     This is a void function
 */
-__inline__ static void rbt_rotate_left(Rbt *tree, Rbt_node *node);
+___inline___ static void rbt_rotate_left(Rbt *tree, Rbt_node *node);
 
 /*
     Fix RBT property after insert, start fixing from node @node
@@ -164,7 +164,7 @@ static int rbt_insert_fixup(Rbt *tree, Rbt_node *node);
 */
 static int rbt_delete_fixup(Rbt *tree, Rbt_node *node);
 
-__inline__ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node *parent)
+___inline___ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node *parent)
 {
     Rbt_node *node;
 
@@ -195,7 +195,7 @@ __inline__ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node *p
     return node;
 }
 
-__inline__ static void rbt_node_destroy(Rbt_node *node)
+___inline___ static void rbt_node_destroy(Rbt_node *node)
 {
     TRACE("");
 
@@ -206,7 +206,7 @@ __inline__ static void rbt_node_destroy(Rbt_node *node)
     FREE(node);
 }
 
-__inline__ static Rbt_node *rbt_successor(Rbt_node *node)
+___inline___ static Rbt_node *rbt_successor(Rbt_node *node)
 {
     Rbt_node *parent;
 
@@ -228,7 +228,7 @@ __inline__ static Rbt_node *rbt_successor(Rbt_node *node)
     return parent;
 }
 
-__inline__ static Rbt_node *rbt_predecessor(Rbt_node *node)
+___inline___ static Rbt_node *rbt_predecessor(Rbt_node *node)
 {
     Rbt_node *parent;
 
@@ -249,7 +249,7 @@ __inline__ static Rbt_node *rbt_predecessor(Rbt_node *node)
     return parent;
 }
 
-__inline__ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key)
+___inline___ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key)
 {
     Rbt_node *node;
 
@@ -273,7 +273,7 @@ __inline__ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key)
     return NULL;
 }
 
-__inline__ static Rbt_node *rbt_max_node(Rbt_node *node)
+___inline___ static Rbt_node *rbt_max_node(Rbt_node *node)
 {
     Rbt_node *parent;
 
@@ -292,7 +292,7 @@ __inline__ static Rbt_node *rbt_max_node(Rbt_node *node)
     return parent;
 }
 
-__inline__ static Rbt_node *rbt_min_node(Rbt_node *node)
+___inline___ static Rbt_node *rbt_min_node(Rbt_node *node)
 {
     Rbt_node *parent;
 
@@ -321,7 +321,7 @@ __inline__ static Rbt_node *rbt_min_node(Rbt_node *node)
   X      Y                                    Y       right_son
 
 */
-__inline__ static void rbt_rotate_right(Rbt *tree, Rbt_node *node)
+___inline___ static void rbt_rotate_right(Rbt *tree, Rbt_node *node)
 {
     Rbt_node *left_son;
 
@@ -367,7 +367,7 @@ left_son   right_son   ---->     node       Y
            X       Y        left_son  X
 
 */
-__inline__ static void rbt_rotate_left(Rbt *tree, Rbt_node *node)
+___inline___ static void rbt_rotate_left(Rbt *tree, Rbt_node *node)
 {
     Rbt_node *right_son;
 

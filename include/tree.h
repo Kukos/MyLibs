@@ -45,7 +45,7 @@ typedef struct Tree
     RETURN:
     This is a void function
 */
-__inline__ void tree_destroy(Tree *tree)
+___inline___ void tree_destroy(Tree *tree)
 {
     tree->____destroy(tree->tree);
 }
@@ -62,7 +62,7 @@ __inline__ void tree_destroy(Tree *tree)
     0 iff success
     Non-zero value iff failed
 */
-__inline__ int tree_insert(Tree *tree, void *data)
+___inline___ int tree_insert(Tree *tree, void *data)
 {
     return tree->____insert(tree->tree, data);
 }
@@ -78,7 +78,7 @@ __inline__ int tree_insert(Tree *tree, void *data)
     0 iff success
     Non-zero value iff failed
 */
-__inline__ int tree_delete(Tree *tree, void *data)
+___inline___ int tree_delete(Tree *tree, void *data)
 {
     return tree->____delete(tree->tree, data);
 }
@@ -94,7 +94,7 @@ __inline__ int tree_delete(Tree *tree, void *data)
     0 iff success
     Non-zero value iff failed
 */
-__inline__ int tree_min(Tree *tree, void *data)
+___inline___ int tree_min(Tree *tree, void *data)
 {
     return tree->____min(tree->tree, data);
 }
@@ -110,7 +110,7 @@ __inline__ int tree_min(Tree *tree, void *data)
     0 iff success
     Non-zero value iff failed
 */
-__inline__ int tree_max(Tree *tree, void *data)
+___inline___ int tree_max(Tree *tree, void *data)
 {
     return tree->____max(tree->tree, data);
 }
@@ -128,7 +128,7 @@ __inline__ int tree_max(Tree *tree, void *data)
     0 iff success
     Non-zero value iff failed
 */
-__inline__ int tree_search(Tree *tree, void *data_in, void *data_out)
+___inline___ int tree_search(Tree *tree, void *data_in, void *data_out)
 {
     return tree->____search(tree->tree, data_in, data_out);
 }
@@ -144,7 +144,7 @@ __inline__ int tree_search(Tree *tree, void *data_in, void *data_out)
     true - iff data exist
     false iff data not exists
 */
-__inline__ bool tree_key_exist(Tree *tree, void *data)
+___inline___ bool tree_key_exist(Tree *tree, void *data)
 {
     return tree->____key_exist(tree->tree, data);
 }
@@ -160,7 +160,7 @@ __inline__ bool tree_key_exist(Tree *tree, void *data)
     0 iff success
     Non-zero value iff failed
 */
-__inline__ int tree_balance(Tree *tree)
+___inline___ int tree_balance(Tree *tree)
 {
     return tree->____balance(tree->tree);
 }
@@ -177,7 +177,7 @@ __inline__ int tree_balance(Tree *tree)
     0 iff success
     Non-zero value iff failed
 */
-__inline__ int tree_to_array(Tree *tree, void **array, size_t *size)
+___inline___ int tree_to_array(Tree *tree, void **array, size_t *size)
 {
     return tree->____toarray(tree->tree, array, size);
 }
@@ -193,7 +193,7 @@ __inline__ int tree_to_array(Tree *tree, void **array, size_t *size)
     %Num of Entries iff success
 
 */
-__inline__ size_t tree_num_enries(Tree *tree)
+___inline___ size_t tree_num_enries(Tree *tree)
 {
     return tree->____num_entries(tree->tree);
 }
@@ -209,7 +209,7 @@ __inline__ size_t tree_num_enries(Tree *tree)
     %Height
 
 */
-__inline__ int tree_height(Tree *tree)
+___inline___ int tree_height(Tree *tree)
 {
     return tree->____height(tree->tree);
 }

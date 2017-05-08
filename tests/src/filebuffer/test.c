@@ -13,7 +13,7 @@
 
 const char const *test_dir = "./files";
 
-__before_main__(1) void test_init(void)
+___before_main___(1) void test_init(void)
 {
     struct stat st;
 
@@ -21,7 +21,7 @@ __before_main__(1) void test_init(void)
         mkdir(test_dir, 0775);
 }
 
-__after_main__(1) void test_deinit(void)
+___after_main___(1) void test_deinit(void)
 {
     rmdir(test_dir);
 }

@@ -7,9 +7,9 @@
 #include <fcntl.h>
 #include <compiler.h>
 
-static __unused__ FILE *logfd = NULL;
-static __unused__ FILE *logfile = NULL;
-static __unused__ const char const *logdir = "./logs";
+static ___unused___ FILE *logfd = NULL;
+static ___unused___ FILE *logfile = NULL;
+static ___unused___ const char const *logdir = "./logs";
 
 #define LOGBUF_SIZE	128
 

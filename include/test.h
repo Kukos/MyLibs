@@ -20,7 +20,7 @@
 #define __TEST_SUMMARY_TEXT__   " TEST SUMMARY "
 
 /* private simple strlen to avoid including string.h */
-__inline__ long ______test_strlen______(const char *str)
+___inline___ long ______test_strlen______(const char *str)
 {
     long len = 0;
     while (*str++ != '\0')
@@ -216,13 +216,13 @@ test_t ________ret;
     Use this macro to mock funtion
 */
 #define T_MOCK(func, val) \
-    typeof(val) ____MOCK_F____(func)(__unused__ int guard, ...) { return (val); }
+    typeof(val) ____MOCK_F____(func)(___unused___ int guard, ...) { return (val); }
 
 /*
     Use this macro to mock void funtion
 */
 #define T_MOCK_V(func) \
-    void ____MOCK_F____(func)(__unused__ int guard, ...) { }
+    void ____MOCK_F____(func)(___unused___ int guard, ...) { }
 
 /*
     Use this macro to call mock fuction

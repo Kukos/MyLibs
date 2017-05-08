@@ -19,7 +19,7 @@
     NULL if failure
     Pointer to List_node if success
 */
-__inline__ static List2D_node *list2d_node_create(  List2D_node     *prev,
+___inline___ static List2D_node *list2d_node_create(  List2D_node     *prev,
                                                     List2D_node     *next,
                                                     void            *data,
                                                     int size_of);
@@ -33,9 +33,9 @@ __inline__ static List2D_node *list2d_node_create(  List2D_node     *prev,
     RETURN:
     This is void function
 */
-__inline__ static void list2d_node_destroy(List2D_node *node);
+___inline___ static void list2d_node_destroy(List2D_node *node);
 
-__inline__ static List2D_node *list2d_node_create(  List2D_node     *prev,
+___inline___ static List2D_node *list2d_node_create(  List2D_node     *prev,
                                                     List2D_node     *next,
                                                     void            *data,
                                                     int size_of)
@@ -65,7 +65,7 @@ __inline__ static List2D_node *list2d_node_create(  List2D_node     *prev,
     return node;
 }
 
-__inline__ static void list2d_node_destroy(List2D_node *node)
+___inline___ static void list2d_node_destroy(List2D_node *node)
 {
     TRACE("");
 

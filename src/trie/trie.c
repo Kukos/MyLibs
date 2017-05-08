@@ -24,7 +24,7 @@
     %NULL iff failure
     %Pointer iff success
 */
-static __inline__ Trie_node *trie_node_create(Trie_node *parent);
+static ___inline___ Trie_node *trie_node_create(Trie_node *parent);
 
 /*
     Destroy trie node
@@ -35,7 +35,7 @@ static __inline__ Trie_node *trie_node_create(Trie_node *parent);
     RETURN:
     This is a void function
 */
-static __inline__ void trie_node_destroy(Trie_node *node);
+static ___inline___ void trie_node_destroy(Trie_node *node);
 
 /*
     Search for node with @word
@@ -60,7 +60,7 @@ static Trie_node *trie_node_search(Trie_node *root, char *word);
     %FALSE iff node hasn't any children
     %TRUE iff node has at least one child
 */
-static __inline__ bool trie_node_has_child(Trie_node *node);
+static ___inline___ bool trie_node_has_child(Trie_node *node);
 
 /*
     Search node in parent children
@@ -73,7 +73,7 @@ static __inline__ bool trie_node_has_child(Trie_node *node);
     %-1 iff failure
     %Index of node iff success
 */
-static __inline__ int trie_node_get_child_index(Trie_node *parent, Trie_node *node);
+static ___inline___ int trie_node_get_child_index(Trie_node *parent, Trie_node *node);
 
 /*
     Get minimum node of subtree with root in node
@@ -155,7 +155,7 @@ static Trie_node *trie_min_node_d(Trie_node *node);
 */
 static Trie_node *trie_node_successor_d(Trie_node *node);
 
-static __inline__ Trie_node *trie_node_create(Trie_node *parent)
+static ___inline___ Trie_node *trie_node_create(Trie_node *parent)
 {
     Trie_node *node;
 
@@ -172,7 +172,7 @@ static __inline__ Trie_node *trie_node_create(Trie_node *parent)
     return node;
 }
 
-static __inline__ void trie_node_destroy(Trie_node *node)
+static ___inline___ void trie_node_destroy(Trie_node *node)
 {
     TRACE("");
 
@@ -182,7 +182,7 @@ static __inline__ void trie_node_destroy(Trie_node *node)
     FREE(node);
 }
 
-static __inline__ bool trie_node_has_child(Trie_node *node)
+static ___inline___ bool trie_node_has_child(Trie_node *node)
 {
     size_t i;
 
@@ -198,7 +198,7 @@ static __inline__ bool trie_node_has_child(Trie_node *node)
     return false;
 }
 
-static __inline__ int trie_node_get_child_index(Trie_node *parent, Trie_node *node)
+static ___inline___ int trie_node_get_child_index(Trie_node *parent, Trie_node *node)
 {
     size_t i;
 

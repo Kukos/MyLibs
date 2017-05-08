@@ -34,7 +34,7 @@
     %0 if success
     %Non-zero value if failure
 */
-__inline__ static int merge(    void        *t,
+___inline___ static int merge(    void        *t,
                                 size_t      offset_left,
                                 size_t      offset_middle,
                                 size_t      offset_right,
@@ -57,7 +57,7 @@ __inline__ static int merge(    void        *t,
     %0 if success
     %Non-zero value if failure
 */
-__inline__ static int medians_of_3(     void        *t,
+___inline___ static int medians_of_3(     void        *t,
                                         size_t      offset_index1,
                                         size_t      offset_index2,
                                         size_t      offset_index3,
@@ -82,7 +82,7 @@ __inline__ static int medians_of_3(     void        *t,
     %Non-zero value if failure
 
 */
-__inline__ static int tukey_medians(    void        *t,
+___inline___ static int tukey_medians(    void        *t,
                                         size_t      offset_left,
                                         size_t      offset_right,
                                         size_t      epsilon,
@@ -137,7 +137,7 @@ static int _quicksort(  void        *t,
                         int         size_of);
 
 
-__inline__ static int merge(    void        *t,
+___inline___ static int merge(    void        *t,
                                 size_t      offset_left,
                                 size_t      offset_middle,
                                 size_t      offset_right,
@@ -201,7 +201,7 @@ __inline__ static int merge(    void        *t,
     return 0;
 }
 
-__inline__ static int medians_of_3(     void        *t,
+___inline___ static int medians_of_3(     void        *t,
                                         size_t      offset_index1,
                                         size_t      offset_index2,
                                         size_t      offset_index3,
@@ -260,7 +260,7 @@ __inline__ static int medians_of_3(     void        *t,
     }
 }
 
-__inline__ static int tukey_medians(    void        *t,
+___inline___ static int tukey_medians(    void        *t,
                                         size_t      offset_left,
                                         size_t      offset_right,
                                         size_t      epsilon,

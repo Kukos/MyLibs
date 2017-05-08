@@ -20,7 +20,7 @@
     %-1 iff failure
     %Pos iff success
 */
-__inline__ static ssize_t darray_unsorted_search_first(Darray *darray,
+___inline___ static ssize_t darray_unsorted_search_first(Darray *darray,
                                                 void *val_in, void *val_out);
 
 /*
@@ -33,7 +33,7 @@ __inline__ static ssize_t darray_unsorted_search_first(Darray *darray,
     %-1 iff failure
     %Pos iff success
 */
-__inline__ static ssize_t darray_unsorted_search_last(Darray *darray,
+___inline___ static ssize_t darray_unsorted_search_last(Darray *darray,
                                                 void *val_in, void *val_out);
 
 /*
@@ -46,7 +46,7 @@ __inline__ static ssize_t darray_unsorted_search_last(Darray *darray,
     %-1 iff failure
     %Pos iff success
 */
-__inline__ static ssize_t darray_sorted_search_first(Darray *darray,
+___inline___ static ssize_t darray_sorted_search_first(Darray *darray,
                                                 void *val_in, void *val_out);
 
 /*
@@ -59,7 +59,7 @@ __inline__ static ssize_t darray_sorted_search_first(Darray *darray,
     %-1 iff failure
     %Pos iff success
 */
-__inline__ static ssize_t darray_sorted_search_last(Darray *darray,
+___inline___ static ssize_t darray_sorted_search_last(Darray *darray,
                                                 void *val_in, void *val_out);
 
 /*
@@ -73,7 +73,7 @@ __inline__ static ssize_t darray_sorted_search_last(Darray *darray,
     %-1 iff failure
     %Pos iff success
 */
-__inline__ static ssize_t upper_bound(Darray *darray, void *val);
+___inline___ static ssize_t upper_bound(Darray *darray, void *val);
 
 
 /*
@@ -91,7 +91,7 @@ __inline__ static ssize_t upper_bound(Darray *darray, void *val);
 */
 static int _darray_insert_pos(Darray *darray, void *entry, size_t pos, bool check);
 
-__inline__ static ssize_t darray_unsorted_search_first(Darray *darray,
+___inline___ static ssize_t darray_unsorted_search_first(Darray *darray,
                                                     void *val_in, void *val_out)
 {
     BYTE *_t;
@@ -119,7 +119,7 @@ __inline__ static ssize_t darray_unsorted_search_first(Darray *darray,
     return (size_t)-1;
 }
 
-__inline__ static ssize_t darray_unsorted_search_last(Darray *darray,
+___inline___ static ssize_t darray_unsorted_search_last(Darray *darray,
                                                     void *val_in, void *val_out)
 {
     BYTE *_t;
@@ -147,7 +147,7 @@ __inline__ static ssize_t darray_unsorted_search_last(Darray *darray,
     return (ssize_t)-1;
 }
 
-__inline__ static ssize_t darray_sorted_search_first(Darray *darray,
+___inline___ static ssize_t darray_sorted_search_first(Darray *darray,
                                                     void *val_in, void *val_out)
 {
     BYTE *_t;
@@ -190,7 +190,7 @@ __inline__ static ssize_t darray_sorted_search_first(Darray *darray,
         return (ssize_t)-1;
 }
 
-__inline__ static ssize_t darray_sorted_search_last(Darray *darray,
+___inline___ static ssize_t darray_sorted_search_last(Darray *darray,
                                             void *val_in, void *val_out)
 {
     BYTE *_t;
@@ -233,7 +233,7 @@ __inline__ static ssize_t darray_sorted_search_last(Darray *darray,
         return (ssize_t)-1;
 }
 
-__inline__ static ssize_t upper_bound(Darray *darray, void *val)
+___inline___ static ssize_t upper_bound(Darray *darray, void *val)
 {
     ssize_t offset_left;
     ssize_t offset_right;

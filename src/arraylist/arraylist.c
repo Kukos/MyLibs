@@ -19,7 +19,7 @@
     NULL if failure
     Pointer if success
 */
-__inline__ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev,
+___inline___ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev,
                                                          Arraylist_node  *next,
                                                          void            *data,
                                                          int             size_of);
@@ -32,9 +32,9 @@ __inline__ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev,
     RETURN:
     This is void function
 */
-__inline__ static void arraylist_node_destroy(Arraylist_node *node);
+___inline___ static void arraylist_node_destroy(Arraylist_node *node);
 
-__inline__ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev,
+___inline___ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev,
                                                          Arraylist_node  *next,
                                                          void            *data,
                                                          int size_of)
@@ -64,7 +64,7 @@ __inline__ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev,
     return node;
 }
 
-__inline__ static void arraylist_node_destroy(Arraylist_node *node)
+___inline___ static void arraylist_node_destroy(Arraylist_node *node)
 {
     TRACE("");
 

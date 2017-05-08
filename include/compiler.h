@@ -201,49 +201,49 @@
 /* FUNCTION ATTR */
 
 /* use this macro instead of inline */
-#define __inline__ inline __attribute__(( always_inline ))
+#define ___inline___ inline __attribute__(( always_inline ))
 
 /* function can't return, it exit immediately  */
-#define __no_return__ __attribute__(( noreturn ))
+#define ___no_return___ __attribute__(( noreturn ))
 
 /* f args can be null */
-#define __nonull__(...) __attribute__(( nonnull(__VA_ARGS__) ))
+#define ___nonull___(...) __attribute__(( nonnull(__VA_ARGS__) ))
 
 /* f is used very few times, so put it in special part of text */
-#define __unlikely_use__ __attribute__(( cold ))
+#define ___unlikely_use___ __attribute__(( cold ))
 
 /*f is used so many times so put it at the begining of text */
-#define __likely_use__ __attribute__(( hot ))
+#define ___likely_use___ __attribute__(( hot ))
 
 #define PRIO_RESERVED 100
 
 /* f is call before main ( init global data in this f ) prio >= 0 */
-#define __before_main__(prio) __attribute__(( constructor(prio + PRIO_RESERVED + 1) ))
+#define ___before_main___(prio) __attribute__(( constructor(prio + PRIO_RESERVED + 1) ))
 
 /* f is call after main or in exit() (dealloc global data in this f) prio >= 0 */
-#define __after_main__(prio) __attribute__(( destructor(prio + PRIO_RESERVED + 1) ))
+#define ___after_main___(prio) __attribute__(( destructor(prio + PRIO_RESERVED + 1) ))
 
 /* this function could be compiled in few version with smid support */
-#define __simd__ __attribute__(( simd ))
+#define ___simd___ __attribute__(( simd ))
 
 /* tell compiler that this f or var could be nt used */
-#define __unused__ __attribute__(( unused ))
+#define ___unused___ __attribute__(( unused ))
 
 /* tell compiler that function is weak and can be overwrite */
-#define __weak__ __attribute__(( weak ))
+#define ___weak___ __attribute__(( weak ))
 
 /* VARIABLE ATTR */
 
 /* align variable to bytes */
-#define __align__(bytes) __attribute__(( aligned(bytes) ))
+#define ___align___(bytes) __attribute__(( aligned(bytes) ))
 
 /* align to biggest aligment */
-#define __max_align__(bytes) __attribute__((aligned (__BIGGEST_ALIGNMENT__) ))
+#define ___max_align___(bytes) __attribute__((aligned (__BIGGEST_ALIGNMENT__) ))
 
 /* packed variable / structure */
-#define __packed__ __attribute__(( packed ))
+#define ___packed___ __attribute__(( packed ))
 
 /* garbage_collected by function with only 1 arg: pointer to this variable */
-#define __garbage_collector__(func) __attribute__(( cleanup(func) ))
+#define ___garbage_collector___(func) __attribute__(( cleanup(func) ))
 
 #endif

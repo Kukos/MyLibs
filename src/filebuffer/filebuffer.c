@@ -12,13 +12,13 @@
 #include <fcntl.h>
 #include <stdbool.h>
 
-__inline__ static bool is_aligned(size_t size)
+___inline___ static bool is_aligned(size_t size)
 {
 	/* pagesize is always power of 2 */
 	return !(CAST_TO_BOOL(size & ((size_t)getpagesize())));
 }
 
-__inline__ static size_t align_size(size_t size)
+___inline___ static size_t align_size(size_t size)
 {
 	/* page size is always power of two */
 	size_t page_size = (size_t)getpagesize();

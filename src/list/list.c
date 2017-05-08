@@ -18,7 +18,7 @@
     NULL iff failure
     Pointer to List_node iff success
 */
-__inline__ static List_node *list_node_create(List_node *next, void* data,
+___inline___ static List_node *list_node_create(List_node *next, void* data,
                 int size_of);
 
 
@@ -31,10 +31,10 @@ __inline__ static List_node *list_node_create(List_node *next, void* data,
     RETURN:
     This is void function
 */
-__inline__ static void list_node_destroy(List_node *node);
+___inline___ static void list_node_destroy(List_node *node);
 
 
-__inline__ static List_node *list_node_create(List_node *next, void *data,
+___inline___ static List_node *list_node_create(List_node *next, void *data,
      int size_of)
 {
     List_node *node;

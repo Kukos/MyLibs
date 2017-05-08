@@ -217,52 +217,52 @@
     int concat(PREFIX, _iterator_get_data)(IT_STRUCT_NAME(STRUCT) *, void *); \
     int concat(PREFIX, _iterator_get_node)(IT_STRUCT_NAME(STRUCT) *, void *); \
     \
-    __inline__ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, _iterator_create)(STRUCT *s, ITI_MODE mode) \
+    ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, _iterator_create)(STRUCT *s, ITI_MODE mode) \
     { \
         return concat(PREFIX, _iterator_create)(s, mode); \
     } \
     \
-    __inline__ int concat(STRUCT, _iterator_init)(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode) \
+    ___inline___ int concat(STRUCT, _iterator_init)(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode) \
     { \
         return concat(PREFIX, _iterator_init)(s, it, mode); \
     } \
     \
-    __inline__ void concat(STRUCT, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *s) \
+    ___inline___ void concat(STRUCT, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *s) \
     { \
         concat(PREFIX, _iterator_destroy)(s); \
     } \
-    __inline__ int concat(STRUCT, _iterator_destroy_int)(IT_STRUCT_NAME(STRUCT) *s) \
+    ___inline___ int concat(STRUCT, _iterator_destroy_int)(IT_STRUCT_NAME(STRUCT) *s) \
     { \
         concat(PREFIX, _iterator_destroy)(s); \
         return 0; \
     } \
     \
-    __inline__ int concat(STRUCT, _iterator_next)(IT_STRUCT_NAME(STRUCT) *s) \
+    ___inline___ int concat(STRUCT, _iterator_next)(IT_STRUCT_NAME(STRUCT) *s) \
     { \
         return concat(PREFIX, _iterator_next)(s); \
     } \
     \
-    __inline__ int concat(STRUCT, _iterator_prev)(IT_STRUCT_NAME(STRUCT) *s) \
+    ___inline___ int concat(STRUCT, _iterator_prev)(IT_STRUCT_NAME(STRUCT) *s) \
     { \
         return concat(PREFIX, _iterator_prev)(s); \
     } \
     \
-    __inline__ bool concat(STRUCT, _iterator_end)(IT_STRUCT_NAME(STRUCT) *s) \
+    ___inline___ bool concat(STRUCT, _iterator_end)(IT_STRUCT_NAME(STRUCT) *s) \
     { \
         return concat(PREFIX, _iterator_end)(s); \
     } \
-    __inline__ int concat(STRUCT, _iterator_get_data)(IT_STRUCT_NAME(STRUCT) *s, void *d) \
+    ___inline___ int concat(STRUCT, _iterator_get_data)(IT_STRUCT_NAME(STRUCT) *s, void *d) \
     { \
             return concat(PREFIX, _iterator_get_data)(s, d); \
     } \
     \
-    __inline__ int concat(STRUCT, _iterator_get_node)(IT_STRUCT_NAME(STRUCT) *s, void *n) \
+    ___inline___ int concat(STRUCT, _iterator_get_node)(IT_STRUCT_NAME(STRUCT) *s, void *n) \
     { \
             return concat(PREFIX, _iterator_get_node)(s, n); \
     } \
 
 #define for_each(__struct, __type, __node, __data) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_BEGIN); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
@@ -273,7 +273,7 @@
             )
 
 #define for_each_prev(__struct, __type, __node, __data) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_END); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
@@ -284,7 +284,7 @@
             )
 
 #define for_each_root(__struct, __type, __node, __data) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
@@ -296,7 +296,7 @@
 
 
 #define for_each_root_prev(__struct, __type, __node, __data) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
@@ -308,7 +308,7 @@
 
 
 #define for_each_data(__struct, __type, __data) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_BEGIN); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
@@ -318,7 +318,7 @@
             )
 
 #define for_each_data_prev(__struct, __type, __data) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_END); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
@@ -328,7 +328,7 @@
             )
 
 #define for_each_data_root(__struct, __type, __data) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
@@ -339,7 +339,7 @@
 
 
 #define for_each_data_root_prev(__struct, __type, __data) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
@@ -350,7 +350,7 @@
 
 
 #define for_each_node(__struct, __type, __node) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_BEGIN); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
@@ -360,7 +360,7 @@
             )
 
 #define for_each_node_prev(__struct, __type, __node) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_END); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
@@ -370,7 +370,7 @@
             )
 
 #define for_each_node_root(__struct, __type, __node) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
@@ -381,7 +381,7 @@
 
 
 #define for_each_node_root_prev(__struct, __type, __node) \
-        for (   __unused__ IT_STRUCT_NAME(__type) *______it = \
+        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
