@@ -12,7 +12,8 @@ Stack *stack_create(int size_of)
 
     TRACE("");
 
-    assert(size_of < 0);
+    if (size_of < 1)
+        ERROR("size_of < 1\n", NULL, "");
 
     s = (Stack *)malloc(sizeof(Stack));
     if (s == NULL)
@@ -44,7 +45,8 @@ int stack_push(Stack *stack, void *val)
 {
     TRACE("");
 
-    assert(stack == NULL || stack->____darray == NULL || val == NULL);
+    if (stack == NULL || val == NULL)
+        ERROR("stack == NULL || val == NULL\n", 1, "");
 
     return darray_insert(stack->____darray,val);
 }
@@ -55,7 +57,8 @@ int stack_pop(Stack *stack, void* val)
 
     TRACE("");
 
-    assert(stack == NULL || stack->____darray == NULL || val == NULL);
+    if (stack == NULL || val == NULL)
+        ERROR("stack == NULL || val == NULL\n", 1, "");
 
     if (stack_is_empty(stack))
         ERROR("stack is empty\n", 1, "");
@@ -83,7 +86,8 @@ int stack_get_top(Stack *stack, void *val)
 
     TRACE("");
 
-    assert(stack == NULL || stack->____darray == NULL || val == NULL);
+    if (stack == NULL || val == NULL)
+        ERROR("stack == NULL || val == NULL\n", 1, "");
 
     if (stack_is_empty(stack))
         ERROR("stack is empty\n", 1, "");
@@ -103,8 +107,8 @@ int stack_to_array(Stack *stack, void *array, size_t *size)
 
     TRACE("");
 
-    assert(stack == NULL || stack->____darray == NULL
-         || array == NULL || size == NULL);
+    if (stack == NULL || array == NULL)
+        ERROR("stack == NULL || array == NULL\n", 1, "");
 
     if (stack_is_empty(stack))
         ERROR("stack is empty\n",1 ,"");
@@ -117,7 +121,9 @@ int stack_to_array(Stack *stack, void *array, size_t *size)
     darray_get_num_entries(stack->____darray) * darray_get_size_of(stack->____darray)) == NULL)
         ERROR("memcpy error\n", 1 ,"");
 
-    *size = darray_get_num_entries(stack->____darray);
+    if (size != NULL)
+        *size = darray_get_num_entries(stack->____darray);
+
     *(void **)array = t;
 
     return 0;
@@ -125,21 +131,24 @@ int stack_to_array(Stack *stack, void *array, size_t *size)
 
 void *stack_get_array(Stack *stack)
 {
-    assert(stack == NULL);
+    if (stack == NULL)
+        ERROR("stack == NULL\n", NULL, "");
 
     return darray_get_array(stack->____darray);
 }
 
 ssize_t stack_get_num_entries(Stack *stack)
 {
-    assert(stack == NULL);
+    if (stack == NULL)
+        ERROR("stack == NULL\n", -1, "");
 
     return darray_get_num_entries(stack->____darray);
 }
 
 int stack_get_size_of(Stack *stack)
 {
-    assert(stack == NULL);
+    if (stack == NULL)
+        ERROR("stack == NULL\n", -1, "");
 
     return darray_get_size_of(stack->____darray);
 }

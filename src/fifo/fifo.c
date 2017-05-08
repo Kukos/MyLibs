@@ -15,7 +15,8 @@ Fifo *fifo_create(int size_of)
 
     TRACE("");
 
-    assert(size_of < 0);
+    if (size_of < 1)
+        ERROR("size_of < 1\n", NULL, "");
 
     fifo = (Fifo *)malloc(sizeof(Fifo));
     if (fifo == NULL)
@@ -66,7 +67,8 @@ int fifo_enqueue(Fifo *fifo, void *val)
 
     TRACE("");
 
-    assert(fifo == NULL || fifo->____array == NULL || val == NULL);
+    if (fifo == NULL || val == NULL)
+        ERROR("fifo == NULL || val == NULL\n", 1, "");
 
     _t = (BYTE *)fifo->____array;
     _val = (BYTE *)val;
@@ -124,7 +126,8 @@ int fifo_get_head(Fifo *fifo, void *val)
 
     TRACE("");
 
-    assert(fifo == NULL || fifo->____array == NULL || val == NULL);
+    if (fifo == NULL || val == NULL)
+        ERROR("fifo == NULL || val == NULL\n", 1, "");
 
     if (fifo_is_empty(fifo))
         ERROR("fifo is empty\n", 1, "");
@@ -148,7 +151,8 @@ int fifo_dequeue(Fifo *fifo, void *val)
 
     TRACE("");
 
-    assert(fifo == NULL || fifo->____array == NULL || val == NULL);
+    if (fifo == NULL || val == NULL)
+        ERROR("fifo == NULL || val == NULL\n", 1, "");
 
     if (fifo_is_empty(fifo))
         ERROR("fifo is empty\n", 1, "");
@@ -229,7 +233,8 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size)
 
     TRACE("");
 
-    assert(fifo == NULL || fifo->____array == NULL || array == NULL || size == NULL);
+    if (fifo == NULL || array == NULL)
+        ERROR("fifo == NULL || array == NULL\n", 1, "");
 
     if (fifo_is_empty(fifo))
         ERROR("fifo is empty\n", 1, "");
@@ -260,7 +265,9 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size)
             ERROR("memcpy error\n", 1, "");
     }
 
-    *size = entries;
+    if (size != NULL)
+        *size = entries;
+
     *(void **)array = t;
 
     return 0;
@@ -268,7 +275,8 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size)
 
 int fifo_get_size_of(Fifo *fifo)
 {
-    assert(fifo == NULL);
+    if (fifo == NULL)
+        ERROR("fifo == NULL\n", 1, "");
 
     return fifo->____size_of;
 }
@@ -277,7 +285,8 @@ ssize_t fifo_get_num_entries(Fifo *fifo)
 {
     ssize_t entries;
 
-    assert(fifo == NULL);
+    if (fifo == NULL)
+        ERROR("fifo == NULL\n", -1, "");
 
     if (fifo->____tail < fifo->____head)
         entries = fifo->____tail + fifo->____size - fifo->____head;

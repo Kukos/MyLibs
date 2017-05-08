@@ -158,7 +158,7 @@ ___inline___ static int merge(    void        *t,
     TRACE("");
 
     assert(t == NULL || buffer == NULL || cmp == NULL);
-    assert(size_of < 0);
+    assert(size_of < 1);
     assert(offset_middle < offset_left || offset_right < offset_middle
             || offset_right < offset_left);
 
@@ -423,7 +423,7 @@ static int _quicksort(  void        *t,
     TRACE("");
 
     assert(t == NULL || cmp == NULL);
-    assert(offset_left >= offset_right || size_of < 0);
+    assert(offset_left >= offset_right || size_of < 1);
 
     _t = (BYTE *)t;
 
@@ -497,8 +497,8 @@ int insort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_o
     if (t == NULL || cmp == NULL)
         ERROR("t == NULL || cmp == NULL\n", 1, "");
 
-    if (size_of < 0)
-        ERROR("size_of < 0\n", 1, "");
+    if (size_of < 1)
+        ERROR("size_of < 1\n", 1, "");
 
     /* cast TYPE *t on BYTE*, so we can pick 1 byte */
     _t = (BYTE *)t;
@@ -560,8 +560,8 @@ int binsort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_
     if (t == NULL || cmp == NULL)
         ERROR("t == NULL || cmp == NULL\n", 1, "");
 
-    if (size_of < 0)
-        ERROR("size_of < 0\n", 1, "");
+    if (size_of < 1)
+        ERROR("size_of < 1\n", 1, "");
 
     if (num_elements < INSORT_TRESHOLD)
         return insort(t, num_elements, cmp, size_of);
@@ -654,8 +654,8 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
     if (t == NULL || cmp == NULL)
         ERROR("t == NULL || cmp == NULL\n", 1, "");
 
-    if (size_of < 0)
-        ERROR("size_of < 0\n", 1, "");
+    if (size_of < 1)
+        ERROR("size_of < 1\n", 1, "");
 
     if (num_elements < INSORT_TRESHOLD)
         return insort(t, num_elements, cmp, size_of);
@@ -714,8 +714,8 @@ int quicksort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
     if (t == NULL || cmp == NULL)
         ERROR("t == NULL || cmp == NULL\n", 1, "");
 
-    if (size_of < 0)
-        ERROR("size_of < 0\n", 1, "");
+    if (size_of < 1)
+        ERROR("size_of < 1\n", 1, "");
 
     if (num_elements < INSORT_TRESHOLD)
         return insort(t, num_elements, cmp, size_of);
@@ -730,8 +730,8 @@ int sort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
     if (t == NULL || cmp == NULL)
         ERROR("t == NULL || cmp == NULL\n", 1, "");
 
-    if (size_of < 0)
-        ERROR("size_of < 0\n", 1, "");
+    if (size_of < 1)
+        ERROR("size_of < 1\n", 1, "");
 
 	if (num_elements < INSORT_TRESHOLD)
 		return insort(t, num_elements, cmp, size_of);

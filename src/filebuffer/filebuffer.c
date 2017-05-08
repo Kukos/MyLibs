@@ -125,9 +125,13 @@ int file_buffer_append(file_buffer *fb, const char *data)
 
 	TRACE("");
 
-    assert(fb == NULL || data == NULL);
+	if (fb == NULL || data == NULL)
+		ERROR("fb == NULL || data == NULL\n", 1, "");
 
 	length = strlen(data);
+	if (length == 0)
+		ERROR("data has 0 len\n", 1, "");
+
 	new_size = fb->____size + length;
 
 	/* resize file */
@@ -159,7 +163,8 @@ int file_buffer_synch(file_buffer *fb)
 {
 	TRACE("");
 
-    assert(fb == NULL);
+    if (fb == NULL)
+		ERROR("fb == NULL\n", 1, "");
 
     if ((msync((void *)fb->____buffer, fb->____size, MS_SYNC)) == -1)
         ERROR("msync error\n", 1, "");
@@ -169,14 +174,16 @@ int file_buffer_synch(file_buffer *fb)
 
 char *file_buffer_get_buff(file_buffer *fb)
 {
-	assert(fb == NULL);
+	if (fb == NULL)
+		ERROR("fb == NULL\n", NULL, "");
 
 	return fb->____buffer;
 }
 
 ssize_t file_buffer_get_size(file_buffer *fb)
 {
-	assert(fb == NULL);
+	if (fb == NULL)
+		ERROR("fb == NULL\n", -1, "");
 
 	return (ssize_t)fb->____size;
 }
