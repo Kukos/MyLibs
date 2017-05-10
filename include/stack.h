@@ -58,6 +58,21 @@ Stack *stack_create(int size_of);
 void stack_destroy(Stack *stack);
 
 /*
+    Destroy Stack with all entries ( call destructor for each entries )
+
+    destructor by void * pass addr i.e in array we have MyStruct *,
+    so your destructor data = (void *)&ms
+
+    PARAMS
+    @IN stack - pointer Stack
+    @IN desturctor -  your object destructor
+
+    RETURN:
+    This is a void function
+*/
+void stack_destroy_with_entries(Stack *stack, void (*destructor)(void *data));
+
+/*
     Push value on stack
 
     PARAMS:

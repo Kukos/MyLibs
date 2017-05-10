@@ -365,6 +365,27 @@ void darray_destroy(Darray *darray)
     FREE(darray);
 }
 
+void darray_destroy_with_entries(Darray *darray, void (*destructor)(void *data))
+{
+    TRACE("");
+
+    size_t i;
+    BYTE *t;
+
+    if (darray == NULL || destructor == NULL)
+        return;
+
+    t = (BYTE *)darray->____array;
+
+    for (i = 0; i < darray->____num_entries; ++i)
+       destructor((void *)(t + (i * darray->____size_of)));
+
+
+    FREE(darray->____array);
+    FREE(darray);
+}
+
+
 int darray_insert(Darray *darray, void *entry)
 {
     int status;

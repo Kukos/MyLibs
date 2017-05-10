@@ -5,6 +5,20 @@
 #include <stdbool.h>
 #include <common.h>
 
+typedef struct MyStruct
+{
+    int a;
+    int b;
+    int c;
+    int d;
+}MyStruct;
+
+void my_struct_destroy(void *s)
+{
+    MyStruct *ms = *(MyStruct **)s;
+    FREE(ms);
+}
+
 ARRAY_EQUAL(char)
 ARRAY_EQUAL(int)
 ARRAY_EQUAL(double)
@@ -522,6 +536,30 @@ test_f test_convert_to_array2(void)
     FREE(rt3);
 }
 
+test_f test_destroy_with_entries(void)
+{
+    MyStruct *s;
+    Stack *stack;
+
+    int i;
+    size_t size = BIT(10);
+
+    stack = stack_create(sizeof(MyStruct *));
+    T_ERROR(stack == NULL);
+    T_EXPECT(stack_get_num_entries(stack), 0);
+    T_EXPECT(stack_get_size_of(stack), sizeof(MyStruct *));
+
+    for (i = 0; i < size; ++i)
+    {
+        s = (MyStruct *)malloc(sizeof(MyStruct));
+        T_ERROR(s == NULL);
+
+        T_EXPECT(stack_push(stack, (void *)&s), 0);
+    }
+
+    stack_destroy_with_entries(stack, my_struct_destroy);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -530,6 +568,7 @@ void test(void)
     TEST(test_insert_delete());
     TEST(test_convert_to_array());
     TEST(test_convert_to_array2());
+    TEST(test_destroy_with_entries());
 }
 
 int main(void)

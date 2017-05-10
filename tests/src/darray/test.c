@@ -14,6 +14,20 @@ ARRAY_EQUAL(int)
 ARRAY_EQUAL(double)
 ARRAY_EQUAL(char)
 
+typedef struct MyStruct
+{
+    int a;
+    int b;
+    int c;
+    int d;
+}MyStruct;
+
+void my_struct_destroy(void *s)
+{
+    MyStruct *ms = *(MyStruct **)s;
+    FREE(ms);
+}
+
 test_f test_create(void)
 {
     Darray *da[12];
@@ -1819,6 +1833,31 @@ test_f test_for_each(void)
 
 }
 
+test_f test_destroy_with_entries(void)
+{
+    MyStruct *s;
+    Darray *da;
+
+    int i;
+    size_t size = BIT(10);
+
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(MyStruct *), NULL);
+    T_ERROR(da == NULL);
+    T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
+    T_EXPECT(darray_get_size_of(da), sizeof(MyStruct *));
+    T_EXPECT(darray_get_num_entries(da), 0);
+
+    for (i = 0; i < size; ++i)
+    {
+        s = (MyStruct *)malloc(sizeof(MyStruct));
+        T_ERROR(s == NULL);
+
+        T_EXPECT(darray_insert(da, (void *)&s), 0);
+    }
+
+    darray_destroy_with_entries(da, my_struct_destroy);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -1833,6 +1872,7 @@ void test(void)
     TEST(test_min());
     TEST(test_max());
     TEST(test_for_each());
+    TEST(test_destroy_with_entries());
 }
 
 int main(void)

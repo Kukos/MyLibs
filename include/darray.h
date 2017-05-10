@@ -94,6 +94,21 @@ Darray *darray_create(DARRAY_TYPE type, size_t size, int size_of,
 void darray_destroy(Darray *darray);
 
 /*
+    Destroy Darray with all entries ( call destructor for each entries )
+
+    destructor by void * pass addr i.e in array we have MyStruct *,
+    so your destructor data = (void *)&ms
+
+    PARAMS
+    @IN darray - pointer darray
+    @IN desturctor -  your object destructor
+
+    RETURN:
+    This is a void function
+*/
+void darray_destroy_with_entries(Darray *darray, void (*destructor)(void *data));
+
+/*
     Insert an entry at the end of array or insert to the sorted array
 
     PARAMS

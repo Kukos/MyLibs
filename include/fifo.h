@@ -60,6 +60,21 @@ Fifo *fifo_create(int size_of);
 void fifo_destroy(Fifo *fifo);
 
 /*
+    Destroy Fifo with all entries ( call destructor for each entries )
+
+    destructor by void * pass addr i.e in array we have MyStruct *,
+    so your destructor data = (void *)&ms
+
+    PARAMS
+    @IN fifo - pointer Fifo
+    @IN desturctor -  your object destructor
+
+    RETURN:
+    This is a void function
+*/
+void fifo_destroy_with_entries(Fifo *fifo, void (*destructor)(void *data));
+
+/*
     Insert val into queue
 
     PARAMS

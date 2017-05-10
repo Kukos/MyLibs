@@ -4,6 +4,20 @@
 #include <time.h>
 #include <common.h>
 
+typedef struct MyStruct
+{
+    int a;
+    int b;
+    int c;
+    int d;
+}MyStruct;
+
+void my_struct_destroy(void *s)
+{
+    MyStruct *ms = *(MyStruct **)s;
+    FREE(ms);
+}
+
 ARRAY_REVERSE(int)
 
 ARRAY_EQUAL(int)
@@ -781,6 +795,30 @@ test_f test_for_each(void)
     arraylist_destroy(al);
 }
 
+test_f test_destroy_with_entries(void)
+{
+    MyStruct *s;
+    Arraylist *al;
+
+    size_t size = BIT(10);
+    size_t i;
+
+    al = arraylist_create(sizeof(MyStruct *));
+    T_ERROR(al == NULL);
+    T_EXPECT(arraylist_get_num_entries(al), 0);
+    T_EXPECT(arraylist_get_size_of(al), sizeof(MyStruct *));
+
+    for (i = 0; i < size; ++i)
+    {
+        s = (MyStruct *)malloc(sizeof(MyStruct));
+        T_ERROR(s == NULL);
+
+        T_EXPECT( arraylist_insert_last(al, (void *)&s), 0);
+    }
+
+    arraylist_destroy_with_entries(al, my_struct_destroy);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -795,6 +833,7 @@ void test(void)
     TEST(test_delete_pos());
     TEST(test_insert_delete());
     TEST(test_for_each());
+    TEST(test_destroy_with_entries());
 }
 
 int main(void)

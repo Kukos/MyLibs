@@ -49,6 +49,36 @@ void fifo_destroy(Fifo *fifo)
     FREE(fifo);
 }
 
+void fifo_destroy_with_entries(Fifo *fifo, void (*destructor)(void *data))
+{
+    TRACE("");
+
+    size_t i;
+    BYTE *t;
+
+    if (fifo == NULL || destructor == NULL)
+        return;
+
+    t = (BYTE *)fifo->____array;
+
+    if (fifo->____head < fifo->____tail)
+    {
+        for (i = fifo->____head; i < fifo->____tail; ++i)
+             destructor((void *)(t + (i * fifo->____size_of)));
+    }
+    else
+    {
+        for (i = fifo->____tail; i < fifo->____size; ++i)
+             destructor((void *)(t + (i * fifo->____size_of)));
+
+        for (i = 0; i < fifo->____head; ++i)
+             destructor((void *)(t + (i * fifo->____size_of)));
+    }
+
+    FREE(fifo->____array);
+    FREE(fifo);
+}
+
 bool fifo_is_empty(Fifo *fifo)
 {
     TRACE("");

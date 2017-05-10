@@ -4,6 +4,20 @@
 #include <time.h>
 #include <common.h>
 
+typedef struct MyStruct
+{
+    int a;
+    int b;
+    int c;
+    int d;
+}MyStruct;
+
+void my_struct_destroy(void *s)
+{
+    MyStruct *ms = *(MyStruct **)s;
+    FREE(ms);
+}
+
 ARRAY_EQUAL(char)
 ARRAY_EQUAL(int)
 ARRAY_EQUAL(double)
@@ -408,6 +422,30 @@ test_f test_convert_to_array(void)
     FREE(rt3);
 }
 
+test_f test_destroy_with_entries(void)
+{
+    MyStruct *s;
+    Fifo *q;
+
+    int i;
+    size_t size = BIT(10);
+
+    q = fifo_create(sizeof(MyStruct *));
+    T_ERROR(q == NULL);
+    T_EXPECT(fifo_get_num_entries(q), 0);
+    T_EXPECT(fifo_get_size_of(q), sizeof(MyStruct *));
+
+    for (i = 0; i < size; ++i)
+    {
+        s = (MyStruct *)malloc(sizeof(MyStruct));
+        T_ERROR(s == NULL);
+
+        T_EXPECT(fifo_enqueue(q, (void *)&s), 0);
+    }
+
+    fifo_destroy_with_entries(q, my_struct_destroy);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -415,6 +453,7 @@ void test(void)
     TEST(test_delete());
     TEST(test_insert_delete());
     TEST(test_convert_to_array());
+    TEST(test_destroy_with_entries());
 }
 
 int main(void)

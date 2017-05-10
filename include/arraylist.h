@@ -85,6 +85,9 @@ void arraylist_destroy(Arraylist *alist);
 /*
     Destroy arraylist with all entries ( call destructor for each entries )
 
+    destructor by void * pass addr i.e in array we have MyStruct *,
+    so your destructor data = (void *)&ms
+
     PARAMS
     @IN alist - pointer to arraylist
     @IN desturctor -  your object destructor

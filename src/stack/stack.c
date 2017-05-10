@@ -41,6 +41,18 @@ void stack_destroy(Stack *stack)
     FREE(stack);
 }
 
+void stack_destroy_with_entries(Stack *stack, void (*destructor)(void *data))
+{
+    TRACE("");
+
+    if (stack == NULL)
+        return;
+
+    darray_destroy_with_entries(stack->____darray, destructor);
+
+    FREE(stack);
+}
+
 int stack_push(Stack *stack, void *val)
 {
     TRACE("");
