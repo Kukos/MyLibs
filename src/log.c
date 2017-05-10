@@ -18,9 +18,12 @@ void __log__(const char *msg, ...)
 {
 	va_list args;
 
-    va_start(args, msg);
-	(void)vfprintf(logfd == NULL ? stderr : logfd, msg, args);
-	va_end(args);
+	if (logfd != NULL)
+	{
+    	va_start(args, msg);
+		(void)vfprintf(logfd, msg, args);
+		va_end(args);
+	}
 
 	if (logfile != NULL)
 	{
@@ -38,9 +41,12 @@ void __trace_call__(const char *msg, ...)
 {
     va_list args;
 
-    va_start(args, msg);
-	(void)vfprintf(logfd == NULL ? stderr : logfd, msg, args);
-	va_end(args);
+	if (logfd != NULL)
+	{
+    	va_start(args, msg);
+		(void)vfprintf(logfd, msg, args);
+		va_end(args);
+	}
 
 	if (logfile != NULL)
 	{
@@ -58,9 +64,12 @@ void __error__(const char *msg, ...)
 {
 	va_list args;
 
-    va_start(args, msg);
-	(void)vfprintf(logfd == NULL ? stderr : logfd, msg, args);
-	va_end(args);
+	if (logfd != NULL)
+	{
+    	va_start(args, msg);
+		(void)vfprintf(logfd, msg, args);
+		va_end(args);
+	}
 
 	if (logfile != NULL)
 	{
@@ -83,10 +92,8 @@ int log_init(FILE *fd, int to_file)
 	char buf[LOGBUF_SIZE];
 	size_t len;
 
-	if (fd == NULL || fd != stderr || fd != stdout)
+	if (fd != stderr || fd != stdout)
 		logfd = stderr;
-	else
-		logfd = fd;
 
 	if (to_file == LOG_TO_FILE)
 	{
