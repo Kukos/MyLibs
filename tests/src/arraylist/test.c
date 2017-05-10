@@ -2,25 +2,7 @@
 #include <arraylist.h>
 #include <stdlib.h>
 #include <time.h>
-
-#define ARRAY_EQUAL(type) \
-    bool concat(array_equal_, type)(type *t1, type *t2, size_t size) \
-    { \
-        size_t i; \
-        for (i = 0; i < size; ++i) \
-            if (t1[i] != t2[i]) \
-                return false; \
-        \
-        return true; \
-    }
-
-#define ARRAY_REVERSE(type) \
-    void concat(array_reverse_, type)(type *t, size_t size) \
-    { \
-        size_t i; \
-        for (i = 0; i < (size >> 1); ++i) \
-            SWAP(t[i], t[size - i - 1]); \
-    }
+#include <common.h>
 
 ARRAY_REVERSE(int)
 

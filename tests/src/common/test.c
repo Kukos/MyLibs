@@ -295,6 +295,115 @@ test_f test_log2(void)
     T_EXPECT(LOG2_longlong(c), -1);
 }
 
+CMP(char)
+CMP(int)
+CMP(double)
+
+test_f test_cmp_macro(void)
+{
+    char a;
+    char b;
+
+    int c;
+    int d;
+
+    double e;
+    double f;
+
+    a = 1;
+    b = 1;
+    T_EXPECT(cmp_char((void *)&a, (void *)&b), 0);
+
+    a = 10;
+    b = 20;
+    T_EXPECT(cmp_char((void *)&a, (void *)&b), -1);
+
+    a = 100;
+    b = 20;
+    T_EXPECT(cmp_char((void *)&a, (void *)&b), 1);
+
+    c = 11;
+    d = 11;
+    T_EXPECT(cmp_int((void *)&c, (void *)&d), 0);
+
+    c = 120;
+    d = 10000;
+    T_EXPECT(cmp_int((void *)&c, (void *)&d), -1);
+
+    c = 99999;
+    d = -10000;
+    T_EXPECT(cmp_int((void *)&c, (void *)&d), 1);
+
+    e = -19.09;
+    f = -19.09;
+    T_EXPECT(cmp_double((void *)&e, (void *)&f), 0);
+
+    e = -1000.212;
+    f = 123123.2131;
+    T_EXPECT(cmp_double((void *)&e, (void *)&f), -1);
+
+    e = 213123123.2131;
+    f = 123.3123;
+    T_EXPECT(cmp_double((void *)&e, (void *)&f), 1);
+}
+
+ARRAY_EQUAL(char)
+ARRAY_EQUAL(int)
+ARRAY_EQUAL(double)
+
+test_f test_array_cmp_macro(void)
+{
+    char a[] = "Kukos";
+    char b[] = "Master C";
+    char c[] = "Kukos";
+
+    int d[] = {1, 2, 3, 4, 5};
+    int e[] = {5, 4, 3, 2, 1};
+    int f[] = {1, 2, 3, 4, 5};
+
+    double g[] = {1.1, 2.2, 3.3, 4.4, 5.5};
+    double h[] = {1.5, 2.4, 3.3, 4.2, 5.1};
+    double i[] = {1.1, 2.2, 3.3, 4.4, 5.5};
+
+
+    T_EXPECT(array_equal_char(a, b, ARRAY_SIZE(a)), false);
+    T_EXPECT(array_equal_char(b, c, ARRAY_SIZE(c)), false);
+    T_EXPECT(array_equal_char(a, c, ARRAY_SIZE(a)), true);
+
+    T_EXPECT(array_equal_int(d, e, ARRAY_SIZE(d)), false);
+    T_EXPECT(array_equal_int(e, f, ARRAY_SIZE(e)), false);
+    T_EXPECT(array_equal_int(d, f, ARRAY_SIZE(d)), true);
+
+    T_EXPECT(array_equal_double(g, h, ARRAY_SIZE(g)), false);
+    T_EXPECT(array_equal_double(h, i, ARRAY_SIZE(h)), false);
+    T_EXPECT(array_equal_double(g, i, ARRAY_SIZE(g)), true);
+}
+
+ARRAY_REVERSE(char)
+ARRAY_REVERSE(int)
+ARRAY_REVERSE(double)
+
+test_f test_array_reverse_macro(void)
+{
+    char a[] = {'K', 'u', 'k', 'o', 's'};
+    char b[] = "sokuK";
+
+    int c[] = {1, 2, 3, 4, 5};
+    int d[] = {5, 4, 3, 2, 1};
+
+    double e[] = {1.1, 2.2, 3.3, 4.4, 5.5};
+    double f[] = {5.5, 4.4, 3.3, 2.2, 1.1};
+
+    array_reverse_char(a, ARRAY_SIZE(a));
+    T_EXPECT(array_equal_char(a, b, ARRAY_SIZE(a)), true);
+
+    array_reverse_int(c, ARRAY_SIZE(c));
+    T_EXPECT(array_equal_int(c, d, ARRAY_SIZE(c)), true);
+
+    array_reverse_double(e, ARRAY_SIZE(e));
+    T_EXPECT(array_equal_double(e, f, ARRAY_SIZE(e)), true);
+}
+
 void test(void)
 {
     TEST(test_bits_operations());
@@ -306,6 +415,9 @@ void test(void)
     TEST(test_hamming_weight());
     TEST(test_hamming_distance());
     TEST(test_log2());
+    TEST(test_cmp_macro());
+    TEST(test_array_cmp_macro());
+    TEST(test_array_reverse_macro());
 }
 
 int main(void)

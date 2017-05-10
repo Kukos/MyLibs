@@ -6,29 +6,6 @@
 #include <stdbool.h>
 #include <sort.h>
 
-#define CMP(type) \
-    int concat(cmp_, type)(void *a, void *b) \
-    { \
-        if (*(type *)a < *(type *)b) \
-            return -1; \
-        \
-        if (*(type *)a > *(type *)b) \
-            return 1; \
-        \
-        return 0; \
-    }
-
-#define ARRAY_EQUAL(type) \
-    bool concat(array_equal_, type)(type *t1, type *t2, size_t size) \
-    { \
-        size_t i; \
-        for (i = 0; i < size; ++i) \
-            if (t1[i] != t2[i]) \
-                return false; \
-        \
-        return true; \
-    }
-
 CMP(int)
 CMP(double)
 CMP(char)

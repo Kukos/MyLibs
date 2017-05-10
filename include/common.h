@@ -102,4 +102,55 @@
 #define COLOR_BOLDCYAN        "\033[1m\033[36m"
 #define COLOR_BOLDWHITE       "\033[1m\033[37m"
 
+/*
+    Macro create static function for cmp whole array (type must by simple type)
+*/
+#define ARRAY_EQUAL(type) \
+    static ___unused___ bool concat(array_equal_, type)(type *t1, type *t2, size_t size) \
+    { \
+        size_t i; \
+        \
+        if (t1 == NULL || t2 == NULL) \
+            return false; \
+        \
+        for (i = 0; i < size; ++i) \
+            if (t1[i] != t2[i]) \
+                return false; \
+        \
+        return true; \
+    }
+
+/*
+    Macro create static function for reversing whole array (type must by simple type)
+*/
+#define ARRAY_REVERSE(type) \
+    static ___unused___ void concat(array_reverse_, type)(type *t, size_t size) \
+    { \
+        size_t i; \
+        \
+        if (t == NULL) \
+            return; \
+        \
+        for (i = 0; i < (size >> 1); ++i) \
+            SWAP(t[i], t[size - i - 1]); \
+    }
+
+/*
+    Macro create static function for cmp 2 vars (type must by simple type)
+*/
+#define CMP(type) \
+    static ___unused___ int concat(cmp_, type)(void *a, void *b) \
+    { \
+        if (a == NULL || b == NULL) \
+            return -10000; \
+        \
+        if (*(type *)a < *(type *)b) \
+            return -1; \
+        \
+        if (*(type *)a > *(type *)b) \
+            return 1; \
+        \
+        return 0; \
+    }
+
 #endif

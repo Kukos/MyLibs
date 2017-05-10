@@ -8,18 +8,6 @@
 #include <time.h>
 #include <sort.h>
 
-#define CMP(type) \
-    int concat(cmp_, type)(void *a, void *b) \
-    { \
-        if (*(type *)a < *(type *)b) \
-            return -1; \
-        \
-        if (*(type *)a > *(type *)b) \
-            return 1; \
-        \
-        return 0; \
-    }
-
 typedef struct MyStruct
 {
     char a;

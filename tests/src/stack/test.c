@@ -3,29 +3,11 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-#define ARRAY_EQUAL(type) \
-    bool concat(array_equal_, type)(type *t1, type *t2, size_t size) \
-    { \
-        size_t i; \
-        for (i = 0; i < size; ++i) \
-            if (t1[i] != t2[i]) \
-                return false; \
-        \
-        return true; \
-    }
+#include <common.h>
 
 ARRAY_EQUAL(char)
 ARRAY_EQUAL(int)
 ARRAY_EQUAL(double)
-
-#define ARRAY_REVERSE(type) \
-    void concat(array_reverse_, type)(type *t, size_t size) \
-    { \
-        size_t i; \
-        for (i = 0; i < (size >> 1); ++i) \
-            SWAP(t[i], t[size - i - 1]); \
-    }
 
 ARRAY_REVERSE(char)
 ARRAY_REVERSE(int)
