@@ -20,9 +20,9 @@
     Pointer if success
 */
 ___inline___ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev,
-                                                         Arraylist_node  *next,
-                                                         void            *data,
-                                                         int             size_of);
+                                                           Arraylist_node  *next,
+                                                           void            *data,
+                                                           int             size_of);
 /*
     Destory node
 
@@ -50,16 +50,17 @@ ___inline___ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev
     if (node == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    node->data = malloc(size_of);
-    if (node->data == NULL)
+    node->____data = malloc(size_of);
+    if (node->____data == NULL)
 	{
 		FREE(node);
         ERROR("malloc error\n", NULL, "");
 	}
 
-    node->next = next;
-    node->prev = prev;
-    __ASSIGN__(*(BYTE *)node->data, *(BYTE *)data,size_of);
+    node->____next = next;
+    node->____prev = prev;
+    node->____size_of = size_of;
+    __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data,size_of);
 
     return node;
 }
@@ -71,7 +72,7 @@ ___inline___ static void arraylist_node_destroy(Arraylist_node *node)
     if (node == NULL)
         return;
 
-    FREE(node->data);
+    FREE(node->____data);
     FREE(node);
 }
 
@@ -88,11 +89,11 @@ Arraylist *arraylist_create(int size_of)
     if (alist == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    alist->size_of = size_of;
+    alist->____size_of = size_of;
 
-    alist->length = 0;
-    alist->head = NULL;
-    alist->tail = NULL;
+    alist->____length = 0;
+    alist->____head = NULL;
+    alist->____tail = NULL;
 
     return alist;
 }
@@ -107,11 +108,11 @@ void arraylist_destroy(Arraylist *alist)
     if (alist == NULL)
         return;
 
-    ptr = alist->head;
+    ptr = alist->____head;
 
     while (ptr != NULL)
     {
-        next = ptr->next;
+        next = ptr->____next;
         arraylist_node_destroy(ptr);
 
         ptr = next;
@@ -133,12 +134,12 @@ void arraylist_destroy_with_entries(Arraylist *alist,
     if (alist == NULL)
         return;
 
-    ptr = alist->head;
+    ptr = alist->____head;
 
     while (ptr != NULL)
     {
-        next = ptr->next;
-        destructor(ptr->data);
+        next = ptr->____next;
+        destructor(ptr->____data);
         arraylist_node_destroy(ptr);
 
         ptr = next;
@@ -159,23 +160,23 @@ int arraylist_insert_first(Arraylist *alist, void *data)
         ERROR("alist == NULL || data == NULL\n", 1, "");
 
     /* create node and insert at begining */
-    node = arraylist_node_create(NULL, alist->head, data, alist->size_of);
+    node = arraylist_node_create(NULL, alist->____head, data, alist->____size_of);
     if (node == NULL)
         ERROR("arraylist_node_create error\n", 1, "");
 
     /* list was empty  */
-    if (alist->head == NULL)
+    if (alist->____head == NULL)
     {
-        alist->head = node;
-        alist->tail = node;
+        alist->____head = node;
+        alist->____tail = node;
     }
     else
     {
-        alist->head->prev = node;
-        alist->head = node;
+        alist->____head->____prev = node;
+        alist->____head = node;
     }
 
-    ++alist->length;
+    ++alist->____length;
 
     return 0;
 }
@@ -190,22 +191,22 @@ int arraylist_insert_last(Arraylist *alist, void *data)
         ERROR("alist == NULL || data == NULL\n", 1, "");
 
     /* create node and insert at the end */
-    node = arraylist_node_create(alist->tail, NULL, data, alist->size_of);
+    node = arraylist_node_create(alist->____tail, NULL, data, alist->____size_of);
     if(node == NULL)
         ERROR("arraylist_node_create error\n", 1, "");
 
-    if(alist->head == NULL)
+    if(alist->____head == NULL)
     {
-        alist->head = node;
-        alist->tail = node;
+        alist->____head = node;
+        alist->____tail = node;
     }
     else
     {
-        alist->tail->next = node;
-        alist->tail = node;
+        alist->____tail->____next = node;
+        alist->____tail = node;
     }
 
-    ++alist->length;
+    ++alist->____length;
 
     return 0;
 }
@@ -222,7 +223,7 @@ int arraylist_insert_pos(Arraylist *alist, size_t pos, void *data)
     if (alist == NULL || data == NULL)
         ERROR("alist == NULL || data == NULL\n", 1, "");
 
-    if (pos > alist->length)
+    if (pos > alist->____length)
         ERROR("pos > lenght\n", 1, "");
 
     /* at the begining */
@@ -230,34 +231,34 @@ int arraylist_insert_pos(Arraylist *alist, size_t pos, void *data)
         return arraylist_insert_first(alist, data);
 
     /* at the end */
-    if (pos == alist->length)
+    if (pos == alist->____length)
         return arraylist_insert_last(alist, data);
 
     /* go from begin */
-    if (pos < (alist->length >> 1))
+    if (pos < (alist->____length >> 1))
     {
-        ptr = alist->head;
+        ptr = alist->____head;
         for (i = 0; i < pos; ++i)
-            ptr = ptr->next;
+            ptr = ptr->____next;
 
     }
     /* go from end */
     else
     {
-        pos = alist->length - pos - 1;
-        ptr = alist->tail;
+        pos = alist->____length - pos - 1;
+        ptr = alist->____tail;
         for (i = 0; i < pos; ++i)
-            ptr = ptr->prev;
+            ptr = ptr->____prev;
     }
 
-    node = arraylist_node_create(ptr->prev, ptr, data, alist->size_of);
+    node = arraylist_node_create(ptr->____prev, ptr, data, alist->____size_of);
     if (node == NULL)
         ERROR("arraylist_node_create error\n", 1, "");
 
-    ptr->prev->next = node;
-    ptr->prev = node;
+    ptr->____prev->____next = node;
+    ptr->____prev = node;
 
-    ++alist->length;
+    ++alist->____length;
 
     return 0;
 }
@@ -271,16 +272,25 @@ int arraylist_delete_first(Arraylist *alist)
     if (alist == NULL)
         ERROR("alist == NULL\n", 1, "");
 
-    if (alist->head == NULL)
+    if (alist->____head == NULL)
         ERROR("List is empty, nothing to delete\n", 1, "");
 
-    node = alist->head;
+    if (alist->____length == 1)
+    {
+        arraylist_node_destroy(alist->____head);
+        alist->____head = NULL;
+        alist->____tail = NULL;
+    }
+    else
+    {
+        node = alist->____head;
 
-    alist->head = alist->head->next;
-    alist->head->prev = NULL;
-    arraylist_node_destroy(node);
+        alist->____head = alist->____head->____next;
+        alist->____head->____prev = NULL;
+        arraylist_node_destroy(node);
+    }
 
-    --alist->length;
+    --alist->____length;
 
     return 0;
 }
@@ -294,17 +304,26 @@ int arraylist_delete_last(Arraylist *alist)
     if (alist == NULL)
         ERROR("alist == NULL\n", 1, "");
 
-    if (alist->head == NULL)
+    if (alist->____head == NULL)
         ERROR("List is empty, nothing to delete\n", 1, "");
 
-    node = alist->tail;
+    if (alist->____length == 1)
+    {
+        arraylist_node_destroy(alist->____head);
+        alist->____head = NULL;
+        alist->____tail = NULL;
+    }
+    else
+    {
+        node = alist->____tail;
 
-    alist->tail = alist->tail->prev;
-    alist->tail->next = NULL;
+        alist->____tail = alist->____tail->____prev;
+        alist->____tail->____next = NULL;
 
-    arraylist_node_destroy(node);
+        arraylist_node_destroy(node);
+    }
 
-    --alist->length;
+    --alist->____length;
 
     return 0;
 }
@@ -319,7 +338,7 @@ int arraylist_delete_pos(Arraylist *alist, size_t pos)
     if (alist == NULL)
         ERROR("alist == NULL\n", 1, "");
 
-    if (pos >= alist->length)
+    if (pos >= alist->____length)
         ERROR("pos >= len\n", 1, "");
 
     /* at the begining */
@@ -327,32 +346,32 @@ int arraylist_delete_pos(Arraylist *alist, size_t pos)
         return arraylist_delete_first(alist);
 
     /* at the end */
-    if (pos == alist->length - 1)
+    if (pos == alist->____length - 1)
         return arraylist_delete_last(alist);
 
     /* go from begin */
-    if (pos < (alist->length >> 1))
+    if (pos < (alist->____length >> 1))
     {
-        ptr = alist->head;
+        ptr = alist->____head;
         for (i = 0; i < pos; ++i)
-            ptr = ptr->next;
+            ptr = ptr->____next;
 
     }
     /* go from end */
     else
     {
-        pos = alist->length - pos - 1;
-        ptr = alist->tail;
+        pos = alist->____length - pos - 1;
+        ptr = alist->____tail;
         for (i = 0; i < pos; ++i)
-            ptr = ptr->prev;
+            ptr = ptr->____prev;
     }
 
-    ptr->prev->next = ptr->next;
-    ptr->next->prev = ptr->prev;
+    ptr->____prev->____next = ptr->____next;
+    ptr->____next->____prev = ptr->____prev;
 
     arraylist_node_destroy(ptr);
 
-    --alist->length;
+    --alist->____length;
 
     return 0;
 }
@@ -367,27 +386,27 @@ int arraylist_get_pos(Arraylist *alist, size_t pos, void *data)
     if (alist == NULL)
         ERROR("alist == NULL\n", 1, "");
 
-    if (pos >= alist->length)
+    if (pos >= alist->____length)
         ERROR("pos >= len\n", 1, "");
 
     /* go from begin */
-    if (pos < (alist->length >> 1))
+    if (pos < (alist->____length >> 1))
     {
-        ptr = alist->head;
+        ptr = alist->____head;
         for (i = 0; i < pos; ++i)
-            ptr = ptr->next;
+            ptr = ptr->____next;
 
     }
     /* go from end */
     else
     {
-        pos = alist->length - pos - 1;
-        ptr = alist->tail;
+        pos = alist->____length - pos - 1;
+        ptr = alist->____tail;
         for (i = 0; i < pos; ++i)
-            ptr = ptr->prev;
+            ptr = ptr->____prev;
     }
 
-    __ASSIGN__(*(BYTE *)data, *(BYTE *)ptr->data, alist->size_of);
+    __ASSIGN__(*(BYTE *)data, *(BYTE *)ptr->____data, alist->____size_of);
 
     return 0;
 }
@@ -401,25 +420,25 @@ Arraylist *arraylist_merge(Arraylist *alist1, Arraylist *alist2)
 
     TRACE("");
 
-    if (alist1 == NULL || alist2)
+    if (alist1 == NULL || alist2 == NULL)
         ERROR("alist1 == NULL || alist2 == NULL\n", NULL, "");
 
-    result = arraylist_create(alist1->size_of);
+    result = arraylist_create(alist1->____size_of);
     if (result == NULL)
         ERROR("arraylist_create error\n", NULL, "");
 
-    ptr1 = alist1->head;
+    ptr1 = alist1->____head;
     while (ptr1 != NULL)
     {
-        arraylist_insert_last(result, ptr1->data);
-        ptr1 = ptr1->next;
+        arraylist_insert_last(result, ptr1->____data);
+        ptr1 = ptr1->____next;
     }
 
-    ptr2 = alist2->head;
+    ptr2 = alist2->____head;
     while (ptr2 != NULL)
     {
-        arraylist_insert_last(result, ptr2->data);
-        ptr2 = ptr2->next;
+        arraylist_insert_last(result, ptr2->____data);
+        ptr2 = ptr2->____next;
     }
 
     return result;
@@ -437,23 +456,49 @@ int arraylist_to_array(Arraylist *alist, void *array, size_t *size)
     if (alist == NULL || array == NULL || size == NULL)
         ERROR("alist == NULL || array == NULL || size == NULL\n", 1, "");
 
-    t = (BYTE *)malloc(alist->length * alist->size_of);
+    t = (BYTE *)malloc(alist->____length * alist->____size_of);
     if (t == NULL)
         ERROR("malloc error\n", 1, "");
 
-    ptr = alist->head;
+    ptr = alist->____head;
     offset = 0;
     while (ptr != NULL)
     {
-        __ASSIGN__(t[offset], *(BYTE *)ptr->data, alist->size_of);
-        offset += alist->size_of;
+        __ASSIGN__(t[offset], *(BYTE *)ptr->____data, alist->____size_of);
+        offset += alist->____size_of;
 
-        ptr = ptr->next;
+        ptr = ptr->____next;
     }
 
     *(void **)array = t;
 
-    *size = alist->length;
+    *size = alist->____length;
+
+    return 0;
+}
+
+int arraylist_get_size_of(Arraylist *alist)
+{
+    if (alist == NULL)
+        ERROR("alist == NULL\n", -1, "");
+
+    return alist->____size_of;
+}
+
+ssize_t arraylist_get_num_entries(Arraylist *alist)
+{
+    if (alist == NULL)
+        ERROR("alist == NULL\n", -1, "");
+
+    return alist->____length;
+}
+
+int arraylist_node_get_data(Arraylist_node *node, void *data)
+{
+    if (node == NULL || data == NULL)
+        ERROR("node == NULL || data == NULL\n", 1, "");
+
+    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->____data, node->____size_of);
 
     return 0;
 }
@@ -475,11 +520,11 @@ Arraylist_iterator *arraylist_iterator_create(Arraylist *alist, ITI_MODE mode)
         ERROR("malloc error\n", NULL, "");
 
     if (mode == ITI_BEGIN)
-        iterator->node = alist->head;
+        iterator->____node = alist->____head;
     else
-        iterator->node = alist->tail;
+        iterator->____node = alist->____tail;
 
-    iterator->size_of = alist->size_of;
+    iterator->____size_of = alist->____size_of;
 
     return iterator;
 }
@@ -506,11 +551,11 @@ int arraylist_iterator_init(Arraylist *alist, Arraylist_iterator *iterator,
         ERROR("Incorrect mode\n", 1, "");
 
     if(mode == ITI_BEGIN)
-        iterator->node = alist->head;
+        iterator->____node = alist->____head;
     else
-        iterator->node = alist->tail;
+        iterator->____node = alist->____tail;
 
-    iterator->size_of = alist->size_of;
+    iterator->____size_of = alist->____size_of;
 
     return 0;
 }
@@ -522,7 +567,7 @@ int arraylist_iterator_next(Arraylist_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1, "");
 
-    iterator->node = iterator->node->next;
+    iterator->____node = iterator->____node->____next;
 
     return 0;
 }
@@ -534,7 +579,7 @@ int arraylist_iterator_prev(Arraylist_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1, "");
 
-    iterator->node = iterator->node->prev;
+    iterator->____node = iterator->____node->____prev;
 
     return 0;
 }
@@ -546,7 +591,7 @@ int arraylist_iterator_get_data(Arraylist_iterator *iterator, void *val)
     if (iterator == NULL || val == NULL)
         ERROR("iterator == NULL || val == NULL\n", 1, "");
 
-    __ASSIGN__(*(BYTE *)val,*(BYTE *)iterator->node->data,iterator->size_of);
+    __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->____node->____data, iterator->____size_of);
 
     return 0;
 }
@@ -558,7 +603,7 @@ int arraylist_iterator_get_node(Arraylist_iterator *iterator, void *node)
     if (iterator == NULL || node == NULL)
         ERROR("iterator == NULL || val == NULL\n", 1, "");
 
-    *(void **)node = iterator->node;
+    *(void **)node = iterator->____node;
 
     return 0;
 }
@@ -570,5 +615,5 @@ bool arraylist_iterator_end(Arraylist_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1, "");
 
-    return iterator->node == NULL;
+    return iterator->____node == NULL;
 }

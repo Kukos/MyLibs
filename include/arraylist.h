@@ -13,23 +13,25 @@
 
 #include <iterators.h>
 #include <stddef.h> /* size_t */
+#include <sys/types.h>
 
 typedef struct Arraylist_node
 {
-    struct Arraylist_node *next;
-    struct Arraylist_node *prev;
-    void *data;
+    struct Arraylist_node *____next;
+    struct Arraylist_node *____prev;
+    void *____data;
+    int ____size_of;
 
 }Arraylist_node;
 
 
 typedef struct Arraylist
 {
-    int                 size_of;    /* size of element */
-    size_t              length;     /* length of list */
+    int                 ____size_of;    /* size of element */
+    size_t              ____length;     /* length of list */
 
-    Arraylist_node      *head;
-    Arraylist_node      *tail;
+    Arraylist_node      *____head;
+    Arraylist_node      *____tail;
 
 }Arraylist;
 
@@ -38,8 +40,8 @@ typedef struct Arraylist
 */
 typedef struct Arraylist_iterator
 {
-    Arraylist_node  *node;
-    int             size_of;
+    Arraylist_node  *____node;
+    int             ____size_of;
 
 }Arraylist_iterator;
 
@@ -212,5 +214,42 @@ Arraylist *arraylist_merge(Arraylist *alist1, Arraylist *alist2);
 	Non-zero value if failure
 */
 int arraylist_to_array(Arraylist *alist, void *array, size_t *size);
+
+/*
+    Get number of entries in arraylist
+
+    PARAMS
+    @IN alist - pointer to Arraylist
+
+    RETURN
+    -1 iff failure
+    Num of entries iff success
+*/
+int arraylist_get_size_of(Arraylist *alist);
+
+/*
+    Get size of
+
+    PARAMS
+    @IN alist - pointer to Arraylist
+
+    RETURN
+    -1 iff failure
+    sizeof iff success
+*/
+ssize_t arraylist_get_num_entries(Arraylist *alist);
+
+/*
+    Get Node data
+
+    PARAMS
+    @IN node - pointer to Arraylist_node
+    @OUT data - node data
+
+    RETURN
+    Non-zero iff failure
+    0 iff success
+*/
+int arraylist_node_get_data(Arraylist_node *node, void *data);
 
 #endif
