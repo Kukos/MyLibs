@@ -617,3 +617,30 @@ bool arraylist_iterator_end(Arraylist_iterator *iterator)
 
     return iterator->____node == NULL;
 }
+
+ULIST_WRAPPERS_CREATE(Arraylist, arraylist)
+
+UList *ulist_arraylist_create(int size_of)
+{
+    UList *list;
+
+    TRACE("");
+
+    if (size_of < 1)
+        ERROR("size_of < 1\n", NULL, "");
+
+    /* create ULIST */
+    list = (UList *)malloc(sizeof(UList));
+    if (list == NULL)
+        ERROR("malloc\n", NULL, "");
+
+    /* create arraylist */
+    list->____list = (void *)arraylist_create(size_of);
+    if (list->____list == NULL)
+        ERROR("arraylist_create error\n", NULL, "");
+
+    /* fill hooks */
+    ULIST_WRAPPER_ASSIGN(list);
+
+    return list;
+}

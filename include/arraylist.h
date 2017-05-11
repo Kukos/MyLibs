@@ -11,6 +11,7 @@
     LICENCE: GPL 3.0
 */
 
+#include <ulist.h>
 #include <iterators.h>
 #include <stddef.h> /* size_t */
 #include <sys/types.h>
@@ -58,6 +59,18 @@ IT_FUNC(Arraylist, arraylist)
     do { \
         PTR = arraylist_create(sizeof(TYPE)); \
     } while (0)
+
+/*
+    Create alist as UList
+
+    PARAMS
+    @IN size_of - size of element in list
+
+    RETURN:
+    NULL if failure
+    Pointer if success
+*/
+UList *ulist_arraylist_create(int size_of);
 
 /*
     Create alist

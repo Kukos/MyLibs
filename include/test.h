@@ -156,14 +156,15 @@ test_t ________ret;
     __extension__ \
     ({ \
             typeof(func) ______ret = func; \
-            if ((______ret != (val))) \
+            typeof(val)  ______val = (val); \
+            if (______ret != ______val) \
                 ++________ret; \
-            (______ret != (val)) ? \
+            (______ret != ______val) ? \
             (CAST_TO_BOOL(printf( "[TEXPECT]\t%s return bad value\n" \
                                   "RETURN %#llx\tEXPECTED %#llx\t\tLINE = %d\n", \
                                   tostring(func), \
                                   (test_t)(______ret), \
-                                  (test_t)(val), \
+                                  (test_t)(______val), \
                                   __LINE__ \
                                 ))) : 0; \
     })
@@ -174,15 +175,17 @@ test_t ________ret;
 #define T_ASSERT(val, expt) \
     __extension__ \
     ({ \
-        if (((val) != (expt))) \
+        typeof(val) ______val = (val); \
+        typeof(expt) ______expt = (expt); \
+        if (______val != ______expt) \
             ++________ret; \
-        ((val) != (expt)) ? \
+        (______val != ______expt) ? \
         (CAST_TO_BOOL(printf( "[TASSERT]\t%s != %s\n" \
                               "RETURN %#llx\tEXPECTED %#llx\t\tLINE = %d\n", \
                               tostring(val), \
                               tostring(expt), \
-                              (test_t)(val), \
-                              (test_t)(expt), \
+                              (test_t)(______val), \
+                              (test_t)(______expt), \
                               __LINE__ \
                             ))) : 0; \
     })

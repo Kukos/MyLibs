@@ -819,6 +819,81 @@ test_f test_destroy_with_entries(void)
     arraylist_destroy_with_entries(al, my_struct_destroy);
 }
 
+test_f test_ulist_framework(void)
+{
+    /* I have tested whole arraylist so here I test only call correct funcion in easiest way */
+
+    UList *ulist1;
+    UList *ulist2;
+    UList *ulist3;
+
+    int val = 0x12345;
+    int *rt;
+    int t[] = {val, val, val};
+    size_t size = 0;
+    size_t rsize;
+
+    ulist1 = ulist_arraylist_create(sizeof(int));
+    T_ERROR(ulist1 == NULL);
+    T_EXPECT(ulist_get_size_of(ulist1), sizeof(int));
+    T_EXPECT(ulist_get_num_entries(ulist1), size);
+
+    T_EXPECT(ulist_insert_first(ulist1, (void *)&val), 0);
+    T_EXPECT(ulist_get_num_entries(ulist1), ++size);
+
+    T_EXPECT(ulist_insert_last(ulist1, (void *)&val), 0);
+    T_EXPECT(ulist_get_num_entries(ulist1), ++size);
+
+    T_EXPECT(ulist_insert_pos(ulist1, 1, (void *)&val), 0);
+    T_EXPECT(ulist_get_num_entries(ulist1), ++size);
+
+    T_EXPECT(ulist_to_array(ulist1, (void *)&rt, &rsize), 0);
+    T_ASSERT(size, rsize);
+
+    T_EXPECT(array_equal_int(rt, t, size), true);
+    FREE(rt);
+
+    size = 0;
+    ulist2 = ulist_arraylist_create(sizeof(int));
+    T_ERROR(ulist2 == NULL);
+    T_EXPECT(ulist_get_size_of(ulist2), sizeof(int));
+    T_EXPECT(ulist_get_num_entries(ulist2), size);
+
+    T_EXPECT(ulist_insert_first(ulist2, (void *)&val), 0);
+    T_EXPECT(ulist_get_num_entries(ulist2), ++size);
+
+    T_EXPECT(ulist_insert_last(ulist2, (void *)&val), 0);
+    T_EXPECT(ulist_get_num_entries(ulist2), ++size);
+
+    T_EXPECT(ulist_insert_pos(ulist2, 1, (void *)&val), 0);
+    T_EXPECT(ulist_get_num_entries(ulist2), ++size);
+
+    T_EXPECT(ulist_to_array(ulist2, (void *)&rt, &rsize), 0);
+    T_ASSERT(size, rsize);
+
+    T_EXPECT(array_equal_int(rt, t, size), true);
+    FREE(rt);
+
+    ulist3 = ulist_merge(ulist1, ulist2);
+    size = 6;
+    T_ERROR(ulist3 == NULL);
+    T_EXPECT(ulist_get_size_of(ulist3), sizeof(int));
+    T_EXPECT(ulist_get_num_entries(ulist3), size);
+
+    T_EXPECT(ulist_delete_pos(ulist3, 1), 0);
+    T_EXPECT(ulist_get_num_entries(ulist3), --size);
+
+    T_EXPECT(ulist_delete_first(ulist3), 0);
+    T_EXPECT(ulist_get_num_entries(ulist3), --size);
+
+    T_EXPECT(ulist_delete_last(ulist3), 0);
+    T_EXPECT(ulist_get_num_entries(ulist3), --size);
+
+    ulist_destroy(ulist1);
+    ulist_destroy(ulist2);
+    ulist_destroy(ulist3);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -834,6 +909,7 @@ void test(void)
     TEST(test_insert_delete());
     TEST(test_for_each());
     TEST(test_destroy_with_entries());
+    TEST(test_ulist_framework());
 }
 
 int main(void)
