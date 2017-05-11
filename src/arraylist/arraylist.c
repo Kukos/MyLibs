@@ -626,13 +626,10 @@ UList *ulist_arraylist_create(int size_of)
 
     TRACE("");
 
-    if (size_of < 1)
-        ERROR("size_of < 1\n", NULL, "");
-
     /* create ULIST */
     list = (UList *)malloc(sizeof(UList));
     if (list == NULL)
-        ERROR("malloc\n", NULL, "");
+        ERROR("malloc error\n", NULL, "");
 
     /* create arraylist */
     list->____list = (void *)arraylist_create(size_of);
@@ -640,7 +637,46 @@ UList *ulist_arraylist_create(int size_of)
         ERROR("arraylist_create error\n", NULL, "");
 
     /* fill hooks */
-    ULIST_WRAPPER_ASSIGN(list);
+    ULIST_WRAPPERS_ASSIGN(list);
 
     return list;
+}
+
+ULIST_ITERATOR_WRAPPERS_CREATE(Arraylist_iterator, arraylist_iterator)
+
+UList_iterator *ulist_arraylist_iterator_create(UList *list, ITI_MODE mode)
+{
+    UList_iterator *it;
+
+    TRACE("");
+
+    it = (UList_iterator *)malloc(sizeof(UList_iterator));
+    if (it == NULL)
+        ERROR("malloc error\n", NULL, "");
+
+    it->____iterator = (void *)arraylist_iterator_create((Arraylist *)ulist_get_list(list), mode);
+    if (it->____iterator == NULL)
+        ERROR("arraylist_iterator_create error\n", NULL, "");
+
+    ULIST_ITERATOR_WRAPPERS_ASSIGN(it);
+
+    return it;
+}
+
+int ulist_arraylist_iterator_init(UList *list, UList_iterator *it, ITI_MODE mode)
+{
+    TRACE("");
+
+    if (it == NULL)
+        ERROR("it == NULL\n", 1, "");
+
+    if (arraylist_iterator_init((Arraylist *)ulist_get_list(list),
+            (Arraylist_iterator *)ulist_iterator_get_iterator(it), mode))
+    {
+        ERROR("arraylist_iterator_init error\n", 1, "");
+    }
+
+    ULIST_ITERATOR_WRAPPERS_ASSIGN(it);
+
+    return 0;
 }

@@ -894,6 +894,69 @@ test_f test_ulist_framework(void)
     ulist_destroy(ulist3);
 }
 
+test_f test_ulist_for_each(void)
+{
+    UList *ulist;
+
+    int t[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    size_t size = ARRAY_SIZE(t);
+    int i;
+    void *node;
+    int val;
+
+    ulist = ulist_arraylist_create(sizeof(int));
+    T_ERROR(ulist == NULL);
+    T_EXPECT(ulist_get_size_of(ulist), sizeof(int));
+    T_EXPECT(ulist_get_num_entries(ulist), 0);
+
+    for (i = 0; i < size; ++i)
+        T_EXPECT(ulist_insert_last(ulist, (void *)&t[i]), 0);
+
+    T_EXPECT(ulist_get_num_entries(ulist), size);
+
+    i = 0;
+    for_each_container(ulist, UList, Arraylist, node, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(val, t[i]);
+        ++i;
+    }
+
+    i = size - 1;
+    for_each_prev_container(ulist, UList, Arraylist, node, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(val, t[i]);
+        --i;
+    }
+
+    for_each_node_container(ulist, UList, Arraylist, node)
+    {
+        T_CHECK(node != NULL);
+    }
+
+    for_each_node_prev_container(ulist, UList, Arraylist, node)
+    {
+        T_CHECK(node != NULL);
+    }
+
+    i = 0;
+    for_each_data_container(ulist, UList, Arraylist, val)
+    {
+        T_ASSERT(val, t[i]);
+        ++i;
+    }
+
+    i = size - 1;
+    for_each_data_prev_container(ulist, UList, Arraylist, val)
+    {
+        T_ASSERT(val, t[i]);
+        --i;
+    }
+
+    ulist_destroy(ulist);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -910,6 +973,7 @@ void test(void)
     TEST(test_for_each());
     TEST(test_destroy_with_entries());
     TEST(test_ulist_framework());
+    TEST(test_ulist_for_each());
 }
 
 int main(void)

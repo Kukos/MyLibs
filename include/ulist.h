@@ -4,9 +4,20 @@
 /*
     Unsorted List Container Framework
 
-    To use this framework, plase provide constructor function for your Unsorted list
-    i. e. ulist_arraylist_create( ... )
-    and in function assign pointers to functions
+    To use this framework:
+
+    1. Use Macro in .c file ULIST_WRAPPERS_CREATE
+    2. Declare your constructor with prefix ulist and sufix _create
+    3. In Constructor use macro ULIST_WRAPPERS_ASSIGN
+    4. Use Macro in .c file ULIST_ITERATOR_WRAPPERS_CREATE
+    5. Declare your constructor with prefix ulist and sufix _iterator_create
+    6. In Constructor use macro ULIST_ITERATOR_WRAPPERS_ASSIGN
+    7. Use UList instead of your struct but create UList by your custom constructor
+    8. Use ulist inline function instead of your struct function
+    9. Use iterator macros with container sufix, and as __internal_type pass your struct type
+
+    (10.) IF you have custom struct function inetad of default names and parameters for list
+    do not use ULIST macros, you have to create wrappers and fill hooks yourself
 
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com
@@ -20,6 +31,7 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <common.h>
+#include <iterators.h>
 
 typedef struct UList
 {
@@ -110,21 +122,21 @@ typedef struct UList
     }
 
 
-#define ULIST_WRAPPER_ASSIGN(list) \
+#define ULIST_WRAPPERS_ASSIGN(list) \
     do { \
-        list->____destroy               = ____destroy; \
-        list->____destroy_with_entries  = ____destroy_with_entries; \
-        list->____insert_first          = ____insert_first; \
-        list->____insert_last           = ____insert_first; \
-        list->____insert_pos            = ____insert_pos; \
-        list->____delete_first          = ____delete_first; \
-        list->____delete_last           = ____delete_last; \
-        list->____delete_pos            = ____delete_pos; \
-        list->____get_pos               = ____get_pos; \
-        list->____merge                 = ____merge; \
-        list->____to_array              = ____to_array; \
-        list->____get_size_of           = ____get_size_of; \
-        list->____get_num_entries       = ____get_num_entries; \
+        (list)->____destroy               = ____destroy; \
+        (list)->____destroy_with_entries  = ____destroy_with_entries; \
+        (list)->____insert_first          = ____insert_first; \
+        (list)->____insert_last           = ____insert_last; \
+        (list)->____insert_pos            = ____insert_pos; \
+        (list)->____delete_first          = ____delete_first; \
+        (list)->____delete_last           = ____delete_last; \
+        (list)->____delete_pos            = ____delete_pos; \
+        (list)->____get_pos               = ____get_pos; \
+        (list)->____merge                 = ____merge; \
+        (list)->____to_array              = ____to_array; \
+        (list)->____get_size_of           = ____get_size_of; \
+        (list)->____get_num_entries       = ____get_num_entries; \
     } while (0);
 
 /*
@@ -191,7 +203,7 @@ ___inline___ void ulist_destroy(UList *list)
     if (list == NULL)
         return;
 
-    list->____destroy(list->____list);
+    list->____destroy(ulist_get_list(list));
     FREE(list);
 }
 
@@ -209,7 +221,7 @@ ___inline___ void ulist_destroy_with_entries(UList *list, void (*destructor)(voi
     if (list == NULL)
         return;
 
-    list->____destroy_with_entries(list->____list, destructor);
+    list->____destroy_with_entries(ulist_get_list(list), destructor);
     FREE(list);
 }
 
@@ -229,7 +241,7 @@ ___inline___ int ulist_insert_first(UList *list, void *data)
     if (list == NULL)
         return 1;
 
-    return list->____insert_first(list->____list, data);
+    return list->____insert_first(ulist_get_list(list), data);
 }
 
 /*
@@ -248,7 +260,7 @@ ___inline___ int ulist_insert_last(UList *list, void *data)
     if (list == NULL)
         return 1;
 
-    return list->____insert_last(list->____list, data);
+    return list->____insert_last(ulist_get_list(list), data);
 }
 
 /*
@@ -268,7 +280,7 @@ ___inline___ int ulist_insert_pos(UList *list, size_t pos, void *data)
     if (list == NULL)
         return 1;
 
-    return list->____insert_pos(list->____list, pos, data);
+    return list->____insert_pos(ulist_get_list(list), pos, data);
 }
 
 /*
@@ -286,7 +298,7 @@ ___inline___ int ulist_delete_first(UList *list)
     if (list == NULL)
         return 1;
 
-    return list->____delete_first(list->____list);
+    return list->____delete_first(ulist_get_list(list));
 }
 
 /*
@@ -304,7 +316,7 @@ ___inline___ int ulist_delete_last(UList *list)
     if (list == NULL)
         return 1;
 
-    return list->____delete_last(list->____list);
+    return list->____delete_last(ulist_get_list(list));
 }
 
 /*
@@ -323,7 +335,7 @@ ___inline___ int ulist_delete_pos(UList *list, size_t pos)
     if (list == NULL)
         return 1;
 
-    return list->____delete_pos(list->____list, pos);
+    return list->____delete_pos(ulist_get_list(list), pos);
 }
 
 /*
@@ -341,7 +353,7 @@ ___inline___ int ulist_get_pos(UList *list, size_t pos, void *data)
     if (list == NULL)
         return 1;
 
-    return list->____get_pos(list->____list, pos, data);
+    return list->____get_pos(ulist_get_list(list), pos, data);
 }
 
 /*
@@ -372,7 +384,7 @@ ___inline___ UList *ulist_merge(UList *list1, UList *list2)
         return NULL;
 
     /* merge lists */
-    list3->____list = list1->____merge(list1->____list, list2->____list);
+    list3->____list = list1->____merge(ulist_get_list(list1), ulist_get_list(list2));
     if (list3->____list == NULL)
         return NULL;
 
@@ -411,7 +423,7 @@ ___inline___ int ulist_to_array(UList *list, void *array, size_t *size)
     if (list == NULL)
         return 1;
 
-    return list->____to_array(list->____list, array, size);
+    return list->____to_array(ulist_get_list(list), array, size);
 }
 
 /*
@@ -429,7 +441,7 @@ ___inline___ int ulist_get_size_of(UList *list)
     if (list == NULL)
         return 1;
 
-    return list->____get_size_of(list->____list);
+    return list->____get_size_of(ulist_get_list(list));
 }
 
 /*
@@ -447,7 +459,62 @@ ___inline___ int ulist_get_num_entries(UList *list)
     if (list == NULL)
         return 1;
 
-    return list->____get_num_entries(list->____list);
+    return list->____get_num_entries(ulist_get_list(list));
 }
+
+typedef struct UList_iterator
+{
+    void    *____iterator;
+
+    void    (*____destroy)(void *iterator);
+    int     (*____next)(void *iterator);
+    int     (*____prev)(void *iterator);
+    int     (*____get_data)(void *iterator, void *data);
+    int     (*____get_node)(void *iterator, void *node);
+    bool    (*____end)(void *iterator);
+
+}UList_iterator;
+
+/* use this macro to create wrappers for iterator */
+#define ULIST_ITERATOR_WRAPPERS_CREATE(type, prefix) \
+    static ___unused___ void ____it_destroy(void *it) \
+    { \
+        concat(prefix, _destroy)((type *)it); \
+    } \
+    \
+    static ___unused___ int ____it_next(void *it) \
+    { \
+        return concat(prefix, _next)((type *)it); \
+    } \
+    \
+    static ___unused___ int ____it_prev(void *it) \
+    { \
+        return concat(prefix, _prev)((type *)it); \
+    } \
+    \
+    static ___unused___ int ____it_get_data(void *it, void *data) \
+    { \
+        return concat(prefix, _get_data)((type *)it, data); \
+    } \
+    \
+    static ___unused___ int ____it_get_node(void *it, void *node) \
+    { \
+        return concat(prefix, _get_node)((type *)it, node); \
+    } \
+    \
+    static ___unused___ bool ____it_end(void *it) \
+    { \
+        return concat(prefix, _end)((type *)it); \
+    }
+
+#define ULIST_ITERATOR_WRAPPERS_ASSIGN(it) \
+    do { \
+        (it)->____destroy     = ____it_destroy; \
+        (it)->____next        = ____it_next; \
+        (it)->____prev        = ____it_prev; \
+        (it)->____get_data    = ____it_get_data; \
+        (it)->____get_node    = ____it_get_node; \
+        (it)->____end         = ____it_end; \
+    } while (0);
 
 #endif

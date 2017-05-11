@@ -48,6 +48,8 @@ typedef struct Arraylist_iterator
 
 IT_FUNC(Arraylist, arraylist)
 
+IT_FUNC_CONTAINER(UList, ulist, Arraylist, arraylist)
+
 /*
     Macro for create a alist, please see function description
 
