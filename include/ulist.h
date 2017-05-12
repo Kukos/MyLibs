@@ -151,7 +151,7 @@ typedef struct UList
     true iff lists have the same type
 
 */
-___inline___ bool ulisy_the_same_type(UList *list1, UList *list2)
+___inline___ bool ulist_the_same_type(UList *list1, UList *list2)
 {
     if (list1 == NULL || list2 == NULL)
         return false;
@@ -375,7 +375,7 @@ ___inline___ UList *ulist_merge(UList *list1, UList *list2)
         return NULL;
 
     /* we can only merge IFF have the same type */
-    if (!ulisy_the_same_type(list1, list2))
+    if (!ulist_the_same_type(list1, list2))
         return NULL;
 
     /* Create new instance */
