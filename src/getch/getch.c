@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <common.h>
 
 /* set global static struct to avoid resizing stack every time in getch */
 static struct termios old_attr;
@@ -21,7 +22,7 @@ int getch()
 		return -1;
 
 	/* reset waiting for enter */
-    new_attr.c_lflag &= ~(ICANON | ECHO);
+    CLEAR_FLAG(new_attr.c_lflag, ICANON | ECHO);
 
 	/* set new settings */
     if (tcsetattr(STDIN_FILENO, TCSANOW, &new_attr) == -1)

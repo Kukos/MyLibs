@@ -18,6 +18,10 @@
 #define SET_BIT(n, k)   ((n) |= BIT(k))
 #define CLEAR_BIT(n, k) ((n) &= ~BIT(k))
 
+#define GET_FLAG(n, flag)   CAST_TO_BOOL((n) & (flag))
+#define SET_FLAG(n, flag)   ((n) |= (flag))
+#define CLEAR_FLAG(n, flag) ((n) &= ~(flag))
+
 /* swap a with b IFF types are the same */
 #define SWAP(a ,b) \
     do{ \
