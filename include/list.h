@@ -12,6 +12,7 @@
 
 #include <iterators.h>
 #include <stddef.h> /* size_t */
+#include <sys/types.h>
 
 typedef struct List_node
 {
@@ -188,5 +189,29 @@ int list_search(List *list, void *val, void *entry);
 	Non-zero value iff failure
 */
 int list_to_array(List *list, void *array, size_t *size);
+
+/*
+    Get size of data List
+
+    PARAMS
+    @IN list - pointer to List
+
+    RETURN
+    -1 iff failure
+    Num of entries iff success
+*/
+int list_get_size_of(List *list);
+
+/*
+    Get number of entries in List
+
+    PARAMS
+    @IN alist - pointer to Arraylist
+
+    RETURN
+    -1 iff failure
+    sizeof iff success
+*/
+ssize_t list_get_num_entries(List *list);
 
 #endif

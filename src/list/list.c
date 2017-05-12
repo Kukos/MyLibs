@@ -410,7 +410,7 @@ int list_delete_all(List *list, void *entry)
         }
         else
         {
-            while (list->cmp(ptr, entry) == 0 && ptr != guard)
+            while (list->cmp(ptr->data, entry) == 0 && ptr != guard)
             {
                 prev->next = ptr->next;
 
@@ -603,4 +603,20 @@ int list_to_array(List *list, void *array, size_t *size)
     *size = list->length;
 
     return 0;
+}
+
+int list_get_size_of(List *list)
+{
+    if (list == NULL)
+        return -1;
+
+    return list->size_of;
+}
+
+ssize_t list_get_num_entries(List *list)
+{
+    if (list == NULL)
+        return -1;
+
+    return list->length;
 }
