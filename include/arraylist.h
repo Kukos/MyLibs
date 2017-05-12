@@ -234,7 +234,7 @@ Arraylist *arraylist_merge(Arraylist *alist1, Arraylist *alist2);
 int arraylist_to_array(Arraylist *alist, void *array, size_t *size);
 
 /*
-    Get number of entries in arraylist
+    Get size of
 
     PARAMS
     @IN alist - pointer to Arraylist
@@ -246,7 +246,7 @@ int arraylist_to_array(Arraylist *alist, void *array, size_t *size);
 int arraylist_get_size_of(Arraylist *alist);
 
 /*
-    Get size of
+    Get number of entries in arraylist
 
     PARAMS
     @IN alist - pointer to Arraylist
