@@ -38,6 +38,19 @@ test_f test_bits_operations(void)
 
     T_ASSERT(a, 1 << 5);
     T_ASSERT(b, 1ull << 54);
+
+    a = 0x1010;
+    SET_BIT_VALUE(a, 2, 1);
+    T_ASSERT(a, 0x1014);
+
+    SET_BIT_VALUE(a, 4, 0);
+    T_ASSERT(a, 0x1004);
+
+    a = 0x1010;
+    FLIP_BIT(a, 0);
+    FLIP_BIT(a, 4);
+
+    T_ASSERT(a, 0x1001);
 }
 
 test_f test_macro_swap(void)
