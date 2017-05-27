@@ -165,12 +165,12 @@ ___inline___ static int merge(    void        *t,
     _t = (BYTE *)t;
     _buffer = (BYTE *)buffer;
 
-    offset_i = offset_left;
-    offset_j = offset_middle + size_of;
-    offset_k = offset_left;
+    offset_i = (ssize_t)offset_left;
+    offset_j = (ssize_t)(offset_middle + (size_t)size_of);
+    offset_k = (ssize_t)offset_left;
 
     /* merge 2 subarray until both have entries to merge */
-    while (offset_i <= offset_middle && offset_j <= offset_right)
+    while (offset_i <= (ssize_t)offset_middle && offset_j <= (ssize_t)offset_right)
     {
         if (cmp((void *)&_t[offset_i], (void *)&_t[offset_j]) < 0)
         {
@@ -187,15 +187,15 @@ ___inline___ static int merge(    void        *t,
 
     }
 
-    if (offset_i <= offset_middle)
+    if (offset_i <= (ssize_t)offset_middle)
         if (memcpy((void *)(_buffer + offset_k), (void *)(_t + offset_i),
-        offset_middle - offset_i + size_of) == NULL)
+        offset_middle - (size_t)offset_i + (size_t)size_of) == NULL)
             ERROR("memcpy error\n", 1, "");
 
 
-    if (offset_j <= offset_right)
+    if (offset_j <= (ssize_t)offset_right)
         if (memcpy((void *)(_buffer + offset_k), (void *)(_t + offset_j),
-        offset_right - offset_j + size_of) == NULL)
+        offset_right - (size_t)offset_j + (size_t)size_of) == NULL)
             ERROR("memcpy error\n", 1, "");
 
     return 0;
@@ -273,24 +273,25 @@ ___inline___ static int tukey_medians(    void        *t,
     size_t m2;
     size_t m3;
     size_t median;
+    size_t _size_of = (size_t)size_of;
 
     TRACE("");
 
     assert(t == NULL || median_pos == NULL || cmp ==NULL);
     assert(offset_left > offset_right);
 
-    offset_middle = ((offset_left / size_of + offset_right / size_of) >> 1 ) * size_of;
+    offset_middle = ((offset_left / _size_of + offset_right / _size_of) >> 1 ) * _size_of;
 
     if (medians_of_3(t, offset_left, offset_left + epsilon,
-    offset_left + (((epsilon / size_of ) << 1) * size_of), cmp, &m1))
+    offset_left + (((epsilon / _size_of ) << 1) * _size_of), cmp, &m1))
         ERROR("medians_of_3 error\n", 1, "");
 
 
     if (medians_of_3(t, offset_middle - epsilon, offset_middle,
-    offset_middle + epsilon,cmp,&m2))
+    offset_middle + epsilon, cmp, &m2))
         ERROR("medians_of_3 error\n", 1, "");
 
-    if (medians_of_3(t, offset_right - (((epsilon / size_of ) << 1) * size_of),
+    if (medians_of_3(t, offset_right - (((epsilon / _size_of ) << 1) * _size_of),
     offset_right - epsilon, offset_right, cmp, &m3 ))
         ERROR("medians_of_3 error\n", 1, "");
 
@@ -322,7 +323,8 @@ static int partition_bentley(   void        *t,
     BYTE *_t;
     BYTE pivot[MAXWORD];
 
-    int i;
+    ssize_t i;
+    ssize_t _size_of = (ssize_t)size_of;
 
     TRACE("");
 
@@ -330,31 +332,31 @@ static int partition_bentley(   void        *t,
 
     assert(offset_right < offset_left);
 
-    offset_index1 = offset_left + size_of;
-    offset_index2 = offset_right;
+    offset_index1 = (ssize_t)(offset_left + (size_t)_size_of);
+    offset_index2 = (ssize_t)offset_right;
 
-    offset_equal_left = offset_index1;
-    offset_equal_right = offset_index2;
+    offset_equal_left = (ssize_t)offset_index1;
+    offset_equal_right = (ssize_t)offset_index2;
 
     _t = (BYTE *)t;
 
-    __ASSIGN__(pivot[0], _t[offset_left], size_of);
+    __ASSIGN__(pivot[0], _t[offset_left], _size_of);
 
     while (offset_index1 <= offset_index2)
     {
         while (offset_index1 < offset_index2
                 && cmp((void *)&_t[offset_index1], (void *)pivot ) < 0)
-            offset_index1 += size_of;
+            offset_index1 += _size_of;
 
         while (cmp((void *)&_t[offset_index2], (void *)pivot) > 0)
-            offset_index2 -= size_of;
+            offset_index2 -= _size_of;
 
         /* move element to part of elements == pivot */
         if (offset_index1 == offset_index2
         && !cmp((void *)& _t[offset_index1], (void *)pivot))
         {
-            __SWAP__(_t[offset_index1], _t[offset_equal_left], size_of);
-            offset_equal_left += size_of;
+            __SWAP__(_t[offset_index1], _t[offset_equal_left], _size_of);
+            offset_equal_left += _size_of;
             break;
         }
 
@@ -363,43 +365,43 @@ static int partition_bentley(   void        *t,
             break;
 
         /* swap entries */
-        __SWAP__(_t[offset_index1], _t[offset_index2], size_of);
+        __SWAP__(_t[offset_index1], _t[offset_index2], _size_of);
 
         /* move element to part of element == pivot ( we insert from left so inert in left part ) */
         if (!cmp((void *)&_t[offset_index1], (void *)pivot))
         {
-            __SWAP__(_t[offset_index1], _t[offset_equal_left], size_of);
-            offset_equal_left += size_of;
+            __SWAP__(_t[offset_index1], _t[offset_equal_left], _size_of);
+            offset_equal_left += _size_of;
         }
 
         /* move element to part of element == pivot ( we insert from right so inert in right part ) */
         if (!cmp((void *)&_t[offset_index2], (void *)pivot))
         {
-            __SWAP__(_t[offset_index2], _t[offset_equal_right], size_of);
-            offset_equal_right -= size_of;
+            __SWAP__(_t[offset_index2], _t[offset_equal_right], _size_of);
+            offset_equal_right -= _size_of;
         }
 
-        offset_index1 += size_of;
-        offset_index2 -= size_of;
+        offset_index1 += _size_of;
+        offset_index2 -= _size_of;
     }
 
     /* insert entries == pivot to correct part of array t */
-    offset_index1 = offset_index2 + size_of;
+    offset_index1 = offset_index2 + _size_of;
 
-    for (i = offset_left + size_of; i < offset_equal_left; i += size_of )
+    for (i = (ssize_t)offset_left + _size_of; i < (ssize_t)offset_equal_left; i += _size_of )
     {
-        __SWAP__(_t[i], _t[offset_index2], size_of);
-        offset_index2 -= size_of;
+        __SWAP__(_t[i], _t[offset_index2], _size_of);
+        offset_index2 -= _size_of;
     }
 
 
-    for (i = offset_right; i > offset_equal_right; i -= size_of)
+    for (i = (ssize_t)offset_right; i > (ssize_t)offset_equal_right; i -= _size_of)
     {
-         __SWAP__(_t[i], _t[offset_index1], size_of);
-          offset_index1 += size_of;
+         __SWAP__(_t[i], _t[offset_index1], _size_of);
+          offset_index1 += _size_of;
     }
 
-    __SWAP__(_t[offset_index2], _t[offset_left], size_of);
+    __SWAP__(_t[offset_index2], _t[offset_left], _size_of);
 
     *offset_left_index = (size_t)MAX((ssize_t)(offset_index2 - size_of), (ssize_t)0);
     *offset_right_index = (size_t)offset_index1;
@@ -420,6 +422,8 @@ static int _quicksort(  void        *t,
     size_t offset_right_index;
     size_t range;
 
+    size_t _size_of = (size_t)size_of;
+
     TRACE("");
 
     assert(t == NULL || cmp == NULL);
@@ -429,27 +433,27 @@ static int _quicksort(  void        *t,
 
     while ((ssize_t)offset_right - (ssize_t)offset_left >= QUICKSORT_CUTOFF)
     {
-        range = (offset_right - offset_left) / size_of + 1;
+        range = (offset_right - offset_left) / _size_of + 1;
 
         if ((ssize_t)range < TUKEY_MIN)
         {
             if ((ssize_t)range > MEDIAN_MIN)
             {
                 if (medians_of_3( _t, offset_left,
-                ((offset_left / size_of + offset_right / size_of) >> 1)
-                * size_of, offset_right, cmp, &m) )
+                ((offset_left / _size_of + offset_right / _size_of) >> 1)
+                * _size_of, offset_right, cmp, &m) )
                     ERROR("medians_of_3 error\n", 1, "");
 
-                __SWAP__(_t[m], _t[offset_left], size_of);
+                __SWAP__(_t[m], _t[offset_left], _size_of);
             }
         }
         else
         {
             if (tukey_medians(_t, offset_left, offset_right,
-            EPSILON(range, size_of), cmp,size_of, &m))
+            EPSILON(range, _size_of), cmp, size_of, &m))
                 ERROR("tukey_medians error\n", 1, "");
 
-            __SWAP__(_t[m], _t[offset_left], size_of);
+            __SWAP__(_t[m], _t[offset_left], _size_of);
         }
 
         if (partition_bentley(_t, offset_left, offset_right, cmp, size_of,
@@ -475,7 +479,7 @@ static int _quicksort(  void        *t,
     }
 
     if ( (ssize_t)offset_right - (ssize_t)offset_left > 0 &&
-        insort(_t + offset_left, (offset_right - offset_left) / size_of + 1, cmp, size_of))
+        insort(_t + offset_left, (offset_right - offset_left) / _size_of + 1, cmp, size_of))
         ERROR("insort error\n", 1, "");
 
     return 0;
@@ -491,6 +495,7 @@ int insort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_o
     ssize_t offset_j;
 
     size_t max;
+    ssize_t _size_of = (ssize_t)size_of;
 
     TRACE("");
 
@@ -500,34 +505,37 @@ int insort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_o
     if (size_of < 1)
         ERROR("size_of < 1\n", 1, "");
 
+    if (num_elements == 0)
+        ERROR("Nothing to sort\n", 1, "");
+
     /* cast TYPE *t on BYTE*, so we can pick 1 byte */
     _t = (BYTE *)t;
 
     offset_i = size_of;
-    max = num_elements * size_of;
+    max = num_elements * (size_t)_size_of;
 
-    for (offset_i = size_of; offset_i < max; offset_i += size_of)
+    for (offset_i = _size_of; offset_i < (ssize_t)max; offset_i += _size_of)
     {
         /* temp = t[i] */
-        __ASSIGN__(buffer[0], _t[offset_i], size_of);
+        __ASSIGN__(buffer[0], _t[offset_i], _size_of);
 
-        offset_j = offset_i - size_of;
+        offset_j = offset_i - _size_of;
 
         /* while j >= 0 && temp  <= t[j] */
         while (offset_j >= 0 && cmp((void *)&_t[offset_j], (void *)buffer) > 0)
-            offset_j -= size_of;
+            offset_j -= _size_of;
 
         /* if we move someone */
-        if (offset_j + size_of < offset_i)
+        if (offset_j + _size_of < offset_i)
         {
             /* make gap for temp */
-            if ((memmove((void *)(_t + offset_j + (size_of << 1)),
-            (void *)(_t + offset_j + size_of),
-            offset_i - offset_j - size_of)) == NULL)
+            if ((memmove((void *)(_t + offset_j + (_size_of << 1)),
+            (void *)(_t + offset_j + _size_of),
+            (size_t)(offset_i - offset_j - _size_of))) == NULL)
                 ERROR("memmove error\n", 1, "");
 
             /* fill gap */
-            __ASSIGN__(_t[offset_j + size_of], buffer[0], size_of);
+            __ASSIGN__(_t[offset_j + _size_of], buffer[0], _size_of);
         }
     }
 
@@ -551,6 +559,7 @@ int binsort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_
     ssize_t bs_offset_middle;
 
     ssize_t offset_i;
+    ssize_t _size_of = (ssize_t)size_of;
 
     BYTE *_t;
     BYTE buffer[MAXWORD];
@@ -563,36 +572,39 @@ int binsort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_
     if (size_of < 1)
         ERROR("size_of < 1\n", 1, "");
 
+    if (num_elements == 0)
+        ERROR("Nothing to sort\n", 1, "");
+
     if (num_elements < INSORT_TRESHOLD)
         return insort(t, num_elements, cmp, size_of);
 
-    size = size_of * num_elements;
+    size = (size_t)_size_of * num_elements;
 
     array = (BYTE *)malloc(size);
     if (array == NULL)
         ERROR("malloc error\n", 1, "");
 
-    offset_middle = size >> 1;
+    offset_middle = (ssize_t)(size >> 1);
     offset_left = offset_middle;
     offset_right = offset_middle;
 
     _t = (BYTE *)t;
 
     /* insert first element in middle */
-    __ASSIGN__(array[offset_middle], _t[0], size_of);
+    __ASSIGN__(array[offset_middle], _t[0], _size_of);
 
-    for (offset_i = size_of; offset_i < size; offset_i += size_of)
+    for (offset_i = _size_of; offset_i < (ssize_t)size; offset_i += _size_of)
     {
-         __ASSIGN__(buffer[0], _t[offset_i], size_of);
+         __ASSIGN__(buffer[0], _t[offset_i], _size_of);
 
         /* perform standart BINARY SEARCH */
-        bs_offset_left = offset_left - size_of;
-        bs_offset_right = offset_right + size_of;
+        bs_offset_left = offset_left - _size_of;
+        bs_offset_right = offset_right + _size_of;
 
-        while (bs_offset_right - bs_offset_left > size_of)
+        while (bs_offset_right - bs_offset_left > _size_of)
         {
-            bs_offset_middle = ((bs_offset_left / size_of + bs_offset_right
-                                / size_of) >> 1) * size_of;
+            bs_offset_middle = ((bs_offset_left / _size_of + bs_offset_right
+                                / _size_of) >> 1) * _size_of;
             if (cmp((void *)&array[bs_offset_middle], (void *)buffer) < 0)
                 bs_offset_left = bs_offset_middle;
             else
@@ -601,26 +613,26 @@ int binsort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_
 
         /* move from left is better */
         if ((offset_left > 0 && bs_offset_right - offset_left <=
-        offset_right - bs_offset_right) || offset_right == size - size_of)
+        offset_right - bs_offset_right) || offset_right == (ssize_t)size - _size_of)
         {
             if (memmove((void *)(array + offset_left - size_of),
-            (void *)(array + offset_left), bs_offset_right - offset_left) == NULL)
+            (void *)(array + offset_left), (size_t)(bs_offset_right - offset_left)) == NULL)
                 ERROR("memmove error\n", 1, "");
 
-            offset_left -= size_of;
+            offset_left -= _size_of;
 
-            __ASSIGN__(array[bs_offset_right - size_of], buffer[0], size_of);
+            __ASSIGN__(array[bs_offset_right - _size_of], buffer[0], _size_of);
         }
         else
         {
-            if (memmove((void *)(array + bs_offset_right + size_of),
+            if (memmove((void *)(array + bs_offset_right + _size_of),
             (void *)(array + bs_offset_right),
-            offset_right - bs_offset_right + size_of) == NULL)
+            (size_t)(offset_right - bs_offset_right + _size_of)) == NULL)
                 ERROR("memmove error\n",1,"");
 
-            offset_right += size_of;
+            offset_right += _size_of;
 
-            __ASSIGN__(array[bs_offset_right], buffer[0], size_of);
+            __ASSIGN__(array[bs_offset_right], buffer[0], _size_of);
         }
     }
 
@@ -643,6 +655,7 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
 
     ssize_t offset_k;
     ssize_t d_offset_k;
+    
     int k;
     int dk;
 
@@ -656,17 +669,20 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
 
     if (size_of < 1)
         ERROR("size_of < 1\n", 1, "");
+    
+    if (num_elements == 0)
+        ERROR("Nothing to sort\n", 1, "");
 
     if (num_elements < INSORT_TRESHOLD)
         return insort(t, num_elements, cmp, size_of);
 
-    size = num_elements * size_of;
+    size = num_elements * (size_t)size_of;
     _t = (BYTE *)t;
 
     /* sort small subarrays using insort */
-    for (i = 0; i < num_elements; i += MERGESORT_CUTOFF)
+    for (i = 0; i < (ssize_t)num_elements; i += MERGESORT_CUTOFF)
         if (insort(_t + (i * size_of),
-        MIN((size_t)(MERGESORT_CUTOFF), (num_elements - i)), cmp, size_of))
+        MIN((size_t)(MERGESORT_CUTOFF), (num_elements - (size_t)i)), cmp, size_of))
             ERROR("insort error\n", 1, "");
 
     buffer = (BYTE *)malloc(size);
@@ -676,16 +692,16 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
     loop_counter = 0;
 
     /* loop for every power of 2 less than size */
-    for (offset_k = MERGESORT_CUTOFF * size_of; offset_k < size; offset_k <<= 1)
+    for (offset_k = MERGESORT_CUTOFF * size_of; offset_k < (ssize_t)size; offset_k <<= 1)
     {
         d_offset_k = offset_k << 1;
-        k = offset_k / size_of;
+        k = (int)(offset_k / (ssize_t)size_of);
         dk = k << 1;
 
-        for (offset_i = 0; offset_i < size; offset_i += d_offset_k)
-            if (merge( _t, offset_i,
-            MIN(((offset_i / size_of + k - 1) * size_of), (ssize_t)(size - size_of)),
-            MIN(((offset_i / size_of + dk - 1) * size_of), (ssize_t)(size - size_of)),
+        for (offset_i = 0; offset_i < (ssize_t)size; offset_i += d_offset_k)
+            if (merge( _t, (size_t)offset_i,
+            (size_t)MIN(((offset_i / size_of + k - 1) * size_of), (ssize_t)(size - (size_t)size_of)),
+            (size_t)MIN(((offset_i / size_of + dk - 1) * size_of), (ssize_t)(size - (size_t)size_of)),
             cmp, size_of, buffer))
                 ERROR("merge error\n", 1, "");
 
@@ -717,10 +733,13 @@ int quicksort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
     if (size_of < 1)
         ERROR("size_of < 1\n", 1, "");
 
+    if (num_elements == 0)
+        ERROR("Nothing to sort\n", 1, "");
+
     if (num_elements < INSORT_TRESHOLD)
         return insort(t, num_elements, cmp, size_of);
 
-    return _quicksort(t, 0, (num_elements - 1) * size_of, cmp, size_of);
+    return _quicksort(t, 0, (num_elements - 1) * (size_t)size_of, cmp, size_of);
 }
 
 int sort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
@@ -732,6 +751,9 @@ int sort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
 
     if (size_of < 1)
         ERROR("size_of < 1\n", 1, "");
+
+    if (num_elements == 0)
+        ERROR("Nothing to sort\n", 1, "");
 
 	if (num_elements < INSORT_TRESHOLD)
 		return insort(t, num_elements, cmp, size_of);

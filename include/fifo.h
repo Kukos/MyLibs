@@ -21,7 +21,7 @@ typedef struct Fifo
     size_t      ____head;       /* head postion in array */
     size_t      ____tail;       /* tail posiion in array */
     size_t      ____size;       /* size of allocated array */
-    int         ____size_of;    /* size of element in array */
+    size_t      ____size_of;    /* size of element in array */
 }Fifo;
 
 /*

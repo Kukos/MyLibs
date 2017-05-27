@@ -21,14 +21,14 @@ typedef struct Arraylist_node
     struct Arraylist_node *____next;
     struct Arraylist_node *____prev;
     void *____data;
-    int ____size_of;
+    size_t ____size_of;
 
 }Arraylist_node;
 
 
 typedef struct Arraylist
 {
-    int                 ____size_of;    /* size of element */
+    size_t              ____size_of;    /* size of element */
     size_t              ____length;     /* length of list */
 
     Arraylist_node      *____head;
@@ -42,7 +42,7 @@ typedef struct Arraylist
 typedef struct Arraylist_iterator
 {
     Arraylist_node  *____node;
-    int             ____size_of;
+    size_t          ____size_of;
 
 }Arraylist_iterator;
 
@@ -100,7 +100,7 @@ void arraylist_destroy(Arraylist *alist);
 /*
     Destroy arraylist with all entries ( call destructor for each entries )
 
-    destructor by void * pass addr i.e in array we have MyStruct *,
+    destructor by void * pass addr i.e in list we have MyStruct *,
     so your destructor data = (void *)&ms
 
     PARAMS

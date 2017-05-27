@@ -7,7 +7,7 @@
 #include <compiler.h>
 #include <assert.h>
 
-#define INIT_SIZE 1024
+#define INIT_SIZE (size_t)1024
 
 Fifo *fifo_create(int size_of)
 {
@@ -22,7 +22,7 @@ Fifo *fifo_create(int size_of)
     if (fifo == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    fifo->____array = malloc(INIT_SIZE * size_of);
+    fifo->____array = malloc(INIT_SIZE * (size_t)size_of);
     if (fifo->____array == NULL)
     {
         FREE(fifo);
@@ -32,7 +32,7 @@ Fifo *fifo_create(int size_of)
 
     fifo->____head = 0;
     fifo->____tail = 0;
-    fifo->____size_of = size_of;
+    fifo->____size_of = (size_t)size_of;
     fifo->____size = INIT_SIZE;
 
     return fifo;
@@ -201,7 +201,7 @@ int fifo_dequeue(Fifo *fifo, void *val)
         entries = fifo->____tail - fifo->____head;
 
     /* we resize array */
-    if (entries < fifo->____size * 0.4 && fifo->____size >> 1 >= INIT_SIZE)
+    if ((double)entries < (double)fifo->____size * 0.4 && fifo->____size >> 1 >= INIT_SIZE)
     {
         if (fifo->____head < fifo->____tail)
         {
@@ -308,7 +308,7 @@ int fifo_get_size_of(Fifo *fifo)
     if (fifo == NULL)
         ERROR("fifo == NULL\n", 1, "");
 
-    return fifo->____size_of;
+    return (int)fifo->____size_of;
 }
 
 ssize_t fifo_get_num_entries(Fifo *fifo)
@@ -319,9 +319,9 @@ ssize_t fifo_get_num_entries(Fifo *fifo)
         ERROR("fifo == NULL\n", -1, "");
 
     if (fifo->____tail < fifo->____head)
-        entries = fifo->____tail + fifo->____size - fifo->____head;
+        entries = (ssize_t)fifo->____tail + (ssize_t)fifo->____size - (ssize_t)fifo->____head;
     else
-        entries = fifo->____tail - fifo->____head;
+        entries = (ssize_t)fifo->____tail - (ssize_t)fifo->____head;
 
     return entries;
 }

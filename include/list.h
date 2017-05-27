@@ -23,7 +23,7 @@ typedef struct List_node
 
 typedef struct List
 {
-    int             size_of;    /* size of element */
+    size_t          size_of;    /* size of element */
     size_t          length;     /* length of list */
 
     List_node       *head;
@@ -39,7 +39,7 @@ typedef struct List
 typedef struct List_iterator
 {
     List_node       *node;
-    int             size_of;
+    size_t          size_of;
 
 }List_iterator;
 

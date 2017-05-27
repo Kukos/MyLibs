@@ -48,7 +48,7 @@ ___inline___ static List_node *list_node_create(List_node *next, void *data,
     if (node == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    node->data = malloc(size_of);
+    node->data = malloc((size_t)size_of);
     if (node->data == NULL)
 	{
 		FREE(node);
@@ -161,7 +161,7 @@ List *list_create(int size_of, int (*cmp)(void* a, void *b))
         ERROR("malloc error\n", NULL, "");
 
     list->cmp = cmp;
-    list->size_of = size_of;
+    list->size_of = (size_t)size_of;
 
     list->length = 0;
     list->head = NULL;
@@ -232,7 +232,7 @@ int list_insert(List *list, void *entry)
 
     if (list->head == NULL)
     {
-        node = list_node_create(NULL, entry, list->size_of);
+        node = list_node_create(NULL, entry, (int)list->size_of);
 
         if (node == NULL)
             ERROR("list_node_create error\n", 1, "");
@@ -248,7 +248,7 @@ int list_insert(List *list, void *entry)
         prev = NULL;
 
         /* add guardian at the end of list */
-        guard = list_node_create(NULL, entry, list->size_of);
+        guard = list_node_create(NULL, entry, (int)list->size_of);
 
         if (guard == NULL)
             ERROR("list_node_create error\n", 1, "");
@@ -308,7 +308,7 @@ int list_delete(List *list, void *entry)
     prev = NULL;
 
     /* we add guardian */
-    guard = list_node_create(NULL, entry, list->size_of);
+    guard = list_node_create(NULL, entry, (int)list->size_of);
     if (guard == NULL)
         ERROR("list_node_create error\n", 1, "");
 
@@ -375,7 +375,7 @@ int list_delete_all(List *list, void *entry)
     prev= NULL;
 
     /* we add guardian */
-    guard = list_node_create(NULL, entry, list->size_of);
+    guard = list_node_create(NULL, entry, (int)list->size_of);
     if (guard == NULL)
         ERROR("list_node_create error\n", -1, "");
 
@@ -438,7 +438,7 @@ int list_delete_all(List *list, void *entry)
 
     list->length -= deleted;
 
-    return deleted;
+    return (int)deleted;
 }
 
 List *list_merge(List *list1, List *list2)
@@ -453,7 +453,7 @@ List *list_merge(List *list1, List *list2)
     assert(list1 == NULL || list2 == NULL);
     assert(list1->size_of != list2->size_of);
 
-    list3 = list_create(list1->size_of, list1->cmp);
+    list3 = list_create((int)list1->size_of, list1->cmp);
     if(list3 == NULL)
         ERROR("list_create error\n", NULL, "");
 
@@ -462,28 +462,28 @@ List *list_merge(List *list1, List *list2)
 
     if (ptr1 != NULL && ptr2 != NULL)
     {
-        if (list3->cmp(ptr1->data,ptr2->data) < 0)
+        if (list3->cmp(ptr1->data, ptr2->data) < 0)
         {
-            node = list_node_create(NULL, ptr1->data, list3->size_of);
+            node = list_node_create(NULL, ptr1->data, (int)list3->size_of);
             list3->head = node;
             ptr1 = ptr1->next;
         }
         else
         {
-            node = list_node_create(NULL, ptr2->data, list3->size_of);
+            node = list_node_create(NULL, ptr2->data, (int)list3->size_of);
             list3->head = node;
             ptr2 = ptr2->next;
         }
     }
     else if (ptr1 != NULL)
     {
-        node = list_node_create(NULL, ptr1->data, list3->size_of);
+        node = list_node_create(NULL, ptr1->data, (int)list3->size_of);
         list3->head = node;
         ptr1 = ptr1->next;
     }
     else
     {
-        node = list_node_create(NULL, ptr2->data, list3->size_of);
+        node = list_node_create(NULL, ptr2->data, (int)list3->size_of);
         list3->head = node;
         ptr2 = ptr2->next;
     }
@@ -495,14 +495,14 @@ List *list_merge(List *list1, List *list2)
     {
         if (list3->cmp(ptr1->data,ptr2->data) < 0)
         {
-            node = list_node_create(NULL, ptr1->data, list3->size_of);
+            node = list_node_create(NULL, ptr1->data, (int)list3->size_of);
             list3->tail->next = node;
             list3->tail = node;
             ptr1 = ptr1->next;
         }
         else
         {
-            node = list_node_create(NULL, ptr2->data, list3->size_of);
+            node = list_node_create(NULL, ptr2->data, (int)list3->size_of);
             list3->tail->next = node;
             list3->tail = node;
             ptr2 = ptr2->next;
@@ -511,7 +511,7 @@ List *list_merge(List *list1, List *list2)
 
     while (ptr1 != NULL)
     {
-        node = list_node_create(NULL, ptr1->data, list3->size_of);
+        node = list_node_create(NULL, ptr1->data, (int)list3->size_of);
         list3->tail->next = node;
         list3->tail = node;
         ptr1 = ptr1->next;
@@ -519,7 +519,7 @@ List *list_merge(List *list1, List *list2)
 
     while (ptr2 != NULL)
     {
-        node = list_node_create(NULL, ptr2->data, list3->size_of);
+        node = list_node_create(NULL, ptr2->data, (int)list3->size_of);
         list3->tail->next = node;
         list3->tail = node;
         ptr2 = ptr2->next;
@@ -542,7 +542,7 @@ int list_search(List *list, void *val, void *entry)
     ptr = list->head;
 
     /* we add guardian */
-    guard = list_node_create(NULL, val, list->size_of);
+    guard = list_node_create(NULL, val, (int)list->size_of);
     if (guard == NULL)
         ERROR("list_node_create error\n", 1, "");
 
@@ -610,7 +610,7 @@ int list_get_size_of(List *list)
     if (list == NULL)
         return -1;
 
-    return list->size_of;
+    return (int)list->size_of;
 }
 
 ssize_t list_get_num_entries(List *list)
@@ -618,5 +618,5 @@ ssize_t list_get_num_entries(List *list)
     if (list == NULL)
         return -1;
 
-    return list->length;
+    return (ssize_t)list->length;
 }

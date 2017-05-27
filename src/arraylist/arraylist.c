@@ -50,7 +50,7 @@ ___inline___ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev
     if (node == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    node->____data = malloc(size_of);
+    node->____data = malloc((size_t)size_of);
     if (node->____data == NULL)
 	{
 		FREE(node);
@@ -59,7 +59,7 @@ ___inline___ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev
 
     node->____next = next;
     node->____prev = prev;
-    node->____size_of = size_of;
+    node->____size_of = (size_t)size_of;
     __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data,size_of);
 
     return node;
@@ -89,7 +89,7 @@ Arraylist *arraylist_create(int size_of)
     if (alist == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    alist->____size_of = size_of;
+    alist->____size_of = (size_t)size_of;
 
     alist->____length = 0;
     alist->____head = NULL;
@@ -160,7 +160,7 @@ int arraylist_insert_first(Arraylist *alist, void *data)
         ERROR("alist == NULL || data == NULL\n", 1, "");
 
     /* create node and insert at begining */
-    node = arraylist_node_create(NULL, alist->____head, data, alist->____size_of);
+    node = arraylist_node_create(NULL, alist->____head, data, (int)alist->____size_of);
     if (node == NULL)
         ERROR("arraylist_node_create error\n", 1, "");
 
@@ -191,7 +191,7 @@ int arraylist_insert_last(Arraylist *alist, void *data)
         ERROR("alist == NULL || data == NULL\n", 1, "");
 
     /* create node and insert at the end */
-    node = arraylist_node_create(alist->____tail, NULL, data, alist->____size_of);
+    node = arraylist_node_create(alist->____tail, NULL, data, (int)alist->____size_of);
     if(node == NULL)
         ERROR("arraylist_node_create error\n", 1, "");
 
@@ -251,7 +251,7 @@ int arraylist_insert_pos(Arraylist *alist, size_t pos, void *data)
             ptr = ptr->____prev;
     }
 
-    node = arraylist_node_create(ptr->____prev, ptr, data, alist->____size_of);
+    node = arraylist_node_create(ptr->____prev, ptr, data, (int)alist->____size_of);
     if (node == NULL)
         ERROR("arraylist_node_create error\n", 1, "");
 
@@ -423,7 +423,7 @@ Arraylist *arraylist_merge(Arraylist *alist1, Arraylist *alist2)
     if (alist1 == NULL || alist2 == NULL)
         ERROR("alist1 == NULL || alist2 == NULL\n", NULL, "");
 
-    result = arraylist_create(alist1->____size_of);
+    result = arraylist_create((int)alist1->____size_of);
     if (result == NULL)
         ERROR("arraylist_create error\n", NULL, "");
 
@@ -456,7 +456,7 @@ int arraylist_to_array(Arraylist *alist, void *array, size_t *size)
     if (alist == NULL || array == NULL || size == NULL)
         ERROR("alist == NULL || array == NULL || size == NULL\n", 1, "");
 
-    t = (BYTE *)malloc(alist->____length * alist->____size_of);
+    t = (BYTE *)malloc((size_t)(alist->____length * (size_t)alist->____size_of));
     if (t == NULL)
         ERROR("malloc error\n", 1, "");
 
@@ -465,7 +465,7 @@ int arraylist_to_array(Arraylist *alist, void *array, size_t *size)
     while (ptr != NULL)
     {
         __ASSIGN__(t[offset], *(BYTE *)ptr->____data, alist->____size_of);
-        offset += alist->____size_of;
+        offset += (size_t)alist->____size_of;
 
         ptr = ptr->____next;
     }
@@ -482,7 +482,7 @@ int arraylist_get_size_of(Arraylist *alist)
     if (alist == NULL)
         ERROR("alist == NULL\n", -1, "");
 
-    return alist->____size_of;
+    return (int)alist->____size_of;
 }
 
 ssize_t arraylist_get_num_entries(Arraylist *alist)
@@ -490,7 +490,7 @@ ssize_t arraylist_get_num_entries(Arraylist *alist)
     if (alist == NULL)
         ERROR("alist == NULL\n", -1, "");
 
-    return alist->____length;
+    return (ssize_t)alist->____length;
 }
 
 int arraylist_node_get_data(Arraylist_node *node, void *data)

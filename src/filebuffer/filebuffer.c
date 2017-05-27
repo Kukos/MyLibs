@@ -12,6 +12,9 @@
 #include <fcntl.h>
 #include <stdbool.h>
 
+___inline___ static bool is_aligned(size_t size);
+___inline___ static size_t align_size(size_t size);
+
 ___inline___ static bool is_aligned(size_t size)
 {
 	/* pagesize is always power of 2 */
@@ -71,7 +74,7 @@ file_buffer *file_buffer_create(int fd, int protect_flag)
 		ERROR("fstat error\n", NULL, "");
 	}
 
-    fb->____size = ft.st_size;
+    fb->____size = (size_t)ft.st_size;
 	fb->____mapped_size = align_size(fb->____size);
 
     if ((fb->____buffer = (char *)mmap(NULL, fb->____mapped_size,
@@ -132,7 +135,7 @@ int file_buffer_append(file_buffer *fb, const char *data)
 	if (length == 0)
 		ERROR("data has 0 len\n", 1, "");
 
-	new_size = fb->____size + length;
+	new_size = (off_t)(fb->____size + length);
 
 	/* resize file */
     if (ftruncate(fb->____fd, new_size) == -1)
@@ -154,7 +157,7 @@ int file_buffer_append(file_buffer *fb, const char *data)
     if (memcpy((void *)(fb->____buffer + fb->____size), data, length) == NULL)
 		ERROR("memcpy error\n", 1, "");
 
-    fb->____size = new_size;
+    fb->____size = (size_t)new_size;
 
     return 0;
 }

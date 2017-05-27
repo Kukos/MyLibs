@@ -20,6 +20,6 @@
 	char from stdout iff success
     -1 iff failure
 */
-int getch();
+int getch(void);
 
 #endif

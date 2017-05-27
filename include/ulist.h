@@ -56,6 +56,19 @@ typedef struct UList
 
 /* Macro to create wrappers to your struct to provide assignment to framework functions */
 #define ULIST_WRAPPERS_CREATE(type, prefix) \
+    static ___unused___ void ____destroy(void *list); \
+    static ___unused___ void ____destroy_with_entries(void *list, void (*destructor)(void *data)); \
+    static ___unused___ int ____insert_first(void *list, void *data); \
+    static ___unused___ int ____insert_last(void *list, void *data); \
+    static ___unused___ int ____insert_pos(void *list, size_t pos, void *data); \
+    static ___unused___ int ____delete_first(void *list); \
+    static ___unused___ int ____delete_last(void *list); \
+    static ___unused___ int ____delete_pos(void *list, size_t pos); \
+    static ___unused___ int ____get_pos(void *list, size_t pos, void *data); \
+    static ___unused___ void *____merge(void *list1, void *list2); \
+    static ___unused___ int ____to_array(void *list, void *array, size_t *size); \
+    static ___unused___ int ____get_size_of(void *list); \
+    static ___unused___ ssize_t ____get_num_entries(void *list); \
     static ___unused___ void ____destroy(void *list) \
     { \
         concat(prefix, _destroy)((type *)list); \
@@ -151,6 +164,191 @@ typedef struct UList
     true iff lists have the same type
 
 */
+___inline___ bool ulist_the_same_type(UList *list1, UList *list2);
+
+/*
+    Get list from generic UList
+
+    PARAMS
+    @IN list - pointer to UList
+
+    RETURN
+    NULL iff failure
+    Pointer to list iff success
+*/
+___inline___ void *ulist_get_list(UList *list);
+
+
+/*
+    Destroy the list
+
+    PARAMS
+    @IN list - pointer to UList
+
+    RETURN
+    This is a void function
+*/
+___inline___ void ulist_destroy(UList *list);
+
+/*
+     Destroy ulist with all entries ( call destructor for each entries )
+
+    destructor by void * pass addr i.e in list we have MyStruct *,
+    so your destructor data = (void *)&ms
+
+    PARAMS
+    @IN list - pointer to UList
+    @IN destructor - pointer to destructor function
+
+    RETURN
+    This is a void function
+
+*/
+___inline___ void ulist_destroy_with_entries(UList *list, void (*destructor)(void *data));
+
+/*
+    Insert data at the begining of list (this is useful for stack)
+
+    PARAMS
+    @IN list - pointer to UList
+    @IN data - (void *)&val
+
+    RETURN
+    0 - iff success
+    Non-zero iff failure
+*/
+___inline___ int ulist_insert_first(UList *list, void *data);
+
+/*
+    Insert data at the end of list (this is useful for queue)
+
+    PARAMS
+    @IN list - pointer to UList
+    @IN data - (void *)&val
+
+    RETURN
+    0 - iff success
+    Non-zero iff failure
+*/
+___inline___ int ulist_insert_last(UList *list, void *data);
+
+
+/*
+    Insert data on posision @pos
+
+    PARAMS
+    @IN list - pointer to UList
+    @IN pos - posision where we insert data
+    @IN data - (void *)&val
+
+    RETURN
+    0 - iff success
+    Non-zero iff failure
+*/
+___inline___ int ulist_insert_pos(UList *list, size_t pos, void *data);
+
+/*
+    Delete first data
+
+    PARAMS
+    @IN list - pointer to UList
+
+    RETURN
+    0 - iff success
+    Non-zero iff failure
+*/
+___inline___ int ulist_delete_first(UList *list);
+
+/*
+    Delete last data
+
+    PARAMS
+    @IN list - pointer to UList
+
+    RETURN
+    0 - iff success
+    Non-zero iff failure
+*/
+___inline___ int ulist_delete_last(UList *list);
+
+/*
+    Delete data from posision @pos
+
+    PARAMS
+    @IN list - pointer to UList
+    @IN pos - posision from we delete data(first is 0 )
+
+    RETURN
+    0 - iff success
+    Non-zero iff failure
+*/
+___inline___ int ulist_delete_pos(UList *list, size_t pos);
+
+/*
+    Get data from node at @pos
+
+    PARAMS
+    @IN list - pointer to UList
+    @IN pos - posision from we get data(first is 0)
+    @OUT data - (void *)&out_data
+
+    RETURN
+    0 - iff success
+    Non-zero iff failure
+*/
+___inline___ int ulist_get_pos(UList *list, size_t pos, void *data);
+
+/*
+    Merge 2 UList (IFF they have the same time)
+
+    PARAMS
+    @IN list1 - pointer to 1. UList
+    @IN list2 - pointer to 2. UList
+
+    RETURN
+    NULL iff failure
+    pointer to New UList iff success
+*/
+___inline___ UList *ulist_merge(UList *list1, UList *list2);
+
+/*
+    Convert UList to array
+
+    PARAMS
+    @IN list - pointer to UList
+    @OUT array - (void *)&array
+    @OUT size - array size
+
+    RETURN
+    0 iff success
+    Non-zero iff failure
+*/
+___inline___ int ulist_to_array(UList *list, void *array, size_t *size);
+
+/*
+    Get UList data size_of
+
+    PARAMS
+    @IN list - pointer to UList
+
+    RETURN
+    -1 iff failure
+    UList data size of iff success
+*/
+___inline___ int ulist_get_size_of(UList *list);
+
+/*
+    Get UList num of entries
+
+    PARAMS
+    @IN list - pointer to UList
+
+    RETURN
+    -1 iff failure
+    Num entries iff success
+*/
+___inline___ ssize_t ulist_get_num_entries(UList *list);
+
 ___inline___ bool ulist_the_same_type(UList *list1, UList *list2)
 {
     if (list1 == NULL || list2 == NULL)
@@ -171,16 +369,7 @@ ___inline___ bool ulist_the_same_type(UList *list1, UList *list2)
              list1->____get_num_entries         != list2->____get_num_entries);
 }
 
-/*
-    Get list from generic UList
 
-    PARAMS
-    @IN list - pointer to UList
-
-    RETURN
-    NULL iff failure
-    Pointer to list iff success
-*/
 ___inline___ void *ulist_get_list(UList *list)
 {
     if (list == NULL)
@@ -189,15 +378,6 @@ ___inline___ void *ulist_get_list(UList *list)
     return list->____list;
 }
 
-/*
-    Destroy the list
-
-    PARAMS
-    @IN list - pointer to UList
-
-    RETURN
-    This is a void function
-*/
 ___inline___ void ulist_destroy(UList *list)
 {
     if (list == NULL)
@@ -207,15 +387,6 @@ ___inline___ void ulist_destroy(UList *list)
     FREE(list);
 }
 
-/*
-    PARAMS
-    @IN list - pointer to UList
-    @IN destructor - pointer to destructor function
-
-    RETURN
-    This is a void function
-
-*/
 ___inline___ void ulist_destroy_with_entries(UList *list, void (*destructor)(void *data))
 {
     if (list == NULL)
@@ -225,17 +396,6 @@ ___inline___ void ulist_destroy_with_entries(UList *list, void (*destructor)(voi
     FREE(list);
 }
 
-/*
-    Insert data at the begining of list (this is useful for stack)
-
-    PARAMS
-    @IN list - pointer to UList
-    @IN data - (void *)&val
-
-    RETURN
-    0 - iff success
-    Non-zero iff failure
-*/
 ___inline___ int ulist_insert_first(UList *list, void *data)
 {
     if (list == NULL)
@@ -244,17 +404,6 @@ ___inline___ int ulist_insert_first(UList *list, void *data)
     return list->____insert_first(ulist_get_list(list), data);
 }
 
-/*
-    Insert data at the end of list (this is useful for queue)
-
-    PARAMS
-    @IN list - pointer to UList
-    @IN data - (void *)&val
-
-    RETURN
-    0 - iff success
-    Non-zero iff failure
-*/
 ___inline___ int ulist_insert_last(UList *list, void *data)
 {
     if (list == NULL)
@@ -263,18 +412,6 @@ ___inline___ int ulist_insert_last(UList *list, void *data)
     return list->____insert_last(ulist_get_list(list), data);
 }
 
-/*
-    Insert data on posision @pos
-
-    PARAMS
-    @IN list - pointer to UList
-    @IN pos - posision where we insert data
-    @IN data - (void *)&val
-
-    RETURN
-    0 - iff success
-    Non-zero iff failure
-*/
 ___inline___ int ulist_insert_pos(UList *list, size_t pos, void *data)
 {
     if (list == NULL)
@@ -283,16 +420,6 @@ ___inline___ int ulist_insert_pos(UList *list, size_t pos, void *data)
     return list->____insert_pos(ulist_get_list(list), pos, data);
 }
 
-/*
-    Delete first data
-
-    PARAMS
-    @IN list - pointer to UList
-
-    RETURN
-    0 - iff success
-    Non-zero iff failure
-*/
 ___inline___ int ulist_delete_first(UList *list)
 {
     if (list == NULL)
@@ -301,16 +428,6 @@ ___inline___ int ulist_delete_first(UList *list)
     return list->____delete_first(ulist_get_list(list));
 }
 
-/*
-    Delete last data
-
-    PARAMS
-    @IN list - pointer to UList
-
-    RETURN
-    0 - iff success
-    Non-zero iff failure
-*/
 ___inline___ int ulist_delete_last(UList *list)
 {
     if (list == NULL)
@@ -319,17 +436,6 @@ ___inline___ int ulist_delete_last(UList *list)
     return list->____delete_last(ulist_get_list(list));
 }
 
-/*
-    Delete data from posision @pos
-
-    PARAMS
-    @IN list - pointer to UList
-    @IN pos - posision from we delete data(first is 0 )
-
-    RETURN
-    0 - iff success
-    Non-zero iff failure
-*/
 ___inline___ int ulist_delete_pos(UList *list, size_t pos)
 {
     if (list == NULL)
@@ -338,16 +444,6 @@ ___inline___ int ulist_delete_pos(UList *list, size_t pos)
     return list->____delete_pos(ulist_get_list(list), pos);
 }
 
-/*
-    PARAMS
-    @IN list - pointer to UList
-    @IN pos - posision from we get data(first is 0)
-    @OUT data - (void *)&out_data
-
-    RETURN
-    0 - iff success
-    Non-zero iff failure
-*/
 ___inline___ int ulist_get_pos(UList *list, size_t pos, void *data)
 {
     if (list == NULL)
@@ -356,17 +452,6 @@ ___inline___ int ulist_get_pos(UList *list, size_t pos, void *data)
     return list->____get_pos(ulist_get_list(list), pos, data);
 }
 
-/*
-    Merge 2 UList (IFF they have the same time)
-
-    PARAMS
-    @IN list1 - pointer to 1. UList
-    @IN list2 - pointer to 2. UList
-
-    RETURN
-    NULL iff failure
-    pointer to New UList iff success
-*/
 ___inline___ UList *ulist_merge(UList *list1, UList *list2)
 {
     UList *list3;
@@ -406,18 +491,6 @@ ___inline___ UList *ulist_merge(UList *list1, UList *list2)
     return list3;
 }
 
-/*
-    Convert UList to array
-
-    PARAMS
-    @IN list - pointer to UList
-    @OUT array - (void *)&array
-    @OUT size - array size
-
-    RETURN
-    0 iff success
-    Non-zero iff failure
-*/
 ___inline___ int ulist_to_array(UList *list, void *array, size_t *size)
 {
     if (list == NULL)
@@ -426,16 +499,6 @@ ___inline___ int ulist_to_array(UList *list, void *array, size_t *size)
     return list->____to_array(ulist_get_list(list), array, size);
 }
 
-/*
-    Get UList data size_of
-
-    PARAMS
-    @IN list - pointer to UList
-
-    RETURN
-    -1 iff failure
-    UList data size of iff success
-*/
 ___inline___ int ulist_get_size_of(UList *list)
 {
     if (list == NULL)
@@ -444,17 +507,7 @@ ___inline___ int ulist_get_size_of(UList *list)
     return list->____get_size_of(ulist_get_list(list));
 }
 
-/*
-    Get UList num of entries
-
-    PARAMS
-    @IN list - pointer to UList
-
-    RETURN
-    -1 iff failure
-    Num entries iff success
-*/
-___inline___ int ulist_get_num_entries(UList *list)
+___inline___ ssize_t ulist_get_num_entries(UList *list)
 {
     if (list == NULL)
         return 1;
@@ -477,6 +530,12 @@ typedef struct UList_iterator
 
 /* use this macro to create wrappers for iterator */
 #define ULIST_ITERATOR_WRAPPERS_CREATE(type, prefix) \
+    static ___unused___ void ____it_destroy(void *it); \
+    static ___unused___ int ____it_next(void *it); \
+    static ___unused___ int ____it_prev(void *it); \
+    static ___unused___ int ____it_get_data(void *it, void *data); \
+    static ___unused___ int ____it_get_node(void *it, void *node); \
+    static ___unused___ bool ____it_end(void *it); \
     static ___unused___ void ____it_destroy(void *it) \
     { \
         concat(prefix, _destroy)((type *)it); \

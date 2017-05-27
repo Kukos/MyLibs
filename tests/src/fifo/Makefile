@@ -5,13 +5,13 @@ SRCS = $(wildcard $(SDIR)/$(NAME)/*.c)
 all: test
 
 test: FORCE
-	$(CC) $(CFLAGS) -DSILENT_ERROR -I $(IDIR) $(SDIR)/$(NAME)/*.c $(SDIR)/log.c \
+	$(Q)$(CC) $(C_TEST_FLAGS) -I $(IDIR) $(SDIR)/$(NAME)/*.c $(SDIR)/log.c \
 	$(SDIR)/assert.c $(THIS_DIR)/test.c -o $(THIS_DIR)/$(TEST_EXEC_NAME)
 
 FORCE:
 
 run:
-	@$(THIS_DIR)/$(TEST_EXEC_NAME)
+	$(Q)$(THIS_DIR)/$(TEST_EXEC_NAME)
 
 clean:
-	rm -f $(THIS_DIR)/$(TEST_EXEC_NAME)
+	$(Q)rm -f $(THIS_DIR)/$(TEST_EXEC_NAME)

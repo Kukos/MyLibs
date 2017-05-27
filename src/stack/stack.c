@@ -125,16 +125,16 @@ int stack_to_array(Stack *stack, void *array, size_t *size)
     if (stack_is_empty(stack))
         ERROR("stack is empty\n",1 ,"");
 
-    t = malloc(darray_get_num_entries(stack->____darray) * darray_get_size_of(stack->____darray));
+    t = malloc((size_t)darray_get_num_entries(stack->____darray) * (size_t)darray_get_size_of(stack->____darray));
     if (t == NULL)
         ERROR("malloc error\n", 1, "");
 
     if (memcpy(t, darray_get_array(stack->____darray),
-    darray_get_num_entries(stack->____darray) * darray_get_size_of(stack->____darray)) == NULL)
+    (size_t)darray_get_num_entries(stack->____darray) * (size_t)darray_get_size_of(stack->____darray)) == NULL)
         ERROR("memcpy error\n", 1 ,"");
 
     if (size != NULL)
-        *size = darray_get_num_entries(stack->____darray);
+        *size = (size_t)darray_get_num_entries(stack->____darray);
 
     *(void **)array = t;
 

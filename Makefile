@@ -1,7 +1,21 @@
 export
 
 CC := gcc
-CFLAGS := -std=gnu99 -Wall -pedantic -Werror -O3 -DASSERT
+
+CCWARNINGS := 	-Wall -Wextra -pedantic -Wcast-align -Wcast-qual \
+				-Winit-self -Wlogical-op -Wmissing-include-dirs \
+			 	-Wredundant-decls -Wshadow -Wstrict-overflow=5 -Wundef  \
+				-Wwrite-strings -Wpointer-arith -Wmissing-declarations \
+				-Wuninitialized -Wold-style-definition -Wstrict-prototypes \
+				-Wmissing-prototypes -Wswitch-default -Wbad-function-cast \
+				-Wnested-externs -Wconversion -Wunreachable-code
+
+CFLAGS := -std=gnu99 $(CCWARNINGS) -Werror -O3 -DASSERT
+
+CC_TEST_WARNINGS := -Wall -pedantic
+
+C_TEST_FLAGS := -std=gnu99 $(CC_TEST_WARNINGS) -Werror -O3 -DASSERT -DSILENT_ERROR
+
 
 PROJECT_DIR := $(shell pwd)
 
@@ -12,58 +26,99 @@ O_LIBS := $(ODIR)/libs
 O_HEADERS := $(ODIR)/include
 TEST_DIR := $(PROJECT_DIR)/tests
 
-all: prepare arraylist avl bst darray fifo filebuffer getch heap list list2d rbt sort stack trie ufset final
+ifeq ("$(origin V)", "command line")
+  VERBOSE = $(V)
+endif
+
+ifndef VERBOSE
+  VERBOSE = 0
+endif
+
+ifeq ($(VERBOSE),1)
+  Q =
+else
+  Q = @
+endif
+
+define print_info
+	$(if $(Q), @echo "$(1)")
+endef
+
+define print_make
+	$(if $(Q), @echo "[MAKE]    $(1)")
+endef
+
+all: prepare arraylist darray fifo filebuffer getch list sort stack final
+# avl bst heap list list2d rbt trie ufset
 
 prepare:
-	mkdir -p $(ODIR) && mkdir -p $(O_LIBS) && mkdir -p $(O_HEADERS)
+	$(call print_info,Preparing dirs)
+	$(Q)mkdir -p $(ODIR) && mkdir -p $(O_LIBS) && mkdir -p $(O_HEADERS)
 
 arraylist:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 avl:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 bst:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 darray:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 fifo:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 filebuffer:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 getch:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 heap:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 list:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 list2d:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 rbt:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 sort:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 stack:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 trie:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 ufset:
-	$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
 
 final:
-	cp $(IDIR)/common.h $(O_HEADERS) && \
+	$(call print_info,Finalizing)
+	$(Q)cp $(IDIR)/common.h $(O_HEADERS) && \
 	cp $(IDIR)/compiler.h $(O_HEADERS) && \
 	cp $(IDIR)/assert.h $(O_HEADERS) && \
 	cp $(IDIR)/log.h $(O_HEADERS) && \
@@ -73,9 +128,10 @@ final:
 	cp $(SDIR)/log.c $(O_LIBS)
 
 test:
-	$(MAKE) -f $(TEST_DIR)/Makefile --no-print-directory && \
+	$(Q)$(MAKE) -f $(TEST_DIR)/Makefile --no-print-directory && \
 	$(MAKE) -f $(TEST_DIR)/Makefile run --no-print-directory
 
 clean:
-	rm -rf $(ODIR)
-	$(MAKE) -f $(TEST_DIR)/Makefile clean --no-print-directory
+	$(call print_info,Cleaning)
+	$(Q)rm -rf $(ODIR)
+	$(Q)$(MAKE) -f $(TEST_DIR)/Makefile clean --no-print-directory

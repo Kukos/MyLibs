@@ -33,7 +33,7 @@ void __log__(const char *msg, ...)
 	}
 }
 #else
-void __log__(const char *msg, ...) { }
+void __log__(const char *msg, ...) { (void)msg; }
 #endif
 
 #ifdef TRACE_MODE
@@ -56,7 +56,7 @@ void __trace_call__(const char *msg, ...)
 	}
 }
 #else
-void __trace_call__(const char *msg, ...) { }
+void __trace_call__(const char *msg, ...) { (void)msg; }
 #endif
 
 #ifndef SILENT_ERROR
@@ -79,7 +79,7 @@ void __error__(const char *msg, ...)
 	}
 }
 #else
-void __error__(const char *msg, ...) { }
+void __error__(const char *msg, ...) { (void)msg; }
 #endif
 
 #ifdef DEBUG_MODE
@@ -150,7 +150,7 @@ int log_init(FILE *fd, int to_file)
 	return 0;
 }
 #else
-int log_init(FILE *fd, int to_file) { return 0; }
+int log_init(FILE *fd, int to_file) { (void)fd; (void)to_file; return 0; }
 #endif
 
 #ifdef DEBUG_MODE

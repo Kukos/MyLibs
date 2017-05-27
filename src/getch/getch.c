@@ -9,7 +9,7 @@
 static struct termios old_attr;
 static struct termios new_attr;
 
-int getch()
+int getch(void)
 {
     int ch; /* getchar return int instead of char !!! */
 
@@ -22,7 +22,7 @@ int getch()
 		return -1;
 
 	/* reset waiting for enter */
-    CLEAR_FLAG(new_attr.c_lflag, ICANON | ECHO);
+    CLEAR_FLAG(new_attr.c_lflag, (tcflag_t)(ICANON | ECHO));
 
 	/* set new settings */
     if (tcsetattr(STDIN_FILENO, TCSANOW, &new_attr) == -1)

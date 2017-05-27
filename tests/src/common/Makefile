@@ -3,12 +3,12 @@ THIS_DIR := $(TEST_SRC)/common
 all: test
 
 test: FORCE
-	$(CC) $(CFLAGS) -DSILENT_ERROR -I $(IDIR) $(THIS_DIR)/test.c -o $(THIS_DIR)/$(TEST_EXEC_NAME)
+	$(Q)$(CC) $(C_TEST_FLAGS) -I $(IDIR) $(THIS_DIR)/test.c -o $(THIS_DIR)/$(TEST_EXEC_NAME)
 
 FORCE:
 
 run:
-	@$(THIS_DIR)/$(TEST_EXEC_NAME)
+	$(Q)$(THIS_DIR)/$(TEST_EXEC_NAME)
 
 clean:
-	rm -f $(THIS_DIR)/$(TEST_EXEC_NAME)
+	$(Q)rm -f $(THIS_DIR)/$(TEST_EXEC_NAME)

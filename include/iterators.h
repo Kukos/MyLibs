@@ -238,6 +238,15 @@
     bool concat(PREFIX, _iterator_end)(IT_STRUCT_NAME(STRUCT) *); \
     int concat(PREFIX, _iterator_get_data)(IT_STRUCT_NAME(STRUCT) *, void *); \
     int concat(PREFIX, _iterator_get_node)(IT_STRUCT_NAME(STRUCT) *, void *); \
+    ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, _iterator_create)(STRUCT *s, ITI_MODE mode); \
+    ___inline___ int concat(STRUCT, _iterator_init)(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode); \
+    ___inline___ void concat(STRUCT, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *s); \
+    ___inline___ int concat(STRUCT, _iterator_destroy_int)(IT_STRUCT_NAME(STRUCT) *s); \
+    ___inline___ int concat(STRUCT, _iterator_next)(IT_STRUCT_NAME(STRUCT) *s); \
+    ___inline___ int concat(STRUCT, _iterator_prev)(IT_STRUCT_NAME(STRUCT) *s); \
+    ___inline___ bool concat(STRUCT, _iterator_end)(IT_STRUCT_NAME(STRUCT) *s); \
+    ___inline___ int concat(STRUCT, _iterator_get_data)(IT_STRUCT_NAME(STRUCT) *s, void *d); \
+    ___inline___ int concat(STRUCT, _iterator_get_node)(IT_STRUCT_NAME(STRUCT) *s, void *n); \
     \
     ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, _iterator_create)(STRUCT *s, ITI_MODE mode) \
     { \
@@ -419,6 +428,22 @@
     extern int concat(PREFIX, concat(_, concat(INTERNAL_PREFIX, _iterator_init)))(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode); \
     IT_STRUCT_NAME(STRUCT) *concat(PREFIX, _iterator_create)(STRUCT *, ITI_MODE); \
     int concat(PREFIX, _iterator_init)(STRUCT *, IT_STRUCT_NAME(STRUCT) *, ITI_MODE); \
+    ___inline___ void *concat(PREFIX, _iterator_get_iterator)(IT_STRUCT_NAME(STRUCT) *it); \
+    ___inline___ void concat(PREFIX, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *it); \
+    ___inline___ int concat(PREFIX, _iterator_next)(IT_STRUCT_NAME(STRUCT) *it); \
+    ___inline___ int concat(PREFIX, _iterator_prev)(IT_STRUCT_NAME(STRUCT) *it); \
+    ___inline___ bool concat(PREFIX, _iterator_end)(IT_STRUCT_NAME(STRUCT) *it); \
+    ___inline___ int concat(PREFIX, _iterator_get_data)(IT_STRUCT_NAME(STRUCT) *it, void *data); \
+    ___inline___ int concat(PREFIX, _iterator_get_node)(IT_STRUCT_NAME(STRUCT) *it, void *node); \
+    ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, concat(_, concat(INTERNAL_STRUCT, _iterator_create)))(STRUCT *s, ITI_MODE mode); \
+    ___inline___ int concat(STRUCT, concat(_, concat(INTERNAL_STRUCT, _iterator_init)))(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode); \
+     ___inline___ void concat(STRUCT, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *s); \
+    ___inline___ int concat(STRUCT, _iterator_destroy_int)(IT_STRUCT_NAME(STRUCT) *s); \
+    ___inline___ int concat(STRUCT, _iterator_next)(IT_STRUCT_NAME(STRUCT) *s); \
+    ___inline___ int concat(STRUCT, _iterator_prev)(IT_STRUCT_NAME(STRUCT) *s); \
+    ___inline___ bool concat(STRUCT, _iterator_end)(IT_STRUCT_NAME(STRUCT) *s); \
+    ___inline___ int concat(STRUCT, _iterator_get_data)(IT_STRUCT_NAME(STRUCT) *s, void *d); \
+    ___inline___ int concat(STRUCT, _iterator_get_node)(IT_STRUCT_NAME(STRUCT) *s, void *n); \
     \
     ___inline___ void *concat(PREFIX, _iterator_get_iterator)(IT_STRUCT_NAME(STRUCT) *it) \
     { \

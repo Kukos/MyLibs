@@ -60,19 +60,19 @@ ___unused___ static BYTE __buffer__[MAXWORD];
 /* swap A and B with size = S, use SSE if possible */
 #define __SWAP__(A, B, S) \
 	do { \
-    	if (&A != &B) \
+    	if (&(A) != &(B)) \
         { \
-            (void)memcpy(__buffer__, &A, S); \
-            (void)memcpy(&A, &B, S); \
-            (void)memcpy(&B, __buffer__, S); \
+            (void)memcpy((void *)__buffer__, (void *)&(A), (size_t)(S)); \
+            (void)memcpy((void *)&(A), (void *)&(B), (size_t)(S)); \
+            (void)memcpy((void *)&(B), (void *)__buffer__, (size_t)(S)); \
         } \
     } while (0)
 
 /* A = B, A, B has size S, use SSE if possible */
 #define __ASSIGN__(A, B, S) \
 	do { \
-        if (&A != &B) \
-            (void)memcpy(&A, &B, S); \
+        if (&(A) != &(B)) \
+            (void)memcpy((void *)&(A), (void *)&(B), (size_t)(S)); \
     } while (0)
 
 #endif

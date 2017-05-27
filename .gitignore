@@ -31,4 +31,7 @@
 # Atom config
 .clang_complete
 
+# VS Code
+.vscode/
+
 obj/

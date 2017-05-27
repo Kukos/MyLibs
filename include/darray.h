@@ -25,7 +25,7 @@ typedef struct Darray
 {
     void    *____array;         /* main array */
 
-    int     ____size_of;        /* size of element */
+    size_t  ____size_of;        /* size of element */
     size_t  ____size;           /* current allocated size ( num of entries ) */
     size_t  ____num_entries;    /* num of entries in array */
     size_t  ____init_size;      /* minimum size using on init ( num of entries ) */
@@ -40,10 +40,10 @@ typedef struct Darray
 */
 typedef struct Darray_iterator
 {
-    void    *____array;         /* pointer to array */
-    size_t  ____index;          /* index of array */
-    int     ____size_of;        /* sizeof element in array */
-    size_t  ____array_length;   /* array length */
+    void        *____array;         /* pointer to array */
+    ssize_t     ____index;          /* index of array */
+    size_t      ____size_of;        /* sizeof element in array */
+    size_t      ____array_length;   /* array length */
 
 }Darray_iterator;
 
