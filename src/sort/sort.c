@@ -157,10 +157,12 @@ ___inline___ static int merge(    void        *t,
 
     TRACE("");
 
-    assert(t == NULL || buffer == NULL || cmp == NULL);
-    assert(size_of < 1);
-    assert(offset_middle < offset_left || offset_right < offset_middle
-            || offset_right < offset_left);
+    assert(t != NULL);
+    assert(buffer != NULL);
+    assert(cmp != NULL);
+    assert(size_of >= 1);
+    assert(offset_middle >= offset_left && offset_right >= offset_middle
+            && offset_right >= offset_left);
 
     _t = (BYTE *)t;
     _buffer = (BYTE *)buffer;
@@ -212,7 +214,9 @@ ___inline___ static int medians_of_3(     void        *t,
 
     TRACE("");
 
-    assert(t == NULL || median_pos == NULL || cmp == NULL);
+    assert(t != NULL);
+    assert(median_pos != NULL);
+    assert(cmp != NULL);
 
     _t = (BYTE *)t;
 
@@ -277,8 +281,10 @@ ___inline___ static int tukey_medians(    void        *t,
 
     TRACE("");
 
-    assert(t == NULL || median_pos == NULL || cmp ==NULL);
-    assert(offset_left > offset_right);
+    assert(t != NULL);
+    assert(median_pos != NULL);
+    assert(cmp != NULL);
+    assert(offset_left <= offset_right);
 
     offset_middle = ((offset_left / _size_of + offset_right / _size_of) >> 1 ) * _size_of;
 
@@ -328,9 +334,11 @@ static int partition_bentley(   void        *t,
 
     TRACE("");
 
-    assert(t == NULL || cmp == NULL || offset_left_index == NULL || offset_right_index == NULL);
-
-    assert(offset_right < offset_left);
+    assert(t != NULL);
+    assert(cmp != NULL);
+    assert(offset_left_index != NULL);
+    assert(offset_right_index != NULL);
+    assert(offset_right >= offset_left);
 
     offset_index1 = (ssize_t)(offset_left + (size_t)_size_of);
     offset_index2 = (ssize_t)offset_right;
@@ -426,8 +434,10 @@ static int _quicksort(  void        *t,
 
     TRACE("");
 
-    assert(t == NULL || cmp == NULL);
-    assert(offset_left >= offset_right || size_of < 1);
+    assert(t != NULL);
+    assert(cmp != NULL);
+    assert(offset_left < offset_right);
+    assert(size_of >= 1);
 
     _t = (BYTE *)t;
 
@@ -655,7 +665,7 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
 
     ssize_t offset_k;
     ssize_t d_offset_k;
-    
+
     int k;
     int dk;
 
@@ -669,7 +679,7 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
 
     if (size_of < 1)
         ERROR("size_of < 1\n", 1, "");
-    
+
     if (num_elements == 0)
         ERROR("Nothing to sort\n", 1, "");
 

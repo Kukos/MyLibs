@@ -180,8 +180,8 @@ ___inline___ static Avl_node *avl_node_create(void *data, int size_of, Avl_node 
 
     TRACE("");
 
-    assert(data == NULL);
-    assert(size_of < 0);
+    assert(data != NULL);
+    assert(size_of >= 1);
 
     node = (Avl_node*)malloc(sizeof(Avl_node));
     if (node == NULL)
@@ -222,7 +222,7 @@ ___inline___ static Avl_node *avl_successor(Avl_node *node)
 
     TRACE("");
 
-    assert(node == NULL);
+    assert(node != NULL);
 
     if (node->right_son != NULL)
         return avl_min_node(node->right_son);
@@ -243,7 +243,7 @@ ___inline___ static Avl_node *avl_predecessor(Avl_node *node)
 
     TRACE("");
 
-    assert(node == NULL);
+    assert(node != NULL);
 
     if (node->left_son != NULL)
         return avl_max_node(node->left_son);
@@ -264,8 +264,8 @@ ___inline___ static Avl_node *avl_node_search(Avl *tree, void *data_key)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data_key == NULL);
+    assert(tree != NULL);
+    assert(data_key != NULL);
 
     node = tree->root;
     while (node != NULL)
@@ -288,7 +288,7 @@ ___inline___ static Avl_node *avl_max_node(Avl_node *node)
 
     TRACE("");
 
-    assert(node == NULL);
+    assert(node != NULL);
 
     parent = NULL;
     while (node != NULL)
@@ -306,7 +306,7 @@ ___inline___ static Avl_node *avl_min_node(Avl_node *node)
 
     TRACE("");
 
-    assert(node == NULL);
+    assert(node != NULL);
 
     parent = NULL;
     while (node != NULL)
@@ -335,10 +335,10 @@ ___inline___ static void avl_rotate_rr(Avl *tree, Avl_node *node)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(tree->root == NULL);
-    assert(node == NULL);
-    assert(node->right_son == NULL);
+    assert(tree != NULL);
+    assert(tree->root != NULL);
+    assert(node != NULL);
+    assert(node->right_son != NULL);
 
     x = node->right_son;
 
@@ -389,10 +389,10 @@ ___inline___ static void avl_rotate_ll(Avl *tree, Avl_node *node)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(tree->root == NULL);
-    assert(node == NULL);
-    assert(node->left_son == NULL);
+    assert(tree != NULL);
+    assert(tree->root != NULL);
+    assert(node != NULL);
+    assert(node->left_son != NULL);
 
     x = node->left_son;
 
@@ -445,11 +445,11 @@ ___inline___ static void avl_rotate_rl(Avl *tree, Avl_node *node)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(tree->root == NULL);
-    assert(node == NULL);
-    assert(node->right_son == NULL);
-    assert(node->right_son->left_son == NULL);
+    assert(tree != NULL);
+    assert(tree->root != NULL);
+    assert(node != NULL);
+    assert(node->right_son != NULL);
+    assert(node->right_son->left_son != NULL);
 
     x = node->right_son;
     y = x->left_son;
@@ -517,11 +517,11 @@ ___inline___ static void avl_rotate_lr(Avl *tree, Avl_node *node)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(tree->root == NULL);
-    assert(node == NULL);
-    assert(node->left_son == NULL);
-    assert(node->left_son->right_son == NULL);
+    assert(tree != NULL);
+    assert(tree->root != NULL);
+    assert(node != NULL);
+    assert(node->left_son != NULL);
+    assert(node->left_son->right_son != NULL);
 
     x = node->left_son;
     y = x->right_son;
@@ -577,9 +577,9 @@ static int avl_insert_fixup(Avl *tree, Avl_node *new_node)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(tree->root == NULL);
-    assert(new_node == NULL);
+    assert(tree != NULL);
+    assert(tree->root != NULL);
+    assert(new_node != NULL);
 
     parent = new_node->parent;
 
@@ -646,9 +646,9 @@ static int avl_delete_fixup(Avl *tree, Avl_node *parent, Avl_node *node)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(tree->root == NULL);
-    assert(parent == NULL);
+    assert(tree != NULL);
+    assert(tree->root != NULL);
+    assert(parent != NULL);
 
     ptr = NULL;
     while (parent != NULL)
@@ -728,8 +728,8 @@ Avl *avl_create(int size_of, int (*cmp)(void *a, void *b))
 {
     Avl *tree;
 
-    assert(size_of < 1);
-    assert(cmp == NULL);
+    assert(size_of >= 1);
+    assert(cmp != NULL);
 
     TRACE("");
 
@@ -776,8 +776,8 @@ int avl_insert(Avl *tree, void *data)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data == NULL);
+    assert(tree != NULL);
+    assert(data != NULL);
 
     /* special case - empty tree */
     if (tree->root == NULL)
@@ -835,8 +835,8 @@ int avl_delete(Avl *tree, void *data_key)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data_key == NULL);
+    assert(tree != NULL);
+    assert(data_key != NULL);
 
     node = avl_node_search(tree, data_key);
     if (node == NULL)
@@ -955,8 +955,8 @@ int avl_min(Avl *tree, void *data)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data == NULL);
+    assert(tree != NULL);
+    assert(data != NULL);
 
     node = avl_min_node(tree->root);
     if (node == NULL)
@@ -973,8 +973,8 @@ int avl_max(Avl *tree, void *data)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data == NULL);
+    assert(tree != NULL);
+    assert(data != NULL);
 
     node = avl_max_node(tree->root);
     if (node == NULL)
@@ -991,9 +991,9 @@ int avl_max(Avl *tree, void *data)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data_key == NULL);
-    assert(data_out == NULL);
+    assert(tree != NULL);
+    assert(data_key != NULL);
+    assert(data_out != NULL);
 
     node = avl_node_search(tree, data_key);
     if (node == NULL)
@@ -1008,8 +1008,8 @@ bool avl_key_exist(Avl *tree, void *data_key)
 {
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data_key == NULL);
+    assert(tree != NULL);
+    assert(data_key != NULL);
 
     return avl_node_search(tree, data_key) != NULL;
 }
@@ -1023,8 +1023,8 @@ int avl_to_array(Avl *tree, void *array, size_t *size)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(tree->root == NULL);
+    assert(tree != NULL);
+    assert(tree->root != NULL);
 
     t = malloc(tree->size_of * tree->nodes);
 	if (t == NULL)
@@ -1054,10 +1054,8 @@ Avl_iterator *avl_iterator_create(Avl *tree, ITI_MODE mode)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(mode != ITI_BEGIN);
-    assert(mode != ITI_ROOT);
-    assert(mode != ITI_END);
+    assert(tree != NULL);
+    assert(mode == ITI_BEGIN || mode == ITI_ROOT || mode == ITI_END);
 
     iterator = (Avl_iterator *)malloc(sizeof(Avl_iterator));
     if (iterator == NULL)
@@ -1089,11 +1087,9 @@ int avl_iterator_init(Avl *tree, Avl_iterator *iterator, ITI_MODE mode)
 {
     TRACE("");
 
-    assert(tree == NULL);
-    assert(tree == NULL);
-    assert(mode != ITI_BEGIN);
-    assert(mode != ITI_ROOT);
-    assert(mode != ITI_END);
+    assert(tree != NULL);
+    assert(iterator != NULL);
+    assert(mode == ITI_BEGIN || mode == ITI_ROOT || mode == ITI_END);
 
     if (mode == ITI_BEGIN)
         iterator->node = avl_min_node(tree->root);
@@ -1111,7 +1107,7 @@ int avl_iterator_next(Avl_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     iterator->node = avl_successor(iterator->node);
 
@@ -1122,7 +1118,7 @@ int avl_iterator_prev(Avl_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     iterator->node = avl_predecessor(iterator->node);
 
@@ -1133,8 +1129,8 @@ int avl_iterator_get_data(Avl_iterator *iterator, void *val)
 {
     TRACE("");
 
-    assert(iterator == NULL);
-    assert(val == NULL);
+    assert(iterator != NULL);
+    assert(val != NULL);
 
     __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->node->data, iterator->size_of);
 
@@ -1145,7 +1141,7 @@ bool avl_iterator_end(Avl_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     return iterator->node == NULL;
 }

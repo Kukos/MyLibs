@@ -44,7 +44,8 @@ ___inline___ static List2D_node *list2d_node_create(  List2D_node     *prev,
 
     TRACE("");
 
-    assert(data == NULL || size_of < 1);
+    assert(data != NULL);
+    assert(size_of >= 1);
 
     node = (List2D_node *)malloc(sizeof(List2D_node));
     if (node == NULL)
@@ -82,8 +83,8 @@ List2D_iterator *list2d_iterator_create(List2D *list, ITI_MODE mode)
 
     TRACE("");
 
-    assert(list == NULL);
-    assert(mode != ITI_BEGIN && mode != ITI_END);
+    assert(list != NULL);
+    assert(mode == ITI_BEGIN || mode == ITI_END);
 
     iterator = (List2D_iterator *)malloc(sizeof(List2D_iterator));
     if (iterator == NULL)
@@ -121,8 +122,9 @@ int list2d_iterator_init(List2D *list, List2D_iterator *iterator, ITI_MODE mode)
 {
     TRACE("");
 
-    assert(list == NULL || iterator == NULL);
-    assert(mode != ITI_BEGIN && mode != ITI_END);
+    assert(list != NULL);
+    assert(iterator != NULL);
+    assert(mode == ITI_BEGIN || mode == ITI_END);
 
     iterator->first_time = true;
 
@@ -146,7 +148,7 @@ int list2d_iterator_next(List2D_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     if (iterator->first_time)
         iterator->first_time = false;
@@ -160,7 +162,7 @@ int list2d_iterator_prev(List2D_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     if (iterator->first_time)
         iterator->first_time = false;
@@ -174,7 +176,8 @@ int list2d_iterator_get_data(List2D_iterator *iterator, void *val)
 {
     TRACE("");
 
-    assert(iterator == NULL || val == NULL);
+    assert(iterator != NULL);
+    assert(val != NULL);
 
     __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->node->data, iterator->size_of);
 
@@ -185,7 +188,7 @@ bool list2d_iterator_end(List2D_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     return ((!iterator->first_time) && iterator->node == iterator->end_node);
 }
@@ -197,7 +200,8 @@ List2D *list2d_create(int size_of, int (*cmp)(void* a, void *b),
 
     TRACE("");
 
-    assert(size_of < 1 || cmp == NULL);
+    assert(size_of >= 1);
+    assert(cmp != NULL);
 
     list = (List2D *)malloc(sizeof(List2D));
     if (list == NULL)
@@ -277,7 +281,8 @@ int list2d_insert(List2D *list, void *entry)
 
     TRACE("");
 
-    assert(list == NULL || entry == NULL);
+    assert(list != NULL);
+    assert(entry != NULL);
 
     /* special case - empty list */
     if (list->head == NULL)
@@ -381,7 +386,8 @@ int list2d_delete(List2D *list, void *entry)
 
     TRACE("");
 
-    assert(list == NULL || entry == NULL);
+    assert(list != NULL);
+    assert(entry != NULL);
 
     if (list->head == NULL)
 		ERROR("Nothing to delete\n", 0, "");
@@ -461,7 +467,8 @@ int list2d_delete_all(List2D *list, void *entry)
 
     TRACE("");
 
-    assert(list == NULL || entry == NULL);
+    assert(list != NULL);
+    assert(entry != NULL);
 
     if (list->head == NULL)
 		ERROR("Nothing to delete\n", 0, "");
@@ -577,7 +584,9 @@ int list2d_search(List2D *list, void *val, void *entry)
 
     TRACE("");
 
-    assert(list == NULL || val == NULL || entry == NULL);
+    assert(list != NULL);
+    assert(val != NULL);
+    assert(entry != NULL);
 
     if (list->head == NULL)
         ERROR("List is empty\n", 1, "");
@@ -648,7 +657,9 @@ int list2d_to_array(List2D *list, void *array, size_t *size)
 
     TRACE("");
 
-    assert(list == NULL || array == NULL || size == NULL);
+    assert(list != NULL);
+    assert(array != NULL);
+    assert(size != NULL);
 
     t = (BYTE *)malloc(list->length * list->size_of);
     if (t == NULL)
@@ -688,7 +699,8 @@ List2D *list2d_merge(List2D *list1, List2D *list2)
 
     BYTE            val;
 
-    assert(list1 == NULL || list2 == NULL);
+    assert(list1 != NULL);
+    assert(list2 != NULL);
 
     result = list2d_create(list1->size_of, list1->cmp, list1->diff);
 

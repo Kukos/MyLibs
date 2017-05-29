@@ -3,7 +3,6 @@
 #include <log.h>
 #include <darray.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <common.h>
 
 Stack *stack_create(int size_of)

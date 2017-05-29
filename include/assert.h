@@ -12,7 +12,7 @@ void __assert_msg(const char *msg, ...);
 #ifdef ASSERT
     #define assert(expr) \
     do { \
-        if (expr) \
+        if ((expr) == 0) \
         { \
             __assert_msg(ASSERT_MSG); \
             __assert_msg("FAILED:\t" tostring(expr) "\n", ""); \

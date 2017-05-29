@@ -100,10 +100,11 @@ ___inline___ static ssize_t darray_unsorted_search_first(Darray *darray,
 
     TRACE("");
 
-    assert( darray == NULL || darray->____array == NULL || val_in == NULL
-            || darray->____cmp == NULL);
-
-    assert(darray->____num_entries == 0);
+    assert(darray != NULL);
+    assert(darray->____array != NULL);
+    assert(val_in != NULL);
+    assert(darray->____cmp != NULL);
+    assert(darray->____num_entries != 0);
 
     _t = (BYTE *)darray->____array;
     max = darray->____num_entries * darray->____size_of;
@@ -127,10 +128,11 @@ ___inline___ static ssize_t darray_unsorted_search_last(Darray *darray,
 
     TRACE("");
 
-    assert( darray == NULL || darray->____array == NULL || val_in == NULL
-            || darray->____cmp == NULL);
-
-    assert(darray->____num_entries == 0);
+    assert(darray != NULL);
+    assert(darray->____array != NULL);
+    assert(val_in != NULL);
+    assert(darray->____cmp != NULL);
+    assert(darray->____num_entries != 0);
 
     _t = (BYTE *)darray->____array;
     offset_i = (ssize_t)darray->____num_entries * (ssize_t)darray->____size_of - (ssize_t)darray->____size_of;
@@ -158,10 +160,11 @@ ___inline___ static ssize_t darray_sorted_search_first(Darray *darray,
 
     TRACE("");
 
-    assert( darray == NULL || darray->____array == NULL || val_in == NULL
-            || darray->____cmp == NULL);
-
-    assert(darray->____num_entries == 0);
+    assert(darray != NULL);
+    assert(darray->____array != NULL);
+    assert(val_in != NULL);
+    assert(darray->____cmp != NULL);
+    assert(darray->____num_entries != 0);
 
     _t = (BYTE *)darray->____array;
 
@@ -201,10 +204,11 @@ ___inline___ static ssize_t darray_sorted_search_last(Darray *darray,
 
     TRACE("");
 
-    assert( darray == NULL || darray->____array == NULL || val_in == NULL
-            || darray->____cmp == NULL);
-
-    assert(darray->____num_entries == 0);
+    assert(darray != NULL);
+    assert(darray->____array != NULL);
+    assert(val_in != NULL);
+    assert(darray->____cmp != NULL);
+    assert(darray->____num_entries != 0);
 
     _t = (BYTE *)darray->____array;
 
@@ -243,8 +247,10 @@ ___inline___ static ssize_t upper_bound(Darray *darray, void *val)
 
     TRACE("");
 
-    assert( darray == NULL || darray->____array == NULL || val == NULL
-            || darray->____cmp == NULL);
+    assert(darray != NULL);
+    assert(darray->____array != NULL);
+    assert(val != NULL);
+    assert(darray->____cmp != NULL);
 
     offset_left = 0;
     offset_right = ((ssize_t)darray->____num_entries - 1) * (ssize_t)darray->____size_of;
@@ -277,8 +283,9 @@ static int _darray_insert_pos(Darray *darray, void *entry, size_t pos, bool chec
 
     TRACE("");
 
-    assert(darray == NULL || darray->____array == NULL);
-    assert(pos > darray->____num_entries);
+    assert(darray != NULL);
+    assert(darray->____array != NULL);
+    assert(pos <= darray->____num_entries);
 
     if (check)
         if (darray->____type == DARRAY_SORTED)

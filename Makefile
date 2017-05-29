@@ -49,7 +49,7 @@ define print_make
 endef
 
 all: prepare arraylist darray fifo filebuffer getch list sort stack final
-# avl bst heap list list2d rbt trie ufset
+#avl bst heap list2d rbt trie ufset
 
 prepare:
 	$(call print_info,Preparing dirs)

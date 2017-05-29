@@ -5,7 +5,6 @@
 #include <log.h>
 #include <common.h>
 #include <compiler.h>
-#include <assert.h>
 
 #define INIT_SIZE (size_t)1024
 

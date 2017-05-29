@@ -79,7 +79,8 @@ int ufset_union(UFset *x, UFset *y)
     UFset *x_parent;
     UFset *y_parent;
 
-    assert(x == NULL || y == NULL);
+    assert(x != NULL);
+    assert(y != NULL);
 
     x_parent = ufset_find(x);
     if (x_parent == NULL)
@@ -105,7 +106,7 @@ UFset *ufset_find(UFset *set)
 {
     TRACE("");
 
-    assert(set == NULL);
+    assert(set != NULL);
 
     if( set->parent != set)
         set->parent = ufset_find(set->parent);

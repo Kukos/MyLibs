@@ -41,8 +41,8 @@ ___inline___ static List_node *list_node_create(List_node *next, void *data,
 
     TRACE("");
 
-    assert(data == NULL);
-    assert(size_of < 1);
+    assert(data != NULL);
+    assert(size_of >= 1);
 
     node = (List_node *)malloc(sizeof(List_node));
     if (node == NULL)
@@ -78,7 +78,7 @@ List_iterator *list_iterator_create(List *list, ITI_MODE mode)
 
     TRACE("");
 
-    assert(list == NULL);
+    assert(list != NULL);
 
     iterator = (List_iterator *)malloc(sizeof(List_iterator));
     if (iterator == NULL)
@@ -106,7 +106,8 @@ int list_iterator_init(List *list, List_iterator *iterator, ITI_MODE mode)
 {
     TRACE("");
 
-    assert(list == NULL || iterator == NULL);
+    assert(list != NULL);
+    assert(iterator != NULL);
 
     iterator->node = list->head;
     iterator->size_of = list->size_of;
@@ -120,7 +121,7 @@ int list_iterator_next(List_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     iterator->node = iterator->node->next;
 
@@ -131,7 +132,8 @@ int list_iterator_get_data(List_iterator *iterator, void *val)
 {
     TRACE("");
 
-    assert(iterator == NULL || val == NULL);
+    assert(iterator != NULL);
+    assert(val != NULL);
 
     __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->node->data, iterator->size_of);
 
@@ -142,7 +144,7 @@ bool list_iterator_end(List_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     return iterator->node == NULL;
 }
@@ -153,8 +155,8 @@ List *list_create(int size_of, int (*cmp)(void* a, void *b))
 
     TRACE("");
 
-    assert(size_of < 1);
-    assert(cmp == NULL);
+    assert(size_of >= 1);
+    assert(cmp != NULL);
 
     list = (List *)malloc(sizeof(List));
     if (list == NULL)
@@ -228,7 +230,8 @@ int list_insert(List *list, void *entry)
 
     TRACE("");
 
-    assert(list == NULL || entry == NULL);
+    assert(list != NULL);
+    assert(entry != NULL);
 
     if (list->head == NULL)
     {
@@ -299,7 +302,8 @@ int list_delete(List *list, void *entry)
 
     TRACE("");
 
-    assert(list == NULL || entry == NULL);
+    assert(list != NULL);
+    assert(entry != NULL);
 
 	if (list->head == NULL )
 		ERROR("Nothing to delete\n", 0, "");
@@ -369,7 +373,8 @@ int list_delete_all(List *list, void *entry)
 
     TRACE("");
 
-    assert(list == NULL || entry == NULL);
+    assert(list != NULL);
+    assert(entry != NULL);
 
     ptr = list->head;
     prev= NULL;
@@ -450,8 +455,9 @@ List *list_merge(List *list1, List *list2)
 
     TRACE("");
 
-    assert(list1 == NULL || list2 == NULL);
-    assert(list1->size_of != list2->size_of);
+    assert(list1 != NULL);
+    assert(list2 != NULL);
+    assert(list1->size_of == list2->size_of);
 
     list3 = list_create((int)list1->size_of, list1->cmp);
     if(list3 == NULL)
@@ -537,7 +543,9 @@ int list_search(List *list, void *val, void *entry)
 
     TRACE("");
 
-    assert(list == NULL || val == NULL || entry == NULL);
+    assert(list != NULL);
+    assert(val != NULL);
+    assert(entry != NULL);
 
     ptr = list->head;
 
@@ -580,7 +588,9 @@ int list_to_array(List *list, void *array, size_t *size)
 
     TRACE("");
 
-    assert(list == NULL || array == NULL || size == NULL);
+    assert(list != NULL);
+    assert(array != NULL);
+    assert(size != NULL);
 
     t = (BYTE *)malloc(list->length * list->size_of);
     if (t == NULL)

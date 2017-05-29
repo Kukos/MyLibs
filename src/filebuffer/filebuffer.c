@@ -8,7 +8,6 @@
 #include <log.h>
 #include <compiler.h>
 #include <common.h>
-#include <assert.h>
 #include <fcntl.h>
 #include <stdbool.h>
 

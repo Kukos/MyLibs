@@ -170,8 +170,8 @@ ___inline___ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node 
 
     TRACE("");
 
-    assert(data == NULL);
-    assert(size_of < 0);
+    assert(data != NULL);
+    assert(size_of >= 1);
 
     node = (Rbt_node *)malloc(sizeof(Rbt_node));
     if (node == NULL)
@@ -212,8 +212,8 @@ ___inline___ static Rbt_node *rbt_successor(Rbt_node *node)
 
     TRACE("");
 
-    assert(node == NULL);
-    assert(node == sentinel);
+    assert(node != NULL);
+    assert(node != sentinel);
 
     if (node->right_son != sentinel)
         return rbt_min_node(node->right_son);
@@ -234,8 +234,8 @@ ___inline___ static Rbt_node *rbt_predecessor(Rbt_node *node)
 
     TRACE("");
 
-    assert(node == NULL);
-    assert(node == sentinel);
+    assert(node != NULL);
+    assert(node != sentinel);
 
     if (node->left_son != sentinel)
         return rbt_max_node(node->left_son);
@@ -255,8 +255,8 @@ ___inline___ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data_key == NULL);
+    assert(tree != NULL);
+    assert(data_key != NULL);
 
     node = tree->root;
     while (node != sentinel)
@@ -279,8 +279,8 @@ ___inline___ static Rbt_node *rbt_max_node(Rbt_node *node)
 
     TRACE("");
 
-    assert(node == NULL);
-    assert(node == sentinel);
+    assert(node != NULL);
+    assert(node != sentinel);
 
     parent = NULL;
     while (node != sentinel)
@@ -298,8 +298,8 @@ ___inline___ static Rbt_node *rbt_min_node(Rbt_node *node)
 
     TRACE("");
 
-    assert(node == NULL);
-    assert(node == sentinel);
+    assert(node != NULL);
+    assert(node != sentinel);
 
     parent = NULL;
     while (node != sentinel)
@@ -327,11 +327,11 @@ ___inline___ static void rbt_rotate_right(Rbt *tree, Rbt_node *node)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(node == NULL);
-    assert(node->left_son == NULL);
-    assert(node == sentinel);
-    assert(node->left_son == sentinel);
+    assert(tree != NULL);
+    assert(node != NULL);
+    assert(node->left_son != NULL);
+    assert(node != sentinel);
+    assert(node->left_son != sentinel);
 
     left_son = node->left_son;
 
@@ -373,11 +373,11 @@ ___inline___ static void rbt_rotate_left(Rbt *tree, Rbt_node *node)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(node == NULL);
-    assert(node->right_son == NULL);
-    assert(node == sentinel);
-    assert(node->right_son == sentinel);
+    assert(tree != NULL);
+    assert(node != NULL);
+    assert(node->right_son != NULL);
+    assert(node != sentinel);
+    assert(node->right_son != sentinel);
 
     right_son = node->right_son;
 
@@ -410,9 +410,9 @@ static int rbt_insert_fixup(Rbt *tree, Rbt_node *node)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(node == NULL);
-    assert(node == sentinel);
+    assert(tree != NULL);
+    assert(node != NULL);
+    assert(node != sentinel);
 
     while (node->parent->color == RBT_RED)
         if (node->parent == node->parent->parent->left_son)
@@ -476,9 +476,9 @@ static int rbt_delete_fixup(Rbt *tree, Rbt_node *node)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(node == NULL);
-    assert(node == sentinel);
+    assert(tree != NULL);
+    assert(node != NULL);
+    assert(node != sentinel);
 
     while (node != tree->root && node->color == RBT_BLACK)
         if (node == node->parent->left_son)
@@ -566,8 +566,8 @@ Rbt* rbt_create(int size_of, int (*cmp)(void *a, void *b))
 
     TRACE("");
 
-    assert(size_of < 1);
-    assert(cmp == NULL);
+    assert(size_of >= 1);
+    assert(cmp != NULL);
 
     tree = (Rbt *)malloc(sizeof(Rbt));
     if (tree == NULL)
@@ -589,7 +589,7 @@ void rbt_destroy(Rbt *tree)
 
     TRACE("");
 
-    assert(tree == NULL);
+    assert(tree != NULL);
 
     /* destroy tree using inorder */
     node = rbt_min_node(tree->root);
@@ -614,8 +614,8 @@ int rbt_insert(Rbt *tree, void *data)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data == NULL);
+    assert(tree != NULL);
+    assert(data != NULL);
 
     /* special case - empty tree */
     if (tree->root == sentinel)
@@ -675,8 +675,8 @@ int rbt_delete(Rbt *tree, void *data_key)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data_key == NULL);
+    assert(tree != NULL);
+    assert(data_key != NULL);
 
     if (tree->root == sentinel)
         ERROR("Empty Tree\n", 1, "");
@@ -801,8 +801,8 @@ int rbt_min(Rbt *tree, void *data)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data == NULL);
+    assert(tree != NULL);
+    assert(data != NULL);
 
     node = rbt_min_node(tree->root);
     if(node == NULL)
@@ -819,8 +819,8 @@ int rbt_max(Rbt *tree, void *data)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data == NULL);
+    assert(tree != NULL);
+    assert(data != NULL);
 
     node = rbt_max_node(tree->root);
     if(node == NULL)
@@ -837,9 +837,9 @@ int rbt_search(Rbt *tree, void *data_key, void *data_out)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(data_key == NULL);
-    assert(data_out == NULL);
+    assert(tree != NULL);
+    assert(data_key != NULL);
+    assert(data_out != NULL);
 
     node = rbt_node_search(tree, data_key);
     if (node == NULL)
@@ -854,8 +854,8 @@ bool rbt_key_exist(Rbt *tree, void *data_key)
 {
    TRACE("");
 
-   assert(tree == NULL);
-   assert(data_key == NULL);
+   assert(tree != NULL);
+   assert(data_key != NULL);
 
    return rbt_node_search(tree, data_key) != NULL;
 }
@@ -869,9 +869,9 @@ int rbt_to_array(Rbt *tree, void *array, size_t *size)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(array == NULL);
-    assert(size == NULL);
+    assert(tree != NULL);
+    assert(array != NULL);
+    assert(size != NULL);
 
     t = malloc(tree->size_of * tree->nodes);
 	if (t == NULL)
@@ -904,10 +904,8 @@ Rbt_iterator *rbt_iterator_create(Rbt *tree, ITI_MODE mode)
 
     TRACE("");
 
-    assert(tree == NULL);
-    assert(mode != ITI_BEGIN);
-    assert(mode != ITI_ROOT);
-    assert(mode != ITI_END);
+    assert(tree != NULL);
+    assert(mode == ITI_BEGIN || mode == ITI_ROOT || mode == ITI_END);
 
     iterator = (Rbt_iterator *)malloc(sizeof(Rbt_iterator));
     if (iterator == NULL)
@@ -939,10 +937,9 @@ int rbt_iterator_init(Rbt *tree, Rbt_iterator *iterator, ITI_MODE mode)
 {
     TRACE("");
 
-    assert(tree == NULL);
-    assert(mode != ITI_BEGIN);
-    assert(mode != ITI_ROOT);
-    assert(mode != ITI_END);
+    assert(tree != NULL);
+    assert(iterator != NULL);
+    assert(mode == ITI_BEGIN || mode == ITI_ROOT || mode == ITI_END);
 
     iterator->size_of = tree->size_of;
 
@@ -962,7 +959,7 @@ int rbt_iterator_next(Rbt_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     iterator->node = rbt_successor(iterator->node);
 
@@ -973,7 +970,7 @@ int rbt_iterator_prev(Rbt_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     iterator->node = rbt_predecessor(iterator->node);
 
@@ -984,8 +981,8 @@ int rbt_iterator_get_data(Rbt_iterator *iterator, void *val)
 {
     TRACE("");
 
-    assert(iterator == NULL);
-    assert(val == NULL);
+    assert(iterator != NULL);
+    assert(val != NULL);
 
     __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->node->data, iterator->size_of);
 
@@ -996,7 +993,7 @@ bool rbt_iterator_end(Rbt_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     return iterator->node == sentinel || iterator->node == NULL;
 }

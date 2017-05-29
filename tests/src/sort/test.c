@@ -38,10 +38,10 @@ bool array_is_sorted(void *array, size_t n, int size_of, int (*cmp)(void *a, voi
     size_t size;
     BYTE *t;
 
-    assert(array == NULL);
-    assert(n < 1);
-    assert(size_of < 1);
-    assert(cmp == NULL);
+    assert(array != NULL);
+    assert(n >= 1);
+    assert(size_of >= 1);
+    assert(cmp != NULL);
 
     t = (BYTE *)array;
 

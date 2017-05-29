@@ -204,7 +204,8 @@ static ___inline___ int trie_node_get_child_index(Trie_node *parent, Trie_node *
 
     TRACE("");
 
-    assert(parent == NULL || node == NULL);
+    assert(parent != NULL);
+    assert(node != NULL);
 
     for (i = 0; i < ALPHABET_SIZE; ++i)
         if (parent->children[i] == node)
@@ -223,7 +224,7 @@ static Trie_node *trie_node_search(Trie_node *root,char *word)
 
     TRACE("");
 
-    assert(root == NULL);
+    assert(root != NULL);
 
     length = strlen(word);
     ptr = root;
@@ -256,7 +257,8 @@ static Trie_node *trie_min_node(Trie_node *node,char **word)
 
     TRACE("");
 
-    assert(node == NULL || word == NULL);
+    assert(node != NULL);
+    assert(word != NULL);
 
     letters = darray_create(DARRAY_UNSORTED, 0, sizeof(char), NULL);
     if (letters == NULL)
@@ -349,7 +351,8 @@ static Trie_node *trie_max_node(Trie_node *node,char **word)
 
     TRACE("");
 
-    assert(node == NULL || word == NULL);
+    assert(node != NULL);
+    assert(word != NULL);
 
     letters = darray_create(DARRAY_UNSORTED, 0, sizeof(char), NULL);
     if (letters == NULL)
@@ -438,7 +441,8 @@ static Trie_node *trie_node_successor(Trie_node *node, char **word)
 
     TRACE("");
 
-    assert(node == NULL || word == NULL);
+    assert(node != NULL);
+    assert(word != NULL);
 
     parent = node->parent;
 
@@ -475,7 +479,8 @@ static Trie_node *trie_node_predecessor(Trie_node *node, char **word)
 
     TRACE("");
 
-    assert(node == NULL || word == NULL);
+    assert(node != NULL);
+    assert(word != NULL);
 
     parent = node->parent;
 
@@ -510,7 +515,7 @@ static Trie_node *trie_min_node_d(Trie_node *node)
 
     TRACE("");
 
-    assert(node == NULL);
+    assert(node != NULL);
 
     parent = NULL;
     while (node != NULL)
@@ -539,7 +544,7 @@ static Trie_node *trie_node_successor_d(Trie_node *node)
 
     TRACE("");
 
-    assert(node == NULL);
+    assert(node != NULL);
     parent = node->parent;
 
     if (parent == NULL)
@@ -674,7 +679,7 @@ int trie_delete(Trie *trie, char *word)
 
     TRACE("");
 
-    assert(trie == NULL);
+    assert(trie != NULL);
 
     if (trie->entries == 0)
         ERROR("Nothing to delete\n", 1, "");
@@ -714,7 +719,8 @@ char **trie_to_array(Trie *trie, size_t *size)
 
     TRACE("");
 
-    assert(trie == NULL || size == NULL);
+    assert(trie != NULL);
+    assert(size != NULL);
 
     words = (char **)malloc(sizeof(char*) * trie->entries);
     if (words == NULL)
@@ -760,8 +766,8 @@ Trie_iterator *trie_iterator_create(Trie *trie,ITI_MODE mode)
 
     TRACE("");
 
-    assert(trie == NULL)
-    assert(mode != ITI_BEGIN && mode != ITI_END);
+    assert(trie != NULL)
+    assert(mode == ITI_BEGIN || mode == ITI_END);
 
     iterator = (Trie_iterator *)malloc(sizeof(Trie_iterator));
     if(iterator == NULL)
@@ -792,9 +798,9 @@ int trie_iterator_init(Trie *trie, Trie_iterator *iterator, ITI_MODE mode)
 {
     TRACE("");
 
-    assert(trie == NULL);
-    assert(iterator == NULL);
-    assert(mode != ITI_BEGIN && mode != ITI_END);
+    assert(trie != NULL);
+    assert(iterator != NULL);
+    assert(mode == ITI_BEGIN || mode == ITI_END);
 
     iterator->word = NULL;
 
@@ -810,7 +816,7 @@ int trie_iterator_next(Trie_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     iterator->node = trie_node_successor(iterator->node, &iterator->word);
 
@@ -821,7 +827,7 @@ int trie_iterator_prev(Trie_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     iterator->node = trie_node_predecessor(iterator->node, &iterator->word);
 
@@ -832,7 +838,7 @@ bool trie_iterator_end(Trie_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator == NULL);
+    assert(iterator != NULL);
 
     return iterator->node == NULL;
 }

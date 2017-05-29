@@ -43,8 +43,8 @@ ___inline___ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev
 
     TRACE("");
 
-    assert(data == NULL);
-    assert(size_of < 1);
+    assert(data != NULL);
+    assert(size_of >= 1);
 
     node = (Arraylist_node *)malloc(sizeof(Arraylist_node));
     if (node == NULL)
