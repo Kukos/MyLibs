@@ -11,6 +11,7 @@
 */
 
 #include <stdio.h>
+#include <compiler.h>
 
 /*
 	Modes to debug:
@@ -28,9 +29,25 @@
 
 */
 
+/* private simple strlen to avoid including string.h */
+___inline___ long ______log_strlen______(const char *str);
+
+___inline___ long ______log_strlen______(const char *str)
+{
+    long len = 0;
+    while (*str++ != '\0')
+        ++len;
+
+    return len;
+}
+
+#define LOG_MAX_FUNC_SPACE 20
+
 #define __TRACE__   "[TRACE]\tFUNC: %s\n", __func__
-#define __ERROR__   "[ERROR]\tFILE: %s\n\tFUNC: %s\tLINE: %d\n", __FILE__, __func__, __LINE__
-#define __LOG__     "[LOG]\tFUNC: %s\tLINE: %d\n", __func__, __LINE__
+#define __ERROR__   "[ERROR]\tFILE: %s\n\tFUNC: %s%*.sLINE: %d\n", __FILE__, __func__, \
+              (int)(LOG_MAX_FUNC_SPACE - ______log_strlen______(__func__)), "", __LINE__
+#define __LOG__     "[LOG]\tFUNC: %s%*.sLINE: %d\n", __func__, \
+                 (int)(LOG_MAX_FUNC_SPACE - ______log_strlen______(__func__)), "", __LINE__
 
 #define TRACE(...) \
     do { \
