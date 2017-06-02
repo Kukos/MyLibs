@@ -2,7 +2,7 @@ export
 
 CC := gcc
 
-CCWARNINGS := 	-Wall -Wextra -pedantic -Wcast-align -Wcast-qual \
+CCWARNINGS := 	-Wall -Wextra -pedantic -Wcast-align \
 				-Winit-self -Wlogical-op -Wmissing-include-dirs \
 			 	-Wredundant-decls -Wshadow -Wstrict-overflow=5 -Wundef  \
 				-Wwrite-strings -Wpointer-arith -Wmissing-declarations \
@@ -10,11 +10,11 @@ CCWARNINGS := 	-Wall -Wextra -pedantic -Wcast-align -Wcast-qual \
 				-Wmissing-prototypes -Wswitch-default -Wbad-function-cast \
 				-Wnested-externs -Wconversion -Wunreachable-code
 
-CFLAGS := -std=gnu99 $(CCWARNINGS) -Werror -O3 -DASSERT
+CFLAGS := -std=gnu99 $(CCWARNINGS) -Werror -O3 -DASSERT -rdynamic
 
 CC_TEST_WARNINGS := -Wall -pedantic
 
-C_TEST_FLAGS := -std=gnu99 $(CC_TEST_WARNINGS) -Werror -O3 -DASSERT -DSILENT_ERROR
+C_TEST_FLAGS := -std=gnu99 $(CC_TEST_WARNINGS) -Werror -O3 -DASSERT -DSILENT_ERROR -rdynamic
 
 
 PROJECT_DIR := $(shell pwd)
