@@ -23,12 +23,13 @@ static ___inline___ bool klist_is_empty(KList_master *list);
     @IN _new - new node
     @IN prev - prev of new node
     @IN next - next of new node
+    @IN change_head - Can we changed_head ?
 
     RETURN
     0 iff success
     Non-zero value iff failure
 */
-static ___inline___ int klist_insert(KList_master *list, KList *_new, KList *prev, KList *next);
+static ___inline___ int klist_insert(KList_master *list, KList *_new, KList *prev, KList *next, bool change_head);
 
 /*
     Get Klist from @list on position @pos
@@ -45,10 +46,10 @@ static ___inline___ KList *klist_pos(KList_master *list, size_t pos);
 
 static ___inline___ bool klist_is_empty(KList_master *list)
 {
-	return CAST_TO_BOOL(list->____length);
+	return !CAST_TO_BOOL(list->____length);
 }
 
-static ___inline___ int klist_insert(KList_master *list, KList *_new, KList *prev, KList *next)
+static ___inline___ int klist_insert(KList_master *list, KList *_new, KList *prev, KList *next, bool change_head)
 {
     TRACE("");
 
@@ -58,18 +59,15 @@ static ___inline___ int klist_insert(KList_master *list, KList *_new, KList *pre
     if (_new == NULL || prev == NULL || next == NULL)
         ERROR("new == NULL || prev == NULL || next == NULL\n", 1, "");
 
+    if (_new->____parent != NULL)
+        ERROR("Node has parent, please delete node from list\n", 1, "");
+
     if (klist_is_empty(list))
-    {
         list->____head = _new;
-        list->____tail = _new;
-    }
     else
     {
-        if (list->____head == prev)
+        if (change_head && list->____head == next)
             list->____head = _new;
-
-        if (list->____tail == next)
-            list->____tail = _new;
     }
 
 	next->____prev = _new;
@@ -91,24 +89,18 @@ static ___inline___ int klist_delete(KList *entry)
     if (entry == NULL)
         ERROR("entry == NULL\n", 1, "");
 
-    if (klist_is_empty(entry->____parent))
-    {
-        entry->____parent->____head = NULL;
-        entry->____parent->____tail = NULL;
-    }
-    else
-    {
-        if (entry->____parent->____head == entry)
-            entry->____parent->____head = entry->____next;
-
-        if (entry->____parent->____tail == entry)
-            entry->____parent->____tail = entry->____prev;
-    }
-
     entry->____next->____prev = entry->____prev;
     entry->____prev->____next = entry->____next;
 
     --entry->____parent->____length;
+
+    if (klist_is_empty(entry->____parent))
+        entry->____parent->____head = NULL;
+    else
+    {
+        if (entry->____parent->____head == entry)
+            entry->____parent->____head = entry->____next;
+    }
 
     entry->____parent = NULL;
 
@@ -139,34 +131,28 @@ static ___inline___ KList *klist_pos(KList_master *list, size_t pos)
 
 int klist_insert_first(KList_master *list, KList *entry)
 {
-    KList *ptr;
-
     TRACE("");
 
     if (list == NULL || entry == NULL)
         ERROR("list == NULL || entry == NULL\n", 1, "");
 
-    ptr = klist_pos(list, 0);
-    if (ptr != NULL)
-        return klist_insert(list, entry, ptr, ptr->____next);
+   if (!klist_is_empty(list))
+        return klist_insert(list, entry, list->____head->____prev, list->____head, true);
     else
-        return klist_insert(list, entry, entry, entry);
+        return klist_insert(list, entry, entry, entry, true);
 }
 
 int klist_insert_last(KList_master *list, KList *entry)
 {
-    KList *ptr;
-
     TRACE("");
 
     if (list == NULL || entry == NULL)
         ERROR("list == NULL || entry == NULL\n", 1, "");
 
-    ptr = klist_pos(list, 0);
-    if (ptr != NULL)
-        return klist_insert(list, entry, ptr->____prev, ptr);
+    if (!klist_is_empty(list))
+        return klist_insert(list, entry, list->____head->____prev, list->____head, false);
     else
-        return klist_insert(list, entry, entry, entry);
+        return klist_insert(list, entry, entry, entry, true);
 }
 
 int klist_insert_before(KList *node, KList *entry)
@@ -176,10 +162,10 @@ int klist_insert_before(KList *node, KList *entry)
     if (node == NULL || entry == NULL)
         ERROR("list == NULL || entry == NULL\n", 1, "");
 
-    if (node->____parent != entry->____parent)
-        ERROR("Lists has diff parents\n", 1, "");
+    if (node->____parent == NULL)
+        ERROR("Node hasn't parent\n", 1, "");
 
-    return klist_insert(node->____parent, entry, node->____prev, node);
+    return klist_insert(node->____parent, entry, node->____prev, node, true);
 }
 
 int klist_insert_after(KList *node, KList *entry)
@@ -189,10 +175,10 @@ int klist_insert_after(KList *node, KList *entry)
     if (node == NULL || entry == NULL)
         ERROR("list == NULL || entry == NULL\n", 1, "");
 
-    if (node->____parent != entry->____parent)
-        ERROR("Lists has diff parents\n", 1, "");
+    if (node->____parent == NULL)
+        ERROR("Node hasn't parent\n", 1, "");
 
-    return klist_insert(node->____parent, entry, node, node->____next);
+    return klist_insert(node->____parent, entry, node, node->____next, false);
 }
 
 int klist_insert_pos(KList_master *list, size_t pos, KList *entry)
@@ -207,7 +193,7 @@ int klist_insert_pos(KList_master *list, size_t pos, KList *entry)
     if (klist_is_empty(list))
     {
         if (pos == 0)
-            return klist_insert(list, entry, entry, entry);
+            return klist_insert(list, entry, entry, entry, true);
         else
             ERROR("pos is invalif\n", 1, "");
     }
@@ -216,7 +202,7 @@ int klist_insert_pos(KList_master *list, size_t pos, KList *entry)
     if (ptr == NULL)
         ERROR("pos is invalid\n", 1, "");
 
-    return klist_insert(list, entry, ptr->____prev, ptr);
+    return klist_insert(list, entry, ptr->____prev, ptr, pos == 0);
 }
 
 int klist_delete_first(KList_master *list)
@@ -283,22 +269,14 @@ int klist_delete_pos(KList_master *list, size_t pos)
     return klist_delete(ptr);
 }
 
-int klist_get_pos(KList_master *list, size_t pos, KList **entry)
+KList *klist_get_pos(KList_master *list, size_t pos)
 {
-    KList *ptr;
-
     TRACE("");
 
-    if (list == NULL || entry == NULL)
-        ERROR("list == NULL || entry == NULL\n", 1, "");
+    if (list == NULL)
+        ERROR("list == NULL\n", NULL, "");
 
-    ptr = klist_pos(list, pos);
-    if (ptr == NULL)
-        ERROR("Invalid pos\n", 1, "");
-
-    *entry = ptr;
-
-    return 0;
+    return klist_pos(list, pos);
 }
 
 ssize_t klist_get_num_entries(KList_master *list)
@@ -328,7 +306,10 @@ KList *klist_get_tail(KList_master *list)
     if (list == NULL)
         ERROR("list == NULL\n", NULL, "");
 
-    return list->____tail;
+    if (klist_is_empty(list))
+        return NULL;
+    else
+        return list->____head->____prev;
 }
 
 KList_master *klist_master_create(void)
@@ -342,7 +323,6 @@ KList_master *klist_master_create(void)
         ERROR("malloc error\n", NULL, "");
 
     list->____head = NULL;
-    list->____tail = NULL;
     list->____length = 0;
 
     return list;

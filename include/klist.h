@@ -15,12 +15,9 @@
 #include <sys/types.h>
 #include <compiler.h>
 
-struct KList;
-
 typedef struct KList_master
 {
     struct KList *____head;
-    struct KList *____tail;
     size_t        ____length;
 }KList_master;
 
@@ -32,15 +29,24 @@ typedef struct KList
 
 }KList;
 
-#define KLIST_INIT(name) { &(name), &(name), (NULL) }
+#define KLIST_INIT(name) \
+    do { \
+        (name)->____prev = NULL; \
+        (name)->____next = NULL; \
+        (name)->____parent = NULL; \
+    } while (0)
 
-#define KLIST (name) \
-	KList name = KLIST_INIT(name)
+#define KLIST(name) \
+	KList name = { &(name), &(name), (NULL) }
 
-#define KLIST_MASTER_INIT(name) { (NULL), (NULL), (0) }
+#define KLIST_MASTER_INIT(name) \
+    do { \
+        (name)->____head = NULL; \
+        (name)->____length = NULL; \
+    } while (0)
 
 #define KLIST_MASTER(name) \
-    KList_master name = KLIST_MASTER_INIT(name)
+    KList_master name = { (NULL), (0) }
 
 /*
     get the struct for this entry
@@ -53,15 +59,15 @@ typedef struct KList
 #define klist_entry(ptr, type, member) \
 	container_of(ptr, type, member)
 
-#define klist_for_each(ptr, List) \
-	for ( size_t ______i = 0, ptr = klist_get_head(List); \
-          ______i < klist_get_num_entries(List); \
-          ++______i, ptr = ptr->____next)
+#define klist_for_each(ptr, List, counter) \
+	for ( ptr = klist_get_head(List), counter = 0; \
+          counter < klist_get_num_entries(List); \
+          ++counter, ptr = ptr->____next)
 
-#define klist_for_each_prev(ptr, List) \
-	for ( size_t ______i = 0, ptr = klist_get_tail(List); \
-          ______i < klist_get_num_entries(List); \
-          ++______i, ptr = ptr->____prev)
+#define klist_for_each_prev(ptr, List, counter) \
+	for ( ptr = klist_get_tail(List), counter = 0; \
+          counter < klist_get_num_entries(List); \
+          ++counter, ptr = ptr->____prev)
 
 /*
     Create KList_master
@@ -206,13 +212,13 @@ int klist_delete_node(KList *node);
     PARAMS
     @IN list - pointer to KList_master
     @IN pos - entry position
-    @OUT entry - entry from list
 
     RETURN
-    0 iff success
-    Non-zero value iff failure
+    NULL iff failure
+    Pointer to KList at @pos
+
 */
-int klist_get_pos(KList_master *list, size_t pos, KList **entry);
+KList *klist_get_pos(KList_master *list, size_t pos);
 
 /*
     Get list length
