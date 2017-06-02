@@ -64,9 +64,15 @@ void __error__(const char *msg, ...)
 {
 	va_list args;
 
-	if (logfd != NULL)
+	if (logfd == NULL)
 	{
     	va_start(args, msg);
+		(void)vfprintf(stderr, msg, args);
+		va_end(args);
+	}
+	else
+	{
+		va_start(args, msg);
 		(void)vfprintf(logfd, msg, args);
 		va_end(args);
 	}
