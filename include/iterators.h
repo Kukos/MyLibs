@@ -424,8 +424,8 @@
 /* FOR CONTAINERS FRAMEWORKS LIKE TREE / ULIST / SLIST ... */
 /* Like IT_FUNC but most functions are inline and containers framework friendly */
 #define IT_FUNC_CONTAINER(STRUCT, PREFIX, INTERNAL_STRUCT, INTERNAL_PREFIX) \
-    extern IT_STRUCT_NAME(STRUCT) *concat(PREFIX, concat(_, concat(INTERNAL_PREFIX, _iterator_create)))(STRUCT *s, ITI_MODE mode); \
-    extern int concat(PREFIX, concat(_, concat(INTERNAL_PREFIX, _iterator_init)))(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode); \
+    IT_STRUCT_NAME(STRUCT) *concat(PREFIX, concat(_, concat(INTERNAL_PREFIX, _iterator_create)))(STRUCT *s, ITI_MODE mode); \
+    int concat(PREFIX, concat(_, concat(INTERNAL_PREFIX, _iterator_init)))(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode); \
     IT_STRUCT_NAME(STRUCT) *concat(PREFIX, _iterator_create)(STRUCT *, ITI_MODE); \
     int concat(PREFIX, _iterator_init)(STRUCT *, IT_STRUCT_NAME(STRUCT) *, ITI_MODE); \
     ___inline___ void *concat(PREFIX, _iterator_get_iterator)(IT_STRUCT_NAME(STRUCT) *it); \
