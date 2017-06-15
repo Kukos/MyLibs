@@ -16,20 +16,20 @@
 
 typedef struct List_node
 {
-    struct List_node    *next;
-    void                *data;
+    struct List_node    *____next;
+    void                *____data;
 
 }List_node;
 
 typedef struct List
 {
-    size_t          size_of;    /* size of element */
-    size_t          length;     /* length of list */
+    size_t          ____size_of;    /* size of element */
+    size_t          ____length;     /* length of list */
 
-    List_node       *head;
-    List_node       *tail;      /* needed for insert guardian */
+    List_node       *____head;
+    List_node       *____tail;      /* needed for insert guardian */
 
-    int (*cmp)(void* a, void *b);
+    int (*____cmp)(void* a, void *b);
 
 }List;
 
@@ -38,8 +38,8 @@ typedef struct List
 */
 typedef struct List_iterator
 {
-    List_node       *node;
-    size_t          size_of;
+    List_node       *____node;
+    size_t          ____size_of;
 
 }List_iterator;
 
