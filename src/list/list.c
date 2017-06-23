@@ -533,6 +533,9 @@ int list_to_array(List *list, void *array, size_t *size)
     if (size == NULL)
         ERROR("size == NULL\n", 1, "");
 
+    if (list->____length == 0)
+        ERROR("list is empty\n", 1, "");
+
     t = (BYTE *)malloc(list->____length * list->____size_of);
     if (t == NULL)
         ERROR("malloc error\n", 1, "");

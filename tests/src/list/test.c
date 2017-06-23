@@ -128,7 +128,7 @@ test_f test_delete(void)
     T_EXPECT(array_equal_int(t_exp, rt, size), true);
     FREE(rt);
 
-    for (i = 0; i < size; ++i)
+    for (i = 0; i < size - 1; ++i)
     {
         T_EXPECT(list_delete(list, (void *)&del[i]), 0);
         T_EXPECT(list_get_num_entries(list), size - i - 1);
@@ -137,6 +137,9 @@ test_f test_delete(void)
         T_EXPECT(array_equal_int(t_exp_del[i], rt, size - i - 1), true);
         FREE(rt);
     }
+
+    T_EXPECT(list_delete(list, (void *)&del[i]), 0);
+    T_EXPECT(list_get_num_entries(list), size - i - 1);
 
     list_destroy(list);
 }
@@ -179,7 +182,7 @@ test_f test_delete_all(void)
     T_EXPECT(array_equal_int(t_exp, rt, size), true);
     FREE(rt);
 
-    for (i = 0; i < size - 1; ++i)
+    for (i = 0; i < size - 2; ++i)
     {
         T_EXPECT(list_delete_all(list, (void *)&del[i]), ret[i]);
         T_EXPECT(list_get_num_entries(list), sizes[i]);
@@ -188,6 +191,9 @@ test_f test_delete_all(void)
         T_EXPECT(array_equal_int(t_exp_del[i], rt, sizes[i]), true);
         FREE(rt);
     }
+
+    T_EXPECT(list_delete_all(list, (void *)&del[i]), ret[i]);
+    T_EXPECT(list_get_num_entries(list), sizes[i]);
 
     list_destroy(list);
 }
@@ -418,6 +424,73 @@ test_f test_for_each(void)
     list_destroy(list);
 }
 
+test_f test_empty(void)
+{
+    List *list;
+    int in;
+    int out;
+    int *t;
+    size_t size;
+
+    list = list_create(sizeof(int), cmp_int);
+    T_ERROR(list == NULL);
+    T_EXPECT(list_get_size_of(list), sizeof(int));
+    T_EXPECT(list_get_num_entries(list), 0);
+
+    T_CHECK(list_delete(list, (void *)&in) != 0);
+    T_CHECK(list_delete_all(list, (void *)&in) < 0);
+    T_CHECK(list_search(list, (void *)&in, (void *)&out) != 0);
+    T_CHECK(list_to_array(list, (void *)&t, &size) != 0);
+
+    list_destroy(list);
+}
+
+test_f test_merge_empty(void)
+{
+    List *list1;
+    List *list2;
+    List *list3;
+
+    int in;
+    int out;
+    int *t;
+    size_t size;
+
+    list1 = list_create(sizeof(int), cmp_int);
+    T_ERROR(list1 == NULL);
+    T_EXPECT(list_get_size_of(list1), sizeof(int));
+    T_EXPECT(list_get_num_entries(list1), 0);
+
+    T_CHECK(list_delete(list1, (void *)&in) != 0);
+    T_CHECK(list_delete_all(list1, (void *)&in) < 0);
+    T_CHECK(list_search(list1, (void *)&in, (void *)&out) != 0);
+    T_CHECK(list_to_array(list1, (void *)&t, &size) != 0);
+
+    list2 = list_create(sizeof(int), cmp_int);
+    T_ERROR(list2 == NULL);
+    T_EXPECT(list_get_size_of(list2), sizeof(int));
+    T_EXPECT(list_get_num_entries(list2), 0);
+
+    T_CHECK(list_delete(list2, (void *)&in) != 0);
+    T_CHECK(list_delete_all(list2, (void *)&in) < 0);
+    T_CHECK(list_search(list2, (void *)&in, (void *)&out) != 0);
+    T_CHECK(list_to_array(list2, (void *)&t, &size) != 0);
+
+    list3 = list_merge(list1, list2);
+    T_ERROR(list3 == NULL);
+    T_EXPECT(list_get_size_of(list3), sizeof(int));
+    T_EXPECT(list_get_num_entries(list3), 0);
+
+    T_CHECK(list_delete(list3, (void *)&in) != 0);
+    T_CHECK(list_delete_all(list3, (void *)&in) < 0);
+    T_CHECK(list_search(list3, (void *)&in, (void *)&out) != 0);
+    T_CHECK(list_to_array(list3, (void *)&t, &size) != 0);
+
+    list_destroy(list1);
+    list_destroy(list2);
+    list_destroy(list3);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -429,6 +502,7 @@ void test(void)
     TEST(test_insert_delete());
     TEST(test_merge());
     TEST(test_for_each());
+    TEST(test_empty());
 }
 
 int main(void)
