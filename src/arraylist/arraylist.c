@@ -456,6 +456,9 @@ int arraylist_to_array(Arraylist *alist, void *array, size_t *size)
     if (alist == NULL || array == NULL || size == NULL)
         ERROR("alist == NULL || array == NULL || size == NULL\n", 1, "");
 
+    if (alist->____length == 0)
+        ERROR("alist is empty\n", 1, "");
+
     t = (BYTE *)malloc((size_t)(alist->____length * (size_t)alist->____size_of));
     if (t == NULL)
         ERROR("malloc error\n", 1, "");

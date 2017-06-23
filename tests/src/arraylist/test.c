@@ -380,7 +380,7 @@ test_f test_delete_first(void)
     T_EXPECT(array_equal_int(t, rt, size), true);
     FREE(rt);
 
-    for (i = 0; i < size; ++i)
+    for (i = 0; i < size - 1; ++i)
     {
         T_EXPECT(arraylist_delete_first(al), 0);
         T_EXPECT(arraylist_to_array(al, (void *)&rt, &rsize), 0);
@@ -389,6 +389,7 @@ test_f test_delete_first(void)
         FREE(rt);
     }
 
+    T_EXPECT(arraylist_delete_first(al), 0);
     T_EXPECT(arraylist_get_num_entries(al), 0);
 
     arraylist_destroy(al);
@@ -420,7 +421,7 @@ test_f test_delete_last(void)
     T_EXPECT(array_equal_int(t, rt, size), true);
     FREE(rt);
 
-    for (i = 0; i < size; ++i)
+    for (i = 0; i < size - 1; ++i)
     {
         T_EXPECT(arraylist_delete_last(al), 0);
         T_EXPECT(arraylist_to_array(al, (void *)&rt, &rsize), 0);
@@ -429,6 +430,7 @@ test_f test_delete_last(void)
         FREE(rt);
     }
 
+    T_EXPECT(arraylist_delete_last(al), 0);
     T_EXPECT(arraylist_get_num_entries(al), 0);
 
     arraylist_destroy(al);
@@ -471,7 +473,7 @@ test_f test_delete_pos(void)
     T_EXPECT(array_equal_int(t, rt, size), true);
     FREE(rt);
 
-    for (i = 0; i < size; ++i)
+    for (i = 0; i < size - 1; ++i)
     {
         T_EXPECT(arraylist_delete_pos(al, pos[i]), 0);
         T_EXPECT(arraylist_to_array(al, (void *)&rt, &rsize), 0);
@@ -480,6 +482,7 @@ test_f test_delete_pos(void)
         FREE(rt);
     }
 
+    T_EXPECT(arraylist_delete_pos(al, pos[i]), 0);
     T_EXPECT(arraylist_get_num_entries(al), 0);
 
     arraylist_destroy(al);
@@ -819,6 +822,79 @@ test_f test_destroy_with_entries(void)
     arraylist_destroy_with_entries(al, my_struct_destroy);
 }
 
+test_f test_list_empty(void)
+{
+    Arraylist *al;
+    int val;
+    int *t;
+    size_t size;
+
+    al = arraylist_create(sizeof(int));
+    T_ERROR(al == NULL);
+
+    T_CHECK(arraylist_delete_first(al) != 0);
+    T_CHECK(arraylist_delete_last(al) != 0);
+    T_CHECK(arraylist_delete_pos(al, 3) != 0);
+    T_CHECK(arraylist_get_pos(al, 3, (void *)&val) != 0);
+    T_CHECK(arraylist_to_array(al, (void *)&t, &size) != 0);
+
+    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_num_entries(al), 0);
+
+    arraylist_destroy(al);
+}
+
+test_f test_merge_empty(void)
+{
+    Arraylist *al1;
+    Arraylist *al2;
+    Arraylist *al3;
+
+    int val;
+    int *t;
+    size_t size;
+
+    al1 = arraylist_create(sizeof(int));
+    T_ERROR(al1 == NULL);
+
+    T_CHECK(arraylist_delete_first(al1) != 0);
+    T_CHECK(arraylist_delete_last(al1) != 0);
+    T_CHECK(arraylist_delete_pos(al1, 3) != 0);
+    T_CHECK(arraylist_get_pos(al1, 3, (void *)&val) != 0);
+    T_CHECK(arraylist_to_array(al1, (void *)&t, &size) != 0);
+
+    T_EXPECT(arraylist_get_size_of(al1), sizeof(int));
+    T_EXPECT(arraylist_get_num_entries(al1), 0);
+
+    al2 = arraylist_create(sizeof(int));
+    T_ERROR(al2 == NULL);
+
+    T_CHECK(arraylist_delete_first(al2) != 0);
+    T_CHECK(arraylist_delete_last(al2) != 0);
+    T_CHECK(arraylist_delete_pos(al2, 3) != 0);
+    T_CHECK(arraylist_get_pos(al2, 3, (void *)&val) != 0);
+    T_CHECK(arraylist_to_array(al2, (void *)&t, &size) != 0);
+
+    T_EXPECT(arraylist_get_size_of(al2), sizeof(int));
+    T_EXPECT(arraylist_get_num_entries(al2), 0);
+
+    al3 = arraylist_merge(al1, al2);
+    T_ERROR(al3 == NULL);
+
+    T_CHECK(arraylist_delete_first(al3) != 0);
+    T_CHECK(arraylist_delete_last(al3) != 0);
+    T_CHECK(arraylist_delete_pos(al3, 3) != 0);
+    T_CHECK(arraylist_get_pos(al3, 3, (void *)&val) != 0);
+    T_CHECK(arraylist_to_array(al3, (void *)&t, &size) != 0);
+
+    T_EXPECT(arraylist_get_size_of(al3), sizeof(int));
+    T_EXPECT(arraylist_get_num_entries(al3), 0);
+
+    arraylist_destroy(al1);
+    arraylist_destroy(al2);
+    arraylist_destroy(al3);
+}
+
 test_f test_ulist_framework(void)
 {
     /* I have tested whole arraylist so here I test only call correct funcion in easiest way */
@@ -957,6 +1033,78 @@ test_f test_ulist_for_each(void)
     ulist_destroy(ulist);
 }
 
+test_f test_ulist_empty(void)
+{
+    UList *ulist;
+    int val;
+    int *t;
+    size_t size;
+
+    ulist = ulist_arraylist_create(sizeof(int));
+    T_ERROR(ulist == NULL);
+
+    T_CHECK(ulist_delete_first(ulist) != 0);
+    T_CHECK(ulist_delete_last(ulist) != 0);
+    T_CHECK(ulist_delete_pos(ulist, 3) != 0);
+    T_CHECK(ulist_get_pos(ulist, 3, (void *)&val) != 0);
+    T_CHECK(ulist_to_array(ulist, (void *)&t, &size) != 0);
+
+    T_EXPECT(ulist_get_size_of(ulist), sizeof(int));
+    T_EXPECT(ulist_get_num_entries(ulist), 0);
+
+    ulist_destroy(ulist);
+}
+
+test_f test_ulist_merge_empty(void)
+{
+    UList *ulist1;
+    UList *ulist2;
+    UList *ulist3;
+    int val;
+    int *t;
+    size_t size;
+
+    ulist1 = ulist_arraylist_create(sizeof(int));
+    T_ERROR(ulist1 == NULL);
+
+    T_CHECK(ulist_delete_first(ulist1) != 0);
+    T_CHECK(ulist_delete_last(ulist1) != 0);
+    T_CHECK(ulist_delete_pos(ulist1, 3) != 0);
+    T_CHECK(ulist_get_pos(ulist1, 3, (void *)&val) != 0);
+    T_CHECK(ulist_to_array(ulist1, (void *)&t, &size) != 0);
+
+    T_EXPECT(ulist_get_size_of(ulist1), sizeof(int));
+    T_EXPECT(ulist_get_num_entries(ulist1), 0);
+
+    ulist2 = ulist_arraylist_create(sizeof(int));
+    T_ERROR(ulist2 == NULL);
+
+    T_CHECK(ulist_delete_first(ulist2) != 0);
+    T_CHECK(ulist_delete_last(ulist2) != 0);
+    T_CHECK(ulist_delete_pos(ulist2, 3) != 0);
+    T_CHECK(ulist_get_pos(ulist2, 3, (void *)&val) != 0);
+    T_CHECK(ulist_to_array(ulist2, (void *)&t, &size) != 0);
+
+    T_EXPECT(ulist_get_size_of(ulist2), sizeof(int));
+    T_EXPECT(ulist_get_num_entries(ulist2), 0);
+
+    ulist3 = ulist_merge(ulist1, ulist2);
+    T_ERROR(ulist3 == NULL);
+
+    T_CHECK(ulist_delete_first(ulist3) != 0);
+    T_CHECK(ulist_delete_last(ulist3) != 0);
+    T_CHECK(ulist_delete_pos(ulist3, 3) != 0);
+    T_CHECK(ulist_get_pos(ulist3, 3, (void *)&val) != 0);
+    T_CHECK(ulist_to_array(ulist3, (void *)&t, &size) != 0);
+
+    T_EXPECT(ulist_get_size_of(ulist3), sizeof(int));
+    T_EXPECT(ulist_get_num_entries(ulist3), 0);
+
+    ulist_destroy(ulist1);
+    ulist_destroy(ulist2);
+    ulist_destroy(ulist3);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -972,8 +1120,12 @@ void test(void)
     TEST(test_insert_delete());
     TEST(test_for_each());
     TEST(test_destroy_with_entries());
+    TEST(test_list_empty());
+    TEST(test_merge_empty());
     TEST(test_ulist_framework());
     TEST(test_ulist_for_each());
+    TEST(test_ulist_empty());
+    TEST(test_ulist_merge_empty());
 }
 
 int main(void)
