@@ -1858,6 +1858,49 @@ test_f test_destroy_with_entries(void)
     darray_destroy_with_entries(da, my_struct_destroy);
 }
 
+test_f test_empty(void)
+{
+    Darray *da;
+    int in;
+    int out;
+
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), NULL);
+    T_ERROR(da == NULL);
+
+    T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
+    T_EXPECT(darray_get_size_of(da), sizeof(int));
+    T_EXPECT(darray_get_num_entries(da), 0);
+
+    T_CHECK(darray_delete(da) != 0);
+    T_CHECK(darray_delete_pos(da, 3) != 0);
+    T_EXPECT(darray_search_first(da, (void *)&in, (void *)&out), (ssize_t)-1);
+    T_EXPECT(darray_search_last(da, (void *)&in, (void *)&out), (ssize_t)-1);
+    T_CHECK(darray_sort(da) != 0);
+    T_EXPECT(darray_min(da, (void *)&out), (ssize_t)-1);
+    T_EXPECT(darray_max(da, (void *)&out), (ssize_t)-1);
+    T_CHECK(darray_get_array(da) != NULL);
+
+    darray_destroy(da);
+
+    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    T_ERROR(da == NULL);
+
+    T_EXPECT(darray_get_type(da), DARRAY_SORTED);
+    T_EXPECT(darray_get_size_of(da), sizeof(int));
+    T_EXPECT(darray_get_num_entries(da), 0);
+
+    T_CHECK(darray_delete(da) != 0);
+    T_CHECK(darray_delete_pos(da, 3) != 0);
+    T_EXPECT(darray_search_first(da, (void *)&in, (void *)&out), (ssize_t)-1);
+    T_EXPECT(darray_search_last(da, (void *)&in, (void *)&out), (ssize_t)-1);
+    T_CHECK(darray_sort(da) != 0);
+    T_EXPECT(darray_min(da, (void *)&out), (ssize_t)-1);
+    T_EXPECT(darray_max(da, (void *)&out), (ssize_t)-1);
+    T_CHECK(darray_get_array(da) != NULL);
+
+    darray_destroy(da);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -1873,6 +1916,7 @@ void test(void)
     TEST(test_max());
     TEST(test_for_each());
     TEST(test_destroy_with_entries());
+    TEST(test_empty());
 }
 
 int main(void)

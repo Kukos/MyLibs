@@ -541,6 +541,9 @@ int darray_sort(Darray *darray)
     if (darray->____cmp == NULL)
         ERROR("CMP is needed\n", -1, "");
 
+    if (darray->____num_entries == 0)
+        ERROR("Darray is empty, nothing to sort\n", 1, "");
+
     if (darray->____type == DARRAY_SORTED)
         return 0;
 
@@ -565,6 +568,9 @@ ssize_t darray_min(Darray *darray, void *val)
     _t = (BYTE *)darray->____array;
     if (darray->____type == DARRAY_SORTED)
     {
+        if (darray->____num_entries == 0)
+            return (ssize_t)-1;
+
         if (val != NULL)
             __ASSIGN__(*(BYTE *)val, _t[0], darray->____size_of);
 
@@ -612,6 +618,9 @@ ssize_t darray_max(Darray *darray, void *val)
     _t = (BYTE *)darray->____array;
     if (darray->____type == DARRAY_SORTED)
     {
+        if (darray->____num_entries == 0)
+            return (ssize_t)-1;
+
         if (val != NULL)
             __ASSIGN__(*(BYTE *)val, _t[(darray->____num_entries - 1) * darray->____size_of],
                                 darray->____size_of);
