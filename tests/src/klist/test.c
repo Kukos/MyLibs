@@ -22,16 +22,16 @@ test_f test_init(void)
 
     (void)s;
 
-    T_ASSERT(klist_get_head(&master), NULL);
-    T_ASSERT(klist_get_tail(&master), NULL);
-    T_ASSERT(klist_get_num_entries(&master), 0);
+    T_EXPECT(klist_get_head(&master), NULL);
+    T_EXPECT(klist_get_tail(&master), NULL);
+    T_EXPECT(klist_get_num_entries(&master), 0);
 
     master2 = klist_master_create();
     T_ERROR(master2 == NULL);
 
-    T_ASSERT(klist_get_head(master2), NULL);
-    T_ASSERT(klist_get_tail(master2), NULL);
-    T_ASSERT(klist_get_num_entries(master2), 0);
+    T_EXPECT(klist_get_head(master2), NULL);
+    T_EXPECT(klist_get_tail(master2), NULL);
+    T_EXPECT(klist_get_num_entries(master2), 0);
 
     klist_master_destroy(master2);
 }
@@ -483,6 +483,20 @@ test_f test_delete_node(void)
 #undef N
 }
 
+test_f test_empty(void)
+{
+    KLIST_MASTER(master);
+
+    T_EXPECT(klist_get_head(&master), NULL);
+    T_EXPECT(klist_get_tail(&master), NULL);
+    T_EXPECT(klist_get_num_entries(&master), 0);
+
+    T_CHECK(klist_delete_first(&master) != 0);
+    T_CHECK(klist_delete_last(&master) != 0);
+    T_CHECK(klist_delete_pos(&master, 3) != 0);
+    T_EXPECT(klist_get_pos(&master, 3), NULL);
+}
+
 void test(void)
 {
     TEST(test_init());
@@ -493,6 +507,7 @@ void test(void)
     TEST(test_delete());
     TEST(test_delete_pos());
     TEST(test_delete_node());
+    TEST(test_empty());
 }
 
 int main(void)
