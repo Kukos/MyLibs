@@ -560,6 +560,26 @@ test_f test_destroy_with_entries(void)
     stack_destroy_with_entries(stack, my_struct_destroy);
 }
 
+test_f test_empty(void)
+{
+    Stack *stack;
+    int val;
+    int *t;
+    size_t size;
+
+    stack = stack_create(sizeof(int));
+    T_ERROR(stack == NULL);
+    T_EXPECT(stack_get_num_entries(stack), 0);
+    T_EXPECT(stack_get_size_of(stack), sizeof(int));
+    T_EXPECT(stack_is_empty(stack), true);
+
+    T_CHECK(stack_pop(stack, (void *)&val) != 0);
+    T_CHECK(stack_get_top(stack, (void *)&val) != 0);
+    T_CHECK(stack_to_array(stack, (void *)&t, &size) != 0);
+
+    stack_destroy(stack);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -569,6 +589,7 @@ void test(void)
     TEST(test_convert_to_array());
     TEST(test_convert_to_array2());
     TEST(test_destroy_with_entries());
+    TEST(test_empty());
 }
 
 int main(void)
