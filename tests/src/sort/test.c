@@ -309,6 +309,18 @@ test_f test_quicksort(size_t n)
     FREE(t4);
 }
 
+test_f test_sort_empty(void)
+{
+    int *t = t;
+    size_t size = 0;
+
+    T_CHECK(insort((void *)t, size, cmp_int, sizeof(int)) != 0);
+    T_CHECK(binsort((void *)t, size, cmp_int, sizeof(int)) != 0);
+    T_CHECK(mergesort((void *)t, size, cmp_int, sizeof(int)) != 0);
+    T_CHECK(quicksort((void *)t, size, cmp_int, sizeof(int)) != 0);
+    T_CHECK(sort((void *)t, size, cmp_int, sizeof(int)) != 0);
+}
+
 void test(void)
 {
     TEST(test_insort(1));
@@ -330,6 +342,8 @@ void test(void)
     TEST(test_quicksort(2));
     TEST(test_quicksort(100));
     TEST(test_quicksort(10000));
+
+    TEST(test_sort_empty());
 }
 
 int main(void)
