@@ -446,6 +446,26 @@ test_f test_destroy_with_entries(void)
     fifo_destroy_with_entries(q, my_struct_destroy);
 }
 
+test_f test_empty(void)
+{
+    Fifo *q;
+    int *t;
+    size_t size;
+    int val;
+
+    q = fifo_create(sizeof(int));
+    T_ERROR(q == NULL);
+
+    T_EXPECT(fifo_get_num_entries(q), 0);
+    T_EXPECT(fifo_get_size_of(q), sizeof(int));
+    T_CHECK(fifo_dequeue(q, (void *)&val) != 0);
+    T_EXPECT(fifo_is_empty(q), true);
+    T_CHECK(fifo_get_head(q, (void *)&val) != 0);
+    T_CHECK(fifo_to_array(q, (void *)&t, &size) != 0);
+
+    fifo_destroy(q);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -454,6 +474,7 @@ void test(void)
     TEST(test_insert_delete());
     TEST(test_convert_to_array());
     TEST(test_destroy_with_entries());
+    TEST(test_empty());
 }
 
 int main(void)
