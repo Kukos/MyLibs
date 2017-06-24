@@ -89,6 +89,9 @@ List2D *list2d_create(int size_of, int (*cmp)(void* a, void *b), int (*diff)(voi
     if (cmp == NULL)
         ERROR("cmp == NULL\n", NULL, "");
 
+    if (diff == NULL)
+        ERROR("diff == NULL\n", NULL, "");
+
     list = (List2D *)malloc(sizeof(List2D));
     if (list == NULL)
         ERROR("malloc error\n", NULL, "");
@@ -112,6 +115,12 @@ void list2d_destroy(List2D *list)
 
     if (list == NULL)
         return;
+
+    if (list->____length == 0)
+    {
+        FREE(list);
+        return;
+    }
 
     ptr = list->____head;
     end = list->____head->____prev;
@@ -192,7 +201,7 @@ int list2d_insert(List2D *list, void *entry)
     else
     {
         /* it is better to go from begining */
-        if (list->____diff == NULL || list->____diff(list->____head->____data, entry) >= list->____diff(list->____head->____prev->____data, entry))
+        if (list->____diff(list->____head->____data, entry) >= list->____diff(list->____head->____prev->____data, entry))
         {
             ptr = list->____head;
 
@@ -282,7 +291,7 @@ int list2d_delete(List2D *list, void *entry)
     if (list->____head == NULL)
 		ERROR("Nothing to delete\n", 1, "");
 
-    if (list->____diff == NULL || list->____diff(list->____head->____data, entry) >= list->____diff(list->____head->____prev->____data, entry))
+    if (list->____diff(list->____head->____data, entry) < list->____diff(list->____head->____prev->____data, entry))
     {
         ptr = list->____head;
 
@@ -292,7 +301,7 @@ int list2d_delete(List2D *list, void *entry)
             ERROR("list2d_node_create error", 1, "");
 
         list->____head->____prev->____next  = guard;
-        list->____head->____prev        = guard;
+        list->____head->____prev            = guard;
 
         /* skip all entries < than new entry */
         while (list->____cmp(ptr->____data, entry) < 0)
@@ -314,7 +323,7 @@ int list2d_delete(List2D *list, void *entry)
         while (list->____cmp(ptr->____data, entry) > 0)
             ptr = ptr->____prev;
 
-        while (list->____cmp(ptr->____data, entry) == 0 && ptr != guard)
+        while (ptr != guard && ptr->____next != guard && list->____cmp(ptr->____next->____data, entry) == 0)
             ptr = ptr->____prev;
     }
 
@@ -370,7 +379,7 @@ int list2d_delete_all(List2D *list, void *entry)
 
     deleted = 0;
 
-    if (list->____diff == NULL || list->____diff(list->____head->____data, entry) >= list->____diff(list->____head->____prev->____data, entry))
+    if (list->____diff(list->____head->____data, entry) < list->____diff(list->____head->____prev->____data, entry))
     {
         ptr = list->____head;
 
@@ -388,7 +397,7 @@ int list2d_delete_all(List2D *list, void *entry)
 
         if (ptr != guard && list->____cmp(ptr->____data, entry) == 0)
         {
-            while (list->____cmp(ptr->____data, entry) == 0)
+            while (list->____cmp(ptr->____data, entry) == 0 && ptr != guard)
             {
                 if (ptr == list->____head)
                     list->____head = ptr->____next;
@@ -433,7 +442,7 @@ int list2d_delete_all(List2D *list, void *entry)
 
         if (ptr != guard && list->____cmp(ptr->____data,entry) == 0)
         {
-            while (list->____cmp(ptr->____data, entry) == 0)
+            while (list->____cmp(ptr->____data, entry) == 0 && ptr != guard)
             {
                 if (ptr == list->____head)
                     list->____head = ptr->____next;
@@ -490,7 +499,7 @@ int list2d_search(List2D *list, void *val, void *entry)
     if (list->____head == NULL)
         ERROR("List is empty\n", 1, "");
 
-    if (list->____diff == NULL || list->____diff(list->____head->____data, entry) >= list->____diff(list->____head->____prev->____data, entry))
+    if (list->____diff(list->____head->____data, entry) < list->____diff(list->____head->____prev->____data, entry))
     {
         ptr = list->____head;
 
