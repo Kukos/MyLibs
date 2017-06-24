@@ -35,6 +35,7 @@
     LICENCE: GPL3
 */
 
+#include <slist.h>
 #include <iterators.h>
 #include <stdbool.h>
 #include <stddef.h> /* size_t */
@@ -50,7 +51,7 @@ typedef struct List2D_node
 
 typedef struct List2D
 {
-    int             size_of;
+    size_t          size_of;
     size_t          length;
 
     List2D_node     *head;
@@ -64,12 +65,14 @@ typedef struct List2D_iterator
 {
     List2D_node     *node;
     List2D_node     *end_node;
-    int             size_of;
+    size_t          size_of;
     bool            first_time;
 
 }List2D_iterator;
 
 IT_FUNC(List2D, list2d)
+
+IT_FUNC_CONTAINER(SList, slist, List2D, list2d)
 
 /*
     Macro for create a list, please see function description
@@ -84,6 +87,21 @@ IT_FUNC(List2D, list2d)
     do { \
         PTR = list2d_create(sizeof(TYPE), CMP, DIFF); \
     } while (0)
+
+/*
+    Create list as SList
+
+    PARAMS
+    @IN size_of - size of element in list
+    @IN cmp - compare function
+    @IN diff - diff function
+
+    RETURN:
+    NULL iff failure
+    Pointer iff success
+*/
+SList *slist_list2d_create(int size_of, int (*cmp)(void* a,void *b),
+    int (*diff)(void* a, void* b));
 
 /*
     Create list
@@ -145,7 +163,7 @@ int list2d_insert(List2D *list, void *entry);
 
     RETURN:
 	0 iff success
-	Non-zero value iff failure ( e.i entry doesn't exist in list )
+	Non-zero value iff failure ( i.e entry doesn't exist in list )
 */
 int list2d_delete(List2D *list, void *entry);
 
@@ -157,7 +175,7 @@ int list2d_delete(List2D *list, void *entry);
     @IN entry - entry
 
     RETURN:
-    -1 iff failure ( e.i entry doesn't exist in list )
+    -1 iff failure ( i.e entry doesn't exist in list )
     Number of delete entries iff success
 */
 int list2d_delete_all(List2D *list, void *entry);
@@ -178,7 +196,7 @@ List2D *list2d_merge(List2D *list1, List2D *list2);
 /*
     Search for entry which cmp(list.entry,val) == 0,
     so if you have your own struct, val must be fake struct with corect key
-    e.i
+    i.e
     struct Entry
     {
         int key;
@@ -217,5 +235,29 @@ int list2d_search(List2D *list, void *val, void *entry);
 	Non-zero value iff failure
 */
 int list2d_to_array(List2D *list, void *array, size_t *size);
+
+/*
+    Get size of data List
+
+    PARAMS
+    @IN list - pointer to List
+
+    RETURN
+    -1 iff failure
+    Num of entries iff success
+*/
+int list2d_get_size_of(List2D *list);
+
+/*
+    Get number of entries in List
+
+    PARAMS
+    @IN list - pointer to List
+
+    RETURN
+    -1 iff failure
+    sizeof iff success
+*/
+ssize_t list2d_get_num_entries(List2D *list);
 
 #endif
