@@ -637,7 +637,10 @@ UList *ulist_arraylist_create(int size_of)
     /* create arraylist */
     list->____list = (void *)arraylist_create(size_of);
     if (list->____list == NULL)
+    {
+        FREE(list);
         ERROR("arraylist_create error\n", NULL, "");
+    }
 
     /* fill hooks */
     ULIST_WRAPPERS_ASSIGN(list);
@@ -659,7 +662,10 @@ UList_iterator *ulist_arraylist_iterator_create(UList *list, ITI_MODE mode)
 
     it->____iterator = (void *)arraylist_iterator_create((Arraylist *)ulist_get_list(list), mode);
     if (it->____iterator == NULL)
+    {
+        FREE(it);
         ERROR("arraylist_iterator_create error\n", NULL, "");
+    }
 
     ULIST_ITERATOR_WRAPPERS_ASSIGN(it);
 
