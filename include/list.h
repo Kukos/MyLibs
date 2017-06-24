@@ -166,7 +166,7 @@ List *list_merge(List *list1, List *list2);
 /*
     Search for entry which cmp(list.entry,val) == 0,
     so if you have your own struct, val must be fake struct with corect key
-    e.i
+    i.e
     struct Entry
     {
         int key;
@@ -222,7 +222,7 @@ int list_get_size_of(List *list);
     Get number of entries in List
 
     PARAMS
-    @IN alist - pointer to Arraylist
+    @IN list - pointer to List
 
     RETURN
     -1 iff failure
