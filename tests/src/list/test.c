@@ -697,6 +697,7 @@ void test(void)
     TEST(test_merge());
     TEST(test_for_each());
     TEST(test_empty());
+    TEST(test_merge_empty());
     TEST(test_slist_framework());
     TEST(test_slist_for_each());
     TEST(test_slist_empty());
