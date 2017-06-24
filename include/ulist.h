@@ -6,18 +6,19 @@
 
     To use this framework:
 
-    1. Use Macro in .c file ULIST_WRAPPERS_CREATE
-    2. Declare your constructor with prefix ulist and sufix _create
+    1. Use Macro in ULIST_WRAPPERS_CREATE your .c file
+    2. Declare your constructor with prefix ulist and sufix _create i.e ulist_arraylist_create
     3. In Constructor use macro ULIST_WRAPPERS_ASSIGN
-    4. Use Macro in .c file ULIST_ITERATOR_WRAPPERS_CREATE
-    5. Declare your constructor with prefix ulist and sufix _iterator_create
-    6. In Constructor use macro ULIST_ITERATOR_WRAPPERS_ASSIGN
-    7. Use UList instead of your struct but create UList by your custom constructor
-    8. Use ulist inline function instead of your struct function
-    9. Use iterator macros with container sufix, and as __internal_type pass your struct type
+    4. Use Macro ULIST_ITERATOR_WRAPPERS_CREATE in your .c file
+    5. Declare your constructor with prefix ulist and sufix _iterator_create i.e ulist_arraylist_iterator_create
+    6. Declare your constructor with prefix ulist and sufix _iterator_init i.e ulist_arraylist_iterator_init
+    7. In Constructor use macro ULIST_ITERATOR_WRAPPERS_ASSIGN
+    8. Use UList instead of your struct but create UList by your custom constructor i.e UList *list = ulist_arraylist_create
+    9. Use Ulist inline function instead of your struct function i.e ulist_insert_first(list) instead of arraylist_insert_first
+    10. Use iterator macros with container sufix, and as __internal_type pass your struct type
 
-    (10.) IF you have custom struct function inetad of default names and parameters for list
-    do not use ULIST macros, you have to create wrappers and fill hooks yourself
+    (11.) IF you have custom struct function inetad of default names and parameters for list
+    do not use ULIST macros, you have to create wrappers and fill hooks by yourself
 
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com
