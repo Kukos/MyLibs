@@ -42,31 +42,31 @@
 
 typedef struct List2D_node
 {
-    struct List2D_node      *prev;
-    struct List2D_node      *next;
-    void                    *data;
+    struct List2D_node      *____prev;
+    struct List2D_node      *____next;
+    void                    *____data;
 
 }List2D_node;
 
 
 typedef struct List2D
 {
-    size_t          size_of;
-    size_t          length;
+    size_t          ____size_of;
+    size_t          ____length;
 
-    List2D_node     *head;
+    List2D_node     *____head;
 
-    int (*cmp)(void* a, void *b);
-    int (*diff)(void* a, void* b);
+    int (*____cmp)(void* a, void *b);
+    int (*____diff)(void* a, void* b);
 
 }List2D;
 
 typedef struct List2D_iterator
 {
-    List2D_node     *node;
-    List2D_node     *end_node;
-    size_t          size_of;
-    bool            first_time;
+    List2D_node     *____node;
+    List2D_node     *____end_node;
+    size_t          ____size_of;
+    bool            ____first_time;
 
 }List2D_iterator;
 
