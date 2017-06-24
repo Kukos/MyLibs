@@ -491,6 +491,200 @@ test_f test_merge_empty(void)
     list_destroy(list3);
 }
 
+test_f test_slist_framework(void)
+{
+    SList *slist1;
+    SList *slist2;
+    SList *slist3;
+
+    int t[] = {-1, 3, 3, 0, 2};
+    int t_exp[] = {-1, 0, 2, 3, 3};
+    int t_exp2[] = {-1, -1, 0, 0, 2, 2, 3, 3, 3, 3};
+    int t_exp3[] = {-1, -1, 0, 0, 2};
+
+    size_t size = ARRAY_SIZE(t);
+
+    int *rt;
+    size_t rsize;
+
+    int in = 2;
+    int in2 = 10;
+    int out;
+
+    int to_delete = 2;
+    int to_delete_all = 3;
+
+    int i;
+
+    slist1 = slist_list_create(sizeof(int), cmp_int);
+    T_ERROR(slist1 == NULL);
+    T_EXPECT(slist_get_size_of(slist1), sizeof(int));
+    T_EXPECT(slist_get_num_entries(slist1), 0);
+
+    for (i = 0; i < size; ++i)
+        T_EXPECT(slist_insert(slist1, (void *)&t[i]), 0);
+
+    T_EXPECT(slist_get_num_entries(slist1), size);
+    T_EXPECT(slist_to_array(slist1, (void *)&rt, &rsize), 0);
+    T_ASSERT(rsize, size);
+    T_EXPECT(array_equal_int(t_exp, rt, size), true);
+    FREE(rt);
+
+    slist2 = slist_list_create(sizeof(int), cmp_int);
+    T_ERROR(slist2 == NULL);
+    T_EXPECT(slist_get_size_of(slist2), sizeof(int));
+    T_EXPECT(slist_get_num_entries(slist2), 0);
+
+    for (i = 0; i < size; ++i)
+        T_EXPECT(slist_insert(slist2, (void *)&t[i]), 0);
+
+    T_EXPECT(slist_get_num_entries(slist2), size);
+    T_EXPECT(slist_to_array(slist2, (void *)&rt, &rsize), 0);
+    T_ASSERT(rsize, size);
+    T_EXPECT(array_equal_int(t_exp, rt, size), true);
+    FREE(rt);
+
+    slist3 = slist_merge(slist1, slist2);
+    T_ERROR(slist3 == NULL);
+    T_EXPECT(slist_get_size_of(slist3), sizeof(int));
+    T_EXPECT(slist_get_num_entries(slist3), size << 1);
+    T_EXPECT(slist_to_array(slist3, (void *)&rt, &rsize), 0);
+    T_ASSERT(rsize, size << 1);
+    T_EXPECT(array_equal_int(t_exp2, rt, size << 1), true);
+    FREE(rt);
+
+    T_EXPECT(slist_search(slist3, (void *)&in, (void *)&out), 0);
+    T_ASSERT(in, out);
+
+    T_CHECK(slist_search(slist3, (void *)&in2, (void *)&out) != 0);
+    T_CHECK(slist_delete(slist3, (void *)&in2) != 0);
+    T_EXPECT(slist_delete_all(slist3, (void *)&in2), 0);
+
+    T_EXPECT(slist_delete(slist3, (void *)&to_delete), 0);
+    T_EXPECT(slist_delete_all(slist3, (void *)&to_delete_all), 4);
+
+    T_EXPECT(slist_get_num_entries(slist3), ARRAY_SIZE(t_exp3));
+    T_EXPECT(slist_to_array(slist3, (void *)&rt, &rsize), 0);
+    T_ASSERT(rsize, ARRAY_SIZE(t_exp3));
+    T_EXPECT(array_equal_int(t_exp3, rt, ARRAY_SIZE(t_exp3)), true);
+    FREE(rt);
+
+
+    slist_destroy(slist1);
+    slist_destroy(slist2);
+    slist_destroy(slist3);
+}
+
+test_f test_slist_for_each(void)
+{
+    SList *slist;
+
+    int t[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    size_t size = ARRAY_SIZE(t);
+
+    int i;
+    void *node;
+    int val;
+
+    slist = slist_list_create(sizeof(int), cmp_int);
+    T_ERROR(slist == NULL);
+    T_EXPECT(slist_get_size_of(slist), sizeof(int));
+    T_EXPECT(slist_get_num_entries(slist), 0);
+
+    for (i = 0; i < size; ++i)
+        T_EXPECT(slist_insert(slist, (void *)&t[i]), 0);
+
+
+    i = 0;
+    for_each_container(slist, SList, List, node, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(val, t[i]);
+        ++i;
+    }
+
+    for_each_node_container(slist, SList, List, node)
+    {
+        T_CHECK(node != NULL);
+    }
+
+    i = 0;
+    for_each_data_container(slist, SList, List, val)
+    {
+        T_ASSERT(val, t[i]);
+        ++i;
+    }
+
+    slist_destroy(slist);
+}
+
+test_f test_slist_empty(void)
+{
+    SList *list;
+    int in;
+    int out;
+    int *t;
+    size_t size;
+
+    list = slist_list_create(sizeof(int), cmp_int);
+    T_ERROR(list == NULL);
+    T_EXPECT(slist_get_size_of(list), sizeof(int));
+    T_EXPECT(slist_get_num_entries(list), 0);
+
+    T_CHECK(slist_delete(list, (void *)&in) != 0);
+    T_CHECK(slist_delete_all(list, (void *)&in) < 0);
+    T_CHECK(slist_search(list, (void *)&in, (void *)&out) != 0);
+    T_CHECK(slist_to_array(list, (void *)&t, &size) != 0);
+
+    slist_destroy(list);
+}
+
+test_f test_slist_merge_empty(void)
+{
+    SList *list1;
+    SList *list2;
+    SList *list3;
+
+    int in;
+    int out;
+    int *t;
+    size_t size;
+
+    list1 = slist_list_create(sizeof(int), cmp_int);
+    T_ERROR(list1 == NULL);
+    T_EXPECT(slist_get_size_of(list1), sizeof(int));
+    T_EXPECT(slist_get_num_entries(list1), 0);
+
+    T_CHECK(slist_delete(list1, (void *)&in) != 0);
+    T_CHECK(slist_delete_all(list1, (void *)&in) < 0);
+    T_CHECK(slist_search(list1, (void *)&in, (void *)&out) != 0);
+    T_CHECK(slist_to_array(list1, (void *)&t, &size) != 0);
+
+    list2 = slist_list_create(sizeof(int), cmp_int);
+    T_ERROR(list2 == NULL);
+    T_EXPECT(slist_get_size_of(list2), sizeof(int));
+    T_EXPECT(slist_get_num_entries(list2), 0);
+
+    T_CHECK(slist_delete(list2, (void *)&in) != 0);
+    T_CHECK(slist_delete_all(list2, (void *)&in) < 0);
+    T_CHECK(slist_search(list2, (void *)&in, (void *)&out) != 0);
+    T_CHECK(slist_to_array(list2, (void *)&t, &size) != 0);
+
+    list3 = slist_merge(list1, list2);
+    T_ERROR(list3 == NULL);
+    T_EXPECT(slist_get_size_of(list3), sizeof(int));
+    T_EXPECT(slist_get_num_entries(list3), 0);
+
+    T_CHECK(slist_delete(list3, (void *)&in) != 0);
+    T_CHECK(slist_delete_all(list3, (void *)&in) < 0);
+    T_CHECK(slist_search(list3, (void *)&in, (void *)&out) != 0);
+    T_CHECK(slist_to_array(list3, (void *)&t, &size) != 0);
+
+    slist_destroy(list1);
+    slist_destroy(list2);
+    slist_destroy(list3);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -503,6 +697,10 @@ void test(void)
     TEST(test_merge());
     TEST(test_for_each());
     TEST(test_empty());
+    TEST(test_slist_framework());
+    TEST(test_slist_for_each());
+    TEST(test_slist_empty());
+    TEST(test_slist_merge_empty());
 }
 
 int main(void)

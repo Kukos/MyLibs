@@ -397,6 +397,9 @@ List *list_merge(List *list1, List *list2)
     ptr1 = list1->____head;
     ptr2 = list2->____head;
 
+    if (ptr1 == NULL && ptr2 == NULL)
+        return list3;
+
     if (ptr1 != NULL && ptr2 != NULL)
     {
         if (list3->____cmp(ptr1->____data, ptr2->____data) < 0)
@@ -418,7 +421,7 @@ List *list_merge(List *list1, List *list2)
         list3->____head = node;
         ptr1 = ptr1->____next;
     }
-    else
+    else if (ptr2 != NULL)
     {
         node = list_node_create(NULL, ptr2->____data, (int)list3->____size_of);
         list3->____head = node;
@@ -584,14 +587,15 @@ List_iterator *list_iterator_create(List *list, ITI_MODE mode)
     if (list == NULL)
         ERROR("list == NULL\n", NULL, "");
 
+    if (mode != ITI_BEGIN)
+        ERROR("Incorrect mode\n", NULL, "");
+
     iterator = (List_iterator *)malloc(sizeof(List_iterator));
     if (iterator == NULL)
         ERROR("malloc error\n", NULL, "");
 
     iterator->____node = list->____head;
     iterator->____size_of = list->____size_of;
-
-    (void)mode;
 
     return iterator;
 }
@@ -616,10 +620,11 @@ int list_iterator_init(List *list, List_iterator *iterator, ITI_MODE mode)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1, "");
 
+    if (mode != ITI_BEGIN)
+        ERROR("Incorrect mode\n", 1, "");
+
     iterator->____node = list->____head;
     iterator->____size_of = list->____size_of;
-
-    (void)mode;
 
     return 0;
 }
@@ -632,6 +637,18 @@ int list_iterator_next(List_iterator *iterator)
         ERROR("iterator == NULL\n", 1, "");
 
     iterator->____node = iterator->____node->____next;
+
+    return 0;
+}
+
+int list_iterator_prev(List_iterator *iterator)
+{
+    TRACE("");
+
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
+
+    iterator->____node = NULL;
 
     return 0;
 }
@@ -674,4 +691,73 @@ bool list_iterator_end(List_iterator *iterator)
         ERROR("iterator == NULL\n", true, "");
 
     return iterator->____node == NULL;
+}
+
+SLIST_WRAPPERS_CREATE(List, list)
+
+SList *slist_list_create(int size_of, int (*cmp)(void* a, void *b))
+{
+    SList *list;
+
+    TRACE("");
+
+    /* create SLIST */
+    list = (SList *)malloc(sizeof(SList));
+    if (list == NULL)
+        ERROR("malloc error\n", NULL, "");
+
+    /* create list */
+    list->____list = (void *)list_create(size_of, cmp);
+    if (list->____list == NULL)
+    {
+        FREE(list);
+        ERROR("list_create error\n", NULL, "");
+    }
+
+    /* fill hooks */
+    SLIST_WRAPPERS_ASSIGN(list);
+
+    return list;
+}
+
+SLIST_ITERATOR_WRAPPERS_CREATE(List_iterator, list_iterator)
+
+SList_iterator *slist_list_iterator_create(SList *list, ITI_MODE mode)
+{
+    SList_iterator *it;
+
+    TRACE("");
+
+    it = (SList_iterator *)malloc(sizeof(SList_iterator));
+    if (it == NULL)
+        ERROR("malloc error\n", NULL, "");
+
+    it->____iterator = (void *)list_iterator_create((List *)slist_get_list(list), mode);
+    if (it->____iterator == NULL)
+    {
+        FREE(it);
+        ERROR("list_iterator_create error\n", NULL, "");
+    }
+
+    SLIST_ITERATOR_WRAPPERS_ASSIGN(it);
+
+    return it;
+}
+
+int slist_list_iterator_init(SList *list, SList_iterator *it, ITI_MODE mode)
+{
+    TRACE("");
+
+    if (it == NULL)
+        ERROR("it == NULL\n", 1, "");
+
+    if (list_iterator_init((List *)slist_get_list(list),
+            (List_iterator *)slist_iterator_get_iterator(it), mode))
+    {
+        ERROR("list_iterator_init error\n", 1, "");
+    }
+
+    SLIST_ITERATOR_WRAPPERS_ASSIGN(it);
+
+    return 0;
 }

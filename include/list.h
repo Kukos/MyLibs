@@ -10,6 +10,7 @@
     LICENCE: GPL 3.0
 */
 
+#include <slist.h>
 #include <iterators.h>
 #include <stddef.h> /* size_t */
 #include <sys/types.h>
@@ -45,6 +46,7 @@ typedef struct List_iterator
 
 IT_FUNC(List, list)
 
+IT_FUNC_CONTAINER(SList, slist, List, list)
 
 /*
     Macro for create a list, please see function description
@@ -58,6 +60,20 @@ IT_FUNC(List, list)
     do { \
         PTR = list_create(sizeof(TYPE), CMP); \
     } while (0)
+
+/*
+    Create list as SList
+
+    PARAMS
+    @IN size_of - size of element in list
+    @IN cmp - compare function
+
+    RETURN:
+    NULL if failure
+    Pointer if success
+*/
+SList *slist_list_create(int size_of, int (*cmp)(void* a, void *b));
+
 
 /*
     Create list
@@ -117,7 +133,7 @@ int list_insert(List *list, void *entry);
 
     RETURN:
 	0 iff success
-	Non-zero value iff failure (e.i entry doesn't exist in list )
+	Non-zero value iff failure (i.e entry doesn't exist in list )
 */
 int list_delete(List *list,void *entry);
 
@@ -129,7 +145,7 @@ int list_delete(List *list,void *entry);
     @IN entry - entry
 
     RETURN:
-    -1 iff failure ( e.i entry doesn't exist in list )
+    -1 iff failure (i.e entry doesn't exist in list )
     Number of delete entries iff success
 */
 int list_delete_all(List *list, void *entry);
