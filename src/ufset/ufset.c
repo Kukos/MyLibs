@@ -2,7 +2,6 @@
 #include <generic.h>
 #include <log.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <common.h>
 
 UFSentry *ufs_entry_create(void *data, int size_of)
@@ -20,7 +19,7 @@ UFSentry *ufs_entry_create(void *data, int size_of)
 
     entry->ufs_ptr = NULL;
 
-    entry->data = malloc(size_of);
+    entry->data = malloc((size_t)size_of);
     if (entry->data == NULL)
     {
         FREE(entry);
@@ -42,6 +41,7 @@ void ufs_entry_destroy(UFSentry *entry)
     FREE(entry->data);
     FREE(entry);
 }
+
 UFset *ufset_create(UFSentry *entry)
 {
     UFset *set;
@@ -79,8 +79,11 @@ int ufset_union(UFset *x, UFset *y)
     UFset *x_parent;
     UFset *y_parent;
 
-    assert(x != NULL);
-    assert(y != NULL);
+    if (x == NULL)
+        ERROR("x == NULL\n", 1, "");
+
+    if (y == NULL)
+        ERROR("y == NULL\n", 1, "");
 
     x_parent = ufset_find(x);
     if (x_parent == NULL)
@@ -106,9 +109,10 @@ UFset *ufset_find(UFset *set)
 {
     TRACE("");
 
-    assert(set != NULL);
+    if (set == NULL)
+        ERROR("set == NULL\n", NULL, "");
 
-    if( set->parent != set)
+    if (set->parent != set)
         set->parent = ufset_find(set->parent);
 
     return set->parent;
