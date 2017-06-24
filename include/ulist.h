@@ -472,7 +472,10 @@ ___inline___ UList *ulist_merge(UList *list1, UList *list2)
     /* merge lists */
     list3->____list = list1->____merge(ulist_get_list(list1), ulist_get_list(list2));
     if (list3->____list == NULL)
+    {
+        FREE(list3);
         return NULL;
+    }
 
     /* fill hooks */
     list3->____destroy              = list1->____destroy;
