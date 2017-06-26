@@ -46,8 +46,6 @@ typedef struct List_iterator
 
 IT_FUNC(List, list)
 
-IT_FUNC_CONTAINER(SList, slist, List, list)
-
 /*
     Macro for create a list, please see function description
 

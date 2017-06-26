@@ -423,11 +423,7 @@
 
 /* FOR CONTAINERS FRAMEWORKS LIKE TREE / ULIST / SLIST ... */
 /* Like IT_FUNC but most functions are inline and containers framework friendly */
-#define IT_FUNC_CONTAINER(STRUCT, PREFIX, INTERNAL_STRUCT, INTERNAL_PREFIX) \
-    IT_STRUCT_NAME(STRUCT) *concat(PREFIX, concat(_, concat(INTERNAL_PREFIX, _iterator_create)))(STRUCT *s, ITI_MODE mode); \
-    int concat(PREFIX, concat(_, concat(INTERNAL_PREFIX, _iterator_init)))(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode); \
-    IT_STRUCT_NAME(STRUCT) *concat(PREFIX, _iterator_create)(STRUCT *, ITI_MODE); \
-    int concat(PREFIX, _iterator_init)(STRUCT *, IT_STRUCT_NAME(STRUCT) *, ITI_MODE); \
+#define IT_FUNC_CONTAINER(STRUCT, PREFIX) \
     ___inline___ void *concat(PREFIX, _iterator_get_iterator)(IT_STRUCT_NAME(STRUCT) *it); \
     ___inline___ void concat(PREFIX, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *it); \
     ___inline___ int concat(PREFIX, _iterator_next)(IT_STRUCT_NAME(STRUCT) *it); \
@@ -435,9 +431,9 @@
     ___inline___ bool concat(PREFIX, _iterator_end)(IT_STRUCT_NAME(STRUCT) *it); \
     ___inline___ int concat(PREFIX, _iterator_get_data)(IT_STRUCT_NAME(STRUCT) *it, void *data); \
     ___inline___ int concat(PREFIX, _iterator_get_node)(IT_STRUCT_NAME(STRUCT) *it, void *node); \
-    ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, concat(_, concat(INTERNAL_STRUCT, _iterator_create)))(STRUCT *s, ITI_MODE mode); \
-    ___inline___ int concat(STRUCT, concat(_, concat(INTERNAL_STRUCT, _iterator_init)))(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode); \
-     ___inline___ void concat(STRUCT, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *s); \
+    ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, _iterator_create)(STRUCT *s, ITI_MODE mode); \
+    ___inline___ int concat(STRUCT, _iterator_init)(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode); \
+    ___inline___ void concat(STRUCT, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *s); \
     ___inline___ int concat(STRUCT, _iterator_destroy_int)(IT_STRUCT_NAME(STRUCT) *s); \
     ___inline___ int concat(STRUCT, _iterator_next)(IT_STRUCT_NAME(STRUCT) *s); \
     ___inline___ int concat(STRUCT, _iterator_prev)(IT_STRUCT_NAME(STRUCT) *s); \
@@ -501,14 +497,14 @@
         return it->____get_node(concat(PREFIX, _iterator_get_iterator)(it), node); \
     } \
     \
-    ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, concat(_, concat(INTERNAL_STRUCT, _iterator_create)))(STRUCT *s, ITI_MODE mode) \
+      ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, _iterator_create)(STRUCT *s, ITI_MODE mode) \
     { \
-        return concat(PREFIX, concat(_, concat(INTERNAL_PREFIX, _iterator_create)))(s, mode); \
+        return concat(PREFIX, _iterator_create)(s, mode); \
     } \
     \
-    ___inline___ int concat(STRUCT, concat(_, concat(INTERNAL_STRUCT, _iterator_init)))(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode) \
+    ___inline___ int concat(STRUCT, _iterator_init)(STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, ITI_MODE mode) \
     { \
-        return concat(PREFIX, concat(_, concat(INTERNAL_PREFIX, _iterator_init)))(s, it, mode); \
+        return concat(PREFIX, _iterator_init)(s, it, mode); \
     } \
     \
     ___inline___ void concat(STRUCT, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *s) \
@@ -544,134 +540,5 @@
     { \
             return concat(PREFIX, _iterator_get_node)(s, n); \
     }
-
-#define for_each_container(__struct, __type, __internal_type, __node, __data) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_BEGIN); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _next)(______it) \
-            )
-
-#define for_each_prev_container(__struct, __type, __internal_type, __node, __data) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_END); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _prev)(______it) \
-            )
-
-#define for_each_root_container(__struct, __type, __internal_type, __node, __data) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_ROOT); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _next)(______it) \
-            )
-
-
-#define for_each_root_prev_container(__struct, __type, __internal_type, __node, __data) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_ROOT); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _prev)(______it) \
-            )
-
-
-#define for_each_data_container(__struct, __type, __internal_type, __data) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_BEGIN); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _next)(______it) \
-            )
-
-#define for_each_data_prev_container(__struct, __type, __internal_type, __data) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_END); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _prev)(______it) \
-            )
-
-#define for_each_data_root_container(__struct, __type, __internal_type, __data) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_ROOT); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _next)(______it) \
-            )
-
-
-#define for_each_data_root_prev_container(__struct, __type, __internal_type, __data) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_ROOT); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _prev)(______it) \
-            )
-
-
-#define for_each_node_container(__struct, __type, __internal_type, __node) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_BEGIN); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _next)(______it) \
-            )
-
-#define for_each_node_prev_container(__struct, __type, __internal_type, __node) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_END); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _prev)(______it) \
-            )
-
-#define for_each_node_root_container(__struct, __type, __internal_type, __node) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_ROOT); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _next)(______it) \
-            )
-
-
-#define for_each_node_root_prev_container(__struct, __type, __internal_type, __node) \
-        for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
-                concat(__type, concat(_, concat(IT_STRUCT_NAME(__internal_type), _create)))(__struct, ITI_ROOT); \
-                ( \
-                    !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
-                    !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) \
-                ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
-                concat(IT_STRUCT_NAME(__type), _prev)(______it) \
-            )
 
 #endif

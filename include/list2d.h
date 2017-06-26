@@ -72,8 +72,6 @@ typedef struct List2D_iterator
 
 IT_FUNC(List2D, list2d)
 
-IT_FUNC_CONTAINER(SList, slist, List2D, list2d)
-
 /*
     Macro for create a list, please see function description
 

@@ -596,20 +596,20 @@ test_f test_slist_for_each(void)
 
 
     i = 0;
-    for_each_container(slist, SList, List, node, val)
+    for_each(slist, SList, node, val)
     {
         T_CHECK(node != NULL);
         T_ASSERT(val, t[i]);
         ++i;
     }
 
-    for_each_node_container(slist, SList, List, node)
+    for_each_node(slist, SList, node)
     {
         T_CHECK(node != NULL);
     }
 
     i = 0;
-    for_each_data_container(slist, SList, List, val)
+    for_each_data(slist, SList, val)
     {
         T_ASSERT(val, t[i]);
         ++i;

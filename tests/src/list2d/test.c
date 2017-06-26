@@ -637,7 +637,7 @@ test_f test_slist_for_each(void)
 
 
     i = 0;
-    for_each_container(slist, SList, List2D, node, val)
+    for_each(slist, SList, node, val)
     {
         T_CHECK(node != NULL);
         T_ASSERT(val, t[i]);
@@ -645,32 +645,32 @@ test_f test_slist_for_each(void)
     }
 
     i = size - 1;
-    for_each_prev_container(slist, SList, List2D, node, val)
+    for_each_prev(slist, SList, node, val)
     {
         T_CHECK(node != NULL);
         T_ASSERT(val, t[i]);
         --i;
     }
 
-    for_each_node_container(slist, SList, List2D, node)
+    for_each_node(slist, SList, node)
     {
         T_CHECK(node != NULL);
     }
 
-    for_each_node_prev_container(slist, SList, List2D, node)
+    for_each_node_prev(slist, SList, node)
     {
         T_CHECK(node != NULL);
     }
 
     i = 0;
-    for_each_data_container(slist, SList, List2D, val)
+    for_each_data(slist, SList, val)
     {
         T_ASSERT(val, t[i]);
         ++i;
     }
 
     i = size - 1;
-    for_each_data_prev_container(slist, SList, List2D, val)
+    for_each_data_prev(slist, SList, val)
     {
         T_ASSERT(val, t[i]);
         --i;

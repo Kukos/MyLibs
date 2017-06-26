@@ -2,22 +2,17 @@
 #define SLIST_H
 
 /*
-    Ssorted List Container Framework
+    Sorted List Container Framework
 
     To use this framework:
 
     1. Use Macro in SLIST_WRAPPERS_CREATE your .c file
     2. Declare your constructor with prefix slist and sufix _create i.e slist_list_create
     3. In Constructor use macro SLIST_WRAPPERS_ASSIGN
-    4. Use Macro SLIST_ITERATOR_WRAPPERS_CREATE in your .c file
-    5. Declare your constructor with prefix slist and sufix _iterator_create i.e slist_list_iterator_create
-    6. Declare your constructor with prefix slist and sufix _iterator_init i.e slist_list_iterator_init
-    7. In Constructor use macro SLIST_ITERATOR_WRAPPERS_ASSIGN
-    8. Use SList instead of your struct but create SList by your custom constructor i.e SList *list = slist_list_create
-    9. Use Slist inline function instead of your struct function i.e slist_insert instead of list_insert
-    10. Use iterator macros with container sufix, and as __internal_type pass your struct type
+    4. Use SList instead of your struct but create SList by your custom constructor i.e SList *list = slist_list_create
+    5. Use Slist inline function instead of your struct function i.e slist_first(list) instead of list_insert
 
-    (11.) IF you have custom struct function inetad of default names and parameters for list
+    (6.) IF you have custom struct function instead of default names and parameters for list
     do not use SLIST macros, you have to create wrappers and fill hooks by yourself
 
     Author: Michal Kukowski
@@ -33,12 +28,26 @@
 #include <stdlib.h>
 #include <common.h>
 #include <iterators.h>
+#include <log.h>
+
+typedef struct SList_iterator
+{
+    void    *____iterator;
+
+    void    (*____destroy)(void *iterator);
+    int     (*____next)(void *iterator);
+    int     (*____prev)(void *iterator);
+    int     (*____get_data)(void *iterator, void *data);
+    int     (*____get_node)(void *iterator, void *node);
+    bool    (*____end)(void *iterator);
+
+}SList_iterator;
 
 typedef struct SList
 {
     void        *____list; /* pointer to list */
 
-    /* private functions */
+   /* private functions */
     void        (*____destroy)(void *list);
     void        (*____destroy_with_entries)(void *list, void (*destructor)(void *data));
     int         (*____insert)(void *list, void *data);
@@ -50,10 +59,44 @@ typedef struct SList
     int         (*____get_size_of)(void *list);
     ssize_t     (*____get_num_entries)(void *list);
 
+    /* to create iterator */
+    void*       (*____it_create)(void *list, ITI_MODE mode);
+    int         (*____it_init)(void *list, void *it, ITI_MODE mode);
+    void        (*____it_destroy)(void *iterator);
+    int         (*____it_next)(void *iterator);
+    int         (*____it_prev)(void *iterator);
+    int         (*____it_get_data)(void *iterator, void *data);
+    int         (*____it_get_node)(void *iterator, void *node);
+    bool        (*____it_end)(void *iterator);
+
 }SList;
+
+/*
+    Create SList iterator
+
+    PARAMS
+    @IN list - pointer to SList
+    @IN mode - iterator mode
+
+    RETURN
+    NULL iff failure
+    Pointer to SList_iterator iff success
+*/
+___inline___ SList_iterator *slist_iterator_create(SList *list, ITI_MODE mode);
+
+/*
+    Init SList iterator
+
+    PARAMS
+    @IN list - pointer to list
+    @IN it - pointer to iterator
+    @IN mode - Iterator mode
+*/
+___inline___ int slist_iterator_init(SList *list, SList_iterator *it, ITI_MODE mode);
 
 /* Macro to create wrappers to your struct to provide assignment to framework functions */
 #define SLIST_WRAPPERS_CREATE(type, prefix) \
+    SLIST_ITERATOR_WRAPPERS_CREATE(concat(type, _iterator), concat(prefix, _iterator)) \
     static ___unused___ void ____destroy(void *list); \
     static ___unused___ void ____destroy_with_entries(void *list, void (*destructor)(void *data)); \
     static ___unused___ int ____insert(void *list, void *data); \
@@ -127,6 +170,14 @@ typedef struct SList
         (list)->____to_array              = ____to_array; \
         (list)->____get_size_of           = ____get_size_of; \
         (list)->____get_num_entries       = ____get_num_entries; \
+        (list)->____it_create             = ____it_create; \
+        (list)->____it_init               = ____it_init; \
+        (list)->____it_destroy            = ____it_destroy; \
+        (list)->____it_next               = ____it_next; \
+        (list)->____it_prev               = ____it_prev; \
+        (list)->____it_get_data           = ____it_get_data; \
+        (list)->____it_get_node           = ____it_get_node; \
+        (list)->____it_end                = ____it_end; \
     } while (0);
 
 /*
@@ -316,9 +367,17 @@ ___inline___ bool slist_the_same_type(SList *list1, SList *list2)
              list1->____merge                   != list2->____merge                 ||
              list1->____to_array                != list2->____to_array              ||
              list1->____get_size_of             != list2->____get_size_of           ||
-             list1->____get_num_entries         != list2->____get_num_entries);
+             list1->____get_num_entries         != list2->____get_num_entries       ||
+             list1->____it_create               != list2->____it_create             ||
+             list1->____it_init                 != list2->____it_init               ||
+             list1->____it_destroy              != list2->____it_destroy            ||
+             list1->____it_next                 != list2->____it_next               ||
+             list1->____it_prev                 != list2->____it_prev               ||
+             list1->____it_get_data             != list2->____it_get_data           ||
+             list1->____it_get_node             != list2->____it_get_node           ||
+             list1->____it_end                  != list2->____it_end
+             );
 }
-
 
 ___inline___ void *slist_get_list(SList *list)
 {
@@ -414,6 +473,15 @@ ___inline___ SList *slist_merge(SList *list1, SList *list2)
     list3->____get_size_of          = list1->____get_size_of;
     list3->____get_num_entries      = list1->____get_num_entries;
 
+    list3->____it_create            = list1->____it_create;
+    list3->____it_init              = list1->____it_init;
+    list3->____it_destroy           = list1->____it_destroy;
+    list3->____it_next              = list1->____it_next;
+    list3->____it_prev              = list1->____it_prev;
+    list3->____it_get_data          = list1->____it_get_data;
+    list3->____it_get_node          = list1->____it_get_node;
+    list3->____it_end               = list1->____it_end;
+
     return list3;
 }
 
@@ -440,28 +508,85 @@ ___inline___ ssize_t slist_get_num_entries(SList *list)
 
     return list->____get_num_entries(slist_get_list(list));
 }
-
-typedef struct SList_iterator
+___inline___ SList_iterator *slist_iterator_create(SList *list, ITI_MODE mode)
 {
-    void    *____iterator;
+    SList_iterator *it;
 
-    void    (*____destroy)(void *iterator);
-    int     (*____next)(void *iterator);
-    int     (*____prev)(void *iterator);
-    int     (*____get_data)(void *iterator, void *data);
-    int     (*____get_node)(void *iterator, void *node);
-    bool    (*____end)(void *iterator);
+    TRACE("");
 
-}SList_iterator;
+    if (list == NULL)
+        ERROR("list == NULL\n", NULL, "");
+
+    if (mode != ITI_BEGIN && mode != ITI_END)
+        ERROR("Incorrect mode\n", NULL, "");
+
+    it = (SList_iterator *)malloc(sizeof(SList_iterator));
+    if (it == NULL)
+        ERROR("malloc error\n", NULL, "");
+
+    it->____iterator = list->____it_create(list, mode);
+    if (it->____iterator == NULL)
+        ERROR("iterator create error\n", NULL, "");
+
+    /* FILL HOOKS */
+    it->____destroy    = list->____it_destroy;
+    it->____next       = list->____it_next;
+    it->____prev       = list->____it_prev;
+    it->____get_data   = list->____it_get_data;
+    it->____get_node   = list->____it_get_node;
+    it->____end        = list->____it_end;
+
+    return it;
+}
+
+___inline___ int slist_iterator_init(SList *list, SList_iterator *it, ITI_MODE mode)
+{
+    TRACE("");
+
+    if (list == NULL)
+        ERROR("list == NULL\n", 1, "");
+
+    if (it == NULL)
+        ERROR("iterator == NULL\n", 1, "");
+
+    if (mode != ITI_BEGIN && mode != ITI_END)
+        ERROR("Incorrect mode\n", 1, "");
+
+    it->____iterator = list->____it_create(list, mode);
+    if (it->____iterator == NULL)
+        ERROR("iterator create error\n", 1, "");
+
+    /* FILL HOOKS */
+    it->____destroy    = list->____it_destroy;
+    it->____next       = list->____it_next;
+    it->____prev       = list->____it_prev;
+    it->____get_data   = list->____it_get_data;
+    it->____get_node   = list->____it_get_node;
+    it->____end        = list->____it_end;
+
+    return 0;
+}
+
+IT_FUNC_CONTAINER(SList, slist)
 
 /* use this macro to create wrappers for iterator */
 #define SLIST_ITERATOR_WRAPPERS_CREATE(type, prefix) \
+    static ___unused___ void* ____it_create(void *list, ITI_MODE mode); \
+    static ___unused___ int ____it_init(void *list, void *it, ITI_MODE mode); \
     static ___unused___ void ____it_destroy(void *it); \
     static ___unused___ int ____it_next(void *it); \
     static ___unused___ int ____it_prev(void *it); \
     static ___unused___ int ____it_get_data(void *it, void *data); \
     static ___unused___ int ____it_get_node(void *it, void *node); \
     static ___unused___ bool ____it_end(void *it); \
+    static ___unused___ void* ____it_create(void *list, ITI_MODE mode) \
+    { \
+        return concat(prefix, _create)(slist_get_list(list), mode); \
+    } \
+    static ___unused___ int ____it_init(void *list, void *it, ITI_MODE mode) \
+    { \
+        return concat(prefix, _init)(list, (type *)it, mode); \
+    } \
     static ___unused___ void ____it_destroy(void *it) \
     { \
         concat(prefix, _destroy)((type *)it); \
@@ -491,15 +616,5 @@ typedef struct SList_iterator
     { \
         return concat(prefix, _end)((type *)it); \
     }
-
-#define SLIST_ITERATOR_WRAPPERS_ASSIGN(it) \
-    do { \
-        (it)->____destroy     = ____it_destroy; \
-        (it)->____next        = ____it_next; \
-        (it)->____prev        = ____it_prev; \
-        (it)->____get_data    = ____it_get_data; \
-        (it)->____get_node    = ____it_get_node; \
-        (it)->____end         = ____it_end; \
-    } while (0);
 
 #endif

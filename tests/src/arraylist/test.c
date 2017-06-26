@@ -991,7 +991,7 @@ test_f test_ulist_for_each(void)
     T_EXPECT(ulist_get_num_entries(ulist), size);
 
     i = 0;
-    for_each_container(ulist, UList, Arraylist, node, val)
+    for_each(ulist, UList, node, val)
     {
         T_CHECK(node != NULL);
         T_ASSERT(val, t[i]);
@@ -999,32 +999,32 @@ test_f test_ulist_for_each(void)
     }
 
     i = size - 1;
-    for_each_prev_container(ulist, UList, Arraylist, node, val)
+    for_each_prev(ulist, UList, node, val)
     {
         T_CHECK(node != NULL);
         T_ASSERT(val, t[i]);
         --i;
     }
 
-    for_each_node_container(ulist, UList, Arraylist, node)
+    for_each_node(ulist, UList, node)
     {
         T_CHECK(node != NULL);
     }
 
-    for_each_node_prev_container(ulist, UList, Arraylist, node)
+    for_each_node(ulist, UList, node)
     {
         T_CHECK(node != NULL);
     }
 
     i = 0;
-    for_each_data_container(ulist, UList, Arraylist, val)
+    for_each_data(ulist, UList, val)
     {
         T_ASSERT(val, t[i]);
         ++i;
     }
 
     i = size - 1;
-    for_each_data_prev_container(ulist, UList, Arraylist, val)
+    for_each_data_prev(ulist, UList, val)
     {
         T_ASSERT(val, t[i]);
         --i;
