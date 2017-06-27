@@ -153,6 +153,12 @@ void list2d_destroy_with_entries(List2D *list, void (*destructor)(void *data))
     if (destructor == NULL)
         return;
 
+    if (list->____length == 0)
+    {
+        FREE(list);
+        return;
+    }
+
     ptr = list->____head;
     end = list->____head->____prev;
 
@@ -164,6 +170,7 @@ void list2d_destroy_with_entries(List2D *list, void (*destructor)(void *data))
         ptr = next;
     }
 
+    destructor(end->____data);
     list2d_node_destroy(end);
     FREE(list);
 
