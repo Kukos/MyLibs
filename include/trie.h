@@ -10,33 +10,33 @@
     LICENCE GPL3
 */
 
-#define ALPHABET_START_CODE 'a'
-#define ALPHABET_END_CODE   'z'
+#define ALPHABET_START_CODE  32
+#define ALPHABET_END_CODE    126
 #define ALPHABET_SIZE       (ALPHABET_END_CODE - ALPHABET_START_CODE + 1)
 
 #include <iterators.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <sys/types.h>
 
 typedef struct Trie_node
 {
-    struct Trie_node    *parent;
-    struct Trie_node    *children[ALPHABET_SIZE];
-    bool                is_leaf; /* if TRUE then word from root to this node exist in trie */
+    struct Trie_node    *____parent;
+    struct Trie_node    *____children[ALPHABET_SIZE];
+    bool                ____is_leaf; /* if TRUE then word from root to this node exist in trie */
 
 }Trie_node;
 
 typedef struct Trie
 {
-    Trie_node   *root;
-    size_t      entries;
-
+    Trie_node   *____root;
+    size_t      ____entries;
 }Trie;
 
 typedef struct Trie_iterator
 {
-    char        *word;
-    Trie_node   *node;
+    char        *____word;
+    Trie_node   *____node;
 
 }Trie_iterator;
 
@@ -117,5 +117,17 @@ int trie_delete(Trie *trie, char *word);
     %Pointer to array iff success
 */
 char **trie_to_array(Trie *trie, size_t *size);
+
+/*
+    Get Num entries in TRIE
+
+    PARAMS
+    @IN trie - pointer to TRIE
+
+    RETURN
+    -1 iff failure
+    Num of entries iff success
+*/
+ssize_t trie_get_num_entries(Trie *trie);
 
 #endif
