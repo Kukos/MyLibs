@@ -193,30 +193,6 @@
 
     12)
         for_each_node_root_prev(__struct, __type, __node) --> from ROOT to BEGIN, return only node
-
-
-    Framework support also containers framework like ULIST / TREE
-    So Create funcsions by macro:
-    IT_FUNC_CONTAINER(STRUCT, PREFIX, INTERNAL_STRUCT, INTERNAL_PREFIX)
-
-    i. e.
-    IT_FUNC_CONTAINER(UList, ulist, Arraylist, arraylist)
-
-    Other function for user are the same as described upper, excluding macros
-    for each macros have _container sufix
-    i. e.
-
-    for_each_node_container(__struct, __type, __internal_type, __node, __data)
-
-    UList *ulist;
-    void *node;
-    int val;
-
-    for_each_node_container(ulist, UList, Arraylist, node, val)
-    {
-        ...
-    }
-
 */
 
 #include <stdbool.h>
