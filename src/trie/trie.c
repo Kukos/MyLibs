@@ -8,6 +8,8 @@
 #include <darray.h>
 #include <assert.h>
 
+CMP(int)
+
 #define CHAR_TO_INDEX(c) (((int)c < ALPHABET_START_CODE || (int)c > ALPHABET_END_CODE) ? \
     -1 : (int)c - ALPHABET_START_CODE)
 
@@ -580,6 +582,10 @@ Trie *trie_create(void)
         ERROR("malloc error\n", NULL, "");
     }
 
+    trie->____hight_array = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    if (trie->____hight_array == NULL)
+        ERROR("darray create error\n", NULL, "");
+
     trie->____entries = 0;
 
     return trie;
@@ -605,6 +611,7 @@ void trie_destroy(Trie *trie)
         trie_node_destroy(temp);
     }
 
+    darray_destroy(trie->____hight_array);
     FREE(trie);
 }
 
@@ -660,6 +667,9 @@ int trie_insert(Trie *trie, char *word)
     ptr->____is_leaf = true;
     ++trie->____entries;
 
+    if (darray_insert(trie->____hight_array, (void *)&length))
+        ERROR("darray insert error\n", 1, "");
+
     return 0;
 }
 
@@ -676,6 +686,8 @@ bool trie_find(Trie *trie, char *word)
 int trie_delete(Trie *trie, char *word)
 {
     bool end;
+    int len;
+    int dummy;
 
     Trie_node *node;
     Trie_node *parent;
@@ -709,6 +721,10 @@ int trie_delete(Trie *trie, char *word)
 
         node = parent;
     }
+
+    len = (int)strlen(word);
+    if (darray_delete_pos(trie->____hight_array, (size_t)darray_search_first(trie->____hight_array, (void *)&len, (void *)&dummy)))
+        ERROR("darray delete error\n", 1, "");
 
     return 0;
 }
@@ -777,6 +793,24 @@ ssize_t trie_get_num_entries(Trie *trie)
         ERROR("trie == NULL\n", (ssize_t)-1, "");
 
     return (ssize_t)trie->____entries;
+}
+
+int trie_get_hight(Trie *trie)
+{
+    int max;
+
+    TRACE("");
+
+    if (trie == NULL)
+        ERROR("trie == NULL\n", -1, "");
+
+    if (trie->____entries == 0)
+        return 1;
+
+    if (darray_max(trie->____hight_array, (void *)&max) < (ssize_t)0)
+        ERROR("darray get max error\n", -1, "");
+
+    return max + 1;
 }
 
 Trie_iterator *trie_iterator_create(Trie *trie,ITI_MODE mode)

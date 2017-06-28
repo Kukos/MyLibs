@@ -18,6 +18,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <sys/types.h>
+#include <darray.h>
 
 typedef struct Trie_node
 {
@@ -30,6 +31,7 @@ typedef struct Trie_node
 typedef struct Trie
 {
     Trie_node   *____root;
+    Darray      *____hight_array;
     size_t      ____entries;
 }Trie;
 
@@ -129,5 +131,17 @@ char **trie_to_array(Trie *trie, size_t *size);
     Num of entries iff success
 */
 ssize_t trie_get_num_entries(Trie *trie);
+
+/*
+    Get hight of TRIE
+
+    PARAMS
+    @IN trie - pointer to TRIE
+
+    RETURN
+    -1 iff failure
+    Trie Hight iff success
+*/
+int trie_get_hight(Trie *trie);
 
 #endif

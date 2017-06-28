@@ -17,6 +17,7 @@ test_f test_create(void)
 test_f test_insert(void)
 {
     char *words[] = {"Kukos", "Jest", "Masterem", "C", "I", "Kocha", "Makra"};
+    int hight[] = {6, 6, 9, 9, 9, 9, 9};
     size_t size = ARRAY_SIZE(words);
     size_t i;
 
@@ -27,7 +28,10 @@ test_f test_insert(void)
     T_EXPECT(trie_get_num_entries(trie), 0);
 
     for (i = 0; i < size; ++i)
+    {
         T_EXPECT(trie_insert(trie, words[i]), 0);
+        T_EXPECT(trie_get_hight(trie), hight[i]);
+    }
 
     T_EXPECT(trie_get_num_entries(trie), size);
 
@@ -92,6 +96,8 @@ test_f test_delete(void)
 {
     char *words[] = {"Kukos", "Jest", "Masterem", "C", "I", "Kocha", "Makra"};
     size_t size = ARRAY_SIZE(words);
+    int hight = 9;
+    int hight2 = 6;
     size_t i;
 
     Trie *trie;
@@ -104,6 +110,7 @@ test_f test_delete(void)
         T_EXPECT(trie_insert(trie, words[i]), 0);
 
     T_EXPECT(trie_get_num_entries(trie), size);
+    T_EXPECT(trie_get_hight(trie), hight);
 
     for (i = 0; i < size; ++i)
         T_EXPECT(trie_find(trie, words[i]), true);
@@ -112,6 +119,7 @@ test_f test_delete(void)
         T_EXPECT(trie_delete(trie, words[i]), 0);
 
     T_EXPECT(trie_get_num_entries(trie), size >> 1);
+    T_EXPECT(trie_get_hight(trie), hight2);
 
     for (i = 0; i < (size + 1) >> 1; ++i)
         T_EXPECT(trie_find(trie, words[i]), false);
@@ -123,6 +131,7 @@ test_f test_delete(void)
         T_EXPECT(trie_delete(trie, words[i]), 0);
 
     T_EXPECT(trie_get_num_entries(trie), 0);
+    T_EXPECT(trie_get_hight(trie), 1);
 
     for (i = 0; i < size; ++i)
         T_EXPECT(trie_find(trie, words[i]), false);
@@ -273,6 +282,7 @@ test_f test_empty(void)
     T_CHECK(trie_delete(trie, "Kukos") != 0);
     T_EXPECT(trie_find(trie, "Kukos"), false);
     T_EXPECT(trie_to_array(trie, &size), NULL);
+    T_EXPECT(trie_get_hight(trie), 1);
 
     trie_destroy(trie);
 }
