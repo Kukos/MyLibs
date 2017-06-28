@@ -4,11 +4,11 @@
 /*
     Union find set with path compression
 
-    Please note that in Union find set can't traverse from up to bottom
-    so can't free SET from root
+    If you want to create Forest of UFS pls create ONE UFSMaster
+    and add every UFset to this Master
 
-    Please call ufset_destroy for all UFSET,
-    Pointers are stored in entries
+    After that you can Destroy whole forest by call ufs_master_destroy
+    or if UFSentry data need destruction call ufs_master_destroy_with_entries
 
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com
@@ -16,20 +16,64 @@
     LICENCE: GPL3
 */
 
+#include <darray.h>
+
+typedef struct UFSMaster
+{
+    Darray  *____set;
+    int     ____hight;
+}UFSMaster;
+
 typedef struct UFSentry
 {
-    void            *data;
-    struct UFset    *ufs_ptr;
+    void            *____data;
+    struct UFset    *____ufs_ptr;
 
 }UFSentry;
 
 typedef struct UFset
 {
-    struct UFset    *parent;
-    UFSentry        *entry;
+    struct UFset    *____parent;
+    UFSentry        *____entry;
+    UFSMaster       *____master;
 
-    int             rank;
+    int             ____rank;
 }UFset;
+
+/*
+    Create UFS Master
+
+    PARAMS
+    NO PARAMS
+
+    RETURN
+    NULL iff failure
+    Pointer iff success
+*/
+UFSMaster *ufs_master_create(void);
+
+/*
+    Destroy UFS Master and whole UF SET
+
+    PARAMS
+    @IN master - pointer to UFSMaster
+
+    RETURN
+    This is a void function
+*/
+void ufs_master_destroy(UFSMaster *master);
+
+/*
+    Destroy UFS Master and whole UF SET and entry data
+
+    PARAMS
+    @IN master - pointer to UFSMaster
+    @IN destructor - entry data destructor
+
+    RETURN
+    This is a void function
+*/
+void ufs_master_destroy_with_entries(UFSMaster *master, void (*destructor)(void *data));
 
 /*
 	Create UFS Entry
@@ -55,18 +99,29 @@ UFSentry *ufs_entry_create(void *data, int size_of);
 */
 void ufs_entry_destroy(UFSentry *entry);
 
+/*
+	Deallocate mem of enrty and data
 
+	PARAMS
+    @IN entry - pointer to ufs entry
+    @IN destructor - data destructor
+
+	RETURN:
+	This is a void function
+*/
+void ufs_entry_destroy_with_data(UFSentry *entry, void (*destructor)(void *data));
 /*
     Create new UF Set with UFS Entry
 
     PARAMS
     @IN entry - pointer to UFS entry
+    @IN master - pointer to master
 
     RETURN:
     %NULL iff failure
     %Pointer to UFset iff success
 */
-UFset *ufset_create(UFSentry *entry);
+UFset *ufset_create(UFSentry *entry, UFSMaster *master);
 
 /*
     Deallocate mem
@@ -79,7 +134,17 @@ UFset *ufset_create(UFSentry *entry);
 */
 void ufset_destroy(UFset *set);
 
+/*
+    Deallocate mem of set and data
 
+    PARAMS
+    @IN set - pointer to set
+    @IN destructor - entry data destructor
+
+    RETURN
+    This is a void function
+*/
+void ufset_destroy_with_entries(UFset *set, void (*destructor)(void *data));
 /*
     Merge two independent set in one set
 
@@ -105,5 +170,53 @@ int ufset_union(UFset *x, UFset *y);
     Pointer to root of @set iff success
 */
 UFset *ufset_find(UFset *set);
+
+/*
+    Get Hight of this set
+
+    PARAMS
+    @IN set - pointer to set
+
+    RETURN
+    -1 iff failure
+    Hight iff success
+*/
+int ufset_get_hight(UFset *set);
+
+/*
+    Get num entries of this set
+
+    PARAMS
+    @IN set - pointer to set
+
+    RETURN
+    -1 iff failure
+    Num entries iff success
+*/
+ssize_t ufset_get_num_entries(UFset *set);
+
+/*
+    Get number of entries in UFS
+
+    PARAMS
+    @IN master - pointer to UFSMsster
+
+    RETURN
+    %-1 iff failure
+    %Num of entries iff success
+*/
+ssize_t ufs_master_get_num_entries(UFSMaster *master);
+
+/*
+    Get hight of UFS FOREST
+
+    PARAMS
+    @IN master - pointer to UFSMaster
+
+    RETURN
+    -1 iff failure
+    Hight iff success
+*/
+int ufs_master_get_hight(UFSMaster *master);
 
 #endif
