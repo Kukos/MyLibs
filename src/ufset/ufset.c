@@ -92,6 +92,7 @@ void ufs_entry_destroy(UFSentry *entry)
     if (entry == NULL)
         return;
 
+    FREE(entry->____data);
     FREE(entry);
 }
 
@@ -103,9 +104,8 @@ void ufs_entry_destroy_with_data(UFSentry *entry, void (*destructor)(void *data)
         return;
 
     destructor(entry->____data);
-    FREE(entry);
+    ufs_entry_destroy(entry);
 }
-
 
 UFset *ufset_create(UFSentry *entry, UFSMaster *master)
 {
@@ -129,6 +129,11 @@ UFset *ufset_create(UFSentry *entry, UFSMaster *master)
     set->____parent = set;
     set->____rank = 0;
     set->____master = master;
+
+    if (darray_insert(master->____set, (void *)&set))
+        ERROR("darray insert error\n", NULL, "");
+
+    set->____master->____hight = MAX(set->____master->____hight, 1);
 
     return set;
 }
@@ -177,7 +182,7 @@ int ufset_union(UFset *x, UFset *y)
     if (y_parent == NULL)
         ERROR("ufset_find error\n", 1, "");
 
-    if (x->____rank > y->____rank)
+    if (x_parent->____rank > y_parent->____rank)
         y_parent->____parent = x_parent;
     else
     {
@@ -185,7 +190,7 @@ int ufset_union(UFset *x, UFset *y)
         if (x_parent->____rank == y_parent->____rank)
         {
             ++y_parent->____rank;
-            y_parent->____master->____hight = MAX(y_parent->____rank,  y_parent->____master->____hight);
+            y_parent->____master->____hight = MAX(ufset_get_hight(y_parent),  y_parent->____master->____hight);
         }
     }
 
@@ -212,13 +217,14 @@ int ufset_get_hight(UFset *set)
     if (set == NULL)
         ERROR("set == NULL\n", -1, "");
 
-    return set->____rank;
+    return ufset_find(set)->____rank + 1;
 }
 
 ssize_t ufset_get_num_entries(UFset *set)
 {
     UFSMaster *master;
     UFset *node;
+    UFset *parent;
     size_t counter = 0;
 
     TRACE("");
@@ -226,9 +232,13 @@ ssize_t ufset_get_num_entries(UFset *set)
     if (set == NULL)
         ERROR("set == NULL\n", (ssize_t)-1, "");
 
+    parent = ufset_find(set);
+    if (parent == NULL)
+        ERROR("ufs_find error\n", (ssize_t)-1, "");
+
     master = set->____master;
     for_each_data(master->____set, Darray, node)
-        if (set == ufset_find(node))
+        if (parent == ufset_find(node))
             ++counter;
 
     return (ssize_t)counter;
