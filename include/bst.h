@@ -13,6 +13,7 @@
 #include <iterators.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <sys/types.h>
 
 typedef struct Bst_node
 {
@@ -68,6 +69,21 @@ Bst* bst_create(int size_of, int (*cmp)(void* a,void *b));
     This is a void function
 */
 void bst_destroy(Bst *tree);
+
+/*
+    Destroy BST with all entries ( call destructor for each entries )
+
+    destructor by void * pass addr i.e in list we have MyStruct *,
+    so your destructor data = (void *)&ms
+
+    PARAMS
+    @IN tree - pointer to BST
+    @IN destructor -  your object destructor
+
+    RETURN:
+    This is a void function
+*/
+void bst_destroy_with_entries(Bst *tree, void (*destructor)(void *data));
 
 /*
     Insert data to BST IFF data with key ( using cmp ) is not in tree
@@ -173,5 +189,29 @@ int bst_balance(Bst *tree);
     Positive value iff failure
 */
 int bst_to_array(Bst *tree, void *array, size_t *size);
+
+/*
+    Get Num entries of BST
+
+    PARAMS
+    @IN tree - pointer to BST
+
+    RETURN
+    -1 iff failure
+    Num of entries iff success
+*/
+ssize_t bst_get_num_entries(Bst *tree);
+
+/*
+    Get Size of BST data
+
+    PARAMS
+    @IN tree - pointer to BST
+
+    RETURN
+    -1 iff failure
+    Size of data
+*/
+int bst_get_data_size(Bst *tree);
 
 #endif

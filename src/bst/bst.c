@@ -387,7 +387,10 @@ void bst_destroy(Bst *tree)
         return;
 
     if (tree->root == NULL)
+    {
+        FREE(tree);
         return;
+    }
 
     /* Destroy tree using inorder */
     node = bst_min_node(tree->root);
@@ -401,6 +404,37 @@ void bst_destroy(Bst *tree)
     FREE(tree);
 }
 
+void bst_destroy_with_entries(Bst *tree, void (*destructor)(void *data))
+{
+    Bst_node *node;
+    Bst_node *temp;
+
+    TRACE("");
+
+    if (tree == NULL)
+        return;
+
+    if (destructor == NULL)
+        return;
+
+    if (tree->root == NULL)
+    {
+        FREE(tree);
+        return;
+    }
+
+    /* Destroy tree using inorder */
+    node = bst_min_node(tree->root);
+    while (node != NULL)
+    {
+        temp = node;
+        node = bst_successor(node);
+        destructor(temp->data);
+        bst_node_destroy(temp);
+    }
+
+    FREE(tree);
+}
 
 int bst_insert(Bst *tree, void *data)
 {
@@ -755,6 +789,26 @@ int bst_to_array(Bst *tree, void *array, size_t *size)
     *size = tree->nodes;
 
     return 0;
+}
+
+ssize_t bst_get_num_entries(Bst *tree)
+{
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", (ssize_t)-1, "");
+
+    return (ssize_t)tree->nodes;
+}
+
+int bst_get_data_size(Bst *tree)
+{
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", -1, "");
+
+    return tree->size_of;
 }
 
 Bst_iterator *bst_iterator_create(Bst *tree, ITI_MODE mode)
