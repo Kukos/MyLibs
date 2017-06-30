@@ -48,8 +48,8 @@ define print_make
 	$(if $(Q), @echo "[MAKE]    $(1)")
 endef
 
-all: prepare arraylist darray fifo filebuffer getch klist list list2d sort stack trie ufset final
-#avl bst heap rbt
+all: prepare arraylist bst darray fifo filebuffer getch klist list list2d sort stack trie ufset final
+#avl heap rbt
 
 prepare:
 	$(call print_info,Preparing dirs)

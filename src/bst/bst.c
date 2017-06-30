@@ -132,7 +132,7 @@ static ___inline___ Bst_node *bst_node_create(void *data, int size_of, Bst_node 
     if (node == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    node->data = malloc(size_of);
+    node->data = malloc((size_t)size_of);
     if (node->data == NULL)
 	{
 		FREE(node);
@@ -338,7 +338,6 @@ static ___inline___ void bst_rotate_left(Bst *tree, Bst_node *node)
     right_son->parent = node->parent;
     node->parent = right_son;
 
-
     /* update his child ptr */
     if (right_son->parent != NULL)
     {
@@ -357,8 +356,11 @@ Bst* bst_create(int size_of, int (*cmp)(void* a,void *b))
 
     TRACE("");
 
-    assert(size_of >= 1);
-    assert(cmp != NULL);
+    if (size_of < 1)
+        ERROR("size_of < 1\n", NULL, "");
+
+    if (cmp == NULL)
+        ERROR("cmp == NULL\n", NULL, "");
 
     tree = (Bst *)malloc(sizeof(Bst));
     if (tree == NULL)
@@ -381,7 +383,11 @@ void bst_destroy(Bst *tree)
 
     TRACE("");
 
-    assert(tree != NULL);
+    if (tree == NULL)
+        return;
+
+    if (tree->root == NULL)
+        return;
 
     /* Destroy tree using inorder */
     node = bst_min_node(tree->root);
@@ -404,8 +410,11 @@ int bst_insert(Bst *tree, void *data)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(data != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (data == NULL)
+        ERROR("data == NULL\n", 1, "");
 
     /* special case - empty tree */
     if (tree->root == NULL)
@@ -459,10 +468,13 @@ int bst_delete(Bst *tree, void *data_key)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(data_key != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
 
-    node = bst_node_search(tree,data_key);
+    if (data_key == NULL)
+        ERROR("data_key == NULL\n", 1, "");
+
+    node = bst_node_search(tree, data_key);
     if (node == NULL)
         ERROR("data with this key doesn't exist in tree, nothing to delete\n", 1, "");
 
@@ -556,8 +568,14 @@ int bst_min(Bst *tree, void *data)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(data != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (data == NULL)
+        ERROR("data == NULL\n", 1, "");
+
+    if (tree->root == NULL)
+        ERROR("tree is empty\n", 1, "");
 
     node = bst_min_node(tree->root);
     if (node == NULL)
@@ -574,8 +592,14 @@ int bst_max(Bst *tree,void *data)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(data != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (data == NULL)
+        ERROR("data == NULL\n", 1, "");
+
+    if (tree->root == NULL)
+        ERROR("tree is empty\n", 1, "");
 
     node = bst_max_node(tree->root);
     if(node == NULL)
@@ -592,8 +616,14 @@ int bst_max(Bst *tree,void *data)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(data_key != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (data_key == NULL)
+        ERROR("data_key == NULL\n", 1, "");
+
+    if (tree->root == NULL)
+        ERROR("tree is empty\n", 1, "");
 
     node = bst_node_search(tree, data_key);
     if (node == NULL)
@@ -619,8 +649,11 @@ int bst_balance(Bst *tree)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(tree->root != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (tree->root == NULL)
+        ERROR("tree is empty\n", 1, "");
 
     ptr = tree->root;
 
@@ -636,10 +669,10 @@ int bst_balance(Bst *tree)
             ptr = ptr->right_son;
     }
 
-    n = tree->nodes;
+    n = (int)tree->nodes;
 
     /* count k from formula k = n + 1 - 2^(floor(LOG2(n + 1))) */
-    k = n + 1 - (1 << LOG2_int(n + 1));
+    k = n + 1 - (1 << (int)LOG2_int((unsigned int)(n + 1)));
 
     /* start from root and make k rotations */
     ptr = tree->root;
@@ -690,11 +723,19 @@ int bst_to_array(Bst *tree, void *array, size_t *size)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(tree->root != NULL);
-    assert(size != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
 
-    t = malloc(tree->size_of * tree->nodes);
+    if (array == NULL)
+        ERROR("array == NULL\n", 1, "");
+
+    if (size == NULL)
+        ERROR("size == NULL\n", 1, "");
+
+    if (tree->root == NULL)
+        ERROR("tree is empty\n", 1, "");
+
+    t = malloc((size_t)tree->size_of * tree->nodes);
 	if (t == NULL)
 		ERROR("malloc error\n", 1, "");
 
@@ -722,8 +763,11 @@ Bst_iterator *bst_iterator_create(Bst *tree, ITI_MODE mode)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(mode == ITI_BEGIN || mode == ITI_END || mode == ITI_ROOT);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", NULL, "");
+
+    if (mode != ITI_BEGIN && mode != ITI_END && mode != ITI_ROOT)
+        ERROR("Incorrect node\n", NULL, "");
 
     iterator = (Bst_iterator *)malloc(sizeof(Bst_iterator));
     if (iterator == NULL)
@@ -755,9 +799,14 @@ int bst_iterator_init(Bst *tree, Bst_iterator *iterator, ITI_MODE mode)
 {
     TRACE("");
 
-    assert(tree != NULL);
-    assert(iterator != NULL);
-    assert(mode == ITI_BEGIN || mode == ITI_END || mode == ITI_ROOT);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
+
+    if (mode != ITI_BEGIN && mode != ITI_END && mode != ITI_ROOT)
+        ERROR("Incorrect node\n", 1, "");
 
     iterator->size_of = tree->size_of;
 
@@ -775,7 +824,8 @@ int bst_iterator_next(Bst_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator != NULL);
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
 
     iterator->node = bst_successor(iterator->node);
 
@@ -786,21 +836,40 @@ int bst_iterator_prev(Bst_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator != NULL);
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
 
     iterator->node = bst_predecessor(iterator->node);
 
     return 0;
 }
 
-int bst_iterator_get_data(Bst_iterator *iterator,void *val)
+int bst_iterator_get_data(Bst_iterator *iterator, void *val)
 {
     TRACE("");
 
-    assert(iterator != NULL);
-    assert(val != NULL);
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
+
+    if (val == NULL)
+        ERROR("iterator == NULL\n", 1, "");
 
     __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->node->data, iterator->size_of);
+
+    return 0;
+}
+
+int bst_iterator_get_node(Bst_iterator *iterator, void *node)
+{
+    TRACE("");
+
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
+
+    if (node == NULL)
+        ERROR("iterator == NULL\n", 1, "");
+
+    *(void **)node = iterator->node;
 
     return 0;
 }
@@ -809,7 +878,8 @@ bool bst_iterator_end(Bst_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator != NULL);
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", true, "");
 
     return iterator->node == NULL;
 }
