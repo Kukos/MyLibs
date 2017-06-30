@@ -214,7 +214,7 @@ int list_to_array(List *list, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-int list_get_size_of(List *list);
+int list_get_data_size(List *list);
 
 /*
     Get number of entries in List

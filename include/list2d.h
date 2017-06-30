@@ -244,7 +244,7 @@ int list2d_to_array(List2D *list, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-int list2d_get_size_of(List2D *list);
+int list2d_get_data_size(List2D *list);
 
 /*
     Get number of entries in List

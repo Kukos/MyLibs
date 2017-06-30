@@ -562,7 +562,7 @@ int list_to_array(List *list, void *array, size_t *size)
     return 0;
 }
 
-int list_get_size_of(List *list)
+int list_get_data_size(List *list)
 {
     if (list == NULL)
         return -1;

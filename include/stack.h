@@ -170,6 +170,6 @@ ssize_t stack_get_num_entries(Stack *stack);
     %-1 iff failure
     %sizeof iff success
 */
-int stack_get_size_of(Stack *stack);
+int stack_get_data_size(Stack *stack);
 
 #endif

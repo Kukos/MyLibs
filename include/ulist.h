@@ -59,7 +59,7 @@ typedef struct UList
     int         (*____get_pos)(void *list, size_t pos, void *data);
     void*       (*____merge)(void *list1, void *list2);
     int         (*____to_array)(void *list, void *array, size_t *size);
-    int         (*____get_size_of)(void *list);
+    int         (*____get_data_size)(void *list);
     ssize_t     (*____get_num_entries)(void *list);
 
     /* to create iterator */
@@ -111,7 +111,7 @@ ___inline___ int ulist_iterator_init(UList *list, UList_iterator *it, ITI_MODE m
     static ___unused___ int ____get_pos(void *list, size_t pos, void *data); \
     static ___unused___ void *____merge(void *list1, void *list2); \
     static ___unused___ int ____to_array(void *list, void *array, size_t *size); \
-    static ___unused___ int ____get_size_of(void *list); \
+    static ___unused___ int ____get_data_size(void *list); \
     static ___unused___ ssize_t ____get_num_entries(void *list); \
     static ___unused___ void ____destroy(void *list) \
     { \
@@ -168,9 +168,9 @@ ___inline___ int ulist_iterator_init(UList *list, UList_iterator *it, ITI_MODE m
         return concat(prefix, _to_array)((type *)list, array, size); \
     } \
     \
-    static ___unused___ int ____get_size_of(void *list) \
+    static ___unused___ int ____get_data_size(void *list) \
     { \
-        return concat(prefix, _get_size_of)((type *)list); \
+        return concat(prefix, _get_data_size)((type *)list); \
     } \
     \
     static ___unused___ ssize_t ____get_num_entries(void *list) \
@@ -192,7 +192,7 @@ ___inline___ int ulist_iterator_init(UList *list, UList_iterator *it, ITI_MODE m
         (list)->____get_pos               = ____get_pos; \
         (list)->____merge                 = ____merge; \
         (list)->____to_array              = ____to_array; \
-        (list)->____get_size_of           = ____get_size_of; \
+        (list)->____get_data_size           = ____get_data_size; \
         (list)->____get_num_entries       = ____get_num_entries; \
         (list)->____it_create             = ____it_create; \
         (list)->____it_init               = ____it_init; \
@@ -387,7 +387,7 @@ ___inline___ int ulist_to_array(UList *list, void *array, size_t *size);
     -1 iff failure
     UList data size of iff success
 */
-___inline___ int ulist_get_size_of(UList *list);
+___inline___ int ulist_get_data_size(UList *list);
 
 /*
     Get UList num of entries
@@ -417,7 +417,7 @@ ___inline___ bool ulist_the_same_type(UList *list1, UList *list2)
              list1->____get_pos                 != list2->____get_pos               ||
              list1->____merge                   != list2->____merge                 ||
              list1->____to_array                != list2->____to_array              ||
-             list1->____get_size_of             != list2->____get_size_of           ||
+             list1->____get_data_size             != list2->____get_data_size           ||
              list1->____get_num_entries         != list2->____get_num_entries       ||
              list1->____it_create               != list2->____it_create             ||
              list1->____it_init                 != list2->____it_init               ||
@@ -548,7 +548,7 @@ ___inline___ UList *ulist_merge(UList *list1, UList *list2)
     list3->____get_pos              = list1->____get_pos;
     list3->____merge                = list1->____merge;
     list3->____to_array             = list1->____to_array;
-    list3->____get_size_of          = list1->____get_size_of;
+    list3->____get_data_size          = list1->____get_data_size;
     list3->____get_num_entries      = list1->____get_num_entries;
 
     list3->____it_create            = list1->____it_create;
@@ -571,12 +571,12 @@ ___inline___ int ulist_to_array(UList *list, void *array, size_t *size)
     return list->____to_array(ulist_get_list(list), array, size);
 }
 
-___inline___ int ulist_get_size_of(UList *list)
+___inline___ int ulist_get_data_size(UList *list)
 {
     if (list == NULL)
         return 1;
 
-    return list->____get_size_of(ulist_get_list(list));
+    return list->____get_data_size(ulist_get_list(list));
 }
 
 ___inline___ ssize_t ulist_get_num_entries(UList *list)

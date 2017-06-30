@@ -302,7 +302,7 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size)
     return 0;
 }
 
-int fifo_get_size_of(Fifo *fifo)
+int fifo_get_data_size(Fifo *fifo)
 {
     if (fifo == NULL)
         ERROR("fifo == NULL\n", 1, "");

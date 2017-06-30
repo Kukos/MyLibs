@@ -749,7 +749,7 @@ List2D *list2d_merge(List2D *list1, List2D *list2)
     return result;
 }
 
-int list2d_get_size_of(List2D *list)
+int list2d_get_data_size(List2D *list)
 {
     if (list == NULL)
         return -1;

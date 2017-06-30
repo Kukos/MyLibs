@@ -45,19 +45,19 @@ test_f test_create(void)
 
     list = list_create(sizeof(char), cmp_char);
     T_ERROR(list == NULL);
-    T_EXPECT(list_get_size_of(list), sizeof(char));
+    T_EXPECT(list_get_data_size(list), sizeof(char));
     T_EXPECT(list_get_num_entries(list), 0);
     list_destroy(list);
 
     list = list_create(sizeof(int), cmp_int);
     T_ERROR(list == NULL);
-    T_EXPECT(list_get_size_of(list), sizeof(int));
+    T_EXPECT(list_get_data_size(list), sizeof(int));
     T_EXPECT(list_get_num_entries(list), 0);
     list_destroy(list);
 
     list = list_create(sizeof(double), cmp_double);
     T_ERROR(list == NULL);
-    T_EXPECT(list_get_size_of(list), sizeof(double));
+    T_EXPECT(list_get_data_size(list), sizeof(double));
     T_EXPECT(list_get_num_entries(list), 0);
     list_destroy(list);
 }
@@ -76,7 +76,7 @@ test_f test_insert(void)
 
     list = list_create(sizeof(int), cmp_int);
     T_ERROR(list == NULL);
-    T_EXPECT(list_get_size_of(list), sizeof(int));
+    T_EXPECT(list_get_data_size(list), sizeof(int));
     T_EXPECT(list_get_num_entries(list), 0);
 
     for (i = 0; i < size; ++i)
@@ -116,7 +116,7 @@ test_f test_delete(void)
 
     list = list_create(sizeof(int), cmp_int);
     T_ERROR(list == NULL);
-    T_EXPECT(list_get_size_of(list), sizeof(int));
+    T_EXPECT(list_get_data_size(list), sizeof(int));
     T_EXPECT(list_get_num_entries(list), 0);
 
     for (i = 0; i < size; ++i)
@@ -170,7 +170,7 @@ test_f test_delete_all(void)
 
     list = list_create(sizeof(int), cmp_int);
     T_ERROR(list == NULL);
-    T_EXPECT(list_get_size_of(list), sizeof(int));
+    T_EXPECT(list_get_data_size(list), sizeof(int));
     T_EXPECT(list_get_num_entries(list), 0);
 
     for (i = 0; i < size; ++i)
@@ -209,7 +209,7 @@ test_f test_destroy_with_entries(void)
     list = list_create(sizeof(MyStruct *), cmp_my_struct);
     T_ERROR(list == NULL);
     T_EXPECT(list_get_num_entries(list), 0);
-    T_EXPECT(list_get_size_of(list), sizeof(MyStruct *));
+    T_EXPECT(list_get_data_size(list), sizeof(MyStruct *));
 
     for (i = 0; i < size; ++i)
     {
@@ -239,7 +239,7 @@ test_f test_search(void)
 
     list = list_create(sizeof(int), cmp_int);
     T_ERROR(list == NULL);
-    T_EXPECT(list_get_size_of(list), sizeof(int));
+    T_EXPECT(list_get_data_size(list), sizeof(int));
     T_EXPECT(list_get_num_entries(list), 0);
 
     for (i = 0; i < size; ++i)
@@ -275,7 +275,7 @@ test_f test_insert_delete(void)
 
     list = list_create(sizeof(int), cmp_int);
     T_ERROR(list == NULL);
-    T_EXPECT(list_get_size_of(list), sizeof(int));
+    T_EXPECT(list_get_data_size(list), sizeof(int));
     T_EXPECT(list_get_num_entries(list), 0);
 
     t = (int *)malloc(sizeof(int) * size);
@@ -330,7 +330,7 @@ test_f test_merge(void)
 
     list1 = list_create(sizeof(int), cmp_int);
     T_ERROR(list1 == NULL);
-    T_EXPECT(list_get_size_of(list1), sizeof(int));
+    T_EXPECT(list_get_data_size(list1), sizeof(int));
     T_EXPECT(list_get_num_entries(list1), 0);
 
     for (i = 0; i < size; ++i)
@@ -345,7 +345,7 @@ test_f test_merge(void)
 
     list2 = list_create(sizeof(int), cmp_int);
     T_ERROR(list2 == NULL);
-    T_EXPECT(list_get_size_of(list2), sizeof(int));
+    T_EXPECT(list_get_data_size(list2), sizeof(int));
     T_EXPECT(list_get_num_entries(list2), 0);
 
     for (i = 0; i < size; ++i)
@@ -390,7 +390,7 @@ test_f test_for_each(void)
 
     list = list_create(sizeof(int), cmp_int);
     T_ERROR(list == NULL);
-    T_EXPECT(list_get_size_of(list), sizeof(int));
+    T_EXPECT(list_get_data_size(list), sizeof(int));
     T_EXPECT(list_get_num_entries(list), 0);
 
     for (i = 0; i < size; ++i)
@@ -434,7 +434,7 @@ test_f test_empty(void)
 
     list = list_create(sizeof(int), cmp_int);
     T_ERROR(list == NULL);
-    T_EXPECT(list_get_size_of(list), sizeof(int));
+    T_EXPECT(list_get_data_size(list), sizeof(int));
     T_EXPECT(list_get_num_entries(list), 0);
 
     T_CHECK(list_delete(list, (void *)&in) != 0);
@@ -458,7 +458,7 @@ test_f test_merge_empty(void)
 
     list1 = list_create(sizeof(int), cmp_int);
     T_ERROR(list1 == NULL);
-    T_EXPECT(list_get_size_of(list1), sizeof(int));
+    T_EXPECT(list_get_data_size(list1), sizeof(int));
     T_EXPECT(list_get_num_entries(list1), 0);
 
     T_CHECK(list_delete(list1, (void *)&in) != 0);
@@ -468,7 +468,7 @@ test_f test_merge_empty(void)
 
     list2 = list_create(sizeof(int), cmp_int);
     T_ERROR(list2 == NULL);
-    T_EXPECT(list_get_size_of(list2), sizeof(int));
+    T_EXPECT(list_get_data_size(list2), sizeof(int));
     T_EXPECT(list_get_num_entries(list2), 0);
 
     T_CHECK(list_delete(list2, (void *)&in) != 0);
@@ -478,7 +478,7 @@ test_f test_merge_empty(void)
 
     list3 = list_merge(list1, list2);
     T_ERROR(list3 == NULL);
-    T_EXPECT(list_get_size_of(list3), sizeof(int));
+    T_EXPECT(list_get_data_size(list3), sizeof(int));
     T_EXPECT(list_get_num_entries(list3), 0);
 
     T_CHECK(list_delete(list3, (void *)&in) != 0);
@@ -518,7 +518,7 @@ test_f test_slist_framework(void)
 
     slist1 = slist_list_create(sizeof(int), cmp_int);
     T_ERROR(slist1 == NULL);
-    T_EXPECT(slist_get_size_of(slist1), sizeof(int));
+    T_EXPECT(slist_get_data_size(slist1), sizeof(int));
     T_EXPECT(slist_get_num_entries(slist1), 0);
 
     for (i = 0; i < size; ++i)
@@ -532,7 +532,7 @@ test_f test_slist_framework(void)
 
     slist2 = slist_list_create(sizeof(int), cmp_int);
     T_ERROR(slist2 == NULL);
-    T_EXPECT(slist_get_size_of(slist2), sizeof(int));
+    T_EXPECT(slist_get_data_size(slist2), sizeof(int));
     T_EXPECT(slist_get_num_entries(slist2), 0);
 
     for (i = 0; i < size; ++i)
@@ -546,7 +546,7 @@ test_f test_slist_framework(void)
 
     slist3 = slist_merge(slist1, slist2);
     T_ERROR(slist3 == NULL);
-    T_EXPECT(slist_get_size_of(slist3), sizeof(int));
+    T_EXPECT(slist_get_data_size(slist3), sizeof(int));
     T_EXPECT(slist_get_num_entries(slist3), size << 1);
     T_EXPECT(slist_to_array(slist3, (void *)&rt, &rsize), 0);
     T_ASSERT(rsize, size << 1);
@@ -588,7 +588,7 @@ test_f test_slist_for_each(void)
 
     slist = slist_list_create(sizeof(int), cmp_int);
     T_ERROR(slist == NULL);
-    T_EXPECT(slist_get_size_of(slist), sizeof(int));
+    T_EXPECT(slist_get_data_size(slist), sizeof(int));
     T_EXPECT(slist_get_num_entries(slist), 0);
 
     for (i = 0; i < size; ++i)
@@ -628,7 +628,7 @@ test_f test_slist_empty(void)
 
     list = slist_list_create(sizeof(int), cmp_int);
     T_ERROR(list == NULL);
-    T_EXPECT(slist_get_size_of(list), sizeof(int));
+    T_EXPECT(slist_get_data_size(list), sizeof(int));
     T_EXPECT(slist_get_num_entries(list), 0);
 
     T_CHECK(slist_delete(list, (void *)&in) != 0);
@@ -652,7 +652,7 @@ test_f test_slist_merge_empty(void)
 
     list1 = slist_list_create(sizeof(int), cmp_int);
     T_ERROR(list1 == NULL);
-    T_EXPECT(slist_get_size_of(list1), sizeof(int));
+    T_EXPECT(slist_get_data_size(list1), sizeof(int));
     T_EXPECT(slist_get_num_entries(list1), 0);
 
     T_CHECK(slist_delete(list1, (void *)&in) != 0);
@@ -662,7 +662,7 @@ test_f test_slist_merge_empty(void)
 
     list2 = slist_list_create(sizeof(int), cmp_int);
     T_ERROR(list2 == NULL);
-    T_EXPECT(slist_get_size_of(list2), sizeof(int));
+    T_EXPECT(slist_get_data_size(list2), sizeof(int));
     T_EXPECT(slist_get_num_entries(list2), 0);
 
     T_CHECK(slist_delete(list2, (void *)&in) != 0);
@@ -672,7 +672,7 @@ test_f test_slist_merge_empty(void)
 
     list3 = slist_merge(list1, list2);
     T_ERROR(list3 == NULL);
-    T_EXPECT(slist_get_size_of(list3), sizeof(int));
+    T_EXPECT(slist_get_data_size(list3), sizeof(int));
     T_EXPECT(slist_get_num_entries(list3), 0);
 
     T_CHECK(slist_delete(list3, (void *)&in) != 0);

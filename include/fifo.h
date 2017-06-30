@@ -159,6 +159,6 @@ ssize_t fifo_get_num_entries(Fifo *fifo);
     %-1 iff failure
     %sizeof iff success
 */
-int fifo_get_size_of(Fifo *fifo);
+int fifo_get_data_size(Fifo *fifo);
 
 #endif

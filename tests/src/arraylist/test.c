@@ -31,19 +31,19 @@ test_f test_create(void)
     al = arraylist_create(sizeof(char));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(char));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(char));
     arraylist_destroy(al);
 
     al = arraylist_create(sizeof(int));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
     arraylist_destroy(al);
 
     al = arraylist_create(sizeof(double));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(double));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(double));
     arraylist_destroy(al);
 }
 
@@ -61,7 +61,7 @@ test_f test_insert_first(void)
     al = arraylist_create(sizeof(int));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
 
     for (i = 0; i < size; ++i)
         T_EXPECT(arraylist_insert_first(al, (void *)&t[i]), 0);
@@ -92,7 +92,7 @@ test_f test_insert_last(void)
     al = arraylist_create(sizeof(int));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
 
     for (i = 0; i < size; ++i)
         T_EXPECT(arraylist_insert_last(al, (void *)&t[i]), 0);
@@ -124,7 +124,7 @@ test_f test_insert_pos(void)
     al = arraylist_create(sizeof(int));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
 
     for (i = 0; i < size; ++i)
         T_EXPECT(arraylist_insert_pos(al, pos[i], (void *)&t[i]), 0);
@@ -164,7 +164,7 @@ test_f test_insert_a_lot_data(void)
     al = arraylist_create(sizeof(char));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(char));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(char));
 
     for (i = 0; i < size; ++i)
         t1[i] = rand();
@@ -186,7 +186,7 @@ test_f test_insert_a_lot_data(void)
     al = arraylist_create(sizeof(int));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
 
     for (i = 0; i < size; ++i)
         t2[i] = rand();
@@ -208,7 +208,7 @@ test_f test_insert_a_lot_data(void)
     al = arraylist_create(sizeof(double));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(double));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(double));
 
     for (i = 0; i < size; ++i)
         t3[i] = rand();
@@ -248,7 +248,7 @@ test_f test_get_pos_data(void)
     al = arraylist_create(sizeof(int));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
 
     for (i = 0; i < size; ++i)
         T_EXPECT(arraylist_insert_last(al, (void *)&t[i]), 0);
@@ -292,18 +292,18 @@ test_f test_merge(void)
     al1 = arraylist_create(sizeof(int));
     T_ERROR(al1 == NULL);
     T_EXPECT(arraylist_get_num_entries(al1), 0);
-    T_EXPECT(arraylist_get_size_of(al1), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al1), sizeof(int));
 
     al2 = arraylist_create(sizeof(int));
     T_ERROR(al2 == NULL);
     T_EXPECT(arraylist_get_num_entries(al2), 0);
-    T_EXPECT(arraylist_get_size_of(al2), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al2), sizeof(int));
 
 
     al3 = arraylist_merge(al1, al2);
     T_ERROR(al3 == NULL);
     T_EXPECT(arraylist_get_num_entries(al3), 0);
-    T_EXPECT(arraylist_get_size_of(al3), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al3), sizeof(int));
 
     arraylist_destroy(al3);
 
@@ -320,7 +320,7 @@ test_f test_merge(void)
     al3 = arraylist_merge(al1, al2);
     T_ERROR(al3 == NULL);
     T_EXPECT(arraylist_get_num_entries(al3), size1);
-    T_EXPECT(arraylist_get_size_of(al3), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al3), sizeof(int));
 
     T_EXPECT(arraylist_to_array(al3, (void *)&rt2, &rsize), 0);
     T_ASSERT(rsize, size1);
@@ -342,7 +342,7 @@ test_f test_merge(void)
     al3 = arraylist_merge(al1, al2);
     T_ERROR(al3 == NULL);
     T_EXPECT(arraylist_get_num_entries(al3), overlay_size);
-    T_EXPECT(arraylist_get_size_of(al3), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al3), sizeof(int));
 
     T_EXPECT(arraylist_to_array(al3, (void *)&rt2, &rsize), 0);
     T_ASSERT(rsize, overlay_size);
@@ -368,7 +368,7 @@ test_f test_delete_first(void)
     al = arraylist_create(sizeof(int));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
 
     for (i = 0; i < size; ++i)
         T_EXPECT(arraylist_insert_last(al, (void *)&t[i]), 0);
@@ -409,7 +409,7 @@ test_f test_delete_last(void)
     al = arraylist_create(sizeof(int));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
 
     for (i = 0; i < size; ++i)
         T_EXPECT(arraylist_insert_last(al, (void *)&t[i]), 0);
@@ -461,7 +461,7 @@ test_f test_delete_pos(void)
     al = arraylist_create(sizeof(int));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
 
     for (i = 0; i < size; ++i)
         T_EXPECT(arraylist_insert_last(al, (void *)&t[i]), 0);
@@ -512,7 +512,7 @@ test_f test_insert_delete(void)
     al = arraylist_create(sizeof(char));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(char));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(char));
 
     for (i = 0; i < size; ++i)
         t1[i] = rand();
@@ -580,7 +580,7 @@ test_f test_insert_delete(void)
     al = arraylist_create(sizeof(int));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
 
     for (i = 0; i < size; ++i)
         t2[i] = rand();
@@ -648,7 +648,7 @@ test_f test_insert_delete(void)
     al = arraylist_create(sizeof(double));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(double));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(double));
 
     for (i = 0; i < size; ++i)
         t3[i] = rand();
@@ -731,7 +731,7 @@ test_f test_for_each(void)
     al = arraylist_create(sizeof(int));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
 
     for (i = 0; i < size; ++i)
         T_EXPECT(arraylist_insert_last(al, (void *)&t[i]), 0);
@@ -809,7 +809,7 @@ test_f test_destroy_with_entries(void)
     al = arraylist_create(sizeof(MyStruct *));
     T_ERROR(al == NULL);
     T_EXPECT(arraylist_get_num_entries(al), 0);
-    T_EXPECT(arraylist_get_size_of(al), sizeof(MyStruct *));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(MyStruct *));
 
     for (i = 0; i < size; ++i)
     {
@@ -838,7 +838,7 @@ test_f test_list_empty(void)
     T_CHECK(arraylist_get_pos(al, 3, (void *)&val) != 0);
     T_CHECK(arraylist_to_array(al, (void *)&t, &size) != 0);
 
-    T_EXPECT(arraylist_get_size_of(al), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al), sizeof(int));
     T_EXPECT(arraylist_get_num_entries(al), 0);
 
     arraylist_destroy(al);
@@ -863,7 +863,7 @@ test_f test_merge_empty(void)
     T_CHECK(arraylist_get_pos(al1, 3, (void *)&val) != 0);
     T_CHECK(arraylist_to_array(al1, (void *)&t, &size) != 0);
 
-    T_EXPECT(arraylist_get_size_of(al1), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al1), sizeof(int));
     T_EXPECT(arraylist_get_num_entries(al1), 0);
 
     al2 = arraylist_create(sizeof(int));
@@ -875,7 +875,7 @@ test_f test_merge_empty(void)
     T_CHECK(arraylist_get_pos(al2, 3, (void *)&val) != 0);
     T_CHECK(arraylist_to_array(al2, (void *)&t, &size) != 0);
 
-    T_EXPECT(arraylist_get_size_of(al2), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al2), sizeof(int));
     T_EXPECT(arraylist_get_num_entries(al2), 0);
 
     al3 = arraylist_merge(al1, al2);
@@ -887,7 +887,7 @@ test_f test_merge_empty(void)
     T_CHECK(arraylist_get_pos(al3, 3, (void *)&val) != 0);
     T_CHECK(arraylist_to_array(al3, (void *)&t, &size) != 0);
 
-    T_EXPECT(arraylist_get_size_of(al3), sizeof(int));
+    T_EXPECT(arraylist_get_data_size(al3), sizeof(int));
     T_EXPECT(arraylist_get_num_entries(al3), 0);
 
     arraylist_destroy(al1);
@@ -911,7 +911,7 @@ test_f test_ulist_framework(void)
 
     ulist1 = ulist_arraylist_create(sizeof(int));
     T_ERROR(ulist1 == NULL);
-    T_EXPECT(ulist_get_size_of(ulist1), sizeof(int));
+    T_EXPECT(ulist_get_data_size(ulist1), sizeof(int));
     T_EXPECT(ulist_get_num_entries(ulist1), size);
 
     T_EXPECT(ulist_insert_first(ulist1, (void *)&val), 0);
@@ -932,7 +932,7 @@ test_f test_ulist_framework(void)
     size = 0;
     ulist2 = ulist_arraylist_create(sizeof(int));
     T_ERROR(ulist2 == NULL);
-    T_EXPECT(ulist_get_size_of(ulist2), sizeof(int));
+    T_EXPECT(ulist_get_data_size(ulist2), sizeof(int));
     T_EXPECT(ulist_get_num_entries(ulist2), size);
 
     T_EXPECT(ulist_insert_first(ulist2, (void *)&val), 0);
@@ -953,7 +953,7 @@ test_f test_ulist_framework(void)
     ulist3 = ulist_merge(ulist1, ulist2);
     size = 6;
     T_ERROR(ulist3 == NULL);
-    T_EXPECT(ulist_get_size_of(ulist3), sizeof(int));
+    T_EXPECT(ulist_get_data_size(ulist3), sizeof(int));
     T_EXPECT(ulist_get_num_entries(ulist3), size);
 
     T_EXPECT(ulist_delete_pos(ulist3, 1), 0);
@@ -982,7 +982,7 @@ test_f test_ulist_for_each(void)
 
     ulist = ulist_arraylist_create(sizeof(int));
     T_ERROR(ulist == NULL);
-    T_EXPECT(ulist_get_size_of(ulist), sizeof(int));
+    T_EXPECT(ulist_get_data_size(ulist), sizeof(int));
     T_EXPECT(ulist_get_num_entries(ulist), 0);
 
     for (i = 0; i < size; ++i)
@@ -1049,7 +1049,7 @@ test_f test_ulist_empty(void)
     T_CHECK(ulist_get_pos(ulist, 3, (void *)&val) != 0);
     T_CHECK(ulist_to_array(ulist, (void *)&t, &size) != 0);
 
-    T_EXPECT(ulist_get_size_of(ulist), sizeof(int));
+    T_EXPECT(ulist_get_data_size(ulist), sizeof(int));
     T_EXPECT(ulist_get_num_entries(ulist), 0);
 
     ulist_destroy(ulist);
@@ -1073,7 +1073,7 @@ test_f test_ulist_merge_empty(void)
     T_CHECK(ulist_get_pos(ulist1, 3, (void *)&val) != 0);
     T_CHECK(ulist_to_array(ulist1, (void *)&t, &size) != 0);
 
-    T_EXPECT(ulist_get_size_of(ulist1), sizeof(int));
+    T_EXPECT(ulist_get_data_size(ulist1), sizeof(int));
     T_EXPECT(ulist_get_num_entries(ulist1), 0);
 
     ulist2 = ulist_arraylist_create(sizeof(int));
@@ -1085,7 +1085,7 @@ test_f test_ulist_merge_empty(void)
     T_CHECK(ulist_get_pos(ulist2, 3, (void *)&val) != 0);
     T_CHECK(ulist_to_array(ulist2, (void *)&t, &size) != 0);
 
-    T_EXPECT(ulist_get_size_of(ulist2), sizeof(int));
+    T_EXPECT(ulist_get_data_size(ulist2), sizeof(int));
     T_EXPECT(ulist_get_num_entries(ulist2), 0);
 
     ulist3 = ulist_merge(ulist1, ulist2);
@@ -1097,7 +1097,7 @@ test_f test_ulist_merge_empty(void)
     T_CHECK(ulist_get_pos(ulist3, 3, (void *)&val) != 0);
     T_CHECK(ulist_to_array(ulist3, (void *)&t, &size) != 0);
 
-    T_EXPECT(ulist_get_size_of(ulist3), sizeof(int));
+    T_EXPECT(ulist_get_data_size(ulist3), sizeof(int));
     T_EXPECT(ulist_get_num_entries(ulist3), 0);
 
     ulist_destroy(ulist1);

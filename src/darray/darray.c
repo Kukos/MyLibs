@@ -675,7 +675,7 @@ DARRAY_TYPE darray_get_type(Darray *darray)
     return darray->____type;
 }
 
-int darray_get_size_of(Darray *darray)
+int darray_get_data_size(Darray *darray)
 {
     if (darray == NULL)
         ERROR("darray == NULL\n", -1, "");

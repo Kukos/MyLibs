@@ -480,7 +480,7 @@ int arraylist_to_array(Arraylist *alist, void *array, size_t *size)
     return 0;
 }
 
-int arraylist_get_size_of(Arraylist *alist)
+int arraylist_get_data_size(Arraylist *alist)
 {
     if (alist == NULL)
         ERROR("alist == NULL\n", -1, "");

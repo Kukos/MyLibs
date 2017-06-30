@@ -34,21 +34,21 @@ test_f test_create(void)
     s = stack_create(sizeof(int));
     T_ERROR(s == NULL);
     T_EXPECT(stack_get_num_entries(s), 0);
-    T_EXPECT(stack_get_size_of(s), sizeof(int));
+    T_EXPECT(stack_get_data_size(s), sizeof(int));
 
     stack_destroy(s);
 
     s = stack_create(sizeof(char));
     T_ERROR(s == NULL);
     T_EXPECT(stack_get_num_entries(s), 0);
-    T_EXPECT(stack_get_size_of(s), sizeof(char));
+    T_EXPECT(stack_get_data_size(s), sizeof(char));
 
     stack_destroy(s);
 
     s = stack_create(sizeof(double));
     T_ERROR(s == NULL);
     T_EXPECT(stack_get_num_entries(s), 0);
-    T_EXPECT(stack_get_size_of(s), sizeof(double));
+    T_EXPECT(stack_get_data_size(s), sizeof(double));
 
     stack_destroy(s);
 }
@@ -77,7 +77,7 @@ test_f test_insert(void)
     s[counter] = stack_create(sizeof(char));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(char));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(char));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t1[i]), 0);
@@ -94,7 +94,7 @@ test_f test_insert(void)
     s[counter] = stack_create(sizeof(int));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(int));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(int));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t2[i]), 0);
@@ -111,7 +111,7 @@ test_f test_insert(void)
     s[counter] = stack_create(sizeof(double));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(double));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(double));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t3[i]), 0);
@@ -155,7 +155,7 @@ test_f test_delete(void)
     s[counter] = stack_create(sizeof(char));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(char));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(char));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t1[i]), 0);
@@ -187,7 +187,7 @@ test_f test_delete(void)
     s[counter] = stack_create(sizeof(int));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(int));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(int));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t2[i]), 0);
@@ -218,7 +218,7 @@ test_f test_delete(void)
     s[counter] = stack_create(sizeof(double));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(double));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(double));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t3[i]), 0);
@@ -272,7 +272,7 @@ test_f test_insert_delete(void)
     s = stack_create(sizeof(int));
     T_ERROR(s == NULL);
     T_EXPECT(stack_get_num_entries(s), 0);
-    T_EXPECT(stack_get_size_of(s), sizeof(int));
+    T_EXPECT(stack_get_data_size(s), sizeof(int));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s, (void *)&t[i]), 0);
@@ -363,7 +363,7 @@ test_f test_convert_to_array(void)
     s[counter] = stack_create(sizeof(char));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(char));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(char));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t1[i]), 0);
@@ -386,7 +386,7 @@ test_f test_convert_to_array(void)
     s[counter] = stack_create(sizeof(int));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(int));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(int));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t2[i]), 0);
@@ -409,7 +409,7 @@ test_f test_convert_to_array(void)
     s[counter] = stack_create(sizeof(double));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(double));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(double));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t3[i]), 0);
@@ -467,7 +467,7 @@ test_f test_convert_to_array2(void)
     s[counter] = stack_create(sizeof(char));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(char));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(char));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t1[i]), 0);
@@ -489,7 +489,7 @@ test_f test_convert_to_array2(void)
     s[counter] = stack_create(sizeof(int));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(int));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(int));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t2[i]), 0);
@@ -511,7 +511,7 @@ test_f test_convert_to_array2(void)
     s[counter] = stack_create(sizeof(double));
     T_ERROR(s[counter] == NULL);
     T_EXPECT(stack_get_num_entries(s[counter]), 0);
-    T_EXPECT(stack_get_size_of(s[counter]), sizeof(double));
+    T_EXPECT(stack_get_data_size(s[counter]), sizeof(double));
 
     for (i = 0; i < array_size; ++i)
         T_EXPECT(stack_push(s[counter], (void *)&t3[i]), 0);
@@ -547,7 +547,7 @@ test_f test_destroy_with_entries(void)
     stack = stack_create(sizeof(MyStruct *));
     T_ERROR(stack == NULL);
     T_EXPECT(stack_get_num_entries(stack), 0);
-    T_EXPECT(stack_get_size_of(stack), sizeof(MyStruct *));
+    T_EXPECT(stack_get_data_size(stack), sizeof(MyStruct *));
 
     for (i = 0; i < size; ++i)
     {
@@ -570,7 +570,7 @@ test_f test_empty(void)
     stack = stack_create(sizeof(int));
     T_ERROR(stack == NULL);
     T_EXPECT(stack_get_num_entries(stack), 0);
-    T_EXPECT(stack_get_size_of(stack), sizeof(int));
+    T_EXPECT(stack_get_data_size(stack), sizeof(int));
     T_EXPECT(stack_is_empty(stack), true);
 
     T_CHECK(stack_pop(stack, (void *)&val) != 0);

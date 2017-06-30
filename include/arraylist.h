@@ -241,7 +241,7 @@ int arraylist_to_array(Arraylist *alist, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-int arraylist_get_size_of(Arraylist *alist);
+int arraylist_get_data_size(Arraylist *alist);
 
 /*
     Get number of entries in arraylist
