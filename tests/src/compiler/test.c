@@ -77,9 +77,9 @@ test_f test_init_variable(void)
 
 test_f test_least_one(void)
 {
-    int a = 0x123450 | 1 << 2;
-    long b = 0x12340 | 1 << 3;
-    long long c = 0x1234567890 | 1 << 4;
+    unsigned int a = 0x123450 | 1 << 2;
+    unsigned long b = 0x12340 | 1 << 3;
+    unsigned long long c = 0x1234567890 | 1 << 4;
 
     T_EXPECT(least_1_int(a), 2);
     T_EXPECT(least_1_long(b), 3);
@@ -104,13 +104,13 @@ test_f test_least_one(void)
 
 test_f test_leading_zeros(void)
 {
-    int a = 0x0000F234;
+    unsigned int a = 0x0000F234;
 #ifdef __ARCH_64__
-    long b = 0x00000000F2345678;
+    unsigned long b = 0x00000000F2345678;
 #elif defined(__ARCH_32__)
-    long b = 0x00000F234;
+    unsigned long b = 0x00000F234;
 #endif
-    long long c = 0x0000000000F23456;
+    unsigned long long c = 0x0000000000F23456;
 
     T_EXPECT(leading_0_int(a), 4 * 4);
 #ifdef __ARCH_64__
@@ -143,13 +143,13 @@ test_f test_leading_zeros(void)
 
 test_f test_frailing_zeros(void)
 {
-    int a = 0x1234F000;
+    unsigned int a = 0x1234F000;
 #ifdef __ARCH_64__
-    long b = 0x1234567F00000000;
+    unsigned long b = 0x1234567F00000000;
 #elif defined(__ARCH_32__)
-    long b = 0x123F0000;
+    unsigned long b = 0x123F0000;
 #endif
-    long long c = 0x12345678F000000;
+    unsigned long long c = 0x12345678F000000;
 
     T_EXPECT(trailing_0_int(a), 3 * 4);
 #ifdef __ARCH_64__
@@ -178,13 +178,13 @@ test_f test_frailing_zeros(void)
 
 test_f test_number_ones(void)
 {
-    int a = 0x10204080;
+    unsigned int a = 0x10204080;
 #ifdef __ARCH_64__
-    long b = 0x1020408010204080;
+    unsigned long b = 0x1020408010204080;
 #elif defined(__ARCH_32__)
-    long b = 0x01020408;
+    unsigned long b = 0x01020408;
 #endif
-    long long c = 0x0102040801020408;
+    unsigned long long c = 0x0102040801020408;
 
     T_EXPECT(number_1_int(a), 4);
 #ifdef __ARCH_64__
@@ -217,13 +217,13 @@ test_f test_number_ones(void)
 
 test_f test_ones_parity(void)
 {
-    int a = 0x10204080;
+    unsigned int a = 0x10204080;
 #ifdef __ARCH_64__
-    long b = 0x1020408010204080;
+    unsigned long b = 0x1020408010204080;
 #elif defined(__ARCH_32__)
-    long b = 0x01020408;
+    unsigned long b = 0x01020408;
 #endif
-    long long c = 0x0102040801020408;
+    unsigned long long c = 0x0102040801020408;
 
     T_EXPECT(parity_1_int(a), true);
     T_EXPECT(parity_1_long(b), true);
@@ -276,9 +276,9 @@ test_f test_ones_parity(void)
 
 test_f test_swap_bytes(void)
 {
-    int16_t a = 0x1A2B;
-    int32_t b = 0x1234ABCD;
-    int64_t c = 0x12345678ABCDEF10;
+    uint16_t a = 0x1A2B;
+    uint32_t b = 0x1234ABCD;
+    uint64_t c = 0x12345678ABCDEF10;
 
     T_EXPECT(swap_bytes16(a), 0x2B1A);
     T_EXPECT(swap_bytes32(b), 0xCDAB3412);

@@ -6,8 +6,8 @@
 
 test_f test_bits_operations(void)
 {
-    int a;
-    long long b;
+    unsigned int a;
+    unsigned long long b;
 
     a = BIT(5);
     b = BIT(50);
@@ -22,7 +22,7 @@ test_f test_bits_operations(void)
     SET_BIT(b, 54);
 
     T_ASSERT(a, 1 << 5 | 1 << 3);
-    T_ASSERT(b, (long long)(1ull << 50 | 1ull << 54));
+    T_ASSERT(b, (unsigned long long)(1ull << 50 | 1ull << 54));
 
     T_EXPECT(GET_BIT(a, 3), 1);
     T_EXPECT(GET_BIT(a, 4), 0);
@@ -191,13 +191,13 @@ test_f test_odd_even(void)
 
 test_f test_hamming_weight(void)
 {
-    int a = 0x10204080;
+    unsigned int a = 0x10204080;
 #ifdef __ARCH_64__
-    long b = 0x1020408010204080;
+    unsigned long b = 0x1020408010204080;
 #elif defined(__ARCH_32__)
-    long b = 0x01020408;
+    unsigned long b = 0x01020408;
 #endif
-    long long c = 0x0102040801020408;
+    unsigned long long c = 0x0102040801020408;
 
     T_EXPECT(HAMM_WEIGHT_int(a), 4);
 #ifdef __ARCH_64__
@@ -230,17 +230,17 @@ test_f test_hamming_weight(void)
 
 test_f test_hamming_distance(void)
 {
-    int a = 0x10204080;
-    int b = 0x10044088;
+    unsigned int a = 0x10204080;
+    unsigned int b = 0x10044088;
 #ifdef __ARCH_64__
-    long c = 0x1020408010204080;
-    long d = 0x1020440811220080;
+    unsigned long c = 0x1020408010204080;
+    unsigned long d = 0x1020440811220080;
 #elif defined(__ARCH_32__)
-    long c = 0x01020408;
-    long d = 0x00102400;
+    unsigned long c = 0x01020408;
+    unsigned long d = 0x00102400;
 #endif
-    long long e = 0x0102040801020408;
-    long long f = 0x1002400800401000;
+    unsigned long long e = 0x0102040801020408;
+    unsigned long long f = 0x1002400800401000;
 
     T_EXPECT(HAMM_DIST_int(a, b), 3);
 #ifdef __ARCH_64__
@@ -279,9 +279,9 @@ test_f test_hamming_distance(void)
 
 test_f test_log2(void)
 {
-    int a = BIT(5);
-    long b = BIT(15);
-    long long c = BIT(40);
+    unsigned int a = BIT(5);
+    unsigned long b = BIT(15);
+    unsigned long long c = BIT(40);
 
     T_EXPECT(LOG2_int(a), 5);
     T_EXPECT(LOG2_long(b), 15);

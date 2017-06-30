@@ -55,24 +55,24 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), int); \
-        (______x) ? __builtin_clz(______x) : sizeof(typeof(______x)) << 3; \
+        (void)type_check(typeof(______x), unsigned int); \
+        (______x) ? (unsigned long)__builtin_clz(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
     })
 
 #define leading_0_long(x) \
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), long); \
-        (______x) ? __builtin_clzl(______x) : sizeof(typeof(______x)) << 3; \
+        (void)type_check(typeof(______x), unsigned long); \
+        (______x) ? (unsigned long)__builtin_clzl(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
     })
 
 #define leading_0_longlong(x) \
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), long long); \
-        (______x) ? __builtin_clzll(______x) : sizeof(typeof(______x)) << 3; \
+        (void)type_check(typeof(______x), unsigned long long); \
+        (______x) ? (unsigned long)__builtin_clzll(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
     })
 
 
@@ -81,24 +81,24 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), int); \
-        (______x) ? __builtin_ctz(______x) : sizeof(typeof(______x)) << 3; \
+        (void)type_check(typeof(______x), unsigned int); \
+        (______x) ? (unsigned long)__builtin_ctz(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
     })
 
 #define trailing_0_long(x) \
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), long); \
-        (______x) ? __builtin_ctzl(______x) : sizeof(typeof(______x)) << 3; \
+        (void)type_check(typeof(______x), unsigned long); \
+        (______x) ? (unsigned long)__builtin_ctzl(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
     })
 
 #define trailing_0_longlong(x) \
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), long long); \
-        (______x) ? __builtin_ctzll(______x) : sizeof(typeof(______x)) << 3; \
+        (void)type_check(typeof(______x), unsigned long long); \
+        (______x) ? (unsigned long)__builtin_ctzll(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
     })
 
 /* get number of ones */
@@ -106,24 +106,24 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), int); \
-        (______x) ? __builtin_popcount(______x) : 0; \
+        (void)type_check(typeof(______x), unsigned int); \
+        (______x) ? (unsigned long)__builtin_popcount(______x) : 0; \
     })
 
 #define number_1_long(x) \
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), long); \
-        (______x) ? __builtin_popcountl(______x) : 0; \
+        (void)type_check(typeof(______x), unsigned long); \
+        (______x) ? (unsigned long)__builtin_popcountl(______x) : 0; \
     })
 
 #define number_1_longlong(x) \
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), long long); \
-        (______x) ? __builtin_popcountll(______x) : 0; \
+        (void)type_check(typeof(______x), unsigned long long); \
+        (______x) ? (unsigned long)__builtin_popcountll(______x) : 0; \
     })
 
 /* get parity number of 1 ( number of 1 % 2) */
@@ -131,7 +131,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), int); \
+        (void)type_check(typeof(______x), unsigned int); \
         !!!__builtin_parity(______x); \
     })
 
@@ -139,7 +139,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), long); \
+        (void)type_check(typeof(______x), unsigned long); \
         !!!__builtin_parityl(______x); \
     })
 
@@ -147,7 +147,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), long long); \
+        (void)type_check(typeof(______x), unsigned long long); \
         !!!__builtin_parityll(______x); \
     })
 
@@ -156,7 +156,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), int16_t); \
+        (void)type_check(typeof(______x), uint16_t); \
         __builtin_bswap16(______x); \
     })
 
@@ -164,7 +164,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), int32_t); \
+        (void)type_check(typeof(______x), uint32_t); \
         __builtin_bswap32(______x); \
     })
 
@@ -172,7 +172,7 @@
     __extension__ \
     ({ \
         typeof(x) ______x = (x); \
-        (void)type_check(typeof(______x), int64_t); \
+        (void)type_check(typeof(______x), uint64_t); \
         __builtin_bswap64(______x); \
     })
 

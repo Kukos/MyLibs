@@ -26,7 +26,7 @@
         else \
             CLEAR_BIT(n, k); \
     })
-    
+
 #define FLIP_BIT(n, k) (SET_BIT_VALUE(n, k, !(GET_BIT(n, k))))
 
 #define GET_FLAG(n, flag)   CAST_TO_BOOL((n) & (flag))
@@ -94,9 +94,9 @@
 #define HAMM_DIST_longlong(n, k)   (number_1_longlong((n) ^ (k)))
 
 /* rly fast way to count log2 of n */
-#define LOG2_int(n)             ((sizeof(typeof(n)) << 3) - leading_0_int(n) - 1)
-#define LOG2_long(n)            ((sizeof(typeof(n)) << 3) - leading_0_long(n) - 1)
-#define LOG2_longlong(n)        ((sizeof(typeof(n)) << 3) - leading_0_longlong(n) - 1)
+#define LOG2_int(n)             ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_int(n) - 1)
+#define LOG2_long(n)            ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_long(n) - 1)
+#define LOG2_longlong(n)        ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_longlong(n) - 1)
 
 /* ESCAPE COLORS */
 #define COLOR_RESET           "\033[0m"
