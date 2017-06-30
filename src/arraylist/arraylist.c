@@ -482,6 +482,8 @@ int arraylist_to_array(Arraylist *alist, void *array, size_t *size)
 
 int arraylist_get_data_size(Arraylist *alist)
 {
+    TRACE("");
+
     if (alist == NULL)
         ERROR("alist == NULL\n", -1, "");
 
@@ -490,6 +492,8 @@ int arraylist_get_data_size(Arraylist *alist)
 
 ssize_t arraylist_get_num_entries(Arraylist *alist)
 {
+    TRACE("");
+
     if (alist == NULL)
         ERROR("alist == NULL\n", -1, "");
 
@@ -498,6 +502,8 @@ ssize_t arraylist_get_num_entries(Arraylist *alist)
 
 int arraylist_node_get_data(Arraylist_node *node, void *data)
 {
+    TRACE("");
+
     if (node == NULL || data == NULL)
         ERROR("node == NULL || data == NULL\n", 1, "");
 
@@ -616,7 +622,7 @@ bool arraylist_iterator_end(Arraylist_iterator *iterator)
     TRACE("");
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", true, "");
 
     return iterator->____node == NULL;
 }

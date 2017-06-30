@@ -677,8 +677,11 @@ bool trie_find(Trie *trie, char *word)
 {
     TRACE("");
 
-    if(trie == NULL)
-        return false;
+    if (trie == NULL)
+        ERROR("trie == NULL\n", false, "");
+
+    if (word == NULL)
+        ERROR("word == NULL\n", false, "");
 
     return  trie_node_search(trie->____root, word) != NULL;
 }

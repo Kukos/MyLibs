@@ -304,8 +304,10 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size)
 
 int fifo_get_data_size(Fifo *fifo)
 {
+    TRACE("");
+
     if (fifo == NULL)
-        ERROR("fifo == NULL\n", 1, "");
+        ERROR("fifo == NULL\n", -1, "");
 
     return (int)fifo->____size_of;
 }
@@ -313,6 +315,8 @@ int fifo_get_data_size(Fifo *fifo)
 ssize_t fifo_get_num_entries(Fifo *fifo)
 {
     ssize_t entries;
+
+    TRACE("");
 
     if (fifo == NULL)
         ERROR("fifo == NULL\n", -1, "");

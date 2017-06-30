@@ -330,6 +330,8 @@ KList_master *klist_master_create(void)
 
 void klist_master_destroy(KList_master *list)
 {
+    TRACE("");
+
     if (list == NULL)
         return;
 

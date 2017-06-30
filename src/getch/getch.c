@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <common.h>
+#include <log.h>
 
 /* set global static struct to avoid resizing stack every time in getch */
 static struct termios old_attr;
@@ -12,6 +13,8 @@ static struct termios new_attr;
 int getch(void)
 {
     int ch; /* getchar return int instead of char !!! */
+
+	TRACE("");
 
 	/* get current settings */
     if (tcgetattr(STDIN_FILENO, &old_attr) == -1)

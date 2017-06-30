@@ -142,6 +142,8 @@ int stack_to_array(Stack *stack, void *array, size_t *size)
 
 void *stack_get_array(Stack *stack)
 {
+    TRACE("");
+
     if (stack == NULL)
         ERROR("stack == NULL\n", NULL, "");
 
@@ -150,6 +152,8 @@ void *stack_get_array(Stack *stack)
 
 ssize_t stack_get_num_entries(Stack *stack)
 {
+    TRACE("");
+
     if (stack == NULL)
         ERROR("stack == NULL\n", -1, "");
 
@@ -158,6 +162,8 @@ ssize_t stack_get_num_entries(Stack *stack)
 
 int stack_get_data_size(Stack *stack)
 {
+    TRACE("");
+
     if (stack == NULL)
         ERROR("stack == NULL\n", -1, "");
 

@@ -653,6 +653,8 @@ ssize_t darray_max(Darray *darray, void *val)
 
 void *darray_get_array(Darray *darray)
 {
+    TRACE("");
+
     if (darray == NULL)
         ERROR("darray == NULL\n", NULL, "");
 
@@ -661,6 +663,8 @@ void *darray_get_array(Darray *darray)
 
 ssize_t darray_get_num_entries(Darray *darray)
 {
+    TRACE("");
+
     if (darray == NULL)
         ERROR("darray == NULL\n", -1, "");
 
@@ -669,6 +673,8 @@ ssize_t darray_get_num_entries(Darray *darray)
 
 DARRAY_TYPE darray_get_type(Darray *darray)
 {
+    TRACE("");
+
     if (darray == NULL)
         ERROR("darray == NULL\n", -1, "");
 
@@ -677,6 +683,8 @@ DARRAY_TYPE darray_get_type(Darray *darray)
 
 int darray_get_data_size(Darray *darray)
 {
+    TRACE("");
+
     if (darray == NULL)
         ERROR("darray == NULL\n", -1, "");
 

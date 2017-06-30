@@ -564,16 +564,20 @@ int list_to_array(List *list, void *array, size_t *size)
 
 int list_get_data_size(List *list)
 {
+    TRACE("");
+
     if (list == NULL)
-        return -1;
+        ERROR("list == NULL\n", -1, "");
 
     return (int)list->____size_of;
 }
 
 ssize_t list_get_num_entries(List *list)
 {
+    TRACE("");
+
     if (list == NULL)
-        return -1;
+        ERROR("list == NULL\n", (ssize_t)-1, "");
 
     return (ssize_t)list->____length;
 }

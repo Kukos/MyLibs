@@ -631,6 +631,8 @@ List2D *list2d_merge(List2D *list1, List2D *list2)
         ERROR("list2 == NULL\n", NULL, "");
 
     result = list2d_create((int)list1->____size_of, list1->____cmp, list1->____diff);
+    if (result == NULL)
+        ERROR("list_create error\n", NULL, "");
 
     ptr1 = list1->____head;
     ptr2 = list2->____head;
@@ -751,16 +753,20 @@ List2D *list2d_merge(List2D *list1, List2D *list2)
 
 int list2d_get_data_size(List2D *list)
 {
+    TRACE("");
+
     if (list == NULL)
-        return -1;
+        ERROR("list == NULL\n", -1, "");
 
     return (int)list->____size_of;
 }
 
 ssize_t list2d_get_num_entries(List2D *list)
 {
+    TRACE("");
+
     if (list == NULL)
-        return -1;
+        ERROR("list == NULL\n", -1, "");
 
     return (ssize_t)list->____length;
 }

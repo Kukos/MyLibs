@@ -16,6 +16,8 @@ ___inline___ static size_t align_size(size_t size);
 
 ___inline___ static bool is_aligned(size_t size)
 {
+	TRACE("");
+
 	/* pagesize is always power of 2 */
 	return !(CAST_TO_BOOL(size & ((size_t)getpagesize())));
 }
@@ -24,6 +26,8 @@ ___inline___ static size_t align_size(size_t size)
 {
 	/* page size is always power of two */
 	size_t page_size = (size_t)getpagesize();
+
+	TRACE("");
 
 	if (size == 0)
 		return page_size;
@@ -176,6 +180,8 @@ int file_buffer_synch(file_buffer *fb)
 
 char *file_buffer_get_buff(file_buffer *fb)
 {
+	TRACE("");
+
 	if (fb == NULL)
 		ERROR("fb == NULL\n", NULL, "");
 
@@ -184,6 +190,8 @@ char *file_buffer_get_buff(file_buffer *fb)
 
 ssize_t file_buffer_get_size(file_buffer *fb)
 {
+	TRACE("");
+
 	if (fb == NULL)
 		ERROR("fb == NULL\n", -1, "");
 
