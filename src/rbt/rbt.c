@@ -164,6 +164,13 @@ static int rbt_insert_fixup(Rbt *tree, Rbt_node *node);
 */
 static int rbt_delete_fixup(Rbt *tree, Rbt_node *node);
 
+/*
+    Do nothing
+
+    Needed by Tree Framework
+*/
+static int rbt_balance(Rbt *tree);
+
 ___inline___ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node *parent)
 {
     Rbt_node *node;
@@ -177,7 +184,7 @@ ___inline___ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node 
     if (node == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    node->data = malloc(size_of);
+    node->data = malloc((size_t)size_of);
     if (node->data == NULL)
 	{
 		FREE(node);
@@ -412,7 +419,6 @@ static int rbt_insert_fixup(Rbt *tree, Rbt_node *node)
 
     assert(tree != NULL);
     assert(node != NULL);
-    assert(node != sentinel);
 
     while (node->parent->color == RBT_RED)
         if (node->parent == node->parent->parent->left_son)
@@ -478,7 +484,6 @@ static int rbt_delete_fixup(Rbt *tree, Rbt_node *node)
 
     assert(tree != NULL);
     assert(node != NULL);
-    assert(node != sentinel);
 
     while (node != tree->root && node->color == RBT_BLACK)
         if (node == node->parent->left_son)
@@ -566,15 +571,18 @@ Rbt* rbt_create(int size_of, int (*cmp)(void *a, void *b))
 
     TRACE("");
 
-    assert(size_of >= 1);
-    assert(cmp != NULL);
+    if (size_of < 1)
+        ERROR("size_of < 1\n", NULL, "");
+
+    if (cmp == NULL)
+        ERROR("cmp == NULL\n", NULL, "");
 
     tree = (Rbt *)malloc(sizeof(Rbt));
     if (tree == NULL)
-       ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL, "");
 
     tree->root = sentinel;
-    tree->size_of = size_of;
+    tree->size_of = (size_t)size_of;
     tree->cmp = cmp;
 
     tree->nodes = 0;
@@ -589,17 +597,53 @@ void rbt_destroy(Rbt *tree)
 
     TRACE("");
 
-    assert(tree != NULL);
+    if (tree == NULL)
+        return;
+
+    if (tree->root == NULL || tree->root == sentinel)
+    {
+        FREE(tree);
+        return;
+    }
 
     /* destroy tree using inorder */
     node = rbt_min_node(tree->root);
-    if (node == NULL)
-        return;
-
     while (node != sentinel && node != NULL)
     {
         temp = node;
         node = rbt_successor(node);
+        rbt_node_destroy(temp);
+    }
+
+    FREE(tree);
+}
+
+void rbt_destroy_with_entries(Rbt *tree, void (*destructor)(void *data))
+{
+    Rbt_node *node;
+    Rbt_node *temp;
+
+    TRACE("");
+
+    if (tree == NULL)
+        return;
+
+    if (destructor == NULL)
+        return;
+
+    if (tree->root == NULL || tree->root == sentinel)
+    {
+        FREE(tree);
+        return;
+    }
+
+    /* destroy tree using inorder */
+    node = rbt_min_node(tree->root);
+    while (node != sentinel && node != NULL)
+    {
+        temp = node;
+        node = rbt_successor(node);
+        destructor(temp->data);
         rbt_node_destroy(temp);
     }
 
@@ -614,13 +658,16 @@ int rbt_insert(Rbt *tree, void *data)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(data != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (data == NULL)
+        ERROR("data == NULL\n", 1, "");
 
     /* special case - empty tree */
     if (tree->root == sentinel)
     {
-        node = rbt_node_create(data, tree->size_of, sentinel);
+        node = rbt_node_create(data, (int)tree->size_of, sentinel);
 		if (node == NULL)
 			ERROR("rbt_node_create\n", 1, "");
 
@@ -647,7 +694,7 @@ int rbt_insert(Rbt *tree, void *data)
                 node = node->right_son;
         }
 
-        new_node = rbt_node_create(data, tree->size_of, parent);
+        new_node = rbt_node_create(data, (int)tree->size_of, parent);
 		if (new_node == NULL)
 			ERROR("rbt_node_create\n", 1, "");
 
@@ -671,12 +718,15 @@ int rbt_delete(Rbt *tree, void *data_key)
     Rbt_node *temp;
     Rbt_node *successor;
 
-    RBT_COLOR color;
+    rbt_color_t color;
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(data_key != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (data_key == NULL)
+        ERROR("data_key == NULL\n", 1, "");
 
     if (tree->root == sentinel)
         ERROR("Empty Tree\n", 1, "");
@@ -801,8 +851,14 @@ int rbt_min(Rbt *tree, void *data)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(data != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (data == NULL)
+        ERROR("data == NULL\n", 1, "");
+
+    if (tree->root == sentinel)
+        ERROR("Empty Tree\n", 1, "");
 
     node = rbt_min_node(tree->root);
     if(node == NULL)
@@ -819,8 +875,14 @@ int rbt_max(Rbt *tree, void *data)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(data != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (data == NULL)
+        ERROR("data == NULL\n", 1, "");
+
+    if (tree->root == sentinel)
+        ERROR("Empty Tree\n", 1, "");
 
     node = rbt_max_node(tree->root);
     if(node == NULL)
@@ -837,9 +899,17 @@ int rbt_search(Rbt *tree, void *data_key, void *data_out)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(data_key != NULL);
-    assert(data_out != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (data_key == NULL)
+        ERROR("data_key == NULL\n", 1, "");
+
+    if (data_out == NULL)
+        ERROR("data_out == NULL\n", 1, "");
+
+    if (tree->root == sentinel)
+        ERROR("Empty Tree\n", 1, "");
 
     node = rbt_node_search(tree, data_key);
     if (node == NULL)
@@ -854,8 +924,14 @@ bool rbt_key_exist(Rbt *tree, void *data_key)
 {
    TRACE("");
 
-   assert(tree != NULL);
-   assert(data_key != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", false, "");
+
+    if (data_key == NULL)
+        ERROR("data_key == NULL\n", false, "");
+
+    if (tree->root == sentinel)
+        ERROR("Empty Tree\n", false, "");
 
    return rbt_node_search(tree, data_key) != NULL;
 }
@@ -869,13 +945,21 @@ int rbt_to_array(Rbt *tree, void *array, size_t *size)
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(array != NULL);
-    assert(size != NULL);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (array == NULL)
+        ERROR("array == NULL\n", 1, "");
+
+    if (size == NULL)
+        ERROR("size == NULL\n", 1, "");
+
+    if (tree->root == sentinel)
+        ERROR("Empty Tree\n", 1, "");
 
     t = malloc(tree->size_of * tree->nodes);
 	if (t == NULL)
-		ERROR("malloc error", 1, "");
+		ERROR("malloc error\n", 1, "");
 
     _t = (BYTE *)t;
     offset = 0;
@@ -898,14 +982,51 @@ int rbt_to_array(Rbt *tree, void *array, size_t *size)
     return 0;
 }
 
-Rbt_iterator *rbt_iterator_create(Rbt *tree, ITI_MODE mode)
+static int rbt_balance(Rbt *tree)
+{
+    TRACE("");
+    LOG("RBT is self balanced, balance no needed\n", "");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (tree->root == sentinel)
+        ERROR("Tree is empty\n", 1, "");
+
+    return 0;
+}
+
+ssize_t rbt_get_num_entries(Rbt *tree)
+{
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", (ssize_t)-1, "");
+
+    return (ssize_t)tree->nodes;
+}
+
+int rbt_get_data_size(Rbt *tree)
+{
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", -1, "");
+
+    return (int)tree->size_of;
+}
+
+Rbt_iterator *rbt_iterator_create(Rbt *tree, iti_mode_t mode)
 {
     Rbt_iterator *iterator;
 
     TRACE("");
 
-    assert(tree != NULL);
-    assert(mode == ITI_BEGIN || mode == ITI_ROOT || mode == ITI_END);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", NULL, "");
+
+    if (mode != ITI_BEGIN && mode != ITI_ROOT && mode != ITI_END)
+        ERROR("Incorrect mode\n", NULL, "");
 
     iterator = (Rbt_iterator *)malloc(sizeof(Rbt_iterator));
     if (iterator == NULL)
@@ -933,13 +1054,18 @@ void rbt_iterator_destroy(Rbt_iterator *iterator)
     FREE(iterator);
 }
 
-int rbt_iterator_init(Rbt *tree, Rbt_iterator *iterator, ITI_MODE mode)
+int rbt_iterator_init(Rbt *tree, Rbt_iterator *iterator, iti_mode_t mode)
 {
     TRACE("");
 
-    assert(tree != NULL);
-    assert(iterator != NULL);
-    assert(mode == ITI_BEGIN || mode == ITI_ROOT || mode == ITI_END);
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
+
+    if (mode != ITI_BEGIN && mode != ITI_ROOT && mode != ITI_END)
+        ERROR("Incorrect mode\n", 1, "");
 
     iterator->size_of = tree->size_of;
 
@@ -959,7 +1085,8 @@ int rbt_iterator_next(Rbt_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator != NULL);
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
 
     iterator->node = rbt_successor(iterator->node);
 
@@ -970,7 +1097,8 @@ int rbt_iterator_prev(Rbt_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator != NULL);
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
 
     iterator->node = rbt_predecessor(iterator->node);
 
@@ -981,10 +1109,28 @@ int rbt_iterator_get_data(Rbt_iterator *iterator, void *val)
 {
     TRACE("");
 
-    assert(iterator != NULL);
-    assert(val != NULL);
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
+
+    if (val == NULL)
+        ERROR("val == NULL\n", 1, "");
 
     __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->node->data, iterator->size_of);
+
+    return 0;
+}
+
+int rbt_iterator_get_node(Rbt_iterator *iterator, void *node)
+{
+    TRACE("");
+
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
+
+    if (node == NULL)
+        ERROR("node == NULL\n", 1, "");
+
+    *(void **)node = iterator->node;
 
     return 0;
 }
@@ -993,7 +1139,35 @@ bool rbt_iterator_end(Rbt_iterator *iterator)
 {
     TRACE("");
 
-    assert(iterator != NULL);
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", true, "");
 
     return iterator->node == sentinel || iterator->node == NULL;
+}
+
+TREE_WRAPPERS_CREATE(Rbt, rbt)
+
+Tree *tree_rbt_create(int size_of, int (*cmp)(void* a,void *b))
+{
+    Tree *tree;
+
+    TRACE("");
+
+    /* create Tree */
+    tree = (Tree *)malloc(sizeof(Tree));
+    if (tree == NULL)
+        ERROR("malloc error\n", NULL, "");
+
+    /* create rbt */
+    tree->____tree = (void *)rbt_create(size_of, cmp);
+    if (tree->____tree == NULL)
+    {
+        FREE(tree);
+        ERROR("bst_create error\n", NULL, "");
+    }
+
+    /* fill hooks */
+    TREE_WRAPPERS_ASSIGN(tree);
+
+    return tree;
 }
