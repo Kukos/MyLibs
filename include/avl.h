@@ -19,28 +19,28 @@
 
 typedef struct Avl_node
 {
-    void            *data;
-    struct Avl_node *left_son;
-    struct Avl_node *right_son;
-    struct Avl_node *parent;
+    void            *____data;
+    struct Avl_node *____left_son;
+    struct Avl_node *____right_son;
+    struct Avl_node *____parent;
 
-    uint8_t         bf; /* balanced factor */
+    uint8_t         ____bf; /* balanced factor */
 
 }Avl_node;
 
 typedef struct Avl_iterator
 {
-    size_t   size_of;
-    Avl_node *node;
+    size_t   ____size_of;
+    Avl_node *____node;
 }Avl_iterator;
 
 typedef struct Avl
 {
-    Avl_node    *root;
-    size_t      nodes;
-    size_t      size_of;
+    Avl_node    *____root;
+    size_t      ____nodes;
+    size_t      ____size_of;
 
-    int (*cmp)(void *a, void *b);
+    int (*____cmp)(void *a, void *b);
 }Avl;
 
 IT_FUNC(Avl, avl)

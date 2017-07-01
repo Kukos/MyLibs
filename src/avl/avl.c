@@ -189,7 +189,7 @@ static int avl_balance(Avl *tree)
     if (tree == NULL)
         ERROR("tree == NULL\n", 1, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("Tree is empty\n", 1, "");
 
     return 0;
@@ -208,20 +208,20 @@ ___inline___ static Avl_node *avl_node_create(void *data, int size_of, Avl_node 
     if (node == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    node->data = malloc((size_t)size_of);
-    if (node->data == NULL)
+    node->____data = malloc((size_t)size_of);
+    if (node->____data == NULL)
 	{
 		FREE(node);
         ERROR("malloc error\n", NULL, "");
 	}
 
-    __ASSIGN__(*(BYTE *)node->data, *(BYTE *)data, size_of);
+    __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
 
-    node->parent = parent;
-    node->left_son = NULL;
-    node->right_son = NULL;
+    node->____parent = parent;
+    node->____left_son = NULL;
+    node->____right_son = NULL;
 
-    node->bf = BALANCED;
+    node->____bf = BALANCED;
 
     return node;
 }
@@ -233,7 +233,7 @@ ___inline___ static void avl_node_destroy(Avl_node *node)
     if (node == NULL)
         return;
 
-    FREE(node->data);
+    FREE(node->____data);
     FREE(node);
 }
 
@@ -245,14 +245,14 @@ ___inline___ static Avl_node *avl_successor(Avl_node *node)
 
     assert(node != NULL);
 
-    if (node->right_son != NULL)
-        return avl_min_node(node->right_son);
+    if (node->____right_son != NULL)
+        return avl_min_node(node->____right_son);
 
-    parent = node->parent;
-    while (parent != NULL && node == parent->right_son)
+    parent = node->____parent;
+    while (parent != NULL && node == parent->____right_son)
     {
         node = parent;
-        parent = parent->parent;
+        parent = parent->____parent;
     }
 
     return parent;
@@ -266,14 +266,14 @@ ___inline___ static Avl_node *avl_predecessor(Avl_node *node)
 
     assert(node != NULL);
 
-    if (node->left_son != NULL)
-        return avl_max_node(node->left_son);
+    if (node->____left_son != NULL)
+        return avl_max_node(node->____left_son);
 
-    parent = node->parent;
-    while (parent != NULL && node == parent->left_son)
+    parent = node->____parent;
+    while (parent != NULL && node == parent->____left_son)
     {
         node = parent;
-        parent = parent->parent;
+        parent = parent->____parent;
     }
 
     return parent;
@@ -288,15 +288,15 @@ ___inline___ static Avl_node *avl_node_search(Avl *tree, void *data_key)
     assert(tree != NULL);
     assert(data_key != NULL);
 
-    node = tree->root;
+    node = tree->____root;
     while (node != NULL)
     {
-        if (tree->cmp(node->data, data_key) == 0)
+        if (tree->____cmp(node->____data, data_key) == 0)
             return node;
-        else if (tree->cmp(node->data, data_key) > 0)
-            node = node->left_son;
+        else if (tree->____cmp(node->____data, data_key) > 0)
+            node = node->____left_son;
         else
-            node = node->right_son;
+            node = node->____right_son;
     }
 
     /* now node is NULL */
@@ -315,7 +315,7 @@ ___inline___ static Avl_node *avl_max_node(Avl_node *node)
     while (node != NULL)
     {
         parent = node;
-        node = node->right_son;
+        node = node->____right_son;
     }
 
     return parent;
@@ -333,7 +333,7 @@ ___inline___ static Avl_node *avl_min_node(Avl_node *node)
     while (node != NULL)
     {
         parent = node;
-        node = node->left_son;
+        node = node->____left_son;
     }
 
     return parent;
@@ -357,39 +357,39 @@ ___inline___ static void avl_rotate_rr(Avl *tree, Avl_node *node)
     TRACE("");
 
     assert(tree != NULL);
-    assert(tree->root != NULL);
+    assert(tree->____root != NULL);
     assert(node != NULL);
-    assert(node->right_son != NULL);
+    assert(node->____right_son != NULL);
 
-    x = node->right_son;
+    x = node->____right_son;
 
-    node->right_son = x->left_son;
-    if (node->right_son != NULL)
-        node->right_son->parent = node;
+    node->____right_son = x->____left_son;
+    if (node->____right_son != NULL)
+        node->____right_son->____parent = node;
 
-    x->left_son = node;
-    x->parent = node->parent;
-    node->parent = x;
+    x->____left_son = node;
+    x->____parent = node->____parent;
+    node->____parent = x;
 
-    if (x->parent == NULL)
-        tree->root = x;
+    if (x->____parent == NULL)
+        tree->____root = x;
     else
     {
-        if (x->parent->left_son == node)
-            x->parent->left_son = x;
+        if (x->____parent->____left_son == node)
+            x->____parent->____left_son = x;
         else
-            x->parent->right_son = x;
+            x->____parent->____right_son = x;
     }
 
-    if (x->bf == RIGHT_BIGGER)
+    if (x->____bf == RIGHT_BIGGER)
     {
-        node->bf = BALANCED;
-        x->bf = BALANCED;
+        node->____bf = BALANCED;
+        x->____bf = BALANCED;
     }
     else
     {
-        node->bf = RIGHT_BIGGER;
-        x->bf = LEFT_BIGGER;
+        node->____bf = RIGHT_BIGGER;
+        x->____bf = LEFT_BIGGER;
     }
 }
 
@@ -411,39 +411,39 @@ ___inline___ static void avl_rotate_ll(Avl *tree, Avl_node *node)
     TRACE("");
 
     assert(tree != NULL);
-    assert(tree->root != NULL);
+    assert(tree->____root != NULL);
     assert(node != NULL);
-    assert(node->left_son != NULL);
+    assert(node->____left_son != NULL);
 
-    x = node->left_son;
+    x = node->____left_son;
 
-    node->left_son = x->right_son;
-    if (node->left_son != NULL)
-        node->left_son->parent = node;
+    node->____left_son = x->____right_son;
+    if (node->____left_son != NULL)
+        node->____left_son->____parent = node;
 
-    x->right_son = node;
-    x->parent = node->parent;
-    node->parent = x;
+    x->____right_son = node;
+    x->____parent = node->____parent;
+    node->____parent = x;
 
-    if (x->parent == NULL)
-        tree->root = x;
+    if (x->____parent == NULL)
+        tree->____root = x;
     else
     {
-        if (x->parent->left_son == node)
-            x->parent->left_son = x;
+        if (x->____parent->____left_son == node)
+            x->____parent->____left_son = x;
         else
-            x->parent->right_son = x;
+            x->____parent->____right_son = x;
     }
 
-    if (x->bf == LEFT_BIGGER)
+    if (x->____bf == LEFT_BIGGER)
     {
-        node->bf = BALANCED;
-        x->bf = BALANCED;
+        node->____bf = BALANCED;
+        x->____bf = BALANCED;
     }
     else
     {
-        node->bf = LEFT_BIGGER;
-        x->bf = RIGHT_BIGGER;
+        node->____bf = LEFT_BIGGER;
+        x->____bf = RIGHT_BIGGER;
     }
 }
 
@@ -467,56 +467,56 @@ ___inline___ static void avl_rotate_rl(Avl *tree, Avl_node *node)
     TRACE("");
 
     assert(tree != NULL);
-    assert(tree->root != NULL);
+    assert(tree->____root != NULL);
     assert(node != NULL);
-    assert(node->right_son != NULL);
-    assert(node->right_son->left_son != NULL);
+    assert(node->____right_son != NULL);
+    assert(node->____right_son->____left_son != NULL);
 
-    x = node->right_son;
-    y = x->left_son;
+    x = node->____right_son;
+    y = x->____left_son;
 
-    x->left_son = y->right_son;
-    if (y->right_son != NULL)
-        y->right_son->parent = x;
+    x->____left_son = y->____right_son;
+    if (y->____right_son != NULL)
+        y->____right_son->____parent = x;
 
-    node->right_son = y->left_son;
-    if (y->left_son != NULL)
-        node->right_son->parent = node;
+    node->____right_son = y->____left_son;
+    if (y->____left_son != NULL)
+        node->____right_son->____parent = node;
 
-    y->left_son = node;
-    y->parent = node->parent;
-    node->parent = y;
+    y->____left_son = node;
+    y->____parent = node->____parent;
+    node->____parent = y;
 
-    y->right_son = x;
-    x->parent = y;
+    y->____right_son = x;
+    x->____parent = y;
 
-    if (y->parent == NULL)
-        tree->root = y;
+    if (y->____parent == NULL)
+        tree->____root = y;
     else
     {
-        if (y->parent->left_son == node)
-            y->parent->left_son = y;
+        if (y->____parent->____left_son == node)
+            y->____parent->____left_son = y;
         else
-            y->parent->right_son = y;
+            y->____parent->____right_son = y;
     }
 
-    if (y->bf == RIGHT_BIGGER)
+    if (y->____bf == RIGHT_BIGGER)
     {
-        node->bf = LEFT_BIGGER;
-        x->bf = BALANCED;
+        node->____bf = LEFT_BIGGER;
+        x->____bf = BALANCED;
     }
-    else if (y->bf == LEFT_BIGGER)
+    else if (y->____bf == LEFT_BIGGER)
     {
-        node->bf = BALANCED;
-        x->bf = RIGHT_BIGGER;
+        node->____bf = BALANCED;
+        x->____bf = RIGHT_BIGGER;
     }
     else
     {
-        node->bf = BALANCED;
-        x->bf = BALANCED;
+        node->____bf = BALANCED;
+        x->____bf = BALANCED;
     }
 
-    y->bf = BALANCED;
+    y->____bf = BALANCED;
 }
 
 /*
@@ -539,56 +539,56 @@ ___inline___ static void avl_rotate_lr(Avl *tree, Avl_node *node)
     TRACE("");
 
     assert(tree != NULL);
-    assert(tree->root != NULL);
+    assert(tree->____root != NULL);
     assert(node != NULL);
-    assert(node->left_son != NULL);
-    assert(node->left_son->right_son != NULL);
+    assert(node->____left_son != NULL);
+    assert(node->____left_son->____right_son != NULL);
 
-    x = node->left_son;
-    y = x->right_son;
+    x = node->____left_son;
+    y = x->____right_son;
 
-    x->right_son = y->left_son;
-    if (x->right_son != NULL)
-        x->right_son->parent = x;
+    x->____right_son = y->____left_son;
+    if (x->____right_son != NULL)
+        x->____right_son->____parent = x;
 
-    node->left_son = y->right_son;
-    if (node->left_son != NULL)
-        node->left_son->parent = node;
+    node->____left_son = y->____right_son;
+    if (node->____left_son != NULL)
+        node->____left_son->____parent = node;
 
-    y->right_son = node;
-    y->parent = node->parent;
-    node->parent = y;
+    y->____right_son = node;
+    y->____parent = node->____parent;
+    node->____parent = y;
 
-    y->left_son = x;
-    x->parent = y;
+    y->____left_son = x;
+    x->____parent = y;
 
-    if (y->parent == NULL)
-        tree->root = y;
+    if (y->____parent == NULL)
+        tree->____root = y;
     else
     {
-        if (y->parent->left_son == node)
-            y->parent->left_son = y;
+        if (y->____parent->____left_son == node)
+            y->____parent->____left_son = y;
         else
-            y->parent->right_son = y;
+            y->____parent->____right_son = y;
     }
 
-    if (y->bf == RIGHT_BIGGER)
+    if (y->____bf == RIGHT_BIGGER)
     {
-        node->bf = BALANCED;
-        x->bf = LEFT_BIGGER;
+        node->____bf = BALANCED;
+        x->____bf = LEFT_BIGGER;
     }
-    else if (y->bf == LEFT_BIGGER)
+    else if (y->____bf == LEFT_BIGGER)
     {
-        node->bf = RIGHT_BIGGER;
-        x->bf = BALANCED;
+        node->____bf = RIGHT_BIGGER;
+        x->____bf = BALANCED;
     }
     else
     {
-        node->bf = BALANCED;
-        x->bf = BALANCED;
+        node->____bf = BALANCED;
+        x->____bf = BALANCED;
     }
 
-    y->bf = BALANCED;
+    y->____bf = BALANCED;
 }
 
 static int avl_insert_fixup(Avl *tree, Avl_node *new_node)
@@ -599,45 +599,45 @@ static int avl_insert_fixup(Avl *tree, Avl_node *new_node)
     TRACE("");
 
     assert(tree != NULL);
-    assert(tree->root != NULL);
+    assert(tree->____root != NULL);
     assert(new_node != NULL);
 
-    parent = new_node->parent;
+    parent = new_node->____parent;
 
     /* if parent has not balanced, now is balanced */
-    if (parent->bf != BALANCED)
+    if (parent->____bf != BALANCED)
     {
-        parent->bf = BALANCED;
+        parent->____bf = BALANCED;
         return 0;
     }
 
     /* bf parent depened on branch of new_node */
-    if (parent->left_son == new_node)
-        parent->bf = LEFT_BIGGER;
+    if (parent->____left_son == new_node)
+        parent->____bf = LEFT_BIGGER;
     else
-        parent->bf = RIGHT_BIGGER;
+        parent->____bf = RIGHT_BIGGER;
 
-    ptr = parent->parent;
+    ptr = parent->____parent;
     while (ptr != NULL)
     {
         /* Not balanced + another unbalanced = very unbalanced, do rotate */
-        if (ptr->bf != BALANCED)
+        if (ptr->____bf != BALANCED)
         {
-            if (ptr->bf == LEFT_BIGGER)
+            if (ptr->____bf == LEFT_BIGGER)
             {
                 /* add to right, now is balanced */
-                if (ptr->right_son == parent)
-                    ptr->bf = BALANCED;
-                else if (parent->bf == RIGHT_BIGGER)
+                if (ptr->____right_son == parent)
+                    ptr->____bf = BALANCED;
+                else if (parent->____bf == RIGHT_BIGGER)
                     avl_rotate_lr(tree, ptr);
                 else
                     avl_rotate_ll(tree, ptr);
             }
             else /* symetric case */
             {
-                if (ptr->left_son == parent)
-                    ptr->bf = BALANCED;
-                else if (parent->bf == LEFT_BIGGER)
+                if (ptr->____left_son == parent)
+                    ptr->____bf = BALANCED;
+                else if (parent->____bf == LEFT_BIGGER)
                     avl_rotate_rl(tree, ptr);
                 else
                     avl_rotate_rr(tree, ptr);
@@ -647,14 +647,14 @@ static int avl_insert_fixup(Avl *tree, Avl_node *new_node)
         }
 
         /* update bf, depends on side from we come to ptr */
-        if (ptr->left_son == parent)
-            ptr->bf = LEFT_BIGGER;
+        if (ptr->____left_son == parent)
+            ptr->____bf = LEFT_BIGGER;
         else
-            ptr->bf = RIGHT_BIGGER;
+            ptr->____bf = RIGHT_BIGGER;
 
         /* go upper */
         parent = ptr;
-        ptr = ptr->parent;
+        ptr = ptr->____parent;
 
     }
 
@@ -672,13 +672,13 @@ static int avl_delete_fixup(Avl *tree, Avl_node *parent, Avl_node *node)
     ptr = NULL;
     while (parent != NULL)
         /* tree was balanced */
-        if (parent->bf == BALANCED)
+        if (parent->____bf == BALANCED)
         {
             /* deleted from left, so now right is bigger */
-            if (parent->left_son == node)
-                parent->bf = RIGHT_BIGGER;
+            if (parent->____left_son == node)
+                parent->____bf = RIGHT_BIGGER;
             else /* symetric case */
-                parent->bf = LEFT_BIGGER;
+                parent->____bf = LEFT_BIGGER;
 
             /* tree is balanced, end fixup */
             break;
@@ -686,28 +686,28 @@ static int avl_delete_fixup(Avl *tree, Avl_node *parent, Avl_node *node)
         else
         {
             /* deleted node from bigger branch, parent is balanced */
-            if ((parent->bf == LEFT_BIGGER && parent->left_son == node)
-                || (parent->bf == RIGHT_BIGGER && parent->right_son == node))
+            if ((parent->____bf == LEFT_BIGGER && parent->____left_son == node)
+                || (parent->____bf == RIGHT_BIGGER && parent->____right_son == node))
             {
-                parent->bf = BALANCED;
+                parent->____bf = BALANCED;
 
                 /* go upper */
                 node = parent;
-                parent= parent->parent;
+                parent= parent->____parent;
             }
             /* deleted node from smaller branch, rotation is needed */
             else
             {
                 /* save brother ptr ( need for replay path ) */
-                if (parent->left_son == node)
-                    ptr = parent->right_son;
+                if (parent->____left_son == node)
+                    ptr = parent->____right_son;
                 else
-                    ptr = parent->left_son;
+                    ptr = parent->____left_son;
 
                 /* brother is balanced, need rotation but hight not change */
-                if (ptr->bf == BALANCED )
+                if (ptr->____bf == BALANCED )
                 {
-                    if (parent->bf == LEFT_BIGGER)
+                    if (parent->____bf == LEFT_BIGGER)
                         avl_rotate_ll(tree, parent);
                     else
                         avl_rotate_rr(tree, parent);
@@ -715,27 +715,27 @@ static int avl_delete_fixup(Avl *tree, Avl_node *parent, Avl_node *node)
                     /* hight not change, not need another fix */
                     break;
                 }
-                else if (parent->bf == ptr->bf)
+                else if (parent->____bf == ptr->____bf)
                 {
-                    if (parent->bf == LEFT_BIGGER)
+                    if (parent->____bf == LEFT_BIGGER)
                         avl_rotate_ll(tree, parent);
                     else
                         avl_rotate_rr(tree, parent);
 
                     /* go upper */
                     node = ptr;
-                    parent = ptr->parent;
+                    parent = ptr->____parent;
                 }
                 else
                 {
-                    if (parent->bf == LEFT_BIGGER)
+                    if (parent->____bf == LEFT_BIGGER)
                         avl_rotate_lr(tree, parent);
                     else
                         avl_rotate_rl(tree, parent);
 
                     /* go upper */
-                    node = parent->parent;
-                    parent = node->parent;
+                    node = parent->____parent;
+                    parent = node->____parent;
                 }
             }
         }
@@ -759,11 +759,11 @@ Avl *avl_create(int size_of, int (*cmp)(void *a, void *b))
     if (tree == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    tree->root = NULL;
-    tree->size_of = (size_t)size_of;
-    tree->cmp = cmp;
+    tree->____root = NULL;
+    tree->____size_of = (size_t)size_of;
+    tree->____cmp = cmp;
 
-    tree->nodes = 0;
+    tree->____nodes = 0;
 
     return tree;
 }
@@ -778,14 +778,14 @@ void avl_destroy(Avl *tree)
     if (tree == NULL)
         return;
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
     {
         FREE(tree);
         return;
     }
 
     /* destroy tree using inorder */
-    node = avl_min_node(tree->root);
+    node = avl_min_node(tree->____root);
     while(node != NULL)
     {
         temp = node;
@@ -809,19 +809,19 @@ void avl_destroy_with_entries(Avl *tree, void (*destructor)(void *data))
     if (destructor == NULL)
         return;
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
     {
         FREE(tree);
         return;
     }
 
     /* destroy tree using inorder */
-    node = avl_min_node(tree->root);
+    node = avl_min_node(tree->____root);
     while(node != NULL)
     {
         temp = node;
         node = avl_successor(node);
-        destructor(temp->data);
+        destructor(temp->____data);
         avl_node_destroy(temp);
     }
 
@@ -843,48 +843,48 @@ int avl_insert(Avl *tree, void *data)
         ERROR("data == NULL\n", 1, "");
 
     /* special case - empty tree */
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
     {
-        node = avl_node_create(data, (int)tree->size_of, NULL);
+        node = avl_node_create(data, (int)tree->____size_of, NULL);
 		if (node == NULL)
 			ERROR("avl_node_create error\n", 1, "");
 
-        tree->root = node;
+        tree->____root = node;
     }
     else
     {
          parent = NULL;
-         node = tree->root;
+         node = tree->____root;
 
         /* find correct place to insert */
         while (node != NULL)
         {
             parent = node;
-            if (tree->cmp(node->data, data) == 0) /* data exists in tree */
+            if (tree->____cmp(node->____data, data) == 0) /* data exists in tree */
             {
                 ERROR("data with this key exist in tree\n", 1, "");
             }
-            else if (tree->cmp(node->data, data) > 0)
-                node = node->left_son;
+            else if (tree->____cmp(node->____data, data) > 0)
+                node = node->____left_son;
             else
-                node = node->right_son;
+                node = node->____right_son;
         }
 
-        new_node = avl_node_create(data, (int)tree->size_of, parent);
+        new_node = avl_node_create(data, (int)tree->____size_of, parent);
 		if (new_node == NULL)
 			ERROR("avl_node_create error\n", 1, "");
 
         /* new node is the right son */
-        if (tree->cmp(new_node->data, parent->data) == 1)
-            parent->right_son = new_node;
+        if (tree->____cmp(new_node->____data, parent->____data) == 1)
+            parent->____right_son = new_node;
         else /* new_node is the left_node */
-            parent->left_son = new_node;
+            parent->____left_son = new_node;
 
         if (avl_insert_fixup(tree, new_node))
             ERROR("avl_insert_fixup error\n", 1, "");
     }
 
-    ++tree->nodes;
+    ++tree->____nodes;
 
     return 0;
 }
@@ -904,7 +904,7 @@ int avl_delete(Avl *tree, void *data_key)
     if (data_key == NULL)
         ERROR("data_key == NULL\n", 1, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("Tree is empty, nothing to delete\n", 1, "");
 
     node = avl_node_search(tree, data_key);
@@ -912,58 +912,58 @@ int avl_delete(Avl *tree, void *data_key)
         ERROR("data with this key doesn't exist in tree, nothing to delete\n", 1, "");
 
     temp = NULL;
-    parent = node->parent;
+    parent = node->____parent;
 
     /* case 1 node is leafnode */
-    if (node->left_son == NULL && node->right_son == NULL)
+    if (node->____left_son == NULL && node->____right_son == NULL)
     {
-        if (node->parent != NULL)
+        if (node->____parent != NULL)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = NULL;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = NULL;
             else
-                node->parent->right_son = NULL;
+                node->____parent->____right_son = NULL;
         }
         else
-            tree->root = NULL;
+            tree->____root = NULL;
 
         if (avl_delete_fixup(tree, parent, temp))
             ERROR("avl_delete_fixup error\n", 1, "");
     }
     /* case 2 node has only left subtree */
-    else if (node->right_son == NULL)
+    else if (node->____right_son == NULL)
     {
-        node->left_son->parent = node->parent;
-        temp = node->left_son;
+        node->____left_son->____parent = node->____parent;
+        temp = node->____left_son;
 
-        if (node->parent != NULL)
+        if (node->____parent != NULL)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = node->left_son;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = node->____left_son;
             else
-                node->parent->right_son = node->left_son;
+                node->____parent->____right_son = node->____left_son;
         }
         else
-            tree->root = node->left_son;
+            tree->____root = node->____left_son;
 
         if (avl_delete_fixup(tree, parent, temp))
             ERROR("avl_delete_fixup error\n", 1, "");
     }
     /* case 3 node has only right subtree */
-    else if (node->left_son == NULL)
+    else if (node->____left_son == NULL)
     {
-        node->right_son->parent = node->parent;
-        temp = node->right_son;
+        node->____right_son->____parent = node->____parent;
+        temp = node->____right_son;
 
-        if (node->parent != NULL)
+        if (node->____parent != NULL)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = node->right_son;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = node->____right_son;
             else
-                node->parent->right_son = node->right_son;
+                node->____parent->____right_son = node->____right_son;
         }
         else
-            tree->root = node->right_son;
+            tree->____root = node->____right_son;
 
         if (avl_delete_fixup(tree, parent, temp) )
             ERROR("avl_delete_fixup error\n", 1, "");
@@ -973,45 +973,45 @@ int avl_delete(Avl *tree, void *data_key)
     {
         successor = avl_successor(node);
 
-        temp = successor->right_son;
-        parent = successor->parent;
+        temp = successor->____right_son;
+        parent = successor->____parent;
 
         /* delete successor */
-        if (successor->right_son != NULL)
-            successor->right_son->parent = successor->parent;
+        if (successor->____right_son != NULL)
+            successor->____right_son->____parent = successor->____parent;
 
-        if (successor->parent->left_son == successor)
-            successor->parent->left_son = successor->right_son;
+        if (successor->____parent->____left_son == successor)
+            successor->____parent->____left_son = successor->____right_son;
         else
-            successor->parent->right_son = successor->right_son;
+            successor->____parent->____right_son = successor->____right_son;
 
        if (avl_delete_fixup(tree, parent, temp))
             ERROR("avl_delete_fixup error\n", 1, "");
 
-        successor->bf = node->bf;
+        successor->____bf = node->____bf;
 
-        successor->left_son = node->left_son;
-        successor->right_son = node->right_son;
+        successor->____left_son = node->____left_son;
+        successor->____right_son = node->____right_son;
 
-        if (successor->left_son != NULL)
-            successor->left_son->parent = successor;
-        if (successor->right_son != NULL)
-            successor->right_son->parent = successor;
+        if (successor->____left_son != NULL)
+            successor->____left_son->____parent = successor;
+        if (successor->____right_son != NULL)
+            successor->____right_son->____parent = successor;
 
-        successor->parent = node->parent;
+        successor->____parent = node->____parent;
 
-        if (node->parent != NULL)
+        if (node->____parent != NULL)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = successor;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = successor;
             else
-                node->parent->right_son = successor;
+                node->____parent->____right_son = successor;
         }
         else
-            tree->root = successor;
+            tree->____root = successor;
     }
 
-    --tree->nodes;
+    --tree->____nodes;
 
     avl_node_destroy(node);
 
@@ -1030,14 +1030,14 @@ int avl_min(Avl *tree, void *data)
     if (data == NULL)
         ERROR("data == NULL\n", 1, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("Tree is empty, nothing to delete\n", 1, "");
 
-    node = avl_min_node(tree->root);
+    node = avl_min_node(tree->____root);
     if (node == NULL)
         ERROR("avl_min_node error\n", 1, "");
 
-    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->data, tree->size_of);
+    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->____data, tree->____size_of);
 
     return 0;
 }
@@ -1054,14 +1054,14 @@ int avl_max(Avl *tree, void *data)
     if (data == NULL)
         ERROR("data == NULL\n", 1, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("Tree is empty, nothing to delete\n", 1, "");
 
-    node = avl_max_node(tree->root);
+    node = avl_max_node(tree->____root);
     if (node == NULL)
         ERROR("avl_max_node error\n", 1, "");
 
-    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->data, tree->size_of);
+    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->____data, tree->____size_of);
 
     return 0;
 }
@@ -1081,14 +1081,14 @@ int avl_max(Avl *tree, void *data)
     if (data_out == NULL)
         ERROR("data_out == NULL\n", 1, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("Tree is empty, nothing to delete\n", 1, "");
 
     node = avl_node_search(tree, data_key);
     if (node == NULL)
         ERROR("avl_search_node error\n", 1, "");
 
-    __ASSIGN__(*(BYTE *)data_out, *(BYTE *)node->data, tree->size_of);
+    __ASSIGN__(*(BYTE *)data_out, *(BYTE *)node->____data, tree->____size_of);
 
     return 0;
 }
@@ -1103,7 +1103,7 @@ bool avl_key_exist(Avl *tree, void *data_key)
     if (data_key == NULL)
         ERROR("data_key == NULL\n", false, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("Tree is empty, nothing to delete\n", false, "");
 
     return avl_node_search(tree, data_key) != NULL;
@@ -1127,27 +1127,27 @@ int avl_to_array(Avl *tree, void *array, size_t *size)
     if (size == NULL)
         ERROR("size == NULL\n", 1, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("Tree is empty, nothing to delete\n", 1, "");
 
-    t = malloc(tree->size_of * tree->nodes);
+    t = malloc(tree->____size_of * tree->____nodes);
 	if (t == NULL)
 		ERROR("malloc error\n", 1, "");
 
     offset = 0;
     _t = (BYTE *)t;
-    node = avl_min_node(tree->root);
+    node = avl_min_node(tree->____root);
 
     while (node != NULL)
     {
-        __ASSIGN__(_t[offset], *(BYTE *)node->data, tree->size_of);
-        offset += tree->size_of;
+        __ASSIGN__(_t[offset], *(BYTE *)node->____data, tree->____size_of);
+        offset += tree->____size_of;
 
         node = avl_successor(node);
     }
 
     *(void **)array = t;
-    *size = tree->nodes;
+    *size = tree->____nodes;
 
     return 0;
 }
@@ -1159,7 +1159,7 @@ ssize_t avl_get_num_entries(Avl *tree)
     if (tree == NULL)
         ERROR("tree == NULL\n", (ssize_t)-1, "");
 
-    return (ssize_t)tree->nodes;
+    return (ssize_t)tree->____nodes;
 }
 
 int avl_get_data_size(Avl *tree)
@@ -1169,7 +1169,7 @@ int avl_get_data_size(Avl *tree)
     if (tree == NULL)
         ERROR("tree == NULL\n", -1, "");
 
-    return (int)tree->size_of;
+    return (int)tree->____size_of;
 }
 
 Avl_iterator *avl_iterator_create(Avl *tree, iti_mode_t mode)
@@ -1189,13 +1189,13 @@ Avl_iterator *avl_iterator_create(Avl *tree, iti_mode_t mode)
         ERROR("malloc error\n", NULL, "");
 
     if (mode == ITI_BEGIN)
-        iterator->node = avl_min_node(tree->root);
+        iterator->____node = avl_min_node(tree->____root);
     else if (mode == ITI_END)
-        iterator->node = avl_max_node(tree->root);
+        iterator->____node = avl_max_node(tree->____root);
     else
-        iterator->node = tree->root;
+        iterator->____node = tree->____root;
 
-    iterator->size_of = tree->size_of;
+    iterator->____size_of = tree->____size_of;
 
     return iterator;
 }
@@ -1224,13 +1224,13 @@ int avl_iterator_init(Avl *tree, Avl_iterator *iterator, iti_mode_t mode)
         ERROR("Incorrect mode\n", 1, "");
 
     if (mode == ITI_BEGIN)
-        iterator->node = avl_min_node(tree->root);
+        iterator->____node = avl_min_node(tree->____root);
     else if (mode == ITI_END)
-        iterator->node = avl_max_node(tree->root);
+        iterator->____node = avl_max_node(tree->____root);
     else
-        iterator->node = tree->root;
+        iterator->____node = tree->____root;
 
-    iterator->size_of = tree->size_of;
+    iterator->____size_of = tree->____size_of;
 
     return 0;
 }
@@ -1243,7 +1243,7 @@ int avl_iterator_next(Avl_iterator *iterator)
         ERROR("iterator == NULL\n", 1, "");
 
 
-    iterator->node = avl_successor(iterator->node);
+    iterator->____node = avl_successor(iterator->____node);
 
     return 0;
 }
@@ -1256,7 +1256,7 @@ int avl_iterator_prev(Avl_iterator *iterator)
         ERROR("iterator == NULL\n", 1, "");
 
 
-    iterator->node = avl_predecessor(iterator->node);
+    iterator->____node = avl_predecessor(iterator->____node);
 
     return 0;
 }
@@ -1272,7 +1272,7 @@ int avl_iterator_get_data(Avl_iterator *iterator, void *val)
         ERROR("val == NULL\n", 1, "");
 
 
-    __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->node->data, iterator->size_of);
+    __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->____node->____data, iterator->____size_of);
 
     return 0;
 }
@@ -1288,7 +1288,7 @@ int avl_iterator_get_node(Avl_iterator *iterator, void *node)
         ERROR("node == NULL\n", 1, "");
 
 
-    *(void **)node = iterator->node;
+    *(void **)node = iterator->____node;
 
     return 0;
 }
@@ -1300,7 +1300,7 @@ bool avl_iterator_end(Avl_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", true, "");
 
-    return iterator->node == NULL;
+    return iterator->____node == NULL;
 }
 
 TREE_WRAPPERS_CREATE(Avl, avl)
