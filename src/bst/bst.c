@@ -644,6 +644,22 @@ int bst_max(Bst *tree,void *data)
     return 0;
 }
 
+ bool bst_key_exist(Bst *tree, void *data_key)
+ {
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", false, "");
+
+    if (data_key == NULL)
+        ERROR("data_key == NULL\n", false, "");
+
+    if (tree->root == NULL)
+        ERROR("tree is empty\n", false, "");
+
+    return bst_node_search(tree, data_key) != NULL;
+ }
+
  int bst_search(Bst *tree, void *data_key, void *data_out)
 {
     Bst_node *node;
@@ -656,6 +672,9 @@ int bst_max(Bst *tree,void *data)
     if (data_key == NULL)
         ERROR("data_key == NULL\n", 1, "");
 
+    if (data_out == NULL)
+        ERROR("data_out == NULL\n", 1, "");
+
     if (tree->root == NULL)
         ERROR("tree is empty\n", 1, "");
 
@@ -663,8 +682,7 @@ int bst_max(Bst *tree,void *data)
     if (node == NULL)
         ERROR("bst_search_node error\n", 1, "");
 
-    if (data_out != NULL)
-        __ASSIGN__(*(BYTE *)data_out, *(BYTE *)node->data, tree->size_of);
+    __ASSIGN__(*(BYTE *)data_out, *(BYTE *)node->data, tree->size_of);
 
     return 0;
 }
