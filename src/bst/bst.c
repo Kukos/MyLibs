@@ -369,7 +369,7 @@ Bst* bst_create(int size_of, int (*cmp)(void* a,void *b))
     tree->____root = NULL;
 
     tree->____cmp = cmp;
-    tree->____size_of = size_of;
+    tree->____size_of = (size_t)size_of;
 
     tree->____nodes = 0;
 
@@ -453,7 +453,7 @@ int bst_insert(Bst *tree, void *data)
     /* special case - empty tree */
     if (tree->____root == NULL)
     {
-        node = bst_node_create(data, tree->____size_of, NULL);
+        node = bst_node_create(data, (int)tree->____size_of, NULL);
 		if (node == NULL)
 			ERROR("bst_node_create\n", 1, "");
 
@@ -478,7 +478,7 @@ int bst_insert(Bst *tree, void *data)
                 node = node->____right_son;
         }
 
-        new_node = bst_node_create(data, tree->____size_of, parent);
+        new_node = bst_node_create(data, (int)tree->____size_of, parent);
 		if (new_node == NULL)
 			ERROR("bst_node_create\n", 1, "");
 
@@ -771,7 +771,7 @@ int bst_to_array(Bst *tree, void *array, size_t *size)
 
     Bst_node *node;
 
-    int offset;
+    size_t offset;
 
     TRACE("");
 
@@ -826,7 +826,7 @@ int bst_get_data_size(Bst *tree)
     if (tree == NULL)
         ERROR("tree == NULL\n", -1, "");
 
-    return tree->____size_of;
+    return (int)tree->____size_of;
 }
 
 Bst_iterator *bst_iterator_create(Bst *tree, ITI_MODE mode)
