@@ -14,6 +14,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <iterators.h>
+#include <sys/types.h>
+#include <tree.h>
 
 typedef struct Avl_node
 {
@@ -28,7 +30,7 @@ typedef struct Avl_node
 
 typedef struct Avl_iterator
 {
-    int      size_of;
+    size_t   size_of;
     Avl_node *node;
 }Avl_iterator;
 
@@ -36,12 +38,25 @@ typedef struct Avl
 {
     Avl_node    *root;
     size_t      nodes;
-    int         size_of;
+    size_t      size_of;
 
     int (*cmp)(void *a, void *b);
 }Avl;
 
 IT_FUNC(Avl, avl)
+
+/*
+    Create AVL as TREE
+
+    PARAMS
+    @IN size_of - size_of data in tree
+    @IN cmp - cmp function
+
+    RETURN:
+    NULL iff failure
+    Pointer to Tree iff success
+*/
+Tree *tree_avl_create(int size_of, int (*cmp)(void* a,void *b));
 
 /*
     Create AVL
@@ -71,6 +86,21 @@ Avl *avl_create(int size_of, int (*cmp)(void *a, void *b));
     This is a void function
 */
 void avl_destroy(Avl *tree);
+
+/*
+    Destroy AVL with all entries ( call destructor for each entries )
+
+    destructor by void * pass addr i.e in list we have MyStruct *,
+    so your destructor data = (void *)&ms
+
+    PARAMS
+    @IN tree - pointer to AVL
+    @IN destructor -  your object destructor
+
+    RETURN:
+    This is a void function
+*/
+void avl_destroy_with_entries(Avl *tree, void (*destructor)(void *data));
 
 /*
     Insert data to AVL IFF data with key ( using cmp ) is not in tree
@@ -164,5 +194,29 @@ int avl_delete(Avl *tree, void *data_key);
     Non-zero value iff failure
 */
 int avl_to_array(Avl *tree, void *array, size_t *size);
+
+/*
+    Get Num entries of AVL
+
+    PARAMS
+    @IN tree - pointer to AVL
+
+    RETURN
+    -1 iff failure
+    Num of entries iff success
+*/
+ssize_t avl_get_num_entries(Avl *tree);
+
+/*
+    Get Size of AVL data
+
+    PARAMS
+    @IN tree - pointer to AVL
+
+    RETURN
+    -1 iff failure
+    Size of data
+*/
+int avl_get_data_size(Avl *tree);
 
 #endif
