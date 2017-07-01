@@ -91,6 +91,10 @@ ___inline___ SList_iterator *slist_iterator_create(SList *list, ITI_MODE mode);
     @IN list - pointer to list
     @IN it - pointer to iterator
     @IN mode - Iterator mode
+
+    RETURN
+    0 iff success
+    Non-zero value iff failure
 */
 ___inline___ int slist_iterator_init(SList *list, SList_iterator *it, ITI_MODE mode);
 
