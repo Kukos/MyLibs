@@ -955,3 +955,30 @@ bool bst_iterator_end(Bst_iterator *iterator)
 
     return iterator->node == NULL;
 }
+
+TREE_WRAPPERS_CREATE(Bst, bst)
+
+Tree *tree_bst_create(int size_of, int (*cmp)(void* a,void *b))
+{
+    Tree *tree;
+
+    TRACE("");
+
+    /* create Tree */
+    tree = (Tree *)malloc(sizeof(Tree));
+    if (tree == NULL)
+        ERROR("malloc error\n", NULL, "");
+
+    /* create bst */
+    tree->____tree = (void *)bst_create(size_of, cmp);
+    if (tree->____tree == NULL)
+    {
+        FREE(tree);
+        ERROR("bst_create error\n", NULL, "");
+    }
+
+    /* fill hooks */
+    TREE_WRAPPERS_ASSIGN(tree);
+
+    return tree;
+}

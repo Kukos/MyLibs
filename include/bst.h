@@ -14,6 +14,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <sys/types.h>
+#include <tree.h>
 
 typedef struct Bst_node
 {
@@ -40,6 +41,19 @@ typedef struct Bst
 }Bst;
 
 IT_FUNC(Bst, bst)
+
+/*
+    Create Bst as TREE
+
+    PARAMS
+    @IN size_of - size_of data in tree
+    @IN cmp - cmp function
+
+    RETURN:
+    NULL iff failure
+    Pointer to Tree iff success
+*/
+Tree *tree_bst_create(int size_of, int (*cmp)(void* a,void *b));
 
 /*
     Create BST
