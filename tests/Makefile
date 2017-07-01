@@ -7,7 +7,7 @@ endef
 TEST_SRC := $(TEST_DIR)/src
 TEST_EXEC_NAME := test.out
 
-all: arraylist bst common compiler darray fifo filebuffer klist list list2d sort stack trie ufset
+all: arraylist bst common compiler darray fifo filebuffer klist list list2d rbt sort stack trie ufset
 
 arraylist:
 	$(call print_test_make,$@)
@@ -49,6 +49,10 @@ list2d:
 	$(call print_test_make,$@)
 	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
 
+rbt:
+	$(call print_test_make,$@)
+	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
+
 sort:
 	$(call print_test_make,$@)
 	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
@@ -76,6 +80,7 @@ run:
 	$(MAKE) -f $(TEST_SRC)/klist/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/list/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/list2d/Makefile run --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/rbt/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/sort/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/stack/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/trie/Makefile run --no-print-directory && \
@@ -92,6 +97,7 @@ clean:
 	$(MAKE) -f $(TEST_SRC)/klist/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/list/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/list2d/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/rbt/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/sort/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/stack/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/trie/Makefile clean --no-print-directory && \
