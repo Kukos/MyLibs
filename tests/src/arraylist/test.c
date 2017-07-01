@@ -898,6 +898,7 @@ test_f test_merge_empty(void)
 test_f test_ulist_framework(void)
 {
     /* I have tested whole arraylist so here I test only call correct funcion in easiest way */
+    MyStruct *s;
 
     UList *ulist1;
     UList *ulist2;
@@ -907,6 +908,8 @@ test_f test_ulist_framework(void)
     int *rt;
     int t[] = {val, val, val};
     size_t size = 0;
+    size_t loop = 10;
+    size_t i;
     size_t rsize;
 
     ulist1 = ulist_arraylist_create(sizeof(int));
@@ -968,6 +971,21 @@ test_f test_ulist_framework(void)
     ulist_destroy(ulist1);
     ulist_destroy(ulist2);
     ulist_destroy(ulist3);
+
+    ulist1 = ulist_arraylist_create(sizeof(MyStruct *));
+    T_ERROR(ulist1 == NULL);
+    T_EXPECT(ulist_get_num_entries(ulist1), 0);
+    T_EXPECT(ulist_get_data_size(ulist1), sizeof(MyStruct *));
+
+    for (i = 0; i < loop; ++i)
+    {
+        s = (MyStruct *)malloc(sizeof(MyStruct));
+        T_ERROR(s == NULL);
+
+        T_EXPECT(ulist_insert_last(ulist1, (void *)&s), 0);
+    }
+
+    ulist_destroy_with_entries(ulist1, my_struct_destroy);
 }
 
 test_f test_ulist_for_each(void)
