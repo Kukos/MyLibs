@@ -191,7 +191,7 @@ static ___inline___ bool trie_node_has_child(Trie_node *node)
     TRACE("");
 
     if (node == NULL)
-        ERROR("node == NULL", false, "");
+        ERROR("node == NULL\n", false, "");
 
     for (i = 0; i < ALPHABET_SIZE; ++i)
         if (node->____children[i] != NULL)

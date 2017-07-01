@@ -215,7 +215,7 @@ int list2d_insert(List2D *list, void *entry)
             /* add guardian at the end of list */
             guard = list2d_node_create(ptr->____prev, ptr, entry, (int)list->____size_of);
             if (guard == NULL)
-                ERROR("malloc error", 1, "");
+                ERROR("malloc error\n", 1, "");
 
             list->____head->____prev->____next  = guard;
             list->____head->____prev            = guard;
@@ -230,7 +230,7 @@ int list2d_insert(List2D *list, void *entry)
 
             new_node = list2d_node_create(ptr->____prev, ptr, entry, (int)list->____size_of);
             if (new_node == NULL)
-                ERROR("malloc error", 1, "");
+                ERROR("malloc error\n", 1, "");
 
             ptr->____prev->____next     = new_node;
             ptr->____prev               = new_node;
@@ -252,7 +252,7 @@ int list2d_insert(List2D *list, void *entry)
             /* add guardian at the end of list */
             guard = list2d_node_create(ptr, ptr->____next, entry, (int)list->____size_of);
             if (guard == NULL)
-                ERROR("list2d_node create error", 1, "");
+                ERROR("list2d_node create error\n", 1, "");
 
             ptr->____next           = guard;
             list->____head->____prev    = guard;
@@ -263,7 +263,7 @@ int list2d_insert(List2D *list, void *entry)
 
             new_node = list2d_node_create(ptr, ptr->____next, entry, (int)list->____size_of);
             if (new_node == NULL)
-                ERROR("list2d_node_create error", 1, "");
+                ERROR("list2d_node_create error\n", 1, "");
 
             ptr->____next->____prev     = new_node;
             ptr->____next           = new_node;
@@ -305,7 +305,7 @@ int list2d_delete(List2D *list, void *entry)
         /* add guardian at the end of list */
         guard = list2d_node_create(ptr->____prev, ptr, entry, (int)list->____size_of);
         if (guard == NULL)
-            ERROR("list2d_node_create error", 1, "");
+            ERROR("list2d_node_create error\n", 1, "");
 
         list->____head->____prev->____next  = guard;
         list->____head->____prev            = guard;
@@ -321,7 +321,7 @@ int list2d_delete(List2D *list, void *entry)
         /* add guardian at the end of list */
         guard = list2d_node_create(ptr, ptr->____next, entry, (int)list->____size_of);
         if (guard == NULL)
-            ERROR("list2d_node_create error", 1, "");
+            ERROR("list2d_node_create error\n", 1, "");
 
         list->____head->____prev->____next = guard;
         list->____head->____prev = guard;
@@ -393,7 +393,7 @@ int list2d_delete_all(List2D *list, void *entry)
         /* add guardian at the end of list */
         guard = list2d_node_create(ptr->____prev, ptr, entry, (int)list->____size_of);
         if (guard == NULL)
-            ERROR("list2d_node_create error", 1, "");
+            ERROR("list2d_node_create error\n", 1, "");
 
         list->____head->____prev->____next = guard;
         list->____head->____prev = guard;
@@ -438,7 +438,7 @@ int list2d_delete_all(List2D *list, void *entry)
         /* add guardian at the end of list */
         guard = list2d_node_create(ptr, ptr->____next, entry, (int)list->____size_of);
         if (guard == NULL)
-            ERROR("list2d_node_create error", 1, "");
+            ERROR("list2d_node_create error\n", 1, "");
 
         list->____head->____prev->____next = guard;
         list->____head->____prev = guard;
@@ -513,7 +513,7 @@ int list2d_search(List2D *list, void *val, void *entry)
         /* add guardian at the end of list */
         guard = list2d_node_create(ptr->____prev, ptr, val, (int)list->____size_of);
         if (guard == NULL)
-            ERROR("list2d_node_create error", 1, "");
+            ERROR("list2d_node_create error\n", 1, "");
 
         list->____head->____prev->____next = guard;
 
@@ -528,7 +528,7 @@ int list2d_search(List2D *list, void *val, void *entry)
         /* add guardian at the end of list */
         guard = list2d_node_create(ptr, ptr->____next, val, (int)list->____size_of);
         if (guard == NULL)
-            ERROR("list2d_node_create error", 1, "");
+            ERROR("list2d_node_create error\n", 1, "");
 
         list->____head->____prev = guard;
 
