@@ -1163,7 +1163,7 @@ Tree *tree_rbt_create(int size_of, int (*cmp)(void* a,void *b))
     if (tree->____tree == NULL)
     {
         FREE(tree);
-        ERROR("bst_create error\n", NULL, "");
+        ERROR("rbt_create error\n", NULL, "");
     }
 
     /* fill hooks */
