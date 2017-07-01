@@ -18,26 +18,26 @@
 
 typedef struct Bst_node
 {
-    void                *data;
-    struct Bst_node     *left_son;
-    struct Bst_node     *right_son;
-    struct Bst_node     *parent;
+    void                *____data;
+    struct Bst_node     *____left_son;
+    struct Bst_node     *____right_son;
+    struct Bst_node     *____parent;
 
 }Bst_node;
 
 typedef struct Bst_iterator
 {
-    int         size_of;
-    Bst_node    *node;
+    int         ____size_of;
+    Bst_node    *____node;
 }Bst_iterator;
 
 typedef struct Bst
 {
-    Bst_node    *root;
-    size_t      nodes;
-    int         size_of;
+    Bst_node    *____root;
+    size_t      ____nodes;
+    int         ____size_of;
 
-    int (*cmp)(void* a,void *b);
+    int (*____cmp)(void* a,void *b);
 }Bst;
 
 IT_FUNC(Bst, bst)

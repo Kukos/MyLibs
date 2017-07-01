@@ -57,8 +57,8 @@ int __tree_rek_hight(Bst_node *node)
     if (node == NULL)
         return 0;
 
-    left = __tree_rek_hight(node->left_son);
-    right = __tree_rek_hight(node->right_son);
+    left = __tree_rek_hight(node->____left_son);
+    right = __tree_rek_hight(node->____right_son);
 
     return MAX(left, right) + 1;
 
@@ -66,7 +66,7 @@ int __tree_rek_hight(Bst_node *node)
 
 int tree_rek_hight(Bst *tree)
 {
-    return __tree_rek_hight(tree->root);
+    return __tree_rek_hight(tree->____root);
 }
 
 test_f test_create(void)

@@ -132,18 +132,18 @@ static ___inline___ Bst_node *bst_node_create(void *data, int size_of, Bst_node 
     if (node == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    node->data = malloc((size_t)size_of);
-    if (node->data == NULL)
+    node->____data = malloc((size_t)size_of);
+    if (node->____data == NULL)
 	{
 		FREE(node);
         ERROR("malloc error\n", NULL, "");
 	}
 
-    __ASSIGN__(*(BYTE *)node->data, *(BYTE *)data, size_of);
+    __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
 
-    node->parent    = parent;
-    node->left_son  = NULL;
-    node->right_son = NULL;
+    node->____parent    = parent;
+    node->____left_son  = NULL;
+    node->____right_son = NULL;
 
     return node;
 }
@@ -155,7 +155,7 @@ static ___inline___ void bst_node_destroy(Bst_node *node)
     if (node == NULL)
         return;
 
-    FREE(node->data);
+    FREE(node->____data);
     FREE(node);
 }
 
@@ -167,14 +167,14 @@ static ___inline___ Bst_node *bst_successor(Bst_node *node)
 
     assert(node != NULL);
 
-    if (node->right_son != NULL)
-        return bst_min_node(node->right_son);
+    if (node->____right_son != NULL)
+        return bst_min_node(node->____right_son);
 
-    parent = node->parent;
-    while (parent != NULL && node == parent->right_son)
+    parent = node->____parent;
+    while (parent != NULL && node == parent->____right_son)
     {
         node = parent;
-        parent = parent->parent;
+        parent = parent->____parent;
     }
 
     return parent;
@@ -188,14 +188,14 @@ static ___inline___ Bst_node *bst_predecessor(Bst_node *node)
 
     assert(node != NULL);
 
-    if (node->left_son != NULL)
-        return bst_max_node(node->left_son);
+    if (node->____left_son != NULL)
+        return bst_max_node(node->____left_son);
 
-    parent = node->parent;
-    while (parent != NULL && node == parent->left_son)
+    parent = node->____parent;
+    while (parent != NULL && node == parent->____left_son)
     {
         node = parent;
-        parent = parent->parent;
+        parent = parent->____parent;
     }
 
     return parent;
@@ -210,16 +210,16 @@ static ___inline___ Bst_node *bst_node_search(Bst *tree, void *data_key)
     assert(tree != NULL);
     assert(data_key != NULL);
 
-    node = tree->root;
+    node = tree->____root;
 
     while (node != NULL)
     {
-        if (tree->cmp(node->data,data_key) == 0)
+        if (tree->____cmp(node->____data,data_key) == 0)
             return node;
-        else if (tree->cmp(node->data,data_key) > 0)
-            node = node->left_son;
+        else if (tree->____cmp(node->____data,data_key) > 0)
+            node = node->____left_son;
         else
-            node = node->right_son;
+            node = node->____right_son;
     }
 
     /* now node is NULL */
@@ -238,7 +238,7 @@ static ___inline___ Bst_node *bst_max_node(Bst_node *node)
     while (node != NULL)
     {
         parent = node;
-        node = node->right_son;
+        node = node->____right_son;
     }
 
     return parent;
@@ -256,7 +256,7 @@ static ___inline___ Bst_node *bst_min_node(Bst_node *node)
     while (node != NULL)
     {
         parent = node;
-        node = node->left_son;
+        node = node->____left_son;
     }
 
     return parent;
@@ -280,30 +280,30 @@ static ___inline___ void bst_rotate_right(Bst *tree, Bst_node *node)
 
     assert(tree != NULL);
     assert(node != NULL);
-    assert(node->left_son != NULL);
+    assert(node->____left_son != NULL);
 
-    left_son = node->left_son;
+    left_son = node->____left_son;
 
     /* update X ptr */
-    node->left_son = left_son->right_son;
+    node->____left_son = left_son->____right_son;
 
-    if( node->left_son != NULL)
-        node->left_son->parent = node;
+    if( node->____left_son != NULL)
+        node->____left_son->____parent = node;
 
-    left_son->right_son = node;
-    left_son->parent = node->parent;
-    node->parent = left_son;
+    left_son->____right_son = node;
+    left_son->____parent = node->____parent;
+    node->____parent = left_son;
 
     /* update his child ptr */
-    if (left_son->parent != NULL)
+    if (left_son->____parent != NULL)
     {
-        if (left_son->parent->left_son == node)
-            left_son->parent->left_son = left_son;
+        if (left_son->____parent->____left_son == node)
+            left_son->____parent->____left_son = left_son;
         else
-            left_son->parent->right_son = left_son;
+            left_son->____parent->____right_son = left_son;
     }
     else
-        tree->root = left_son;
+        tree->____root = left_son;
 }
 
 /*
@@ -324,30 +324,30 @@ static ___inline___ void bst_rotate_left(Bst *tree, Bst_node *node)
 
     assert(tree != NULL);
     assert(node != NULL);
-    assert(node->right_son != NULL);
+    assert(node->____right_son != NULL);
 
-    right_son = node->right_son;
+    right_son = node->____right_son;
 
     /* update X ptr */
-    node->right_son = right_son->left_son;
+    node->____right_son = right_son->____left_son;
 
-    if (node->right_son != NULL)
-        node->right_son->parent = node;
+    if (node->____right_son != NULL)
+        node->____right_son->____parent = node;
 
-    right_son->left_son = node;
-    right_son->parent = node->parent;
-    node->parent = right_son;
+    right_son->____left_son = node;
+    right_son->____parent = node->____parent;
+    node->____parent = right_son;
 
     /* update his child ptr */
-    if (right_son->parent != NULL)
+    if (right_son->____parent != NULL)
     {
-        if (right_son->parent->left_son == node)
-            right_son->parent->left_son = right_son;
+        if (right_son->____parent->____left_son == node)
+            right_son->____parent->____left_son = right_son;
         else
-            right_son->parent->right_son = right_son;
+            right_son->____parent->____right_son = right_son;
     }
     else
-        tree->root = right_son;
+        tree->____root = right_son;
 }
 
 Bst* bst_create(int size_of, int (*cmp)(void* a,void *b))
@@ -366,12 +366,12 @@ Bst* bst_create(int size_of, int (*cmp)(void* a,void *b))
     if (tree == NULL)
        ERROR("malloc error\n", NULL, "");
 
-    tree->root = NULL;
+    tree->____root = NULL;
 
-    tree->cmp = cmp;
-    tree->size_of = size_of;
+    tree->____cmp = cmp;
+    tree->____size_of = size_of;
 
-    tree->nodes = 0;
+    tree->____nodes = 0;
 
     return tree;
 }
@@ -386,14 +386,14 @@ void bst_destroy(Bst *tree)
     if (tree == NULL)
         return;
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
     {
         FREE(tree);
         return;
     }
 
     /* Destroy tree using inorder */
-    node = bst_min_node(tree->root);
+    node = bst_min_node(tree->____root);
     while (node != NULL)
     {
         temp = node;
@@ -417,19 +417,19 @@ void bst_destroy_with_entries(Bst *tree, void (*destructor)(void *data))
     if (destructor == NULL)
         return;
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
     {
         FREE(tree);
         return;
     }
 
     /* Destroy tree using inorder */
-    node = bst_min_node(tree->root);
+    node = bst_min_node(tree->____root);
     while (node != NULL)
     {
         temp = node;
         node = bst_successor(node);
-        destructor(temp->data);
+        destructor(temp->____data);
         bst_node_destroy(temp);
     }
 
@@ -451,45 +451,45 @@ int bst_insert(Bst *tree, void *data)
         ERROR("data == NULL\n", 1, "");
 
     /* special case - empty tree */
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
     {
-        node = bst_node_create(data, tree->size_of, NULL);
+        node = bst_node_create(data, tree->____size_of, NULL);
 		if (node == NULL)
 			ERROR("bst_node_create\n", 1, "");
 
-        tree->root = node;
+        tree->____root = node;
     }
     else
     {
         parent = NULL;
-        node = tree->root;
+        node = tree->____root;
 
         /* find correct place to insert */
         while (node != NULL)
         {
             parent = node;
-            if (tree->cmp(node->data, data) == 0) /* data exists in tree */
+            if (tree->____cmp(node->____data, data) == 0) /* data exists in tree */
             {
                 ERROR("Data exists in tree\n", 1, "");
             }
-            else if (tree->cmp(node->data, data) > 0)
-                node = node->left_son;
+            else if (tree->____cmp(node->____data, data) > 0)
+                node = node->____left_son;
             else
-                node = node->right_son;
+                node = node->____right_son;
         }
 
-        new_node = bst_node_create(data, tree->size_of, parent);
+        new_node = bst_node_create(data, tree->____size_of, parent);
 		if (new_node == NULL)
 			ERROR("bst_node_create\n", 1, "");
 
         /* new node is the right son */
-        if (tree->cmp(new_node->data, parent->data) > 0)
-            parent->right_son = new_node;
+        if (tree->____cmp(new_node->____data, parent->____data) > 0)
+            parent->____right_son = new_node;
         else /* new_node is the left_node */
-            parent->left_son = new_node;
+            parent->____left_son = new_node;
     }
 
-    ++tree->nodes;
+    ++tree->____nodes;
 
     return 0;
 }
@@ -513,84 +513,84 @@ int bst_delete(Bst *tree, void *data_key)
         ERROR("data with this key doesn't exist in tree, nothing to delete\n", 1, "");
 
     /* case 1, node is leaf_node */
-    if (node->left_son == NULL && node->right_son == NULL)
+    if (node->____left_son == NULL && node->____right_son == NULL)
     {
         /* if have parent */
-        if (node->parent != NULL)
+        if (node->____parent != NULL)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = NULL;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = NULL;
             else
-                node->parent->right_son = NULL;
+                node->____parent->____right_son = NULL;
         }
         else /* is root */
-            tree->root = NULL;
+            tree->____root = NULL;
     }
-    else if (node->right_son == NULL) /* case 2 node has only left subtree */
+    else if (node->____right_son == NULL) /* case 2 node has only left subtree */
     {
         /* update ptr to parent */
-        node->left_son->parent = node->parent;
-        if (node->parent != NULL)
+        node->____left_son->____parent = node->____parent;
+        if (node->____parent != NULL)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = node->left_son;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = node->____left_son;
             else
-                node->parent->right_son = node->left_son;
+                node->____parent->____right_son = node->____left_son;
         }
         else
-            tree->root = node->left_son;
+            tree->____root = node->____left_son;
     }
-    else if (node->left_son == NULL) /* case 3 node has only right subtree */
+    else if (node->____left_son == NULL) /* case 3 node has only right subtree */
     {
         /* update ptr to parent */
-        node->right_son->parent = node->parent;
-        if (node->parent != NULL)
+        node->____right_son->____parent = node->____parent;
+        if (node->____parent != NULL)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = node->right_son;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = node->____right_son;
             else
-                node->parent->right_son = node->right_son;
+                node->____parent->____right_son = node->____right_son;
         }
         else
-            tree->root = node->right_son;
+            tree->____root = node->____right_son;
     }
     else /* case 4 node has both childdren */
     {
         successor = bst_successor(node);
 
         /* delete successor */
-        if (successor->right_son != NULL)
-            successor->right_son->parent = successor->parent;
+        if (successor->____right_son != NULL)
+            successor->____right_son->____parent = successor->____parent;
 
-        if (successor->parent->left_son == successor)
-            successor->parent->left_son = successor->right_son;
+        if (successor->____parent->____left_son == successor)
+            successor->____parent->____left_son = successor->____right_son;
         else
-            successor->parent->right_son = successor->right_son;
+            successor->____parent->____right_son = successor->____right_son;
 
         /* update node children ptrs */
-        successor->left_son = node->left_son;
-        successor->right_son = node->right_son;
+        successor->____left_son = node->____left_son;
+        successor->____right_son = node->____right_son;
 
         /* successor is new parent */
-        successor->left_son->parent = successor;
-        if (successor->right_son != NULL)
-            successor->right_son->parent = successor;
+        successor->____left_son->____parent = successor;
+        if (successor->____right_son != NULL)
+            successor->____right_son->____parent = successor;
 
         /* successor is in node place, so update parent ptr */
-        successor->parent = node->parent;
+        successor->____parent = node->____parent;
 
-        if (node->parent != NULL)
+        if (node->____parent != NULL)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = successor;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = successor;
             else
-                node->parent->right_son = successor;
+                node->____parent->____right_son = successor;
         }
         else
-            tree->root = successor;
+            tree->____root = successor;
     }
 
-    --tree->nodes;
+    --tree->____nodes;
     bst_node_destroy(node);
 
     return 0;
@@ -608,14 +608,14 @@ int bst_min(Bst *tree, void *data)
     if (data == NULL)
         ERROR("data == NULL\n", 1, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("tree is empty\n", 1, "");
 
-    node = bst_min_node(tree->root);
+    node = bst_min_node(tree->____root);
     if (node == NULL)
         ERROR("bst_min_node error\n", 1, "");
 
-    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->data, tree->size_of);
+    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->____data, tree->____size_of);
 
     return 0;
 }
@@ -632,14 +632,14 @@ int bst_max(Bst *tree,void *data)
     if (data == NULL)
         ERROR("data == NULL\n", 1, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("tree is empty\n", 1, "");
 
-    node = bst_max_node(tree->root);
+    node = bst_max_node(tree->____root);
     if(node == NULL)
         ERROR("bst_max_node error\n", 1 , "");
 
-    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->data, tree->size_of);
+    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->____data, tree->____size_of);
 
     return 0;
 }
@@ -654,7 +654,7 @@ int bst_max(Bst *tree,void *data)
     if (data_key == NULL)
         ERROR("data_key == NULL\n", false, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("tree is empty\n", false, "");
 
     return bst_node_search(tree, data_key) != NULL;
@@ -675,14 +675,14 @@ int bst_max(Bst *tree,void *data)
     if (data_out == NULL)
         ERROR("data_out == NULL\n", 1, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("tree is empty\n", 1, "");
 
     node = bst_node_search(tree, data_key);
     if (node == NULL)
         ERROR("bst_search_node error\n", 1, "");
 
-    __ASSIGN__(*(BYTE *)data_out, *(BYTE *)node->data, tree->size_of);
+    __ASSIGN__(*(BYTE *)data_out, *(BYTE *)node->____data, tree->____size_of);
 
     return 0;
 }
@@ -704,30 +704,30 @@ int bst_balance(Bst *tree)
     if (tree == NULL)
         ERROR("tree == NULL\n", 1, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("tree is empty\n", 1, "");
 
-    ptr = tree->root;
+    ptr = tree->____root;
 
     /* make "spine" from tree */
     while (ptr != NULL)
     {
-        if (ptr->left_son != NULL)
+        if (ptr->____left_son != NULL)
         {
             bst_rotate_right(tree, ptr);
-            ptr = ptr->parent;
+            ptr = ptr->____parent;
         }
         else
-            ptr = ptr->right_son;
+            ptr = ptr->____right_son;
     }
 
-    n = (int)tree->nodes;
+    n = (int)tree->____nodes;
 
     /* count k from formula k = n + 1 - 2^(floor(LOG2(n + 1))) */
     k = n + 1 - (1 << (int)LOG2_int((unsigned int)(n + 1)));
 
     /* start from root and make k rotations */
-    ptr = tree->root;
+    ptr = tree->____root;
     for (i = 0; i < k; ++i)
     {
         /*rotate evry second node
@@ -744,7 +744,7 @@ int bst_balance(Bst *tree)
         */
 
         bst_rotate_left(tree, ptr);
-        ptr = ptr->parent->right_son;
+        ptr = ptr->____parent->____right_son;
     }
 
     /*  we made k rotations, now rotate n - k / 2 n - k / 4 .... times */
@@ -753,11 +753,11 @@ int bst_balance(Bst *tree)
     while (n > 1)
     {
         n >>= 1;
-        ptr = tree->root;
+        ptr = tree->____root;
         for (i = 0; i < n; ++i)
         {
             bst_rotate_left(tree,ptr);
-            ptr = ptr->parent->right_son;
+            ptr = ptr->____parent->____right_son;
         }
     }
 
@@ -784,27 +784,27 @@ int bst_to_array(Bst *tree, void *array, size_t *size)
     if (size == NULL)
         ERROR("size == NULL\n", 1, "");
 
-    if (tree->root == NULL)
+    if (tree->____root == NULL)
         ERROR("tree is empty\n", 1, "");
 
-    t = malloc((size_t)tree->size_of * tree->nodes);
+    t = malloc((size_t)tree->____size_of * tree->____nodes);
 	if (t == NULL)
 		ERROR("malloc error\n", 1, "");
 
     offset = 0;
     _t = (BYTE *)t;
 
-    node = bst_min_node(tree->root);
+    node = bst_min_node(tree->____root);
     while (node != NULL)
     {
-        __ASSIGN__(_t[offset], *(BYTE *)node->data, tree->size_of);
-        offset += tree->size_of;
+        __ASSIGN__(_t[offset], *(BYTE *)node->____data, tree->____size_of);
+        offset += tree->____size_of;
 
         node = bst_successor(node);
     }
 
     *(void **)array = t;
-    *size = tree->nodes;
+    *size = tree->____nodes;
 
     return 0;
 }
@@ -816,7 +816,7 @@ ssize_t bst_get_num_entries(Bst *tree)
     if (tree == NULL)
         ERROR("tree == NULL\n", (ssize_t)-1, "");
 
-    return (ssize_t)tree->nodes;
+    return (ssize_t)tree->____nodes;
 }
 
 int bst_get_data_size(Bst *tree)
@@ -826,7 +826,7 @@ int bst_get_data_size(Bst *tree)
     if (tree == NULL)
         ERROR("tree == NULL\n", -1, "");
 
-    return tree->size_of;
+    return tree->____size_of;
 }
 
 Bst_iterator *bst_iterator_create(Bst *tree, ITI_MODE mode)
@@ -846,13 +846,13 @@ Bst_iterator *bst_iterator_create(Bst *tree, ITI_MODE mode)
         ERROR("malloc error\n", NULL, "");
 
     if (mode == ITI_BEGIN)
-        iterator->node = bst_min_node(tree->root);
+        iterator->____node = bst_min_node(tree->____root);
     else if ( mode == ITI_END)
-        iterator->node = bst_max_node(tree->root);
+        iterator->____node = bst_max_node(tree->____root);
     else
-        iterator->node = tree->root;
+        iterator->____node = tree->____root;
 
-    iterator->size_of = tree->size_of;
+    iterator->____size_of = tree->____size_of;
 
     return iterator;
 }
@@ -880,14 +880,14 @@ int bst_iterator_init(Bst *tree, Bst_iterator *iterator, ITI_MODE mode)
     if (mode != ITI_BEGIN && mode != ITI_END && mode != ITI_ROOT)
         ERROR("Incorrect node\n", 1, "");
 
-    iterator->size_of = tree->size_of;
+    iterator->____size_of = tree->____size_of;
 
     if (mode == ITI_BEGIN)
-        iterator->node = bst_min_node(tree->root);
+        iterator->____node = bst_min_node(tree->____root);
     else if (mode == ITI_END)
-        iterator->node = bst_max_node(tree->root);
+        iterator->____node = bst_max_node(tree->____root);
     else
-        iterator->node = tree->root;
+        iterator->____node = tree->____root;
 
     return 0;
 }
@@ -899,7 +899,7 @@ int bst_iterator_next(Bst_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1, "");
 
-    iterator->node = bst_successor(iterator->node);
+    iterator->____node = bst_successor(iterator->____node);
 
     return 0;
 }
@@ -911,7 +911,7 @@ int bst_iterator_prev(Bst_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1, "");
 
-    iterator->node = bst_predecessor(iterator->node);
+    iterator->____node = bst_predecessor(iterator->____node);
 
     return 0;
 }
@@ -926,7 +926,7 @@ int bst_iterator_get_data(Bst_iterator *iterator, void *val)
     if (val == NULL)
         ERROR("iterator == NULL\n", 1, "");
 
-    __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->node->data, iterator->size_of);
+    __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->____node->____data, iterator->____size_of);
 
     return 0;
 }
@@ -941,7 +941,7 @@ int bst_iterator_get_node(Bst_iterator *iterator, void *node)
     if (node == NULL)
         ERROR("iterator == NULL\n", 1, "");
 
-    *(void **)node = iterator->node;
+    *(void **)node = iterator->____node;
 
     return 0;
 }
@@ -953,7 +953,7 @@ bool bst_iterator_end(Bst_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", true, "");
 
-    return iterator->node == NULL;
+    return iterator->____node == NULL;
 }
 
 TREE_WRAPPERS_CREATE(Bst, bst)
