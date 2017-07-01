@@ -20,27 +20,27 @@ typedef char rbt_color_t;
 
 typedef struct Rbt_node
 {
-    void            *data;
-    struct Rbt_node *left_son;
-    struct Rbt_node *right_son;
-    struct Rbt_node *parent;
-    rbt_color_t     color;
+    void            *____data;
+    struct Rbt_node *____left_son;
+    struct Rbt_node *____right_son;
+    struct Rbt_node *____parent;
+    rbt_color_t     ____color;
 
 }Rbt_node;
 
 typedef struct Rbt_iterator
 {
-    size_t      size_of;
-    Rbt_node    *node;
+    size_t      ____size_of;
+    Rbt_node    *____node;
 }Rbt_iterator;
 
 typedef struct Rbt
 {
-    Rbt_node    *root;
-    size_t      nodes;
-    size_t      size_of;
+    Rbt_node    *____root;
+    size_t      ____nodes;
+    size_t      ____size_of;
 
-    int (*cmp)(void *a, void *b);
+    int (*____cmp)(void *a, void *b);
 }Rbt;
 
 IT_FUNC(Rbt, rbt)

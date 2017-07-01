@@ -19,10 +19,10 @@ static ___unused___ char ____sentinel_buffer[SENTINEL_BUFFER_SIZE] = { SENTINEL_
 
 static ___unused___ Rbt_node ____sentinel =
 {
-    .data       = (void *)&____sentinel_buffer,
-    .left_son   = &____sentinel,
-    .right_son  = &____sentinel,
-    .parent     = &____sentinel
+    .____data       = (void *)&____sentinel_buffer,
+    .____left_son   = &____sentinel,
+    .____right_son  = &____sentinel,
+    .____parent     = &____sentinel
 };
 
 static Rbt_node *sentinel = &____sentinel;
@@ -184,20 +184,20 @@ ___inline___ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node 
     if (node == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    node->data = malloc((size_t)size_of);
-    if (node->data == NULL)
+    node->____data = malloc((size_t)size_of);
+    if (node->____data == NULL)
 	{
 		FREE(node);
         ERROR("malloc error\n", NULL, "");
 	}
 
-    __ASSIGN__(*(BYTE *)node->data, *(BYTE *)data, size_of);
+    __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
 
-    node->parent = parent;
-    node->left_son = sentinel;
-    node->right_son = sentinel;
+    node->____parent = parent;
+    node->____left_son = sentinel;
+    node->____right_son = sentinel;
 
-    node->color = RBT_RED; /* always we create red nodes */
+    node->____color = RBT_RED; /* always we create red nodes */
 
     return node;
 }
@@ -209,7 +209,7 @@ ___inline___ static void rbt_node_destroy(Rbt_node *node)
     if (node == NULL)
         return;
 
-    FREE(node->data);
+    FREE(node->____data);
     FREE(node);
 }
 
@@ -222,14 +222,14 @@ ___inline___ static Rbt_node *rbt_successor(Rbt_node *node)
     assert(node != NULL);
     assert(node != sentinel);
 
-    if (node->right_son != sentinel)
-        return rbt_min_node(node->right_son);
+    if (node->____right_son != sentinel)
+        return rbt_min_node(node->____right_son);
 
-    parent = node->parent;
-    while (parent != sentinel && node == parent->right_son)
+    parent = node->____parent;
+    while (parent != sentinel && node == parent->____right_son)
     {
         node = parent;
-        parent = parent->parent;
+        parent = parent->____parent;
     }
 
     return parent;
@@ -244,14 +244,14 @@ ___inline___ static Rbt_node *rbt_predecessor(Rbt_node *node)
     assert(node != NULL);
     assert(node != sentinel);
 
-    if (node->left_son != sentinel)
-        return rbt_max_node(node->left_son);
+    if (node->____left_son != sentinel)
+        return rbt_max_node(node->____left_son);
 
-    parent = node->parent;
-    while (parent != sentinel && node == parent->left_son)
+    parent = node->____parent;
+    while (parent != sentinel && node == parent->____left_son)
     {
         node = parent;
-        parent = parent->parent;
+        parent = parent->____parent;
     }
     return parent;
 }
@@ -265,15 +265,15 @@ ___inline___ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key)
     assert(tree != NULL);
     assert(data_key != NULL);
 
-    node = tree->root;
+    node = tree->____root;
     while (node != sentinel)
     {
-        if (tree->cmp(node->data, data_key) == 0)
+        if (tree->____cmp(node->____data, data_key) == 0)
             return node;
-        else if (tree->cmp(node->data, data_key) > 0)
-            node = node->left_son;
+        else if (tree->____cmp(node->____data, data_key) > 0)
+            node = node->____left_son;
         else
-            node = node->right_son;
+            node = node->____right_son;
     }
 
     /* now node is a sentinel */
@@ -293,7 +293,7 @@ ___inline___ static Rbt_node *rbt_max_node(Rbt_node *node)
     while (node != sentinel)
     {
         parent = node;
-        node = node->right_son;
+        node = node->____right_son;
     }
 
     return parent;
@@ -312,7 +312,7 @@ ___inline___ static Rbt_node *rbt_min_node(Rbt_node *node)
     while (node != sentinel)
     {
         parent = node;
-        node = node->left_son;
+        node = node->____left_son;
     }
 
     return parent;
@@ -336,32 +336,32 @@ ___inline___ static void rbt_rotate_right(Rbt *tree, Rbt_node *node)
 
     assert(tree != NULL);
     assert(node != NULL);
-    assert(node->left_son != NULL);
+    assert(node->____left_son != NULL);
     assert(node != sentinel);
-    assert(node->left_son != sentinel);
+    assert(node->____left_son != sentinel);
 
-    left_son = node->left_son;
+    left_son = node->____left_son;
 
     /* update X ptr */
-    node->left_son = left_son->right_son;
+    node->____left_son = left_son->____right_son;
 
-    if (node->left_son != sentinel)
-        node->left_son->parent = node;
+    if (node->____left_son != sentinel)
+        node->____left_son->____parent = node;
 
-    left_son->right_son = node;
-    left_son->parent = node->parent;
-    node->parent = left_son;
+    left_son->____right_son = node;
+    left_son->____parent = node->____parent;
+    node->____parent = left_son;
 
     /* update his child ptr */
-    if (left_son->parent != sentinel)
+    if (left_son->____parent != sentinel)
     {
-        if (left_son->parent->left_son == node)
-            left_son->parent->left_son = left_son;
+        if (left_son->____parent->____left_son == node)
+            left_son->____parent->____left_son = left_son;
         else
-            left_son->parent->right_son = left_son;
+            left_son->____parent->____right_son = left_son;
     }
     else
-        tree->root = left_son;
+        tree->____root = left_son;
 }
 
 /*
@@ -382,33 +382,33 @@ ___inline___ static void rbt_rotate_left(Rbt *tree, Rbt_node *node)
 
     assert(tree != NULL);
     assert(node != NULL);
-    assert(node->right_son != NULL);
+    assert(node->____right_son != NULL);
     assert(node != sentinel);
-    assert(node->right_son != sentinel);
+    assert(node->____right_son != sentinel);
 
-    right_son = node->right_son;
+    right_son = node->____right_son;
 
     /* update X ptr */
-    node->right_son = right_son->left_son;
+    node->____right_son = right_son->____left_son;
 
-    if (node->right_son != sentinel)
-        node->right_son->parent = node;
+    if (node->____right_son != sentinel)
+        node->____right_son->____parent = node;
 
-    right_son->left_son = node;
-    right_son->parent = node->parent;
-    node->parent = right_son;
+    right_son->____left_son = node;
+    right_son->____parent = node->____parent;
+    node->____parent = right_son;
 
 
     /* update his child ptr */
-    if (right_son->parent != sentinel)
+    if (right_son->____parent != sentinel)
     {
-        if (right_son->parent->left_son == node)
-            right_son->parent->left_son = right_son;
+        if (right_son->____parent->____left_son == node)
+            right_son->____parent->____left_son = right_son;
         else
-            right_son->parent->right_son = right_son;
+            right_son->____parent->____right_son = right_son;
     }
     else
-        tree->root = right_son;
+        tree->____root = right_son;
 }
 
 static int rbt_insert_fixup(Rbt *tree, Rbt_node *node)
@@ -420,58 +420,58 @@ static int rbt_insert_fixup(Rbt *tree, Rbt_node *node)
     assert(tree != NULL);
     assert(node != NULL);
 
-    while (node->parent->color == RBT_RED)
-        if (node->parent == node->parent->parent->left_son)
+    while (node->____parent->____color == RBT_RED)
+        if (node->____parent == node->____parent->____parent->____left_son)
         {
-            uncle = node->parent->parent->right_son;
+            uncle = node->____parent->____parent->____right_son;
 
             /* recolor */
-            if (uncle->color == RBT_RED)
+            if (uncle->____color == RBT_RED)
             {
-                node->parent->color = RBT_BLACK;
-                uncle->color = RBT_BLACK;
-                node = node->parent->parent;
-                node->color = RBT_RED;
+                node->____parent->____color = RBT_BLACK;
+                uncle->____color = RBT_BLACK;
+                node = node->____parent->____parent;
+                node->____color = RBT_RED;
             }
             else
             {
-                if (node == node->parent->right_son)
+                if (node == node->____parent->____right_son)
                 {
-                    node = node->parent;
+                    node = node->____parent;
                     rbt_rotate_left(tree, node);
                 }
-                node->parent->color = RBT_BLACK;
-                node->parent->parent->color = RBT_RED;
-                rbt_rotate_right(tree, node->parent->parent);
+                node->____parent->____color = RBT_BLACK;
+                node->____parent->____parent->____color = RBT_RED;
+                rbt_rotate_right(tree, node->____parent->____parent);
             }
         }
         else
         {
-            uncle = node->parent->parent->left_son;
+            uncle = node->____parent->____parent->____left_son;
 
             /* recolor */
-            if (uncle->color == RBT_RED)
+            if (uncle->____color == RBT_RED)
             {
-                node->parent->color = RBT_BLACK;
-                uncle->color = RBT_BLACK;
-                node = node->parent->parent;
-                node->color = RBT_RED;
+                node->____parent->____color = RBT_BLACK;
+                uncle->____color = RBT_BLACK;
+                node = node->____parent->____parent;
+                node->____color = RBT_RED;
             }
             else
             {
-                if (node == node->parent->left_son)
+                if (node == node->____parent->____left_son)
                 {
-                    node = node->parent;
+                    node = node->____parent;
                     rbt_rotate_right(tree, node);
                 }
 
-                node->parent->color = RBT_BLACK;
-                node->parent->parent->color = RBT_RED;
-                rbt_rotate_left(tree, node->parent->parent);
+                node->____parent->____color = RBT_BLACK;
+                node->____parent->____parent->____color = RBT_RED;
+                rbt_rotate_left(tree, node->____parent->____parent);
             }
         }
 
-    tree->root->color = RBT_BLACK;
+    tree->____root->____color = RBT_BLACK;
 
     return 0;
 }
@@ -485,82 +485,82 @@ static int rbt_delete_fixup(Rbt *tree, Rbt_node *node)
     assert(tree != NULL);
     assert(node != NULL);
 
-    while (node != tree->root && node->color == RBT_BLACK)
-        if (node == node->parent->left_son)
+    while (node != tree->____root && node->____color == RBT_BLACK)
+        if (node == node->____parent->____left_son)
         {
-            ptr = node->parent->right_son;
-            if (ptr->color == RBT_RED)
+            ptr = node->____parent->____right_son;
+            if (ptr->____color == RBT_RED)
             {
-                ptr->color = RBT_BLACK;
-                node->parent->color = RBT_RED;
-                rbt_rotate_left(tree, node->parent);
-                ptr = node->parent->right_son;
+                ptr->____color = RBT_BLACK;
+                node->____parent->____color = RBT_RED;
+                rbt_rotate_left(tree, node->____parent);
+                ptr = node->____parent->____right_son;
             }
 
-            if (ptr->left_son->color == RBT_BLACK && ptr->right_son->color == RBT_BLACK)
+            if (ptr->____left_son->____color == RBT_BLACK && ptr->____right_son->____color == RBT_BLACK)
             {
-                ptr->color = RBT_RED;
-                node = node->parent;
+                ptr->____color = RBT_RED;
+                node = node->____parent;
             }
             else
             {
-                if (ptr->right_son->color == RBT_BLACK)
+                if (ptr->____right_son->____color == RBT_BLACK)
                 {
-                    ptr->left_son->color = RBT_BLACK;
-                    ptr->color = RBT_RED;
+                    ptr->____left_son->____color = RBT_BLACK;
+                    ptr->____color = RBT_RED;
                     rbt_rotate_right(tree, ptr);
-                    ptr = node->parent->right_son;
+                    ptr = node->____parent->____right_son;
                 }
 
-                ptr->color = node->parent->color;
+                ptr->____color = node->____parent->____color;
 
-                node->parent->color = RBT_BLACK;
-                ptr->right_son->color = RBT_BLACK;
-                rbt_rotate_left(tree, node->parent);
+                node->____parent->____color = RBT_BLACK;
+                ptr->____right_son->____color = RBT_BLACK;
+                rbt_rotate_left(tree, node->____parent);
 
                 /* end fixup */
-                node = tree->root;
+                node = tree->____root;
             }
         }
         else
         {
-            ptr = node->parent->left_son;
+            ptr = node->____parent->____left_son;
 
-            if (ptr->color == RBT_RED)
+            if (ptr->____color == RBT_RED)
             {
-                ptr->color = RBT_BLACK;
-                node->parent->color = RBT_RED;
+                ptr->____color = RBT_BLACK;
+                node->____parent->____color = RBT_RED;
 
-                rbt_rotate_right(tree, node->parent);
-                ptr = node->parent->left_son;
+                rbt_rotate_right(tree, node->____parent);
+                ptr = node->____parent->____left_son;
             }
 
-            if (ptr->right_son->color == RBT_BLACK && ptr->left_son->color == RBT_BLACK)
+            if (ptr->____right_son->____color == RBT_BLACK && ptr->____left_son->____color == RBT_BLACK)
             {
-                ptr->color = RBT_RED;
-                node = node->parent;
+                ptr->____color = RBT_RED;
+                node = node->____parent;
             }
             else
             {
-                if (ptr->left_son->color == RBT_BLACK)
+                if (ptr->____left_son->____color == RBT_BLACK)
                 {
-                    ptr->right_son->color = RBT_BLACK;
-                    ptr->color = RBT_RED;
+                    ptr->____right_son->____color = RBT_BLACK;
+                    ptr->____color = RBT_RED;
                     rbt_rotate_left(tree, ptr);
-                    ptr = node->parent->left_son;
+                    ptr = node->____parent->____left_son;
                 }
 
-                ptr->color = node->parent->color;
-                node->parent->color = RBT_BLACK;
-                ptr->left_son->color = RBT_BLACK;
-                rbt_rotate_right(tree, node->parent);
+                ptr->____color = node->____parent->____color;
+                node->____parent->____color = RBT_BLACK;
+                ptr->____left_son->____color = RBT_BLACK;
+                rbt_rotate_right(tree, node->____parent);
 
                 /* end fixup */
-                node = tree->root;
+                node = tree->____root;
             }
         }
 
-    node->color = RBT_BLACK;
+    node->____color = RBT_BLACK;
 
     return 0;
 }
@@ -581,11 +581,11 @@ Rbt* rbt_create(int size_of, int (*cmp)(void *a, void *b))
     if (tree == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    tree->root = sentinel;
-    tree->size_of = (size_t)size_of;
-    tree->cmp = cmp;
+    tree->____root = sentinel;
+    tree->____size_of = (size_t)size_of;
+    tree->____cmp = cmp;
 
-    tree->nodes = 0;
+    tree->____nodes = 0;
 
     return tree;
 }
@@ -600,14 +600,14 @@ void rbt_destroy(Rbt *tree)
     if (tree == NULL)
         return;
 
-    if (tree->root == NULL || tree->root == sentinel)
+    if (tree->____root == NULL || tree->____root == sentinel)
     {
         FREE(tree);
         return;
     }
 
     /* destroy tree using inorder */
-    node = rbt_min_node(tree->root);
+    node = rbt_min_node(tree->____root);
     while (node != sentinel && node != NULL)
     {
         temp = node;
@@ -631,19 +631,19 @@ void rbt_destroy_with_entries(Rbt *tree, void (*destructor)(void *data))
     if (destructor == NULL)
         return;
 
-    if (tree->root == NULL || tree->root == sentinel)
+    if (tree->____root == NULL || tree->____root == sentinel)
     {
         FREE(tree);
         return;
     }
 
     /* destroy tree using inorder */
-    node = rbt_min_node(tree->root);
+    node = rbt_min_node(tree->____root);
     while (node != sentinel && node != NULL)
     {
         temp = node;
         node = rbt_successor(node);
-        destructor(temp->data);
+        destructor(temp->____data);
         rbt_node_destroy(temp);
     }
 
@@ -665,50 +665,50 @@ int rbt_insert(Rbt *tree, void *data)
         ERROR("data == NULL\n", 1, "");
 
     /* special case - empty tree */
-    if (tree->root == sentinel)
+    if (tree->____root == sentinel)
     {
-        node = rbt_node_create(data, (int)tree->size_of, sentinel);
+        node = rbt_node_create(data, (int)tree->____size_of, sentinel);
 		if (node == NULL)
 			ERROR("rbt_node_create\n", 1, "");
 
         /* root is always black */
-        node->color = RBT_BLACK;
-        tree->root = node;
+        node->____color = RBT_BLACK;
+        tree->____root = node;
     }
     else
     {
          parent = sentinel;
-         node = tree->root;
+         node = tree->____root;
 
         /* find correct place to insert */
         while (node != sentinel)
         {
             parent = node;
-            if (tree->cmp(node->data, data) == 0) /* data exists in tree */
+            if (tree->____cmp(node->____data, data) == 0) /* data exists in tree */
             {
                 ERROR("data with this key exist in tree\n", 1, "");
             }
-            else if (tree->cmp(node->data, data) > 0)
-                node = node->left_son;
+            else if (tree->____cmp(node->____data, data) > 0)
+                node = node->____left_son;
             else
-                node = node->right_son;
+                node = node->____right_son;
         }
 
-        new_node = rbt_node_create(data, (int)tree->size_of, parent);
+        new_node = rbt_node_create(data, (int)tree->____size_of, parent);
 		if (new_node == NULL)
 			ERROR("rbt_node_create\n", 1, "");
 
         /* new node is the right son */
-        if (tree->cmp(new_node->data, parent->data) > 0)
-            parent->right_son = new_node;
+        if (tree->____cmp(new_node->____data, parent->____data) > 0)
+            parent->____right_son = new_node;
         else /* new_node is the left_node */
-            parent->left_son = new_node;
+            parent->____left_son = new_node;
 
         if (rbt_insert_fixup(tree, new_node))
             ERROR("rbt_insert_fixup error\n", 1, "");
     }
 
-    ++tree->nodes;
+    ++tree->____nodes;
     return 0;
 }
 
@@ -728,7 +728,7 @@ int rbt_delete(Rbt *tree, void *data_key)
     if (data_key == NULL)
         ERROR("data_key == NULL\n", 1, "");
 
-    if (tree->root == sentinel)
+    if (tree->____root == sentinel)
         ERROR("Empty Tree\n", 1, "");
 
     node = rbt_node_search(tree, data_key);
@@ -736,58 +736,58 @@ int rbt_delete(Rbt *tree, void *data_key)
         ERROR("key doesn't exist in tree, nothing to delete\n", 1, "");
 
     temp = sentinel;
-    color = node->color;
+    color = node->____color;
 
     /* case 1 node is a "leaf" node */
-    if (node->left_son == sentinel && node->right_son == sentinel)
+    if (node->____left_son == sentinel && node->____right_son == sentinel)
     {
         /* save ptr to parent ( need to fixup ) */
-        temp->parent = node->parent;
+        temp->____parent = node->____parent;
 
-        if (node->parent != sentinel)
+        if (node->____parent != sentinel)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = sentinel;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = sentinel;
             else
-                node->parent->right_son = sentinel;
+                node->____parent->____right_son = sentinel;
         }
         else
-            tree->root = sentinel;
+            tree->____root = sentinel;
     }
     /* case 2 node has only lef subtree */
-    else if (node->right_son == sentinel)
+    else if (node->____right_son == sentinel)
     {
-        node->left_son->parent = node->parent;
+        node->____left_son->____parent = node->____parent;
 
         /* we need it for fixup */
-        temp = node->left_son;
+        temp = node->____left_son;
 
-        if (node->parent != sentinel)
+        if (node->____parent != sentinel)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = node->left_son;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = node->____left_son;
             else
-                node->parent->right_son = node->left_son;
+                node->____parent->____right_son = node->____left_son;
         }
         else
-            tree->root = node->left_son;
+            tree->____root = node->____left_son;
     }
     /* case 3 node has only right subtree */
-    else if (node->left_son == sentinel)
+    else if (node->____left_son == sentinel)
     {
-        node->right_son->parent = node->parent;
+        node->____right_son->____parent = node->____parent;
 
         /* we need it for fixup */
-        temp = node->right_son;
-        if (node->parent != sentinel)
+        temp = node->____right_son;
+        if (node->____parent != sentinel)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = node->right_son;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = node->____right_son;
             else
-                node->parent->right_son = node->right_son;
+                node->____parent->____right_son = node->____right_son;
         }
         else
-            tree->root = node->right_son;
+            tree->____root = node->____right_son;
     }
     /* case 4 node has both children */
     else
@@ -795,45 +795,45 @@ int rbt_delete(Rbt *tree, void *data_key)
         successor = rbt_successor(node);
 
         /* we need it for fixup */
-        temp = successor->right_son;
-        color = successor->color;
-        successor->color = node->color;
+        temp = successor->____right_son;
+        color = successor->____color;
+        successor->____color = node->____color;
 
         /* delete successor */
-        if (successor->parent == node)
-            temp->parent = successor;
+        if (successor->____parent == node)
+            temp->____parent = successor;
         else
-            successor->right_son->parent = successor->parent;
+            successor->____right_son->____parent = successor->____parent;
 
-        if (successor->parent->left_son == successor)
-            successor->parent->left_son = successor->right_son;
+        if (successor->____parent->____left_son == successor)
+            successor->____parent->____left_son = successor->____right_son;
         else
-            successor->parent->right_son = successor->right_son;
+            successor->____parent->____right_son = successor->____right_son;
 
         /* update node children ptrs */
-        successor->left_son = node->left_son;
-        successor->right_son = node->right_son;
+        successor->____left_son = node->____left_son;
+        successor->____right_son = node->____right_son;
 
         /* successor is new parent */
-        successor->left_son->parent = successor;
-        if (successor->right_son != successor)
-            successor->right_son->parent = successor;
+        successor->____left_son->____parent = successor;
+        if (successor->____right_son != successor)
+            successor->____right_son->____parent = successor;
 
         /* successor is in node place, so update parent ptr */
-        successor->parent = node->parent;
+        successor->____parent = node->____parent;
 
-        if (node->parent != sentinel)
+        if (node->____parent != sentinel)
         {
-            if (node->parent->left_son == node)
-                node->parent->left_son = successor;
+            if (node->____parent->____left_son == node)
+                node->____parent->____left_son = successor;
             else
-                node->parent->right_son = successor;
+                node->____parent->____right_son = successor;
         }
         else
-            tree->root = successor;
+            tree->____root = successor;
     }
 
-    --tree->nodes;
+    --tree->____nodes;
 
     /* if deleted node was black tree need fixup */
     if (color == RBT_BLACK)
@@ -857,14 +857,14 @@ int rbt_min(Rbt *tree, void *data)
     if (data == NULL)
         ERROR("data == NULL\n", 1, "");
 
-    if (tree->root == sentinel)
+    if (tree->____root == sentinel)
         ERROR("Empty Tree\n", 1, "");
 
-    node = rbt_min_node(tree->root);
+    node = rbt_min_node(tree->____root);
     if(node == NULL)
         ERROR("rbt_min_node error\n", 1, "");
 
-    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->data, tree->size_of);
+    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->____data, tree->____size_of);
 
     return 0;
 }
@@ -881,14 +881,14 @@ int rbt_max(Rbt *tree, void *data)
     if (data == NULL)
         ERROR("data == NULL\n", 1, "");
 
-    if (tree->root == sentinel)
+    if (tree->____root == sentinel)
         ERROR("Empty Tree\n", 1, "");
 
-    node = rbt_max_node(tree->root);
+    node = rbt_max_node(tree->____root);
     if(node == NULL)
         ERROR("rbt_max_node error\n", 1, "");
 
-    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->data, tree->size_of);
+    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->____data, tree->____size_of);
 
     return 0;
 }
@@ -908,14 +908,14 @@ int rbt_search(Rbt *tree, void *data_key, void *data_out)
     if (data_out == NULL)
         ERROR("data_out == NULL\n", 1, "");
 
-    if (tree->root == sentinel)
+    if (tree->____root == sentinel)
         ERROR("Empty Tree\n", 1, "");
 
     node = rbt_node_search(tree, data_key);
     if (node == NULL)
         ERROR("rbt_node_search error\n", 1, "");
 
-    __ASSIGN__(*(BYTE *)data_out, *(BYTE *)node->data, tree->size_of);
+    __ASSIGN__(*(BYTE *)data_out, *(BYTE *)node->____data, tree->____size_of);
 
     return 0;
 }
@@ -930,7 +930,7 @@ bool rbt_key_exist(Rbt *tree, void *data_key)
     if (data_key == NULL)
         ERROR("data_key == NULL\n", false, "");
 
-    if (tree->root == sentinel)
+    if (tree->____root == sentinel)
         ERROR("Empty Tree\n", false, "");
 
    return rbt_node_search(tree, data_key) != NULL;
@@ -954,30 +954,30 @@ int rbt_to_array(Rbt *tree, void *array, size_t *size)
     if (size == NULL)
         ERROR("size == NULL\n", 1, "");
 
-    if (tree->root == sentinel)
+    if (tree->____root == sentinel)
         ERROR("Empty Tree\n", 1, "");
 
-    t = malloc(tree->size_of * tree->nodes);
+    t = malloc(tree->____size_of * tree->____nodes);
 	if (t == NULL)
 		ERROR("malloc error\n", 1, "");
 
     _t = (BYTE *)t;
     offset = 0;
 
-    node = rbt_min_node(tree->root);
+    node = rbt_min_node(tree->____root);
     if (node == NULL)
         ERROR("rbt_min_node error\n", 1, "");
 
     while(node != sentinel && node != NULL)
     {
-        __ASSIGN__(_t[offset], *(BYTE *)node->data, tree->size_of);
-        offset += tree->size_of;
+        __ASSIGN__(_t[offset], *(BYTE *)node->____data, tree->____size_of);
+        offset += tree->____size_of;
 
         node = rbt_successor(node);
     }
 
     *(void **)array = t;
-    *size = tree->nodes;
+    *size = tree->____nodes;
 
     return 0;
 }
@@ -990,7 +990,7 @@ static int rbt_balance(Rbt *tree)
     if (tree == NULL)
         ERROR("tree == NULL\n", 1, "");
 
-    if (tree->root == sentinel)
+    if (tree->____root == sentinel)
         ERROR("Tree is empty\n", 1, "");
 
     return 0;
@@ -1003,7 +1003,7 @@ ssize_t rbt_get_num_entries(Rbt *tree)
     if (tree == NULL)
         ERROR("tree == NULL\n", (ssize_t)-1, "");
 
-    return (ssize_t)tree->nodes;
+    return (ssize_t)tree->____nodes;
 }
 
 int rbt_get_data_size(Rbt *tree)
@@ -1013,7 +1013,7 @@ int rbt_get_data_size(Rbt *tree)
     if (tree == NULL)
         ERROR("tree == NULL\n", -1, "");
 
-    return (int)tree->size_of;
+    return (int)tree->____size_of;
 }
 
 Rbt_iterator *rbt_iterator_create(Rbt *tree, iti_mode_t mode)
@@ -1033,13 +1033,13 @@ Rbt_iterator *rbt_iterator_create(Rbt *tree, iti_mode_t mode)
         ERROR("malloc error\n", NULL, "");
 
     if (mode == ITI_BEGIN)
-        iterator->node = rbt_min_node(tree->root);
+        iterator->____node = rbt_min_node(tree->____root);
     else if (mode == ITI_END)
-        iterator->node = rbt_max_node(tree->root);
+        iterator->____node = rbt_max_node(tree->____root);
     else
-        iterator->node = tree->root;
+        iterator->____node = tree->____root;
 
-    iterator->size_of = tree->size_of;
+    iterator->____size_of = tree->____size_of;
 
     return iterator;
 }
@@ -1067,16 +1067,16 @@ int rbt_iterator_init(Rbt *tree, Rbt_iterator *iterator, iti_mode_t mode)
     if (mode != ITI_BEGIN && mode != ITI_ROOT && mode != ITI_END)
         ERROR("Incorrect mode\n", 1, "");
 
-    iterator->size_of = tree->size_of;
+    iterator->____size_of = tree->____size_of;
 
     if (mode == ITI_BEGIN)
-        iterator->node = rbt_min_node(tree->root);
+        iterator->____node = rbt_min_node(tree->____root);
     else if (mode == ITI_END)
-        iterator->node = rbt_max_node(tree->root);
+        iterator->____node = rbt_max_node(tree->____root);
     else
-        iterator->node = tree->root;
+        iterator->____node = tree->____root;
 
-    iterator->size_of = tree->size_of;
+    iterator->____size_of = tree->____size_of;
 
     return 0;
 }
@@ -1088,7 +1088,7 @@ int rbt_iterator_next(Rbt_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1, "");
 
-    iterator->node = rbt_successor(iterator->node);
+    iterator->____node = rbt_successor(iterator->____node);
 
     return 0;
 }
@@ -1100,7 +1100,7 @@ int rbt_iterator_prev(Rbt_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1, "");
 
-    iterator->node = rbt_predecessor(iterator->node);
+    iterator->____node = rbt_predecessor(iterator->____node);
 
     return 0;
 }
@@ -1115,7 +1115,7 @@ int rbt_iterator_get_data(Rbt_iterator *iterator, void *val)
     if (val == NULL)
         ERROR("val == NULL\n", 1, "");
 
-    __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->node->data, iterator->size_of);
+    __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->____node->____data, iterator->____size_of);
 
     return 0;
 }
@@ -1130,7 +1130,7 @@ int rbt_iterator_get_node(Rbt_iterator *iterator, void *node)
     if (node == NULL)
         ERROR("node == NULL\n", 1, "");
 
-    *(void **)node = iterator->node;
+    *(void **)node = iterator->____node;
 
     return 0;
 }
@@ -1142,7 +1142,7 @@ bool rbt_iterator_end(Rbt_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", true, "");
 
-    return iterator->node == sentinel || iterator->node == NULL;
+    return iterator->____node == sentinel || iterator->____node == NULL;
 }
 
 TREE_WRAPPERS_CREATE(Rbt, rbt)
