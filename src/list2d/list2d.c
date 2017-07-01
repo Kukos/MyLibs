@@ -771,7 +771,7 @@ ssize_t list2d_get_num_entries(List2D *list)
     return (ssize_t)list->____length;
 }
 
-List2D_iterator *list2d_iterator_create(List2D *list, ITI_MODE mode)
+List2D_iterator *list2d_iterator_create(List2D *list, iti_mode_t mode)
 {
     List2D_iterator *iterator;
 
@@ -815,7 +815,7 @@ void list2d_iterator_destroy(List2D_iterator *iterator)
     FREE(iterator);
 }
 
-int list2d_iterator_init(List2D *list, List2D_iterator *iterator, ITI_MODE mode)
+int list2d_iterator_init(List2D *list, List2D_iterator *iterator, iti_mode_t mode)
 {
     TRACE("");
 

@@ -61,8 +61,8 @@ typedef struct Tree
     int         (*____get_data_size)(void *tree);
 
     /* to create iterator */
-    void*       (*____it_create)(void *tree, ITI_MODE mode);
-    int         (*____it_init)(void *tree, void *it, ITI_MODE mode);
+    void*       (*____it_create)(void *tree, iti_mode_t mode);
+    int         (*____it_init)(void *tree, void *it, iti_mode_t mode);
     void        (*____it_destroy)(void *iterator);
     int         (*____it_next)(void *iterator);
     int         (*____it_prev)(void *iterator);
@@ -83,7 +83,7 @@ typedef struct Tree
     NULL iff failure
     Pointer to Tree_iterator iff success
 */
-___inline___ Tree_iterator *tree_iterator_create(Tree *tree, ITI_MODE mode);
+___inline___ Tree_iterator *tree_iterator_create(Tree *tree, iti_mode_t mode);
 
 /*
     Init Tree iterator
@@ -97,7 +97,7 @@ ___inline___ Tree_iterator *tree_iterator_create(Tree *tree, ITI_MODE mode);
     0 iff success
     Non-zero value iff failure
 */
-___inline___ int tree_iterator_init(Tree *tree, Tree_iterator *it, ITI_MODE mode);
+___inline___ int tree_iterator_init(Tree *tree, Tree_iterator *it, iti_mode_t mode);
 
 /* Macro to create wrappers to your struct to provide assignment to framework functions */
 #define TREE_WRAPPERS_CREATE(type, prefix) \
@@ -469,7 +469,7 @@ ___inline___ int tree_get_data_size(Tree *tree)
     return tree->____get_data_size(tree_get_tree(tree));
 }
 
-___inline___ Tree_iterator *tree_iterator_create(Tree *tree, ITI_MODE mode)
+___inline___ Tree_iterator *tree_iterator_create(Tree *tree, iti_mode_t mode)
 {
     Tree_iterator *it;
 
@@ -500,7 +500,7 @@ ___inline___ Tree_iterator *tree_iterator_create(Tree *tree, ITI_MODE mode)
     return it;
 }
 
-___inline___ int tree_iterator_init(Tree *tree, Tree_iterator *it, ITI_MODE mode)
+___inline___ int tree_iterator_init(Tree *tree, Tree_iterator *it, iti_mode_t mode)
 {
     TRACE("");
 
@@ -532,19 +532,19 @@ IT_FUNC_CONTAINER(Tree, tree)
 
 /* use this macro to create wrappers for iterator */
 #define TREE_ITERATOR_WRAPPERS_CREATE(type, prefix) \
-    static ___unused___ void* ____it_create(void *tree, ITI_MODE mode); \
-    static ___unused___ int ____it_init(void *tree, void *it, ITI_MODE mode); \
+    static ___unused___ void* ____it_create(void *tree, iti_mode_t mode); \
+    static ___unused___ int ____it_init(void *tree, void *it, iti_mode_t mode); \
     static ___unused___ void ____it_destroy(void *it); \
     static ___unused___ int ____it_next(void *it); \
     static ___unused___ int ____it_prev(void *it); \
     static ___unused___ int ____it_get_data(void *it, void *data); \
     static ___unused___ int ____it_get_node(void *it, void *node); \
     static ___unused___ bool ____it_end(void *it); \
-    static ___unused___ void* ____it_create(void *tree, ITI_MODE mode) \
+    static ___unused___ void* ____it_create(void *tree, iti_mode_t mode) \
     { \
         return concat(prefix, _create)(tree_get_tree(tree), mode); \
     } \
-    static ___unused___ int ____it_init(void *tree, void *it, ITI_MODE mode) \
+    static ___unused___ int ____it_init(void *tree, void *it, iti_mode_t mode) \
     { \
         return concat(prefix, _init)(tree, (type *)it, mode); \
     } \

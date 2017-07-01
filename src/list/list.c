@@ -582,7 +582,7 @@ ssize_t list_get_num_entries(List *list)
     return (ssize_t)list->____length;
 }
 
-List_iterator *list_iterator_create(List *list, ITI_MODE mode)
+List_iterator *list_iterator_create(List *list, iti_mode_t mode)
 {
     List_iterator *iterator;
 
@@ -614,7 +614,7 @@ void list_iterator_destroy(List_iterator *iterator)
     FREE(iterator);
 }
 
-int list_iterator_init(List *list, List_iterator *iterator, ITI_MODE mode)
+int list_iterator_init(List *list, List_iterator *iterator, iti_mode_t mode)
 {
     TRACE("");
 

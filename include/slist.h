@@ -60,8 +60,8 @@ typedef struct SList
     ssize_t     (*____get_num_entries)(void *list);
 
     /* to create iterator */
-    void*       (*____it_create)(void *list, ITI_MODE mode);
-    int         (*____it_init)(void *list, void *it, ITI_MODE mode);
+    void*       (*____it_create)(void *list, iti_mode_t mode);
+    int         (*____it_init)(void *list, void *it, iti_mode_t mode);
     void        (*____it_destroy)(void *iterator);
     int         (*____it_next)(void *iterator);
     int         (*____it_prev)(void *iterator);
@@ -82,7 +82,7 @@ typedef struct SList
     NULL iff failure
     Pointer to SList_iterator iff success
 */
-___inline___ SList_iterator *slist_iterator_create(SList *list, ITI_MODE mode);
+___inline___ SList_iterator *slist_iterator_create(SList *list, iti_mode_t mode);
 
 /*
     Init SList iterator
@@ -96,7 +96,7 @@ ___inline___ SList_iterator *slist_iterator_create(SList *list, ITI_MODE mode);
     0 iff success
     Non-zero value iff failure
 */
-___inline___ int slist_iterator_init(SList *list, SList_iterator *it, ITI_MODE mode);
+___inline___ int slist_iterator_init(SList *list, SList_iterator *it, iti_mode_t mode);
 
 /* Macro to create wrappers to your struct to provide assignment to framework functions */
 #define SLIST_WRAPPERS_CREATE(type, prefix) \
@@ -512,7 +512,7 @@ ___inline___ ssize_t slist_get_num_entries(SList *list)
 
     return list->____get_num_entries(slist_get_list(list));
 }
-___inline___ SList_iterator *slist_iterator_create(SList *list, ITI_MODE mode)
+___inline___ SList_iterator *slist_iterator_create(SList *list, iti_mode_t mode)
 {
     SList_iterator *it;
 
@@ -543,7 +543,7 @@ ___inline___ SList_iterator *slist_iterator_create(SList *list, ITI_MODE mode)
     return it;
 }
 
-___inline___ int slist_iterator_init(SList *list, SList_iterator *it, ITI_MODE mode)
+___inline___ int slist_iterator_init(SList *list, SList_iterator *it, iti_mode_t mode)
 {
     TRACE("");
 
@@ -575,19 +575,19 @@ IT_FUNC_CONTAINER(SList, slist)
 
 /* use this macro to create wrappers for iterator */
 #define SLIST_ITERATOR_WRAPPERS_CREATE(type, prefix) \
-    static ___unused___ void* ____it_create(void *list, ITI_MODE mode); \
-    static ___unused___ int ____it_init(void *list, void *it, ITI_MODE mode); \
+    static ___unused___ void* ____it_create(void *list, iti_mode_t mode); \
+    static ___unused___ int ____it_init(void *list, void *it, iti_mode_t mode); \
     static ___unused___ void ____it_destroy(void *it); \
     static ___unused___ int ____it_next(void *it); \
     static ___unused___ int ____it_prev(void *it); \
     static ___unused___ int ____it_get_data(void *it, void *data); \
     static ___unused___ int ____it_get_node(void *it, void *node); \
     static ___unused___ bool ____it_end(void *it); \
-    static ___unused___ void* ____it_create(void *list, ITI_MODE mode) \
+    static ___unused___ void* ____it_create(void *list, iti_mode_t mode) \
     { \
         return concat(prefix, _create)(slist_get_list(list), mode); \
     } \
-    static ___unused___ int ____it_init(void *list, void *it, ITI_MODE mode) \
+    static ___unused___ int ____it_init(void *list, void *it, iti_mode_t mode) \
     { \
         return concat(prefix, _init)(list, (type *)it, mode); \
     } \

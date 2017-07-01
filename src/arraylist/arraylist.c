@@ -512,7 +512,7 @@ int arraylist_node_get_data(Arraylist_node *node, void *data)
     return 0;
 }
 
-Arraylist_iterator *arraylist_iterator_create(Arraylist *alist, ITI_MODE mode)
+Arraylist_iterator *arraylist_iterator_create(Arraylist *alist, iti_mode_t mode)
 {
     Arraylist_iterator *iterator;
 
@@ -549,7 +549,7 @@ void arraylist_iterator_destroy(Arraylist_iterator *iterator)
 }
 
 int arraylist_iterator_init(Arraylist *alist, Arraylist_iterator *iterator,
-        ITI_MODE mode)
+        iti_mode_t mode)
 {
     TRACE("");
 

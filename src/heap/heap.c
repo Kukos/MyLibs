@@ -517,14 +517,14 @@ bool heap_is_empty(Heap *heap)
                 || darray_get_num_entries(heap->darray) == 0);
 }
 
-Heap_iterator *heap_iterator_create(Heap *heap, ITI_MODE mode)
+Heap_iterator *heap_iterator_create(Heap *heap, iti_mode_t mode)
 {
     TRACE("");
 
     return (Heap_iterator *)darray_iterator_create(heap->darray, mode);
 }
 
-int heap_iterator_init(Heap *heap, Heap_iterator *iterator, ITI_MODE mode)
+int heap_iterator_init(Heap *heap, Heap_iterator *iterator, iti_mode_t mode)
 {
     TRACE("");
 

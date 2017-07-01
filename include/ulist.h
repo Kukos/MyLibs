@@ -63,8 +63,8 @@ typedef struct UList
     ssize_t     (*____get_num_entries)(void *list);
 
     /* to create iterator */
-    void*       (*____it_create)(void *list, ITI_MODE mode);
-    int         (*____it_init)(void *list, void *it, ITI_MODE mode);
+    void*       (*____it_create)(void *list, iti_mode_t mode);
+    int         (*____it_init)(void *list, void *it, iti_mode_t mode);
     void        (*____it_destroy)(void *iterator);
     int         (*____it_next)(void *iterator);
     int         (*____it_prev)(void *iterator);
@@ -85,7 +85,7 @@ typedef struct UList
     NULL iff failure
     Pointer to UList_iterator iff success
 */
-___inline___ UList_iterator *ulist_iterator_create(UList *list, ITI_MODE mode);
+___inline___ UList_iterator *ulist_iterator_create(UList *list, iti_mode_t mode);
 
 /*
     Init UList iterator
@@ -99,7 +99,7 @@ ___inline___ UList_iterator *ulist_iterator_create(UList *list, ITI_MODE mode);
     0 iff success
     Non-zero value iff failure
 */
-___inline___ int ulist_iterator_init(UList *list, UList_iterator *it, ITI_MODE mode);
+___inline___ int ulist_iterator_init(UList *list, UList_iterator *it, iti_mode_t mode);
 
 /* Macro to create wrappers to your struct to provide assignment to framework functions */
 #define ULIST_WRAPPERS_CREATE(type, prefix) \
@@ -591,7 +591,7 @@ ___inline___ ssize_t ulist_get_num_entries(UList *list)
     return list->____get_num_entries(ulist_get_list(list));
 }
 
-___inline___ UList_iterator *ulist_iterator_create(UList *list, ITI_MODE mode)
+___inline___ UList_iterator *ulist_iterator_create(UList *list, iti_mode_t mode)
 {
     UList_iterator *it;
 
@@ -622,7 +622,7 @@ ___inline___ UList_iterator *ulist_iterator_create(UList *list, ITI_MODE mode)
     return it;
 }
 
-___inline___ int ulist_iterator_init(UList *list, UList_iterator *it, ITI_MODE mode)
+___inline___ int ulist_iterator_init(UList *list, UList_iterator *it, iti_mode_t mode)
 {
     TRACE("");
 
@@ -654,19 +654,19 @@ IT_FUNC_CONTAINER(UList, ulist)
 
 /* use this macro to create wrappers for iterator */
 #define ULIST_ITERATOR_WRAPPERS_CREATE(type, prefix) \
-    static ___unused___ void* ____it_create(void *list, ITI_MODE mode); \
-    static ___unused___ int ____it_init(void *list, void *it, ITI_MODE mode); \
+    static ___unused___ void* ____it_create(void *list, iti_mode_t mode); \
+    static ___unused___ int ____it_init(void *list, void *it, iti_mode_t mode); \
     static ___unused___ void ____it_destroy(void *it); \
     static ___unused___ int ____it_next(void *it); \
     static ___unused___ int ____it_prev(void *it); \
     static ___unused___ int ____it_get_data(void *it, void *data); \
     static ___unused___ int ____it_get_node(void *it, void *node); \
     static ___unused___ bool ____it_end(void *it); \
-    static ___unused___ void* ____it_create(void *list, ITI_MODE mode) \
+    static ___unused___ void* ____it_create(void *list, iti_mode_t mode) \
     { \
         return concat(prefix, _create)(ulist_get_list(list), mode); \
     } \
-    static ___unused___ int ____it_init(void *list, void *it, ITI_MODE mode) \
+    static ___unused___ int ____it_init(void *list, void *it, iti_mode_t mode) \
     { \
         return concat(prefix, _init)(list, (type *)it, mode); \
     } \

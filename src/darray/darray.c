@@ -691,7 +691,7 @@ int darray_get_data_size(Darray *darray)
     return (int)darray->____size_of;
 }
 
-Darray_iterator *darray_iterator_create(Darray *darray, ITI_MODE mode)
+Darray_iterator *darray_iterator_create(Darray *darray, iti_mode_t mode)
 {
     Darray_iterator *iterator;
 
@@ -730,7 +730,7 @@ void darray_iterator_destroy(Darray_iterator *iterator)
     FREE(iterator);
 }
 
-int darray_iterator_init(Darray *darray, Darray_iterator *iterator, ITI_MODE mode)
+int darray_iterator_init(Darray *darray, Darray_iterator *iterator, iti_mode_t mode)
 {
     TRACE("");
 

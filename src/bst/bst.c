@@ -829,7 +829,7 @@ int bst_get_data_size(Bst *tree)
     return (int)tree->____size_of;
 }
 
-Bst_iterator *bst_iterator_create(Bst *tree, ITI_MODE mode)
+Bst_iterator *bst_iterator_create(Bst *tree, iti_mode_t mode)
 {
     Bst_iterator *iterator;
 
@@ -867,7 +867,7 @@ void bst_iterator_destroy(Bst_iterator *iterator)
     FREE(iterator);
 }
 
-int bst_iterator_init(Bst *tree, Bst_iterator *iterator, ITI_MODE mode)
+int bst_iterator_init(Bst *tree, Bst_iterator *iterator, iti_mode_t mode)
 {
     TRACE("");
 

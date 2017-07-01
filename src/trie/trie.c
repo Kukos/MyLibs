@@ -816,7 +816,7 @@ int trie_get_hight(Trie *trie)
     return max + 1;
 }
 
-Trie_iterator *trie_iterator_create(Trie *trie,ITI_MODE mode)
+Trie_iterator *trie_iterator_create(Trie *trie,iti_mode_t mode)
 {
     Trie_iterator *iterator;
 
@@ -853,7 +853,7 @@ void trie_iterator_destroy(Trie_iterator *iterator)
     FREE(iterator);
 }
 
-int trie_iterator_init(Trie *trie, Trie_iterator *iterator, ITI_MODE mode)
+int trie_iterator_init(Trie *trie, Trie_iterator *iterator, iti_mode_t mode)
 {
     TRACE("");
 

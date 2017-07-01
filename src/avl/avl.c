@@ -1048,7 +1048,7 @@ int avl_to_array(Avl *tree, void *array, size_t *size)
     return 0;
 }
 
-Avl_iterator *avl_iterator_create(Avl *tree, ITI_MODE mode)
+Avl_iterator *avl_iterator_create(Avl *tree, iti_mode_t mode)
 {
     Avl_iterator *iterator;
 
@@ -1083,7 +1083,7 @@ void avl_iterator_destroy(Avl_iterator *iterator)
     FREE(iterator);
 }
 
-int avl_iterator_init(Avl *tree, Avl_iterator *iterator, ITI_MODE mode)
+int avl_iterator_init(Avl *tree, Avl_iterator *iterator, iti_mode_t mode)
 {
     TRACE("");
 
