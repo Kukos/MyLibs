@@ -534,6 +534,8 @@ test_f test_merge_empty(void)
 
 test_f test_slist_framework(void)
 {
+    MyStruct *s;
+
     SList *slist1;
     SList *slist2;
     SList *slist3;
@@ -556,6 +558,7 @@ test_f test_slist_framework(void)
     int to_delete_all = 3;
 
     int i;
+    int loop = 10;
 
     slist1 = slist_list2d_create(sizeof(int), cmp_int, diff_int);
     T_ERROR(slist1 == NULL);
@@ -614,6 +617,22 @@ test_f test_slist_framework(void)
     slist_destroy(slist1);
     slist_destroy(slist2);
     slist_destroy(slist3);
+
+    slist1 = slist_list2d_create(sizeof(MyStruct *), cmp_my_struct, diff_my_struct);
+    T_ERROR(slist1 == NULL);
+    T_EXPECT(slist_get_num_entries(slist1), 0);
+    T_EXPECT(slist_get_data_size(slist1), sizeof(MyStruct *));
+
+    for (i = 0; i < loop; ++i)
+    {
+        s = (MyStruct *)malloc(sizeof(MyStruct));
+        T_ERROR(s == NULL);
+        s->a = i;
+
+        T_EXPECT(slist_insert(slist1, (void *)&s), 0);
+    }
+
+    slist_destroy_with_entries(slist1, my_struct_destroy);
 }
 
 test_f test_slist_for_each(void)
