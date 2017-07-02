@@ -2,7 +2,11 @@
 #define AVL_H
 
 /*
-    AVL tree implementation without recursive function, but with parent pointer
+    AVL tree implementation without recursive function[^1], but with parent pointer
+
+    ^1 -> only 1 function is recursive: bst_get_hight, because function is rarely use
+    it's better to have O(n) recursive getter isntead of additional O(log(n)) operation
+    during insert and delete
 
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com
@@ -218,5 +222,17 @@ ssize_t avl_get_num_entries(Avl *tree);
     Size of data
 */
 int avl_get_data_size(Avl *tree);
+
+/*
+    RECURSIVE getter with O(n) complexity
+
+    PARAMS
+    @IN tree
+
+    RETURN
+    -1 iff failure
+    Hight iff success
+*/
+int avl_get_hight(Avl *tree);
 
 #endif

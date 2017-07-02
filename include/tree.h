@@ -59,6 +59,7 @@ typedef struct Tree
     int         (*____to_array)(void *tree, void *array, size_t *size);
     ssize_t     (*____get_num_entries)(void *tree);
     int         (*____get_data_size)(void *tree);
+    int         (*____get_hight)(void *tree);
 
     /* to create iterator */
     void*       (*____it_create)(void *tree, iti_mode_t mode);
@@ -114,6 +115,7 @@ ___inline___ int tree_iterator_init(Tree *tree, Tree_iterator *it, iti_mode_t mo
     static ___unused___ int ____to_array(void *tree, void *array, size_t *size); \
     static ___unused___ ssize_t ____get_num_entries(void *tree); \
     static ___unused___ int ____get_data_size(void *tree); \
+    static ___unused___ int ____get_hight(void *tree); \
     static ___unused___ void ____destroy(void *tree) \
     { \
         concat(prefix, _destroy)((type *)tree); \
@@ -172,6 +174,10 @@ ___inline___ int tree_iterator_init(Tree *tree, Tree_iterator *it, iti_mode_t mo
     static ___unused___ ssize_t ____get_num_entries(void *tree) \
     { \
         return concat(prefix, _get_num_entries)((type *)tree); \
+    } \
+    static ___unused___ int ____get_hight(void *tree) \
+    { \
+        return concat(prefix, _get_hight)((type *)tree); \
     }
 
 #define TREE_WRAPPERS_ASSIGN(tree) \
@@ -188,6 +194,7 @@ ___inline___ int tree_iterator_init(Tree *tree, Tree_iterator *it, iti_mode_t mo
         (tree)->____to_array              = ____to_array; \
         (tree)->____get_data_size         = ____get_data_size; \
         (tree)->____get_num_entries       = ____get_num_entries; \
+        (tree)->____get_hight             = ____get_hight; \
         (tree)->____it_create             = ____it_create; \
         (tree)->____it_init               = ____it_init; \
         (tree)->____it_destroy            = ____it_destroy; \
@@ -362,6 +369,18 @@ ___inline___ ssize_t tree_get_num_entries(Tree *tree);
 */
 ___inline___ int tree_get_data_size(Tree *tree);
 
+/*
+    Get Tree Hight
+
+    PARAMS
+    @IN tree - pointer to tree
+
+    RETURN:
+    -1 iff failure
+    %Hight iff success
+*/
+___inline___ int tree_get_hight(Tree *tree);
+
 ___inline___ void *tree_get_tree(Tree *tree)
 {
     if (tree == NULL)
@@ -467,6 +486,14 @@ ___inline___ int tree_get_data_size(Tree *tree)
         return -1;
 
     return tree->____get_data_size(tree_get_tree(tree));
+}
+
+___inline___ int tree_get_hight(Tree *tree)
+{
+    if (tree == NULL)
+        return -1;
+
+    return tree->____get_hight(tree_get_tree(tree));
 }
 
 ___inline___ Tree_iterator *tree_iterator_create(Tree *tree, iti_mode_t mode)

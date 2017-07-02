@@ -2,7 +2,11 @@
 #define RBT_H
 
 /*
-    Generic Red-Black Tree, without recursive functions, but with parent pointer
+    Generic Red-Black Tree, without recursive functions[^1], but with parent pointer
+
+    ^1 -> only 1 function is recursive: bst_get_hight, because function is rarely use
+    it's better to have O(n) recursive getter isntead of additional O(log(n)) operation
+    during insert and delete
 
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com
@@ -218,5 +222,17 @@ ssize_t rbt_get_num_entries(Rbt *tree);
     Size of data
 */
 int rbt_get_data_size(Rbt *tree);
+
+/*
+    RECURSIVE getter with O(n) complexity
+
+    PARAMS
+    @IN tree
+
+    RETURN
+    -1 iff failure
+    Hight iff success
+*/
+int rbt_get_hight(Rbt *tree);
 
 #endif

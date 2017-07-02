@@ -118,6 +118,16 @@ static ___inline___  void bst_rotate_right(Bst *tree, Bst_node *node);
 */
 static ___inline___ void bst_rotate_left(Bst *tree, Bst_node *node);
 
+/*
+    Recursive helper for bst_get_hight
+
+    PARAMS
+    @IN node - bst node
+
+    RETURN
+    hight of subtree with root @node
+*/
+static int __bst_rek_get_hight(Bst_node *node);
 
 static ___inline___ Bst_node *bst_node_create(void *data, int size_of, Bst_node *parent)
 {
@@ -348,6 +358,20 @@ static ___inline___ void bst_rotate_left(Bst *tree, Bst_node *node)
     }
     else
         tree->____root = right_son;
+}
+
+static int __bst_rek_get_hight(Bst_node *node)
+{
+    int left;
+    int right;
+
+    if (node == NULL)
+        return 0;
+
+    left = __bst_rek_get_hight(node->____left_son);
+    right = __bst_rek_get_hight(node->____right_son);
+
+    return MAX(left, right) + 1;
 }
 
 Bst* bst_create(int size_of, int (*cmp)(void* a,void *b))
@@ -827,6 +851,19 @@ int bst_get_data_size(Bst *tree)
         ERROR("tree == NULL\n", -1, "");
 
     return (int)tree->____size_of;
+}
+
+int bst_get_hight(Bst *tree)
+{
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", -1, "");
+
+    if (tree->____root == NULL)
+        return 0;
+
+    return __bst_rek_get_hight(tree->____root);
 }
 
 Bst_iterator *bst_iterator_create(Bst *tree, iti_mode_t mode)

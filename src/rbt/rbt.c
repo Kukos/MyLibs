@@ -171,6 +171,17 @@ static int rbt_delete_fixup(Rbt *tree, Rbt_node *node);
 */
 static int rbt_balance(Rbt *tree);
 
+/*
+    Recursive helper for rbt_get_hight
+
+    PARAMS
+    @IN node - rbt node
+
+    RETURN
+    hight of subtree with root @node
+*/
+static int __rbt_rek_get_hight(Rbt_node *node);
+
 ___inline___ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node *parent)
 {
     Rbt_node *node;
@@ -563,6 +574,20 @@ static int rbt_delete_fixup(Rbt *tree, Rbt_node *node)
     node->____color = RBT_BLACK;
 
     return 0;
+}
+
+static int __rbt_rek_get_hight(Rbt_node *node)
+{
+    int left;
+    int right;
+
+    if (node == sentinel)
+        return 0;
+
+    left = __rbt_rek_get_hight(node->____left_son);
+    right = __rbt_rek_get_hight(node->____right_son);
+
+    return MAX(left, right) + 1;
 }
 
 Rbt* rbt_create(int size_of, int (*cmp)(void *a, void *b))
@@ -1014,6 +1039,19 @@ int rbt_get_data_size(Rbt *tree)
         ERROR("tree == NULL\n", -1, "");
 
     return (int)tree->____size_of;
+}
+
+int rbt_get_hight(Rbt *tree)
+{
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", -1, "");
+
+    if (tree->____root == sentinel)
+        return 0;
+
+    return __rbt_rek_get_hight(tree->____root);
 }
 
 Rbt_iterator *rbt_iterator_create(Rbt *tree, iti_mode_t mode)

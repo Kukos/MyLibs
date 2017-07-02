@@ -181,6 +181,18 @@ static int avl_delete_fixup(Avl *tree, Avl_node *parent, Avl_node *node);
 */
 static int avl_balance(Avl *tree);
 
+
+/*
+    Recursive helper for avl_get_hight
+
+    PARAMS
+    @IN node - bst node
+
+    RETURN
+    hight of subtree with root @node
+*/
+static int __avl_rek_get_hight(Avl_node *node);
+
 static int avl_balance(Avl *tree)
 {
     TRACE("");
@@ -743,6 +755,20 @@ static int avl_delete_fixup(Avl *tree, Avl_node *parent, Avl_node *node)
     return 0;
 }
 
+static int __avl_rek_get_hight(Avl_node *node)
+{
+    int left;
+    int right;
+
+    if (node == NULL)
+        return 0;
+
+    left = __avl_rek_get_hight(node->____left_son);
+    right = __avl_rek_get_hight(node->____right_son);
+
+    return MAX(left, right) + 1;
+}
+
 Avl *avl_create(int size_of, int (*cmp)(void *a, void *b))
 {
     Avl *tree;
@@ -1170,6 +1196,19 @@ int avl_get_data_size(Avl *tree)
         ERROR("tree == NULL\n", -1, "");
 
     return (int)tree->____size_of;
+}
+
+int avl_get_hight(Avl *tree)
+{
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", -1, "");
+
+    if (tree->____root == NULL)
+        return 0;
+
+    return __avl_rek_get_hight(tree->____root);
 }
 
 Avl_iterator *avl_iterator_create(Avl *tree, iti_mode_t mode)
