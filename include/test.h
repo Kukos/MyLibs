@@ -32,9 +32,6 @@ ___inline___ long ______test_strlen______(const char *str)
 }
 
 /* PRIVATE MACRO */
-#define ____MOCK_F____(func) concat(___mock___, func)
-
-/* PRIVATE MACRO */
 #define ____TEST_SUMMARY(COLOR, STR_RESULT) \
     do { \
         printf( COLOR "%.*s" __TEST_SUMMARY_TEXT__ "%.*s\n", \
@@ -217,24 +214,5 @@ test_t ________ret;
             return; \
         } \
     } while (0);
-
-/*
-    Use this macro to mock funtion
-*/
-#define T_MOCK(func, val) \
-    typeof(val) ____MOCK_F____(func)(___unused___ int guard, ...) { return (val); }
-
-/*
-    Use this macro to mock void funtion
-*/
-#define T_MOCK_V(func) \
-    void ____MOCK_F____(func)(___unused___ int guard, ...) { }
-
-/*
-    Use this macro to call mock fuction
-*/
-#define T_CALL(func, ...) \
-    ____MOCK_F____(func)(0, ##__VA_ARGS__)
-
 
 #endif
