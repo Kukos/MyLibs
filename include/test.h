@@ -34,7 +34,7 @@ ___inline___ long ______test_strlen______(const char *str)
 /* PRIVATE MACRO */
 #define ____TEST_SUMMARY(COLOR, STR_RESULT) \
     do { \
-        printf( COLOR "%.*s" __TEST_SUMMARY_TEXT__ "%.*s\n", \
+        (void)printf( COLOR "%.*s" __TEST_SUMMARY_TEXT__ "%.*s\n", \
                 ((int)(__TEST_MAX_STRING_LENGTH__ - \
                     ______test_strlen______(__TEST_SUMMARY_TEXT__)) >> 1), \
                 ________chars, \
@@ -42,11 +42,11 @@ ___inline___ long ______test_strlen______(const char *str)
                     ______test_strlen______(__TEST_SUMMARY_TEXT__) + 1) >> 1), \
                 ________chars \
                ); \
-        printf("TESTS EXECUTED:\t%ld\n", ________passed_counter + ________failed_counter); \
-        printf("PASSED:\t\t%ld / %ld\n", ________passed_counter, ________passed_counter + ________failed_counter); \
-        printf("FAILED:\t\t%ld / %ld\n", ________failed_counter, ________passed_counter + ________failed_counter); \
-        printf(STR_RESULT); \
-        printf("%.*s\n" COLOR_RESET, __TEST_MAX_STRING_LENGTH__, ________chars); \
+        (void)printf("TESTS EXECUTED:\t%ld\n", ________passed_counter + ________failed_counter); \
+        (void)printf("PASSED:\t\t%ld / %ld\n", ________passed_counter, ________passed_counter + ________failed_counter); \
+        (void)printf("FAILED:\t\t%ld / %ld\n", ________failed_counter, ________passed_counter + ________failed_counter); \
+        (void)printf(STR_RESULT); \
+        (void)printf("%.*s\n" COLOR_RESET, __TEST_MAX_STRING_LENGTH__, ________chars); \
     } while(0);
 
 /* private type */
@@ -81,7 +81,7 @@ test_t ________ret;
         ________passed_counter = 0; \
         ________failed_counter = 0; \
         srand(time(NULL)); \
-        printf( __TEST_COLOR_INFO__ "%.*s %s %.*s\n" COLOR_RESET, \
+        (void)printf( __TEST_COLOR_INFO__ "%.*s %s %.*s\n" COLOR_RESET, \
                 ((int)(__TEST_MAX_STRING_LENGTH__ - \
                     ______test_strlen______(fmt) - 2) >> 1), \
                 ________chars, \
@@ -112,7 +112,7 @@ test_t ________ret;
         test_t ______ret = ________ret ? FAILED : PASSED; \
         if (______ret == FAILED) \
         { \
-            printf( __TEST_COLOR_INFO__ "[TEST]\t%s%.*s" \
+            (void)printf( __TEST_COLOR_INFO__ "[TEST]\t%s%.*s" \
                     __TEST_COLOR_FAILED__ "FAILED" COLOR_RESET "\n", \
                         tostring(func), \
                         (int)(__TEST_MAX_STRING_LENGTH__ - \
@@ -122,7 +122,7 @@ test_t ________ret;
         } \
         else \
         { \
-            printf( __TEST_COLOR_INFO__ "[TEST]\t%s%.*s" \
+            (void)printf( __TEST_COLOR_INFO__ "[TEST]\t%s%.*s" \
                     __TEST_COLOR_PASSED__ "PASSED" COLOR_RESET "\n", \
                         tostring(func), \
                         (int)( __TEST_MAX_STRING_LENGTH__ - \
@@ -197,7 +197,7 @@ test_t ________ret;
     do { \
         if (!(expr)) \
         { \
-            printf("[T_CHECK]\tNOT\t%s\nLINE = %d\n", tostring(expr), __LINE__); \
+            (void)printf("[T_CHECK]\tNOT\t%s\nLINE = %d\n", tostring(expr), __LINE__); \
             ++________ret; \
         } \
     } while (0);
@@ -209,7 +209,7 @@ test_t ________ret;
     do { \
         if (expr) \
         { \
-            printf("[T_ERROR]\t%s\nLINE = %d\n", tostring(expr), __LINE__); \
+            (void)printf("[T_ERROR]\t%s\nLINE = %d\n", tostring(expr), __LINE__); \
             ++________ret; \
             return; \
         } \
