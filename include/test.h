@@ -13,6 +13,8 @@
 #include <common.h>
 #include <stdio.h>
 #include <compiler.h>
+#include <stdlib.h>
+#include <time.h>
 
 #define __TEST_COLOR_INFO__     COLOR_CYAN
 #define __TEST_COLOR_PASSED__   COLOR_GREEN
@@ -81,6 +83,7 @@ test_t ________ret;
     do { \
         ________passed_counter = 0; \
         ________failed_counter = 0; \
+        srand(time(NULL)); \
         printf( __TEST_COLOR_INFO__ "%.*s %s %.*s\n" COLOR_RESET, \
                 ((int)(__TEST_MAX_STRING_LENGTH__ - \
                     ______test_strlen______(fmt) - 2) >> 1), \
