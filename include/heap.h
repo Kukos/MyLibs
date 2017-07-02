@@ -1,10 +1,6 @@
 #ifndef HEAP_H
 #define HEAP_H
 
-#include <darray.h>
-#include <stdbool.h>
-#include <stddef.h> /* size_t */
-
 /*
     Simple D-ary heap
     Please note that heap is "generic" and storing only pointers to structures
@@ -18,7 +14,13 @@
     LICENCE: GPL 3.0
 */
 
-#define HEAP_TYPE       char
+#include <darray.h>
+#include <stdbool.h>
+#include <stddef.h> /* size_t */
+#include <sys/types.h>
+
+typedef char heap_type;
+
 #define HEAP_MIN        0
 #define HEAP_MAX        1
 #define OUT_OF_HEAP    -1
@@ -26,7 +28,7 @@
 typedef struct Heap_entry
 {
     void        *data;
-    size_t      pos;    /* index in Heap */
+    ssize_t      pos;    /* index in Heap */
 
 }Heap_entry;
 
@@ -38,15 +40,8 @@ typedef struct Heap
     int         size_of;                    /* size of data */
     int         ary;                        /* heap ary */
 
-    HEAP_TYPE   type;
+    heap_type   type;
 }Heap;
-
-/*
-    Because heap use dynamic array, iterate it using dynamic array iterator
-*/
-typedef struct Darray_iterator Heap_iterator;
-
-IT_FUNC(Heap, heap)
 
 /*
     Create Heap entry
@@ -90,7 +85,7 @@ void heap_entry_destroy(Heap_entry *entry);
     %NULL iff failure
     %pointer iff success
 */
-Heap *heap_create(HEAP_TYPE type, int size_of, int ary,
+Heap *heap_create(heap_type type, int size_of, int ary,
      int (*cmp)(void *a, void *b));
 
 #define HEAP_CREATE(HEAP, HTYPE, DTYPE, ARY, CMP) \
@@ -203,9 +198,33 @@ int heap_change_key(Heap *heap, size_t index, void *new_data);
     @IN heap - pointer to heap
 
     RETURN:
-    %FALSE iff not empty
-    %TRUE iff empty or heap is null
+    %false iff not empty
+    %true iff empty or heap is null
 */
 bool heap_is_empty(Heap *heap);
+
+/*
+    Get Num entries in heap
+
+    PARAMS
+    @IN heap - pointer to heap
+
+    RETURN
+    -1 iff failure
+    Num of entries iff success
+*/
+ssize_t heap_get_num_entries(Heap *heap);
+
+/*
+    Get heap data size
+
+    PARAMS
+    @IN heap - pointer to heap
+
+    RETURN
+    -1 iff failure
+    Data size iff success
+*/
+int heap_get_data_size(Heap *heap);
 
 #endif
