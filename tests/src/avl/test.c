@@ -975,7 +975,7 @@ void test(void)
 
 int main(void)
 {
-    TEST_INIT("RBT");
+    TEST_INIT("AVL");
     test();
     TEST_SUMMARY;
 }
