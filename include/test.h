@@ -59,8 +59,8 @@ ____test_counter_t ________failed_counter;
 #define __TEST_MAX_STRING_LENGTH__ 40
 
 /* to fill gap with ' ' */
-const char const *________spaces = "                                              ";
-const char const *________chars = "===============================================";
+const char *________spaces = "                                              ";
+const char *________chars = "===============================================";
 
 /* use this type for internal test variables */
 typedef unsigned long long test_t;
