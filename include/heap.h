@@ -27,20 +27,20 @@ typedef char heap_type;
 
 typedef struct Heap_entry
 {
-    void        *data;
-    ssize_t      pos;    /* index in Heap */
+    void        *____data;
+    ssize_t      ____pos;    /* index in Heap */
 
 }Heap_entry;
 
 typedef struct Heap
 {
-    Darray      *darray;                     /* dynamic array for heap */
-    int         (*cmp)(void *a, void *b);   /* compare function */
+    Darray      *____darray;                     /* dynamic array for heap */
+    int         (*____cmp)(void *a, void *b);   /* compare function */
 
-    int         size_of;                    /* size of data */
-    int         ary;                        /* heap ary */
+    int         ____size_of;                    /* size of data */
+    int         ____ary;                        /* heap ary */
 
-    heap_type   type;
+    heap_type   ____type;
 }Heap;
 
 /*
