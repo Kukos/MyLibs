@@ -73,6 +73,30 @@ Heap_entry *heap_entry_create(void *data, int size_of);
 void heap_entry_destroy(Heap_entry *entry);
 
 /*
+    Get pos in Heap
+
+    PARAMS
+    @IN entry - heap entry
+
+    RETURN
+    Pos of entry iff success
+    -2 iff failure
+*/
+ssize_t heap_entry_get_pos(Heap_entry *entry);
+
+/*
+    Get heap data
+
+    PARAMS
+    @IN entry - heap entry
+
+    RETURN
+    data iff success
+    NULL iff failure
+*/
+void *heap_entry_get_data(Heap_entry *entry);
+
+/*
     Create heap
 
     PARAMS

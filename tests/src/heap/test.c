@@ -54,7 +54,7 @@ int cmp_heap_entry(void *a, void *b)
     Heap_entry *e1 = *(Heap_entry **)a;
     Heap_entry *e2 = *(Heap_entry **)b;
 
-    return cmp_int(e1->data, e2->data);
+    return cmp_int(heap_entry_get_data(e1), heap_entry_get_data(e2));
 }
 
 test_f test_create(heap_type type, int ary)
@@ -137,24 +137,24 @@ test_f test_build(heap_type type, int ary)
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(top->data, array[i]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(top->data, array[size - i - 1]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
         }
 
         top = heap_extract_top(heap);
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(top->data, array[i]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(top->data, array[size - i - 1]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
         }
 
         ++i;
@@ -215,24 +215,24 @@ test_f test_insert(heap_type type, int ary)
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(top->data, array[i]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(top->data, array[size - i - 1]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
         }
 
         top = heap_extract_top(heap);
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(top->data, array[i]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(top->data, array[size - i - 1]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
         }
 
         ++i;
@@ -368,12 +368,12 @@ test_f test_change_key(heap_type type, int ary)
         if (type == HEAP_MAX)
         {
             t[pos[i]] += factor;
-            T_EXPECT(heap_change_key(heap, array[pos[i]]->pos, (void *)&t[pos[i]]), 0);
+            T_EXPECT(heap_change_key(heap, heap_entry_get_pos(array[pos[i]]), (void *)&t[pos[i]]), 0);
         }
         else
         {
             t[pos[i]] -= factor;
-            T_EXPECT(heap_change_key(heap, array[pos[i]]->pos, (void *)&t[pos[i]]), 0);
+            T_EXPECT(heap_change_key(heap, heap_entry_get_pos(array[pos[i]]), (void *)&t[pos[i]]), 0);
         }
 
     sort((void *)array, size, cmp_heap_entry, sizeof(Heap_entry *));
@@ -385,24 +385,24 @@ test_f test_change_key(heap_type type, int ary)
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(top->data, array[i]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(top->data, array[size - i - 1]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
         }
 
         top = heap_extract_top(heap);
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(top->data, array[i]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(top->data, array[size - i - 1]->data), 0);
+            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
         }
 
         ++i;
@@ -411,6 +411,47 @@ test_f test_change_key(heap_type type, int ary)
 
     FREE(array);
     FREE(t);
+    heap_destroy(heap);
+}
+
+test_f test_empty(heap_type type, int ary)
+{
+    Heap *heap;
+
+    heap = heap_create(type, sizeof(int), ary, cmp_int);
+    T_EXPECT(heap_get_data_size(heap), sizeof(int));
+    T_EXPECT(heap_get_num_entries(heap), 0);
+    T_EXPECT(heap_is_empty(heap), true);
+    T_EXPECT(heap_get_top(heap), NULL);
+    T_EXPECT(heap_extract_top(heap), NULL);
+
+    heap_destroy(heap);
+
+    heap = heap_create(type, sizeof(char), ary, cmp_char);
+    T_EXPECT(heap_get_data_size(heap), sizeof(char));
+    T_EXPECT(heap_get_num_entries(heap), 0);
+    T_EXPECT(heap_is_empty(heap), true);
+    T_EXPECT(heap_get_top(heap), NULL);
+    T_EXPECT(heap_extract_top(heap), NULL);
+
+    heap_destroy(heap);
+
+    heap = heap_create(type, sizeof(double), ary, cmp_double);
+    T_EXPECT(heap_get_data_size(heap), sizeof(double));
+    T_EXPECT(heap_get_num_entries(heap), 0);
+    T_EXPECT(heap_is_empty(heap), true);
+    T_EXPECT(heap_get_top(heap), NULL);
+    T_EXPECT(heap_extract_top(heap), NULL);
+
+    heap_destroy(heap);
+
+    heap = heap_create(type, sizeof(MyStruct *), ary, cmp_int);
+    T_EXPECT(heap_get_data_size(heap), sizeof(MyStruct *));
+    T_EXPECT(heap_get_num_entries(heap), 0);
+    T_EXPECT(heap_is_empty(heap), true);
+    T_EXPECT(heap_get_top(heap), NULL);
+    T_EXPECT(heap_extract_top(heap), NULL);
+
     heap_destroy(heap);
 }
 
@@ -440,6 +481,11 @@ void test(void)
     TEST(test_change_key(HEAP_MIN, 7));
     TEST(test_change_key(HEAP_MAX, 2));
     TEST(test_change_key(HEAP_MAX, 7));
+
+    TEST(test_empty(HEAP_MIN, 2));
+    TEST(test_empty(HEAP_MIN, 7));
+    TEST(test_empty(HEAP_MAX, 2));
+    TEST(test_empty(HEAP_MAX, 7));
 }
 
 int main(void)

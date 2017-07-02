@@ -374,7 +374,25 @@ void heap_entry_destroy(Heap_entry *entry)
     FREE(entry);
 }
 
+ssize_t heap_entry_get_pos(Heap_entry *entry)
+{
+    TRACE("");
 
+    if (entry == NULL)
+        ERROR("entry == NULL\n", -2 ,"");
+
+    return entry->pos;
+}
+
+void *heap_entry_get_data(Heap_entry *entry)
+{
+    TRACE("");
+
+    if (entry == NULL)
+        ERROR("entry == NULL\n", NULL ,"");
+
+    return entry->data;
+}
 Heap* heap_create(heap_type type, int size_of, int ary,
      int (*cmp)(void *a, void *b))
 {
@@ -520,7 +538,7 @@ int heap_change_key(Heap *heap, size_t index, void *new_data)
         ERROR("Incorrect index\n", 1, "");
 
 
-    array = (Heap_entry **)heap->darray;
+    array = (Heap_entry **)darray_get_array(heap->darray);
 
     if (heap->type == HEAP_MIN)
     {
