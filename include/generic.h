@@ -16,19 +16,19 @@
 
 /* get void* size to get architecture */
 #if __SIZEOF_POINTER__ == 8
-	#define __ARCH_64__
+    #define __ARCH_64__
 #else
-	#define __ARCH_32__
+    #define __ARCH_32__
 #endif
 
 /* define types like "asm" */
 #ifdef __ARCH_64__
 
-    #define BYTE			int8_t
-    #define HALF_WORD 		int16_t
-    #define WORD 			int32_t
-    #define DWORD 			int64_t
-    #define QWORD 			__int128_t /* gcc extensions */
+    #define BYTE			uint8_t
+    #define HALF_WORD 		uint16_t
+    #define WORD 			uint32_t
+    #define DWORD 			uint64_t
+    #define QWORD 			__uint128_t /* gcc extensions */
 
     #define BYTE_SIZE 		sizeof(BYTE)
     #define HALF_WORD_SIZE	sizeof(HALF_WORD)
@@ -40,10 +40,10 @@
 
 #elif defined(__ARCH_32__)
 
-    #define BYTE 			int8_t
-    #define WORD 			int16_t
-    #define DWORD 			int32_t
-    #define QWORD 			int64_t
+    #define BYTE 			uint8_t
+    #define WORD 			uint16_t
+    #define DWORD 			uint32_t
+    #define QWORD 			uint64_t
 
     #define BYTE_SIZE		sizeof(BYTE)
     #define WORD_SIZE		sizeof(WORD)
@@ -59,8 +59,8 @@ ___unused___ static BYTE __buffer__[MAXWORD];
 
 /* swap A and B with size = S, use SSE if possible */
 #define __SWAP__(A, B, S) \
-	do { \
-    	if (&(A) != &(B)) \
+    do { \
+        if (&(A) != &(B)) \
         { \
             (void)memcpy((void *)__buffer__, (void *)&(A), (size_t)(S)); \
             (void)memcpy((void *)&(A), (void *)&(B), (size_t)(S)); \
@@ -70,7 +70,7 @@ ___unused___ static BYTE __buffer__[MAXWORD];
 
 /* A = B, A, B has size S, use SSE if possible */
 #define __ASSIGN__(A, B, S) \
-	do { \
+    do { \
         if (&(A) != &(B)) \
             (void)memcpy((void *)&(A), (void *)&(B), (size_t)(S)); \
     } while (0)
