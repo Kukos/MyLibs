@@ -128,7 +128,11 @@ final:
 	cp $(IDIR)/iterators.h $(O_HEADERS) && \
 	cp $(IDIR)/test.h $(O_HEADERS) && \
 	cp $(IDIR)/generic.h $(O_HEADERS) && \
-	cp $(SDIR)/log.c $(O_LIBS)
+	cp $(IDIR)/tree.h $(O_HEADERS) && \
+	cp $(IDIR)/ulist.h $(O_HEADERS) && \
+	cp $(IDIR)/slist.h $(O_HEADERS) && \
+	cp $(SDIR)/log.c $(O_LIBS) && \
+	cp $(SDIR)/assert.c $(O_LIBS)
 
 test:
 	$(Q)$(MAKE) -f $(TEST_DIR)/Makefile --no-print-directory && \
