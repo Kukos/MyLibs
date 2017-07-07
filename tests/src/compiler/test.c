@@ -285,6 +285,31 @@ test_f test_swap_bytes(void)
     T_EXPECT(swap_bytes64(c), 0x10EFCDAB78563412);
 }
 
+test_f test_barrier(void)
+{
+    int a;
+    int b;
+
+    a = 0;
+    T_ASSERT(a, 0);
+    sw_mem_barrier;
+    b = 1;
+    T_ASSERT(a, 0);
+    T_ASSERT(b, 1);
+    hw_mem_barrier;
+    a = 1;
+    T_ASSERT(a, 1);
+    T_ASSERT(b, 1);
+}
+
+test_f test_atomic(void)
+{
+    int a;
+
+    atomic(a = 1);
+    T_ASSERT(a, 1);
+}
+
 void test(void)
 {
     TEST(test_to_string());
@@ -296,6 +321,8 @@ void test(void)
     TEST(test_number_ones());
     TEST(test_ones_parity());
     TEST(test_swap_bytes());
+    TEST(test_barrier());
+    TEST(test_atomic());
 }
 
 int main(void)

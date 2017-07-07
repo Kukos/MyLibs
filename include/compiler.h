@@ -198,6 +198,15 @@
 
 #define load_to_cache(addr, rw, prio)  __builtin_prefetch(addr, rw, prio)
 
+#define sw_mem_barrier  asm volatile ("" : : : "memory")
+#define hw_mem_barrier  __sync_synchronize()
+#define atomic(x) \
+    do { \
+        hw_mem_barrier; \
+        x; \
+        hw_mem_barrier; \
+    } while (0)
+
 /* FUNCTION ATTR */
 
 /* use this macro instead of inline */
