@@ -5,7 +5,13 @@
 
 # This script install libs to user dir or default dir
 
-source log.sh
+# Full path of this script
+THIS_DIR=`readlink -f "${BASH_SOURCE[0]}" 2>/dev/null||echo $0`
+
+# This directory path
+DIR=`dirname "${THIS}"`
+
+source $DIR/log.sh
 
 DEFAULT_DIR=~/mylibs
 lib_dir=
