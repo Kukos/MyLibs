@@ -48,7 +48,7 @@ define print_make
 	$(if $(Q), @echo "[MAKE]    $(1)")
 endef
 
-all: prepare arraylist avl bst darray fifo filebuffer getch heap klist list list2d rbt sort stack trie ufset final
+all: prepare arraylist avl bst cstring darray fifo filebuffer getch heap klist list list2d rbt sort stack trie ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
@@ -63,6 +63,10 @@ avl:
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 bst:
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
+cstring:
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
