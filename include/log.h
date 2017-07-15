@@ -41,7 +41,7 @@ ___inline___ long ______log_strlen______(const char *str)
     return len;
 }
 
-#define LOG_MAX_FUNC_SPACE 20
+#define LOG_MAX_FUNC_SPACE 40
 
 #define __TRACE__   "[TRACE]\tFUNC: %s\n", __func__
 #define __ERROR__   "[ERROR]\tFILE: %s\n\tFUNC: %s%*.sLINE: %d\n", __FILE__, __func__, \
