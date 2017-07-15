@@ -17,6 +17,7 @@
 #include <sys/mman.h>
 #include <stddef.h> /* size_t */
 #include <sys/types.h> /* ssize_t */
+#include <fcntl.h>
 
 /*
 	Buffer use mmap so you can pass those flags as protect_flag
@@ -31,7 +32,7 @@
 
 */
 
-typedef struct file_buffer
+typedef struct File_buffer
 {
     char 			*____buffer;
     size_t 			____size; /* size visible by user */
@@ -39,7 +40,7 @@ typedef struct file_buffer
     int 			____fd; /* file descriptor of buffered file */
     int 			____protect_flag;
 
-}file_buffer;
+}File_buffer;
 
 /*
     MAP file to RAM with flag
@@ -50,9 +51,9 @@ typedef struct file_buffer
 
 	RETURN:
 	%NULL iff failure
-	%Pointer to file_buffer iff success
+	%Pointer to File_buffer iff success
 */
-file_buffer *file_buffer_create(int fd, int protect_flag);
+File_buffer *file_buffer_create(int fd, int protect_flag);
 
 /*
     MAP file to RAM with flag
@@ -64,9 +65,9 @@ file_buffer *file_buffer_create(int fd, int protect_flag);
 
 	RETURN:
 	%NULL iff failure
-	%Pointer to file_buffer iff success
+	%Pointer to File_buffer iff success
 */
-file_buffer *file_buffer_create_from_path(const char *path, int protect_flag, int open_flag);
+File_buffer *file_buffer_create_from_path(const char *path, int protect_flag, int open_flag);
 
 /*
     Detached file and destroy structure
@@ -78,20 +79,20 @@ file_buffer *file_buffer_create_from_path(const char *path, int protect_flag, in
 	%0 iff success
 	%Non-zero value iff failure
 */
-int file_buffer_destroy(file_buffer *fb);
+int file_buffer_destroy(File_buffer *fb);
 
 /*
     Add to end of mapped file the content data
 
 	PARAMS
-	@IN file_buffer - pointer to file buffer
+	@IN File_buffer - pointer to file buffer
 	@IN data - data in char format ( expected '/0' at the end )
 
 	RETURN:
 	%0 iff success
 	%Non-zero value iff failure
 */
-int file_buffer_append(file_buffer *fb, const char *data);
+int file_buffer_append(File_buffer *fb, const char *data);
 
 /*
     Synchronized mapped file with true file on disk
@@ -103,7 +104,7 @@ int file_buffer_append(file_buffer *fb, const char *data);
 	%0 iff success
 	%Non-zero value iff failure
 */
-int file_buffer_synch(file_buffer *fb);
+int file_buffer_synch(File_buffer *fb);
 
 /*
 	Get Buffer
@@ -115,7 +116,7 @@ int file_buffer_synch(file_buffer *fb);
 	%Pointer to buffer iff success
 	%NULL iff failure
 */
-char *file_buffer_get_buff(file_buffer *fb);
+char *file_buffer_get_buff(File_buffer *fb);
 
 /*
 	Get Size of buffered file
@@ -127,6 +128,6 @@ char *file_buffer_get_buff(file_buffer *fb);
 	%Size iff success
 	%-1 iff failure
 */
-ssize_t file_buffer_get_size(file_buffer *fb);
+ssize_t file_buffer_get_size(File_buffer *fb);
 
 #endif

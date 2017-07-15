@@ -53,9 +53,9 @@ ___inline___ static size_t align_size(size_t size)
 	return size;
 }
 
-file_buffer *file_buffer_create(int fd, int protect_flag)
+File_buffer *file_buffer_create(int fd, int protect_flag)
 {
-	file_buffer *fb;
+	File_buffer *fb;
 	struct stat ft;
 
 	TRACE("");
@@ -63,7 +63,7 @@ file_buffer *file_buffer_create(int fd, int protect_flag)
 	if (fd < 0)
 		ERROR("fd < 0\n", NULL, "");
 
-    fb = (file_buffer *)malloc(sizeof(file_buffer));
+    fb = (File_buffer *)malloc(sizeof(File_buffer));
     if (fb == NULL)
 		ERROR("malloc error\n", NULL, "");
 
@@ -90,7 +90,7 @@ file_buffer *file_buffer_create(int fd, int protect_flag)
     return fb;
 }
 
-file_buffer *file_buffer_create_from_path(const char *path, int protect_flag, int open_flag)
+File_buffer *file_buffer_create_from_path(const char *path, int protect_flag, int open_flag)
 {
 	int fd;
 
@@ -103,7 +103,7 @@ file_buffer *file_buffer_create_from_path(const char *path, int protect_flag, in
 	return file_buffer_create(fd, protect_flag);
 }
 
-int file_buffer_destroy(file_buffer *fb)
+int file_buffer_destroy(File_buffer *fb)
 {
 	TRACE("");
 
@@ -123,7 +123,7 @@ int file_buffer_destroy(file_buffer *fb)
     return 0;
 }
 
-int file_buffer_append(file_buffer *fb, const char *data)
+int file_buffer_append(File_buffer *fb, const char *data)
 {
 	size_t length;
     off_t new_size;
@@ -165,7 +165,7 @@ int file_buffer_append(file_buffer *fb, const char *data)
     return 0;
 }
 
-int file_buffer_synch(file_buffer *fb)
+int file_buffer_synch(File_buffer *fb)
 {
 	TRACE("");
 
@@ -178,7 +178,7 @@ int file_buffer_synch(file_buffer *fb)
     return 0;
 }
 
-char *file_buffer_get_buff(file_buffer *fb)
+char *file_buffer_get_buff(File_buffer *fb)
 {
 	TRACE("");
 
@@ -188,7 +188,7 @@ char *file_buffer_get_buff(file_buffer *fb)
 	return fb->____buffer;
 }
 
-ssize_t file_buffer_get_size(file_buffer *fb)
+ssize_t file_buffer_get_size(File_buffer *fb)
 {
 	TRACE("");
 

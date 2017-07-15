@@ -202,7 +202,7 @@ test_f test_create_from_fd(void)
     /* 5 MB */
     const size_t file_size = BIT(20) * 5;
 
-    file_buffer *fb;
+    File_buffer *fb;
 
     /* create file */
     T_ERROR(asprintf(&path1, "%s/%s", test_dir, __FUNCTION__) == -1);
@@ -254,7 +254,7 @@ test_f test_create_from_path(void)
     int fd1;
     int fd2;
 
-    file_buffer *fb;
+    File_buffer *fb;
 
     /* 5 MB */
     const size_t file_size = BIT(20) * 5;
@@ -312,7 +312,7 @@ test_f test_read_file(void)
     const size_t file_size = BUFFER_SIZE;
     char buffer[BUFFER_SIZE + 1];
 
-    file_buffer *fb;
+    File_buffer *fb;
 
     /* create file */
     T_ERROR(asprintf(&path1, "%s/%s", test_dir, __FUNCTION__) == -1);
@@ -377,7 +377,7 @@ test_f test_write_to_file(void)
     const size_t file_size = 0;
     char buffer[BUFFER_SIZE];
 
-    file_buffer *fb;
+    File_buffer *fb;
 
     /* create file */
     T_ERROR(asprintf(&path1, "%s/%s", test_dir, __FUNCTION__) == -1);
@@ -427,7 +427,7 @@ test_f test_read_write(void)
     /* 10 MB */
     const size_t file_size = BIT(20) * 10;
 
-    file_buffer *fb;
+    File_buffer *fb;
 
     /* create file */
     T_ERROR(asprintf(&path1, "%s/%s", test_dir, __FUNCTION__) == -1);
@@ -496,7 +496,7 @@ test_f test_work_on_big_file(void)
     /* 100 MB */
     const size_t file_size = BIT(20) * 100;
 
-    file_buffer *fb;
+    File_buffer *fb;
 
     /* create file */
     T_ERROR(asprintf(&path1, "%s/%s", test_dir, __FUNCTION__) == -1);
