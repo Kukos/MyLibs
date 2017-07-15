@@ -601,6 +601,9 @@ void trie_destroy(Trie *trie)
     if (trie == NULL)
         return;
 
+    if (trie->____entries == 0)
+        return;
+
     node = trie_min_node_d(trie->____root);
     temp = NULL;
 
