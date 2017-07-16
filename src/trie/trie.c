@@ -665,7 +665,7 @@ int trie_insert(Trie *trie, char *word)
     }
 
     if (ptr->____is_leaf)
-        ERROR("Word %s exist in trie\n", 1, word);
+       return 1;
 
     ptr->____is_leaf = true;
     ++trie->____entries;

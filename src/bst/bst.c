@@ -494,7 +494,7 @@ int bst_insert(Bst *tree, void *data)
             parent = node;
             if (tree->____cmp(node->____data, data) == 0) /* data exists in tree */
             {
-                ERROR("Data exists in tree\n", 1, "");
+                return 1;
             }
             else if (tree->____cmp(node->____data, data) > 0)
                 node = node->____left_son;

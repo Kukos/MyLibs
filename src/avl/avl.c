@@ -888,7 +888,7 @@ int avl_insert(Avl *tree, void *data)
             parent = node;
             if (tree->____cmp(node->____data, data) == 0) /* data exists in tree */
             {
-                ERROR("data with this key exist in tree\n", 1, "");
+                return 1;
             }
             else if (tree->____cmp(node->____data, data) > 0)
                 node = node->____left_son;
