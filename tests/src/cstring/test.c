@@ -23,7 +23,7 @@ test_f test_create(void)
     s = string_create();
     T_ERROR(s == NULL);
     T_EXPECT(string_get_length(s), 0);
-    T_EXPECT(string_get_str(s), NULL);
+    T_CHECK(string_get_str(s) != NULL);
     string_destroy(s);
 
     expected = "C";
@@ -172,7 +172,7 @@ test_f test_get_set_char(void)
     s = string_create();
     T_ERROR(s == NULL);
     T_EXPECT(string_get_length(s), 0);
-    T_EXPECT(string_get_str(s), NULL);
+    T_CHECK(string_get_str(s) != NULL);
     T_CHECK(string_get_char(s, 0) != 0);
     string_destroy(s);
 
@@ -1529,6 +1529,7 @@ test_f test_empty(void)
     T_EXPECT(string_concat(s, s2), NULL);
     T_CHECK(string_delete(s, 0, 1) != 0);
     T_CHECK(string_cut(s, 1) != 0);
+    T_CHECK(string_get_str(s) != NULL);
 
     string_destroy(string_clone(s));
 

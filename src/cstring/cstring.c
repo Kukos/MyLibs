@@ -526,9 +526,6 @@ char *string_get_str(String *string)
     if (string == NULL)
         ERROR("string == NULL\n", NULL, "");
 
-    if (string_is_empty(string))
-        return NULL;
-
     return string->____str;
 }
 
