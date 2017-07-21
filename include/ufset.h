@@ -154,7 +154,7 @@ void ufset_destroy_with_entries(UFset *set, void (*destructor)(void *data));
 
     RETURN:
     0 iff success
-    Positive value iff failure
+    Non-zero value iff failure
 */
 int ufset_union(UFset *x, UFset *y);
 

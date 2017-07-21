@@ -77,7 +77,7 @@ void trie_destroy(Trie *trie);
 
     RETURN:
     %0 iff success
-    %Positive value iff failure
+    %Non-zero value iff failure
 */
 int trie_insert(Trie *trie, char *word);
 
@@ -103,7 +103,7 @@ bool trie_find(Trie *trie, char *word);
 
     RETURN:
     %0 iff success
-    %Positive value iff failure
+    %Non-zero value iff failure
 */
 int trie_delete(Trie *trie, char *word);
 

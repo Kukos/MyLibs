@@ -112,7 +112,7 @@ void bst_destroy_with_entries(Bst *tree, void (*destructor)(void *data));
 
     RETURN:
     0 iff success
-    Positive value iff failure
+    Non-zero value iff failure
 */
 int bst_insert(Bst *tree, void *data);
 
@@ -125,7 +125,7 @@ int bst_insert(Bst *tree, void *data);
 
     RETURN:
     0 iff success
-    Positive value iff failure
+    Non-zero value iff failure
 */
 int bst_min(Bst *tree, void *data);
 
@@ -138,7 +138,7 @@ int bst_min(Bst *tree, void *data);
 
     RETURN:
     0 iff success
-    Positive value iff failure
+    Non-zero value iff failure
 */
 int bst_max(Bst *tree, void *data);
 
@@ -152,7 +152,7 @@ int bst_max(Bst *tree, void *data);
 
     RETURN:
     0 iff success
-    Positive value iff failure
+    Non-zero value iff failure
 */
  int bst_search(Bst *tree, void *data_key, void *data_out);
 
@@ -178,7 +178,7 @@ int bst_max(Bst *tree, void *data);
 
     RETURN:
     0 iff success
-    Positive value iff failure
+    Non-zero value iff failure
 */
 int bst_delete(Bst *tree, void *data_key);
 
@@ -190,7 +190,7 @@ int bst_delete(Bst *tree, void *data_key);
 
     RETURN:
     0 iff success
-    Positive value iff failure
+    Non-zero value iff failure
 */
 int bst_balance(Bst *tree);
 
@@ -204,7 +204,7 @@ int bst_balance(Bst *tree);
 
     RETURN:
     0 iff success
-    Positive value iff failure
+    Non-zero value iff failure
 */
 int bst_to_array(Bst *tree, void *array, size_t *size);
 
