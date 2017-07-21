@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <klist.h>
+#include <tree.h>
 
 typedef struct BPTree_node
 {
@@ -11,7 +12,6 @@ typedef struct BPTree_node
 
     KList               list;
 }BPTree_node;
-
 
 typedef struct BPTree
 {
@@ -25,6 +25,20 @@ typedef struct BPTree
 
     int (*____cmp)(void *a, void *b);
 }BPTree;
+
+/*
+    Create BPTree as TREE
+
+    PARAMS
+    @IN fanout - number of max entries in one node
+    @IN size_of - size_of data in tree
+    @IN cmp - cmp function
+
+    RETURN:
+    NULL iff failure
+    Pointer to Tree iff success
+*/
+Tree *tree_bptree_create(int fanout, int size_of, int (*cmp)(void *a, void *b));
 
 /*
     Create BPTree
