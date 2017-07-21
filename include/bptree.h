@@ -7,10 +7,10 @@
 
 typedef struct BPTree_node
 {
-    struct BPTree_node  *____ptrs;
+    struct BPTree_node  **____ptrs;
     void                *____keys;
 
-    KList               list;
+    KList               ____list;
 }BPTree_node;
 
 typedef struct BPTree
