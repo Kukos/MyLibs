@@ -3,6 +3,6 @@
 
 static ___unused___ void bar(void)
 {
-    int a = FOO;
+    int a = 1;
     (void)a;
 }
