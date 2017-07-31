@@ -190,15 +190,8 @@ static BPTree_node *bptree_get_first_leaf(BPTree *tree)
 
     return klist_entry(list, BPTree_node, ____list);
 }
-static BPTree_node *bptree_node_binary_search(BPTree_node *node, int (*cmp)(void *a, void *b), void *key)
+static BPTree_node *bptree_node_binary_search(BPTree_node *node, int size_of, int (*cmp)(void *a, void *b), void *key)
 {
-    BYTE *t;
-    size_t n;
-
-    ssize_t left;
-    ssize_t middle;
-    ssize_t right;
-
     TRACE("");
 
     if (node == NULL)
@@ -209,9 +202,6 @@ static BPTree_node *bptree_node_binary_search(BPTree_node *node, int (*cmp)(void
 
     if (key == NULL)
         ERROR("key == NULL\n", NULL, "");
-
-    t = node->____keys;
-    n = node->____keys_c;
 
     return NULL;
 }
@@ -283,7 +273,7 @@ int bptree_insert(BPTree *tree, void *data)
 
     if (bptree_is_empty(tree))
     {
-        new_node = bptree_node_create(tree->____size_of, tree->____fanout, NULL, true);
+        new_node = bptree_node_create((int)tree->____size_of, tree->____fanout, NULL, true);
         if (new_node)
             ERROR("bptree_node_create error\n", 1, "");
 

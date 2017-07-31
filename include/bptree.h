@@ -9,7 +9,7 @@ typedef struct BPTree_node
 {
     struct BPTree_node  **____ptrs;
     void                *____keys;
-    int                 ____keys_c;
+    size_t              ____keys_c;
 
     struct BPTree_node  *____parent;
 
