@@ -128,7 +128,7 @@ int rbt_insert(Rbt *tree, void *data);
 
     RETURN:
     0 iff success
-    Positive value if failure
+    Non-zero value iff failure
 */
 int rbt_min(Rbt *tree, void *data);
 
