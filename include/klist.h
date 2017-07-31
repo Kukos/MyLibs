@@ -31,8 +31,8 @@ typedef struct KList
 
 #define KLIST_INIT(name) \
     do { \
-        (name)->____prev = NULL; \
-        (name)->____next = NULL; \
+        (name)->____prev = (name); \
+        (name)->____next = (name); \
         (name)->____parent = NULL; \
     } while (0)
 
@@ -42,7 +42,7 @@ typedef struct KList
 #define KLIST_MASTER_INIT(name) \
     do { \
         (name)->____head = NULL; \
-        (name)->____length = NULL; \
+        (name)->____length = 0; \
     } while (0)
 
 #define KLIST_MASTER(name) \
