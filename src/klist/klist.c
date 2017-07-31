@@ -296,7 +296,10 @@ KList *klist_get_head(KList_master *list)
     if (list == NULL)
         ERROR("list == NULL\n", NULL, "");
 
-    return list->____head;
+    if (klist_is_empty(list))
+        return NULL;
+    else
+        return list->____head;
 }
 
 KList *klist_get_tail(KList_master *list)
