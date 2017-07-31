@@ -134,7 +134,7 @@ static void bptree_node_destroy_with_entries(BPTree_node *node, void (*destructo
     t = (BYTE *)node->____keys;
 
     /* destroy entries */
-    for (i = 0; i < node->____keys_c; ++i)
+    for (i = 0; i < (size_t)node->____keys_c; ++i)
         destructor((void *)(t + i));
 
     /* destroy normal node */
@@ -150,13 +150,18 @@ static bool bptree_is_empty(BPTree *tree)
 
 static BPTree_node *bptree_get_first_leaf(BPTree *tree)
 {
+    KList *list;
+
     TRACE("");
 
     if (tree == NULL)
         ERROR("tree == NULL\n", NULL, "");
 
-    if (klist_is)
+    list = klist_get_head(&tree->____leaves);
+    if (list == NULL)
+        ERROR("Tree is empty\n", NULL, "");
 
+    return NULL;
 }
 
 BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
@@ -178,12 +183,7 @@ BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
     if (tree == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    tree->____leaves = klist_master_create();
-    if (tree->____leaves == NULL)
-    {
-        FREE(tree);
-        ERROR("klist_master_create error\n", NULL, "");
-    }
+    KLIST_MASTER_INIT(&tree->____leaves);
 
     tree->____root          = NULL;
     tree->____hight         = 0;
@@ -209,15 +209,12 @@ void bptree_destroy(BPTree *tree)
 
     if (bptree_is_empty(tree))
     {
-        goto destroy_tree;
+        FREE(tree);
         return;
     }
 
     /* TODO: free all nodes */
 
-
-destroy_tree:
-    klist_master_destroy(tree->____leaves);
     FREE(tree);
 }
 

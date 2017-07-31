@@ -20,7 +20,7 @@ typedef struct BPTree_node
 typedef struct BPTree
 {
     BPTree_node     *____root;
-    KList_master    *____leaves;
+    KList_master    ____leaves;
 
     int             ____hight;
     int             ____fanout;
