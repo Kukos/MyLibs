@@ -18,7 +18,7 @@
     NULL iff failure
     Pointer to new node
 */
-___unused___ static BPTree_node *bptree_node_create(int size_of, int fanout, BPTree_node *parent, bool leaf);
+static BPTree_node *bptree_node_create(int size_of, int fanout, BPTree_node *parent, bool leaf);
 
 /*
     Destroy node (without entries)
@@ -41,7 +41,7 @@ static void bptree_node_destroy(BPTree_node *node);
     RETURN
     This is a void function
 */
-___unused___ static void bptree_node_destroy_with_entries(BPTree_node *node, void (*destructor)(void *data));
+static void bptree_node_destroy_with_entries(BPTree_node *node, void (*destructor)(void *data));
 
 /*
     Is BPTree empty ?
@@ -67,6 +67,33 @@ static bool bptree_is_empty(BPTree *tree);
 */
 static BPTree_node *bptree_get_first_leaf(BPTree *tree);
 
+/*
+    Find node that contains this key
+
+    PARAMS
+    @IN tree - pointer to BPTree
+    @IN key - data with key
+
+    RETURN
+    NULL iff failure
+    Pointer to node iff success
+*/
+static BPTree_node *bptree_node_find_with_key(BPTree *tree, void *key);
+
+/*
+    Perform Binary Search and find Node with @key
+
+    PARAMS
+    @IN t - array of BPTree_node
+    @IN cmp - compare func
+    @IN key - data with key
+
+    RETURN
+    NULL iff failure
+    Pointer to node iff success
+*/
+static BPTree_node *bptree_node_binary_search(BPTree_node *node, int (*cmp)(void *a, void *b), void *key);
+
 static BPTree_node *bptree_node_create(int size_of, int fanout, BPTree_node *parent, bool leaf)
 {
     BPTree_node *node;
@@ -80,20 +107,20 @@ static BPTree_node *bptree_node_create(int size_of, int fanout, BPTree_node *par
     if (node == NULL)
         ERROR("malloc error\n", NULL, "");
 
-    node->____keys = malloc((size_t)(size_of * fanout));
+    node->____keys = calloc((size_t)fanout, (size_t)size_of);
     if (node->____keys == NULL)
     {
         FREE(node);
-        ERROR("malloc error\n", NULL, "");
+        ERROR("calloc error\n", NULL, "");
     }
 
-    node->____ptrs = (BPTree_node **)malloc((size_t)(sizeof(BPTree_node *) * (size_t)(fanout + 1)));
+    node->____ptrs = (BPTree_node **)calloc((size_t)(fanout + 1), (size_t)(sizeof(BPTree_node *)));
     if (node->____ptrs == NULL)
     {
         FREE(node);
         FREE(node->____keys);
 
-        ERROR("malloc error\n", NULL, "");
+        ERROR("calloc error\n", NULL, "");
     }
 
     node->____keys_c = 0;
@@ -161,6 +188,53 @@ static BPTree_node *bptree_get_first_leaf(BPTree *tree)
     if (list == NULL)
         ERROR("Tree is empty\n", NULL, "");
 
+    return klist_entry(list, BPTree_node, ____list);
+}
+static BPTree_node *bptree_node_binary_search(BPTree_node *node, int (*cmp)(void *a, void *b), void *key)
+{
+    BYTE *t;
+    size_t n;
+
+    ssize_t left;
+    ssize_t middle;
+    ssize_t right;
+
+    TRACE("");
+
+    if (node == NULL)
+        ERROR("node == NULL\n", NULL, "");
+
+    if (cmp == NULL)
+        ERROR("cmp == NULL\n", NULL, "");
+
+    if (key == NULL)
+        ERROR("key == NULL\n", NULL, "");
+
+    t = node->____keys;
+    n = node->____keys_c;
+
+    return NULL;
+}
+
+static BPTree_node *bptree_node_find_with_key(BPTree *tree, void *key)
+{
+    BPTree_node *ptr;
+
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", NULL, "");
+
+    if (key == NULL)
+        ERROR("key == NULL\n", NULL, "");
+
+    ptr = tree->____root;
+    while (!ptr->____is_leaf)
+    {
+
+    }
+
+
     return NULL;
 }
 
@@ -197,24 +271,98 @@ BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
 
 int bptree_insert(BPTree *tree, void *data)
 {
+    BPTree_node *new_node;
+
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (data == NULL)
+        ERROR("data == NULL\n", 1, "");
+
+    if (bptree_is_empty(tree))
+    {
+        new_node = bptree_node_create(tree->____size_of, tree->____fanout, NULL, true);
+        if (new_node)
+            ERROR("bptree_node_create error\n", 1, "");
+
+        tree->____root = new_node;
+        tree->____hight = 1;
+        tree->____num_entries = 1;
+    }
+    else
+    {
+
+    }
+
     return 0;
 }
 
 void bptree_destroy(BPTree *tree)
 {
+    BPTree_node *ptr;
+    BPTree_node *temp;
+    size_t index;
+
     TRACE("");
 
     if (tree == NULL)
         return;
 
     if (bptree_is_empty(tree))
+        goto destroy_error;
+
+    ptr = bptree_get_first_leaf(tree);
+    if (ptr == NULL)
+        goto destroy_error;
+
+    while (ptr != NULL)
     {
-        FREE(tree);
-        return;
+        for (index = 0; index <= ptr->____keys_c; ++index)
+            bptree_node_destroy(ptr->____ptrs[index]);
+
+        temp = ptr->____parent;
+        bptree_node_destroy(ptr);
+        ptr = temp;
     }
 
-    /* TODO: free all nodes */
+destroy_error:
+    FREE(tree);
+}
 
+void bptree_destroy_with_entries(BPTree *tree, void (*destructor)(void *data))
+{
+    BPTree_node *ptr;
+    BPTree_node *temp;
+    size_t index;
+
+    TRACE("");
+
+    if (tree == NULL)
+        return;
+
+    if (destructor == NULL)
+        goto destroy_error;
+
+    if (bptree_is_empty(tree))
+        goto destroy_error;
+
+    ptr = bptree_get_first_leaf(tree);
+    if (ptr == NULL)
+        goto destroy_error;
+
+    while (ptr != NULL)
+    {
+        for (index = 0; index <= ptr->____keys_c; ++index)
+            bptree_node_destroy_with_entries(ptr->____ptrs[index], destructor);
+
+        temp = ptr->____parent;
+        bptree_node_destroy(ptr);
+        ptr = temp;
+    }
+
+destroy_error:
     FREE(tree);
 }
 
