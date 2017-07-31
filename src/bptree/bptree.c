@@ -3,6 +3,7 @@
 #include <log.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <generic.h>
 
 /*
     Create B+ Tree Node
@@ -10,10 +11,63 @@
     PARAMS
     @IN size_of - data size of
     @IN fanout - max number in
-*/
-static BPTree_node *bptree_node_create(int size_of, int fanout);
+    @IN parent - pointer to parent
+    @IN leaf - is leaf ?
 
-static BPTree_node *bptree_node_create(int size_of, int fanout)
+    RETURN
+    NULL iff failure
+    Pointer to new node
+*/
+___unused___ static BPTree_node *bptree_node_create(int size_of, int fanout, BPTree_node *parent, bool leaf);
+
+/*
+    Destroy node (without entries)
+
+    PARAMS
+    @IN node - pointer to BPTree node
+
+    RETURN
+    This is a void function
+*/
+static void bptree_node_destroy(BPTree_node *node);
+
+/*
+    Destroy node with entries
+
+    PARAMS
+    @IN node - pointer to BPTree node
+    @IN destructor - destructor
+
+    RETURN
+    This is a void function
+*/
+___unused___ static void bptree_node_destroy_with_entries(BPTree_node *node, void (*destructor)(void *data));
+
+/*
+    Is BPTree empty ?
+
+    PARAMS
+    @IN tree - pointer to Tree
+
+    RETURN
+    true iff tree is empty
+    false iff tree is not empty
+*/
+static bool bptree_is_empty(BPTree *tree);
+
+/*
+    Get first leaf of BPTree
+
+    PARAMS
+    @IN tree - pointer to BPTree
+
+    RETURN
+    NULL iff failure
+    Pointer to first leaf
+*/
+static BPTree_node *bptree_get_first_leaf(BPTree *tree);
+
+static BPTree_node *bptree_node_create(int size_of, int fanout, BPTree_node *parent, bool leaf)
 {
     BPTree_node *node;
 
@@ -42,6 +96,10 @@ static BPTree_node *bptree_node_create(int size_of, int fanout)
         ERROR("malloc error\n", NULL, "");
     }
 
+    node->____keys_c = 0;
+    node->____parent = parent;
+    node->____is_leaf = leaf;
+
     KLIST_INIT(&node->____list);
 
     return node;
@@ -60,11 +118,45 @@ static void bptree_node_destroy(BPTree_node *node)
     FREE(node);
 }
 
+static void bptree_node_destroy_with_entries(BPTree_node *node, void (*destructor)(void *data))
+{
+    size_t i;
+    BYTE *t;
+
+    TRACE("");
+
+    if (node == NULL)
+        return;
+
+    if (destructor == NULL)
+        return;
+
+    t = (BYTE *)node->____keys;
+
+    /* destroy entries */
+    for (i = 0; i < node->____keys_c; ++i)
+        destructor((void *)(t + i));
+
+    /* destroy normal node */
+    bptree_node_destroy(node);
+}
+
 static bool bptree_is_empty(BPTree *tree)
 {
     TRACE("");
 
     return !!tree->____num_entries;
+}
+
+static BPTree_node *bptree_get_first_leaf(BPTree *tree)
+{
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", NULL, "");
+
+    if (klist_is)
+
 }
 
 BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
@@ -103,6 +195,11 @@ BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
     return tree;
 }
 
+int bptree_insert(BPTree *tree, void *data)
+{
+    return 0;
+}
+
 void bptree_destroy(BPTree *tree)
 {
     TRACE("");
@@ -112,12 +209,47 @@ void bptree_destroy(BPTree *tree)
 
     if (bptree_is_empty(tree))
     {
-        klist_master_destroy(tree->____leaves);
+        goto destroy_tree;
         return;
     }
 
     /* TODO: free all nodes */
 
 
+destroy_tree:
     klist_master_destroy(tree->____leaves);
+    FREE(tree);
 }
+
+ssize_t bptree_get_num_entries(BPTree *tree)
+{
+    TRACE("");
+
+    if (tree == NULL)
+        return -1;
+
+    return (ssize_t)tree->____num_entries;
+}
+
+int bptree_get_data_size(BPTree *tree)
+{
+    TRACE("");
+
+    if (tree == NULL)
+        return -1;
+
+
+    return (int)tree->____size_of;
+}
+
+int bptree_get_hight(BPTree *tree)
+{
+    TRACE("");
+
+    if (tree == NULL)
+        return -1;
+
+
+    return tree->____hight;
+}
+
