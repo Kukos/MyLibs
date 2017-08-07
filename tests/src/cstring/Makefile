@@ -5,7 +5,8 @@ SRCS = $(wildcard $(SDIR)/$(NAME)/*.c)
 all: test
 
 test: FORCE
-	$(Q)$(CC) $(C_TEST_FLAGS) -I $(IDIR) $(SDIR)/$(NAME)/*.c $(SDIR)/sort/*.c $(SDIR)/darray/*.c $(SDIR)/log.c \
+	$(Q)$(CC) $(C_TEST_FLAGS) -I $(IDIR)  $(SDIR)/search/*.c \
+	$(SDIR)/$(NAME)/*.c $(SDIR)/sort/*.c $(SDIR)/darray/*.c $(SDIR)/log.c \
 	$(SDIR)/assert.c $(THIS_DIR)/test.c -o $(THIS_DIR)/$(TEST_EXEC_NAME)
 
 FORCE:
