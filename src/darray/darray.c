@@ -7,6 +7,7 @@
 #include <common.h>
 #include <compiler.h>
 #include <assert.h>
+#include <search.h>
 
 #define INIT_SIZE (size_t)1024
 
@@ -95,8 +96,7 @@ ___inline___ static ssize_t darray_unsorted_search_first(Darray *darray,
                                                     void *val_in, void *val_out)
 {
     BYTE *_t;
-    size_t offset_i;
-    size_t max;
+    ssize_t index;
 
     TRACE("");
 
@@ -106,25 +106,23 @@ ___inline___ static ssize_t darray_unsorted_search_first(Darray *darray,
     assert(darray->____cmp != NULL);
     assert(darray->____num_entries != 0);
 
+    index = find_first_unsorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, (int)darray->____size_of);
+    if (index == -1)
+        return -1;
+
     _t = (BYTE *)darray->____array;
-    max = darray->____num_entries * darray->____size_of;
 
-    for (offset_i = 0; offset_i < max; offset_i += darray->____size_of)
-        if (darray->____cmp((void *)&_t[offset_i], val_in) == 0)
-        {
-            if (val_out != NULL)
-                __ASSIGN__(*(BYTE *)val_out, _t[offset_i], darray->____size_of);
-            return (ssize_t)offset_i / (ssize_t)darray->____size_of;
-        }
+    if (val_out != NULL)
+         __ASSIGN__(*(BYTE *)val_out, _t[(size_t)index * darray->____size_of], darray->____size_of);
 
-    return (ssize_t)-1;
+    return index;
 }
 
 ___inline___ static ssize_t darray_unsorted_search_last(Darray *darray,
                                                     void *val_in, void *val_out)
 {
     BYTE *_t;
-    ssize_t offset_i;
+    ssize_t index;
 
     TRACE("");
 
@@ -135,28 +133,23 @@ ___inline___ static ssize_t darray_unsorted_search_last(Darray *darray,
     assert(darray->____num_entries != 0);
 
     _t = (BYTE *)darray->____array;
-    offset_i = (ssize_t)darray->____num_entries * (ssize_t)darray->____size_of - (ssize_t)darray->____size_of;
+    index = find_last_unsorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, (int)darray->____size_of);
+    if (index == -1)
+        return -1;
 
-    for (offset_i = (ssize_t)darray->____num_entries * (ssize_t)darray->____size_of - (ssize_t)darray->____size_of;
-         offset_i >= 0; offset_i -= (ssize_t)darray->____size_of)
-        if (darray->____cmp((void *)&_t[offset_i], val_in) == 0)
-        {
-            if (val_out != NULL)
-                __ASSIGN__(*(BYTE *)val_out, _t[offset_i], darray->____size_of);
-            return offset_i / (ssize_t)darray->____size_of;
-        }
+    _t = (BYTE *)darray->____array;
 
-    return (ssize_t)-1;
+    if (val_out != NULL)
+         __ASSIGN__(*(BYTE *)val_out, _t[(size_t)index * darray->____size_of], darray->____size_of);
+
+    return index;
 }
 
 ___inline___ static ssize_t darray_sorted_search_first(Darray *darray,
                                                     void *val_in, void *val_out)
 {
     BYTE *_t;
-
-    size_t offset_left;
-    size_t offset_right;
-    size_t offset_middle;
+    ssize_t index;
 
     TRACE("");
 
@@ -167,40 +160,23 @@ ___inline___ static ssize_t darray_sorted_search_first(Darray *darray,
     assert(darray->____num_entries != 0);
 
     _t = (BYTE *)darray->____array;
+    index = find_first_sorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, (int)darray->____size_of);
+    if (index == -1)
+        return -1;
 
-    offset_left = 0;
-    offset_right = (darray->____num_entries - 1) * darray->____size_of;
+    _t = (BYTE *)darray->____array;
 
-    while (offset_left < offset_right)
-    {
-        offset_middle = ((offset_left / darray->____size_of
-             + offset_right / darray->____size_of) >> 1) * darray->____size_of;
+    if (val_out != NULL)
+         __ASSIGN__(*(BYTE *)val_out, _t[(size_t)index * darray->____size_of], darray->____size_of);
 
-        if (darray->____cmp((void *)&_t[offset_middle], val_in) < 0)
-            offset_left = offset_middle + darray->____size_of;
-        else
-            offset_right = offset_middle;
-    }
-
-    if (darray->____cmp((void *)&_t[offset_left], val_in) == 0)
-    {
-        if (val_out != NULL)
-            __ASSIGN__(*(BYTE *)val_out, _t[offset_left], darray->____size_of);
-
-        return (ssize_t)offset_left / (ssize_t)darray->____size_of;
-    }
-    else
-        return (ssize_t)-1;
+    return index;
 }
 
 ___inline___ static ssize_t darray_sorted_search_last(Darray *darray,
                                             void *val_in, void *val_out)
 {
     BYTE *_t;
-
-    size_t offset_left;
-    size_t offset_right;
-    size_t offset_middle;
+    ssize_t index;
 
     TRACE("");
 
@@ -212,29 +188,16 @@ ___inline___ static ssize_t darray_sorted_search_last(Darray *darray,
 
     _t = (BYTE *)darray->____array;
 
-    offset_left = 0;
-    offset_right = (darray->____num_entries - 1) * darray->____size_of;
+    index = find_last_sorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, (int)darray->____size_of);
+    if (index == -1)
+        return -1;
 
-    while (offset_left < offset_right)
-    {
-        offset_middle = ((offset_left / darray->____size_of
-             + offset_right / darray->____size_of + 1) >> 1) * darray->____size_of;
+    _t = (BYTE *)darray->____array;
 
-        if (darray->____cmp((void *)&_t[offset_middle], val_in) > 0)
-            offset_right = offset_middle - darray->____size_of;
-        else
-            offset_left = offset_middle;
-    }
+    if (val_out != NULL)
+         __ASSIGN__(*(BYTE *)val_out, _t[(size_t)index * darray->____size_of], darray->____size_of);
 
-    if (darray->____cmp((void *)&_t[offset_left], val_in) == 0)
-    {
-        if (val_out != NULL)
-            __ASSIGN__(*(BYTE *)val_out, _t[offset_left], darray->____size_of);
-
-        return (ssize_t)offset_left / (ssize_t)darray->____size_of;
-    }
-    else
-        return (ssize_t)-1;
+    return index;
 }
 
 ___inline___ static ssize_t upper_bound(Darray *darray, void *val)
