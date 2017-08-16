@@ -1,7 +1,7 @@
 export
 
 define print_test_make
-	$(if $(Q), @echo "[MAKE TEST]    $(1)")
+	$(if $(Q), @echo "[MAKE TEST]   $(1)")
 endef
 
 TEST_SRC := $(TEST_DIR)/src

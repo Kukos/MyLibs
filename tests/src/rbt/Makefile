@@ -1,17 +1,22 @@
 NAME := rbt
-
 THIS_DIR := $(TEST_SRC)/$(NAME)
-SRCS = $(wildcard $(SDIR)/$(NAME)/*.c)
+
+_SRC := $(TEST_COMMON_SRC) $(S_RBT) $(THIS_DIR)/test.c
+_INC := $(TEST_COMMON_INC) $(I_RBT)
+_OBJ := $(_SRC:%.c=%_test.o)
+
+%_test.o: %.c $(_INC)
+	$(call print_cc,$<)
+	$(Q)$(CC) $(C_TEST_FLAGS) $(HEADERS) -c $< -o $@
+
 all: test
 
-test: FORCE
-	$(Q)$(CC) $(C_TEST_FLAGS)  -I $(IDIR) $(SDIR)/$(NAME)/*.c $(SDIR)/sort/*.c $(SDIR)/log.c \
-	$(SDIR)/assert.c $(THIS_DIR)/test.c -o $(THIS_DIR)/$(TEST_EXEC_NAME)
-
-FORCE:
+test: $(_OBJ)
+	$(call print_bin,$(THIS_DIR)/$(TEST_EXEC_NAME))
+	$(Q)$(CC) $(C_TEST_FLAGS) $(HEADERS) $^ -o $(THIS_DIR)/$(TEST_EXEC_NAME)
 
 run:
 	$(Q)$(THIS_DIR)/$(TEST_EXEC_NAME)
 
 clean:
-	$(Q)rm -f $(THIS_DIR)/$(TEST_EXEC_NAME)
+	$(Q)$(RM) $(_OBJ)
