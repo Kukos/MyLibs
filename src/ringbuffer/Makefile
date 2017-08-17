@@ -1,9 +1,9 @@
-NAME := rbt
+NAME := ringbuffer
 THIS_DIR := $(SDIR)/$(NAME)
 TARGET := lib$(NAME)
 
-_SRC := $(S_RBT)
-_INC := $(I_RBT)
+_SRC := $(S_RINGBUFFER)
+_INC := $(I_RINGBUFFER)
 _OBJ := $(_SRC:%.c=%.o)
 
 %.o: %.c $(_INC)

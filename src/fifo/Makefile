@@ -1,10 +1,22 @@
-all: libfifo
-
 NAME := fifo
 THIS_DIR := $(SDIR)/$(NAME)
+TARGET := lib$(NAME)
 
-libfifo: $(THIS_DIR)/*.c $(IDIR)/$(NAME).h
-	$(Q)$(CC) $(CFLAGS) -I $(IDIR) $(THIS_DIR)/*.c $(SDIR)/log.c -c \
-	&& ar rcs $@.a *.o && \
-	rm -f *.o && cp $(IDIR)/$(NAME).h $(O_HEADERS)/ && \
-	mv $@.a $(O_LIBS)/
+_SRC := $(S_FIFO)
+_INC := $(I_FIFO)
+_OBJ := $(_SRC:%.c=%.o)
+
+%.o: %.c $(_INC)
+	$(call print_cc,$<)
+	$(Q)$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
+
+all: $(TARGET)
+
+$(TARGET): $(_OBJ)
+	$(call print_ar,$@.a)
+	$(Q)$(AR) $@.a $^ && \
+	$(CP) $(_INC) $(O_HEADERS)/ && \
+	$(MV) $@.a $(O_LIBS)/
+
+clean:
+	$(Q)$(RM) $(_OBJ)

@@ -1,8 +1,8 @@
-NAME := cstring
+NAME := ringbuffer
 THIS_DIR := $(TEST_SRC)/$(NAME)
 
-_SRC := $(TEST_COMMON_SRC) $(S_CSTRING) $(THIS_DIR)/test.c
-_INC := $(TEST_COMMON_INC) $(I_CSTRING)
+_SRC := $(TEST_COMMON_SRC) $(S_RINGBUFFER) $(THIS_DIR)/test.c
+_INC := $(TEST_COMMON_INC) $(I_RINGBUFFER)
 _OBJ := $(_SRC:%.c=%_test.o)
 
 %_test.o: %.c $(_INC)

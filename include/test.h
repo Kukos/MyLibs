@@ -56,7 +56,7 @@ typedef unsigned long ____test_counter_t;
 ____test_counter_t ________passed_counter;
 ____test_counter_t ________failed_counter;
 
-#define __TEST_MAX_STRING_LENGTH__ 40
+#define __TEST_MAX_STRING_LENGTH__ 46
 
 /* to fill gap with ' ' */
 const char *________spaces = "                                              ";
