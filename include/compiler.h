@@ -241,6 +241,22 @@
 /* tell compiler that function is weak and can be overwrite */
 #define ___weak___ __attribute__(( weak ))
 
+#define ___compile_time_check_cond___(cond) ((void)sizeof(char[1 - 2 * cond]));
+
+#ifdef static_assert
+#undef static_assert
+#endif
+
+#define static_assert(cond) __static_assert(cond, __LINE__)
+#define __static_assert(cond, name) \
+    do { \
+        int ______val = !(cond); \
+        extern void concat(error_, name)(void) ___error___(tostring(cond) " FAILED!!!"); \
+        if (______val) \
+            concat(error_, name)(); \
+        ___compile_time_check_cond___(______val); \
+    } while (0)
+
 /* VARIABLE ATTR */
 
 /* align variable to bytes */
