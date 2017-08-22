@@ -1057,7 +1057,7 @@ int avl_min(Avl *tree, void *data)
         ERROR("data == NULL\n", 1, "");
 
     if (tree->____root == NULL)
-        ERROR("Tree is empty, nothing to delete\n", 1, "");
+        ERROR("Tree is empty\n", 1, "");
 
     node = avl_min_node(tree->____root);
     if (node == NULL)
@@ -1081,7 +1081,7 @@ int avl_max(Avl *tree, void *data)
         ERROR("data == NULL\n", 1, "");
 
     if (tree->____root == NULL)
-        ERROR("Tree is empty, nothing to delete\n", 1, "");
+        ERROR("Tree is empty\n", 1, "");
 
     node = avl_max_node(tree->____root);
     if (node == NULL)
@@ -1108,7 +1108,7 @@ int avl_max(Avl *tree, void *data)
         ERROR("data_out == NULL\n", 1, "");
 
     if (tree->____root == NULL)
-        ERROR("Tree is empty, nothing to delete\n", 1, "");
+        ERROR("Tree is empty\n", 1, "");
 
     node = avl_node_search(tree, data_key);
     if (node == NULL)
@@ -1130,7 +1130,7 @@ bool avl_key_exist(Avl *tree, void *data_key)
         ERROR("data_key == NULL\n", false, "");
 
     if (tree->____root == NULL)
-        ERROR("Tree is empty, nothing to delete\n", false, "");
+        ERROR("Tree is empty\n", false, "");
 
     return avl_node_search(tree, data_key) != NULL;
 }
@@ -1154,7 +1154,7 @@ int avl_to_array(Avl *tree, void *array, size_t *size)
         ERROR("size == NULL\n", 1, "");
 
     if (tree->____root == NULL)
-        ERROR("Tree is empty, nothing to delete\n", 1, "");
+        ERROR("Tree is empty\n", 1, "");
 
     t = malloc(tree->____size_of * tree->____nodes);
 	if (t == NULL)
