@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <generic.h>
+#include <search.h>
 
 /*
     Create B+ Tree Node
@@ -68,6 +69,18 @@ static bool bptree_is_empty(BPTree *tree);
 static BPTree_node *bptree_get_first_leaf(BPTree *tree);
 
 /*
+    Get last leaf of BPTree
+
+    PARAMS
+    @IN tree - pointer to BPTree
+
+    RETURN
+    NULL iff failure
+    Pointer to first leaf
+*/
+___unused___ static BPTree_node *bptree_get_last_leaf(BPTree *tree);
+
+/*
     Find node that contains this key
 
     PARAMS
@@ -78,13 +91,14 @@ static BPTree_node *bptree_get_first_leaf(BPTree *tree);
     NULL iff failure
     Pointer to node iff success
 */
-static BPTree_node *bptree_node_find_with_key(BPTree *tree, void *key);
+___unused___ static BPTree_node *bptree_find_node_with_key(BPTree *tree, void *key);
 
 /*
     Perform Binary Search and find Node with @key
 
     PARAMS
     @IN t - array of BPTree_node
+    @IN size_of - size of data
     @IN cmp - compare func
     @IN key - data with key
 
@@ -92,7 +106,7 @@ static BPTree_node *bptree_node_find_with_key(BPTree *tree, void *key);
     NULL iff failure
     Pointer to node iff success
 */
-static BPTree_node *bptree_node_binary_search(BPTree_node *node, int (*cmp)(void *a, void *b), void *key);
+static BPTree_node *bptree_node_get_node_ptr_with_key(BPTree_node *node, int size_of, int (*cmp)(void *a, void *b), void *key);
 
 static BPTree_node *bptree_node_create(int size_of, int fanout, BPTree_node *parent, bool leaf)
 {
@@ -190,8 +204,27 @@ static BPTree_node *bptree_get_first_leaf(BPTree *tree)
 
     return klist_entry(list, BPTree_node, ____list);
 }
-static BPTree_node *bptree_node_binary_search(BPTree_node *node, int size_of, int (*cmp)(void *a, void *b), void *key)
+
+static BPTree_node *bptree_get_last_leaf(BPTree *tree)
 {
+    KList *list;
+
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", NULL, "");
+
+    list = klist_get_tail(&tree->____leaves);
+    if (list == NULL)
+        ERROR("Tree is empty\n", NULL, "");
+
+    return klist_entry(list, BPTree_node, ____list);
+}
+
+static BPTree_node *bptree_node_get_node_ptr_with_key(BPTree_node *node, int size_of, int (*cmp)(void *a, void *b), void *key)
+{
+    ssize_t index;
+
     TRACE("");
 
     if (node == NULL)
@@ -203,10 +236,14 @@ static BPTree_node *bptree_node_binary_search(BPTree_node *node, int size_of, in
     if (key == NULL)
         ERROR("key == NULL\n", NULL, "");
 
-    return NULL;
+    index = find_first_sorted(key, node->____keys, node->____keys_c, cmp, size_of);
+    if (index == -1)
+        return NULL;
+
+    return node->____ptrs[index + 1];
 }
 
-static BPTree_node *bptree_node_find_with_key(BPTree *tree, void *key)
+static BPTree_node *bptree_find_node_with_key(BPTree *tree, void *key)
 {
     BPTree_node *ptr;
 
@@ -220,12 +257,9 @@ static BPTree_node *bptree_node_find_with_key(BPTree *tree, void *key)
 
     ptr = tree->____root;
     while (!ptr->____is_leaf)
-    {
+        ptr = bptree_node_get_node_ptr_with_key(ptr, (int)tree->____size_of, tree->____cmp, key);
 
-    }
-
-
-    return NULL;
+    return ptr;
 }
 
 BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
@@ -354,6 +388,70 @@ void bptree_destroy_with_entries(BPTree *tree, void (*destructor)(void *data))
 
 destroy_error:
     FREE(tree);
+}
+
+int bptree_min(BPTree *tree, void *data)
+{
+    BPTree_node *node;
+
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", -1, "");
+
+    if (data == NULL)
+        ERROR("data == NULL\n", -1, "");
+
+    if (bptree_is_empty(tree))
+        ERROR("BPTree is empty\n", -1, "");
+
+    node = bptree_get_first_leaf(tree);
+
+    __ASSIGN__(*(BYTE *)data, ((BYTE *)node->____keys)[0], tree->____size_of);
+
+    return 0;
+}
+
+int bptree_max(BPTree *tree, void *data)
+{
+    BPTree_node *node;
+
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", -1, "");
+
+    if (data == NULL)
+        ERROR("data == NULL\n", -1, "");
+
+    if (bptree_is_empty(tree))
+        ERROR("BPTree is empty\n", -1, "");
+
+    node = bptree_get_last_leaf(tree);
+
+    __ASSIGN__(*(BYTE *)data, ((BYTE *)node->____keys)[node->____keys_c - 1], tree->____size_of);
+
+    return 0;
+}
+
+int bptree_search(BPTree *tree, void *data_key, void *data_out)
+{
+    BPTree_node *node;
+
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", -1, "");
+
+    if (data == NULL)
+        ERROR("data == NULL\n", -1, "");
+
+    if (bptree_is_empty(tree))
+        ERROR("BPTree is empty\n", -1, "");
+
+    node = bptree_find_node_with_key(tree, data_key);
+    if (node == NULL)
+        return -1;
 }
 
 ssize_t bptree_get_num_entries(BPTree *tree)

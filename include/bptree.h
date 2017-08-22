@@ -140,7 +140,7 @@ int bptree_max(BPTree *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
- int bptree_search(BPTree *tree, void *data_key, void *data_out);
+int bptree_search(BPTree *tree, void *data_key, void *data_out);
 
  /*
  	Check existing of key in tree
