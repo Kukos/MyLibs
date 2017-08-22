@@ -704,7 +704,7 @@ int bst_max(Bst *tree,void *data)
 
     node = bst_node_search(tree, data_key);
     if (node == NULL)
-        ERROR("bst_search_node error\n", 1, "");
+        return 1;
 
     __ASSIGN__(*(BYTE *)data_out, *(BYTE *)node->____data, tree->____size_of);
 

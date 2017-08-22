@@ -938,7 +938,7 @@ int rbt_search(Rbt *tree, void *data_key, void *data_out)
 
     node = rbt_node_search(tree, data_key);
     if (node == NULL)
-        ERROR("rbt_node_search error\n", 1, "");
+        return 1;
 
     __ASSIGN__(*(BYTE *)data_out, *(BYTE *)node->____data, tree->____size_of);
 
