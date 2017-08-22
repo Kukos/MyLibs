@@ -340,3 +340,16 @@ void klist_master_destroy(KList_master *list)
 
     FREE(list);
 }
+
+KList_master *klist_get_parent(KList *list)
+{
+    TRACE("");
+
+    if (list == NULL)
+        ERROR("list == NULL\n", NULL, "");
+
+    if (list->____parent == NULL)
+        return NULL;
+
+    return list->____parent;
+}

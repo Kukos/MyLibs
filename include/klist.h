@@ -256,4 +256,16 @@ KList *klist_get_head(KList_master *list);
 */
 KList *klist_get_tail(KList_master *list);
 
+/*
+    Get parent of klist
+
+    PARAMS
+    @IN list - pointer to list
+
+    RETURN
+    NULL iff failure
+    Pointer to klist_master iff success
+*/
+KList_master *klist_get_parent(KList *list);
+
 #endif

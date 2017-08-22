@@ -121,6 +121,7 @@ test_f test_insert_pos(void)
         KLIST_INIT(&s[i].list);
         s[i].a = i + 1;
         T_EXPECT(klist_insert_pos(&master, pos[i], &s[i].list), 0);
+        T_EXPECT(klist_get_parent(&s[i].list), &master);
 
         klist_for_each(ptr, &master, j)
         {
@@ -169,6 +170,7 @@ test_f test_insert_after_before(void)
         KLIST_INIT(&s[i].list);
         s[i].a = i + 1;
         T_EXPECT(klist_insert_last(&master, &s[i].list), 0);
+        T_EXPECT(klist_get_parent(&s[i].list), &master);
         lists[i] = &s[i].list;
     }
 
