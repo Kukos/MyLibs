@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <klist.h>
 #include <tree.h>
+#include <iterators.h>
 
 typedef struct BPTree_node
 {
@@ -29,6 +30,16 @@ typedef struct BPTree
 
     int (*____cmp)(void *a, void *b);
 }BPTree;
+
+typedef struct BPTree_iterator
+{
+    BPTree_node *____node;
+    size_t      ____index;
+    size_t      ____size_of;
+}BPTree_iterator;
+
+IT_FUNC(BPTree, bptree)
+
 
 /*
     Create BPTree as TREE
@@ -153,7 +164,7 @@ int bptree_search(BPTree *tree, void *data_key, void *data_out);
  	false iff key doesn't exist in tree
  	true iff key exists in tree
  */
- bool bptree_key_exist(BPTree *tree, void *data_key);
+bool bptree_key_exist(BPTree *tree, void *data_key);
 
 /*
     Delete data with key equals @data_key ( using cmp )
