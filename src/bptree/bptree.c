@@ -160,6 +160,18 @@ static void bptree_node_set_parent_to_all(BPTree_node *node);
 */
 static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node);
 
+/*
+    Helper to recursive calling
+
+    PARAMS
+    @IN node - pointer to node to destroy
+    @IN destructor - pointer to destructor func or NULL
+
+    RETURN
+    This is a void function
+*/
+static void bptree_destroy_helper(BPTree_node *node, void (*destructor)(void *data));
+
 static BPTree_node *bptree_node_create(size_t size_of, int fanout, BPTree_node *parent, bool leaf)
 {
     BPTree_node *node;
