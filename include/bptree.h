@@ -1,6 +1,24 @@
 #ifndef B_PLUS_TREE_H
 #define B_PLUS_TREE_H
 
+/*
+    Simple implementation of B+Tree
+
+    Only destroy funtion is recursive due the fact that B+Tree high is so small
+
+
+    To make Tree more balanced, place for sentinel is added to all nodes,
+    always before splitting, insert is calling, so keys are more balanced.
+
+    Also to make structure more cache friendly, KList is used instead of List2D
+
+
+    Author: Michal Kukowski
+    email: michalkukowski10@gmail.com
+
+    LICENCE: GPL3.0
+*/
+
 #include <stddef.h>
 #include <klist.h>
 #include <tree.h>
