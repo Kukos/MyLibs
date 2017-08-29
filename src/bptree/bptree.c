@@ -172,7 +172,6 @@ static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node);
 */
 static void bptree_destroy_helper(BPTree_node *node, void (*destructor)(void *data));
 
-
 static BPTree_node *bptree_node_create(size_t size_of, int fanout, BPTree_node *parent, bool leaf)
 {
     BPTree_node *node;
@@ -368,6 +367,7 @@ static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node)
         node->____parent->____ptrs[0] = node;
 
         tree->____root = parent;
+        ++tree->____hight;
     }
 
     /* create new node */
@@ -398,7 +398,7 @@ static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node)
     return new_node;
 }
 
-static void bptree__node_update_first_key(BPTree *tree, BPTree_node *node, void *key)
+static void bptree_node_update_first_key(BPTree *tree, BPTree_node *node, void *key)
 {
     BPTree_node *ptr;
 
@@ -432,11 +432,11 @@ static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_
     if (node->____keys_c > 0 && i < node->____keys_c)
     {
         /* make gap for key */
-        (void)memcpy(((BYTE *)node->____keys) + (i * tree->____size_of),
-            ((BYTE *)node->____keys) + ((i + 1) * tree->____size_of), (node->____keys_c - i) * tree->____size_of);
+        (void)memmove(((BYTE *)node->____keys) + ((i + 1) * tree->____size_of),
+            ((BYTE *)node->____keys) + (i * tree->____size_of), (node->____keys_c - i) * tree->____size_of);
 
         /* make gap for ptr */
-        (void)memcpy(node->____ptrs[i + 1], node->____ptrs[i + 2], (node->____keys_c - i - 1) * sizeof(BPTree_node *));
+        (void)memmove(node->____ptrs + i + 2, node->____ptrs + i + 1, (node->____keys_c - i) * sizeof(BPTree_node *));
     }
     /* insert key */
     __ASSIGN__(((BYTE *)node->____keys)[i * tree->____size_of], *(BYTE *)key, tree->____size_of);
@@ -448,7 +448,7 @@ static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_
 
     /* first key updated, so update parent */
     if (i == 0)
-        bptree__node_update_first_key(tree, node, key);
+        bptree_node_update_first_key(tree, node, key);
 
     if (bptree_node_is_full(tree, node))
     {

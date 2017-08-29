@@ -65,7 +65,6 @@ test_f test_insert(int fanout)
     for (i = 0; i < tree->____fanout << 2; ++i)
     {
         val = -i;
-        printf("INSERT INTO TREE VAL = %d\n", val);
         bptree_insert(tree, (void *)&val);
     }
 
