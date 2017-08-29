@@ -172,6 +172,7 @@ static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node);
 */
 static void bptree_destroy_helper(BPTree_node *node, void (*destructor)(void *data));
 
+
 static BPTree_node *bptree_node_create(size_t size_of, int fanout, BPTree_node *parent, bool leaf)
 {
     BPTree_node *node;
@@ -397,6 +398,25 @@ static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node)
     return new_node;
 }
 
+static void bptree__node_update_first_key(BPTree *tree, BPTree_node *node, void *key)
+{
+    BPTree_node *ptr;
+
+    TRACE("");
+
+    ptr = node;
+    while (ptr != NULL && tree->____cmp(key, ptr->____keys) == 0)
+    {
+        if (tree->____destructor)
+            tree->____destructor(ptr->____keys);
+
+        /* update key */
+        __ASSIGN__(*(BYTE *)ptr->____keys, *(BYTE *)key, tree->____size_of);
+
+        ptr = ptr->____parent;
+    }
+}
+
 static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_node *ptr, void *key)
 {
     BPTree_node *new_node;
@@ -425,6 +445,11 @@ static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_
     node->____ptrs[i + 1] = ptr;
 
     ++node->____keys_c;
+
+    /* first key updated, so update parent */
+    if (i == 0)
+        bptree__node_update_first_key(tree, node, key);
+
     if (bptree_node_is_full(tree, node))
     {
         /* node is full now, so split node */
@@ -436,7 +461,7 @@ static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_
     return 0;
 }
 
-BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
+BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b), void (*destructor)(void *data))
 {
     BPTree *tree;
 
@@ -463,6 +488,7 @@ BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
     tree->____size_of       = (size_t)size_of;
     tree->____num_entries   = 0;
     tree->____cmp           = cmp;
+    tree->____destructor    = destructor;
 
     return tree;
 }
@@ -538,18 +564,15 @@ void bptree_destroy(BPTree *tree)
     FREE(tree);
 }
 
-void bptree_destroy_with_entries(BPTree *tree, void (*destructor)(void *data))
+void bptree_destroy_with_entries(BPTree *tree)
 {
     TRACE("");
 
     if (tree == NULL)
         return;
 
-    if (destructor == NULL)
-        return;
-
     if (!bptree_is_empty(tree))
-        bptree_destroy_helper(tree->____root, destructor);
+        bptree_destroy_helper(tree->____root, tree->____destructor);
 
     FREE(tree);
 }

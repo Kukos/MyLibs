@@ -39,7 +39,7 @@ test_f test_create(int fanout)
 {
     BPTree *tree;
 
-    tree = bptree_create(fanout, sizeof(int), cmp_int);
+    tree = bptree_create(fanout, sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
 
     T_EXPECT(bptree_get_data_size(tree), sizeof(int));
@@ -55,7 +55,7 @@ test_f test_insert(int fanout)
     int val;
     int i;
 
-    tree = bptree_create(fanout, sizeof(int), cmp_int);
+    tree = bptree_create(fanout, sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
 
     T_EXPECT(bptree_get_data_size(tree), sizeof(int));
@@ -64,7 +64,7 @@ test_f test_insert(int fanout)
 
     for (i = 0; i < tree->____fanout << 2; ++i)
     {
-        val = i + 1;
+        val = -i;
         printf("INSERT INTO TREE VAL = %d\n", val);
         bptree_insert(tree, (void *)&val);
     }
