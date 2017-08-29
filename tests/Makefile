@@ -94,45 +94,7 @@ ufset:
 	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
 
 run:
-	$(Q)$(MAKE) -f $(TEST_SRC)/arraylist/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/avl/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/bst/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/common/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/compiler/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/cstring/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/darray/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/fifo/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/filebuffer/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/heap/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/klist/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/list/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/list2d/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/rbt/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/ringbuffer/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/search/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/sort/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/stack/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/trie/Makefile run --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/ufset/Makefile run --no-print-directory
+	$(Q)$(MAKE) -f $(TEST_SRC)/bptree/Makefile run --no-print-directory
 
 clean:
-	$(Q)$(MAKE) -f $(TEST_SRC)/arraylist/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/avl/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/bst/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/common/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/compiler/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/cstring/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/darray/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/fifo/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/filebuffer/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/heap/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/klist/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/list/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/list2d/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/rbt/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/ringbuffer/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/search/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/sort/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/stack/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/trie/Makefile clean --no-print-directory && \
-	$(MAKE) -f $(TEST_SRC)/ufset/Makefile clean --no-print-directory
+	$(Q)$(MAKE) -f $(TEST_SRC)/bptree/Makefile clean --no-print-directory

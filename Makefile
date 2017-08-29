@@ -141,8 +141,8 @@ I_UFSET := $(IDIR)/ufset.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_DARRAY)
 S_UFSET := $(D_UFSET)/*.c $(S_LOG) $(S_ASSERT) $(S_DARRAY)
 
 D_BPTREE := $(SDIR)/bptree
-I_BPTREE := $(IDIR)/bptree.h $(F_LIB) $(I_LOG) $(I_ASSERT)
-S_BPTREE := $(D_BPTREE)/*.c $(S_LOG) $(S_ASSERT)
+I_BPTREE := $(IDIR)/bptree.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_KLIST) $(I_SEARCH)
+S_BPTREE := $(D_BPTREE)/*.c $(S_LOG) $(S_ASSERT) $(S_KLIST) $(S_SEARCH)
 
 # Needed to testting
 TEST_COMMON_INC := $(F_TEST) $(I_COMPILER) $(I_COMMON) $(I_SORT) $(I_SEARCH)

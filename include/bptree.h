@@ -36,6 +36,7 @@ typedef struct BPTree_iterator
     BPTree_node *____node;
     size_t      ____index;
     size_t      ____size_of;
+    bool        ____first_time;
 }BPTree_iterator;
 
 IT_FUNC(BPTree, bptree)
