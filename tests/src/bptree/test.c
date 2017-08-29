@@ -32,7 +32,7 @@ static void bptree_print(BPTree *tree)
 
 #define BPTREE_TEST_SET(func) \
     do { \
-        TEST(func(3)); \
+        TEST(func(4)); \
     } while (0)
 
 test_f test_create(int fanout)

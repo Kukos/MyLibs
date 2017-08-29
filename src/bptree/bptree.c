@@ -221,7 +221,7 @@ static bool bptree_node_is_full(BPTree *tree, BPTree_node *node)
 {
     TRACE("");
 
-    return node->____keys_c > (size_t)tree->____fanout;
+    return node->____keys_c == (size_t)tree->____fanout;
 }
 
 static BPTree_node *bptree_get_first_leaf(BPTree *tree)
@@ -254,6 +254,27 @@ static BPTree_node *bptree_get_last_leaf(BPTree *tree)
         ERROR("Tree is empty\n", NULL, "");
 
     return klist_entry(list, BPTree_node, ____list);
+}
+
+static void bptree_print_node(BPTree_node *node)
+{
+    int i;
+    int *t;
+
+    if (node == NULL)
+        return;
+
+    printf("NODE %p", (void *)node);
+    node->____is_leaf ? (printf(" [LEAF], PARENT = %p\n", (void *)node->____parent)) : (printf(" PARENT = %p\n", (void *)node->____parent));
+    t = (int *)node->____keys;
+    for (i = 0; i < node->____keys_c; ++i)
+        printf("  %d  ", t[i]);
+
+    printf("\n");
+
+    for (i = 0; i <= node->____keys_c; ++i)
+        if (node->____ptrs[i] != NULL)
+            bptree_print_node(node->____ptrs[i]);
 }
 
 static BPTree_node *bptree_node_get_node_ptr_with_key(BPTree_node *node, size_t size_of, int (*cmp)(void *a, void *b), void *key)
@@ -344,7 +365,7 @@ static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node)
     /* copy half of entries to new node */
     (void)memcpy(new_node->____keys, ((BYTE *)node->____keys) + (((node->____keys_c ) >> 1) * tree->____size_of),
         entries_to_move * tree->____size_of);
-    (void)memcpy(new_node->____ptrs + 1, node->____ptrs + entries_to_move + 1, entries_to_move * sizeof(BPTree_node *));
+    (void)memcpy(new_node->____ptrs + 1, node->____ptrs + ((node->____keys_c >> 1) + 1), entries_to_move * sizeof(BPTree_node *));
 
     node->____keys_c -= entries_to_move;
     new_node->____keys_c += entries_to_move;
@@ -365,7 +386,6 @@ static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_
 
     TRACE("");
 
-    printf("WSTAWIAM\n");
     /* temporary solution */
     i = 0;
     while (i < node->____keys_c && tree->____cmp(((BYTE *)node->____keys) + (i * tree->____size_of), key) < 0)
@@ -387,8 +407,6 @@ static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_
     node->____ptrs[i + 1] = ptr;
 
     ++node->____keys_c;
-
-    printf("IS FULL ?\n");
     if (bptree_node_is_full(tree, node))
     {
         new_node = bptree_split_node(tree, node);
@@ -460,6 +478,9 @@ int bptree_insert(BPTree *tree, void *data)
         node = bptree_find_node_with_key(tree, data);
         bptree_node_insert_into_node(tree, node, NULL, data);
 
+        printf("TREE\n\n");
+        bptree_print_node(tree->____root);
+        printf("\n\n");
         ++tree->____num_entries;
     }
 
