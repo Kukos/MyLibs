@@ -51,7 +51,7 @@ int cmp_my_struct(void *a, void *b)
 
 bool correct_balanced_hight(int hight, size_t n)
 {
-    return hight < ((LOG2_long((unsigned long)n) + 1) << 1);
+    return hight < ((LOG2((unsigned long)n) + 1) << 1);
 }
 
 bool correct_hight(int hight, size_t n)

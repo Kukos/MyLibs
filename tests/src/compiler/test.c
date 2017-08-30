@@ -81,25 +81,25 @@ test_f test_least_one(void)
     unsigned long b = 0x12340 | 1 << 3;
     unsigned long long c = 0x1234567890 | 1 << 4;
 
-    T_EXPECT(least_1_int(a), 2);
-    T_EXPECT(least_1_long(b), 3);
-    T_EXPECT(least_1_longlong(c), 4);
+    T_EXPECT(least_1(a), 2);
+    T_EXPECT(least_1(b), 3);
+    T_EXPECT(least_1(c), 4);
 
     a |= 1 << 0;
     b |= 1 << 0;
     c |= 1 << 0;
 
-    T_EXPECT(least_1_int(a), 0);
-    T_EXPECT(least_1_long(b), 0);
-    T_EXPECT(least_1_longlong(c), 0);
+    T_EXPECT(least_1(a), 0);
+    T_EXPECT(least_1(b), 0);
+    T_EXPECT(least_1(c), 0);
 
     a = 0;
     b = 0;
     c = 0;
 
-    T_EXPECT(least_1_int(a), -1);
-    T_EXPECT(least_1_long(b), -1);
-    T_EXPECT(least_1_longlong(c), -1);
+    T_EXPECT(least_1(a), -1);
+    T_EXPECT(least_1(b), -1);
+    T_EXPECT(least_1(c), -1);
 }
 
 test_f test_leading_zeros(void)
@@ -112,13 +112,13 @@ test_f test_leading_zeros(void)
 #endif
     unsigned long long c = 0x0000000000F23456;
 
-    T_EXPECT(leading_0_int(a), 4 * 4);
+    T_EXPECT(leading_0(a), 4 * 4);
 #ifdef __ARCH_64__
-    T_EXPECT(leading_0_long(b), 8 * 4);
+    T_EXPECT(leading_0(b), 8 * 4);
 #elif defined(__ARCH_32__)
-    T_EXPECT(leading_0_long(b), 5 * 4);
+    T_EXPECT(leading_0(b), 5 * 4);
 #endif
-    T_EXPECT(leading_0_longlong(c), 10 * 4);
+    T_EXPECT(leading_0(c), 10 * 4);
 
     a = 0xF0000000;
 #ifdef __ARCH_64__
@@ -128,17 +128,17 @@ test_f test_leading_zeros(void)
 #endif
     c = 0xF000000000000000;
 
-    T_EXPECT(leading_0_int(a), 0);
-    T_EXPECT(leading_0_long(b), 0);
-    T_EXPECT(leading_0_longlong(c), 0);
+    T_EXPECT(leading_0(a), 0);
+    T_EXPECT(leading_0(b), 0);
+    T_EXPECT(leading_0(c), 0);
 
     a = 0;
     b = 0;
     c = 0;
 
-    T_EXPECT(leading_0_int(a), sizeof(typeof(a)) << 3);
-    T_EXPECT(leading_0_long(b), sizeof(typeof(b)) << 3);
-    T_EXPECT(leading_0_longlong(c), sizeof(typeof(c)) << 3);
+    T_EXPECT(leading_0(a), sizeof(typeof(a)) << 3);
+    T_EXPECT(leading_0(b), sizeof(typeof(b)) << 3);
+    T_EXPECT(leading_0(c), sizeof(typeof(c)) << 3);
 }
 
 test_f test_frailing_zeros(void)
@@ -151,29 +151,29 @@ test_f test_frailing_zeros(void)
 #endif
     unsigned long long c = 0x12345678F000000;
 
-    T_EXPECT(trailing_0_int(a), 3 * 4);
+    T_EXPECT(trailing_0(a), 3 * 4);
 #ifdef __ARCH_64__
-    T_EXPECT(trailing_0_long(b), 8 * 4);
+    T_EXPECT(trailing_0(b), 8 * 4);
 #elif defined(__ARCH_32__)
-    T_EXPECT(trailing_0_long(b), 4 * 4);
+    T_EXPECT(trailing_0(b), 4 * 4);
 #endif
-    T_EXPECT(trailing_0_longlong(c), 6 * 4);
+    T_EXPECT(trailing_0(c), 6 * 4);
 
     a = 0xF;
     b = 0xF;
     c = 0xF;
 
-    T_EXPECT(trailing_0_int(a), 0);
-    T_EXPECT(trailing_0_long(b), 0);
-    T_EXPECT(trailing_0_longlong(c), 0);
+    T_EXPECT(trailing_0(a), 0);
+    T_EXPECT(trailing_0(b), 0);
+    T_EXPECT(trailing_0(c), 0);
 
     a = 0;
     b = 0;
     c = 0;
 
-    T_EXPECT(trailing_0_int(a), sizeof(typeof(a)) << 3);
-    T_EXPECT(trailing_0_long(b), sizeof(typeof(b)) << 3);
-    T_EXPECT(trailing_0_longlong(c), sizeof(typeof(c)) << 3);
+    T_EXPECT(trailing_0(a), sizeof(typeof(a)) << 3);
+    T_EXPECT(trailing_0(b), sizeof(typeof(b)) << 3);
+    T_EXPECT(trailing_0(c), sizeof(typeof(c)) << 3);
 }
 
 test_f test_number_ones(void)
@@ -186,21 +186,21 @@ test_f test_number_ones(void)
 #endif
     unsigned long long c = 0x0102040801020408;
 
-    T_EXPECT(number_1_int(a), 4);
+    T_EXPECT(number_1(a), 4);
 #ifdef __ARCH_64__
-    T_EXPECT(number_1_long(b), 8);
+    T_EXPECT(number_1(b), 8);
 #elif defined(__ARCH_32__)
-    T_EXPECT(number_1_long(b), 4);
+    T_EXPECT(number_1(b), 4);
 #endif
-    T_EXPECT(number_1_longlong(c), 8);
+    T_EXPECT(number_1(c), 8);
 
     a = 0;
     b = 0;
     c = 0;
 
-    T_EXPECT(number_1_int(a), 0);
-    T_EXPECT(number_1_long(b), 0);
-    T_EXPECT(number_1_longlong(c), 0);
+    T_EXPECT(number_1(a), 0);
+    T_EXPECT(number_1(b), 0);
+    T_EXPECT(number_1(c), 0);
 
     a = 0xFFFFFFFF;
 #ifdef __ARCH_64__
@@ -210,9 +210,9 @@ test_f test_number_ones(void)
 #endif
     c = 0xFFFFFFFFFFFFFFFF;
 
-    T_EXPECT(number_1_int(a), sizeof(typeof(a)) << 3);
-    T_EXPECT(number_1_long(b), sizeof(typeof(b)) << 3);
-    T_EXPECT(number_1_longlong(c), sizeof(typeof(c)) << 3);
+    T_EXPECT(number_1(a), sizeof(typeof(a)) << 3);
+    T_EXPECT(number_1(b), sizeof(typeof(b)) << 3);
+    T_EXPECT(number_1(c), sizeof(typeof(c)) << 3);
 }
 
 test_f test_ones_parity(void)
@@ -225,9 +225,9 @@ test_f test_ones_parity(void)
 #endif
     unsigned long long c = 0x0102040801020408;
 
-    T_EXPECT(parity_1_int(a), true);
-    T_EXPECT(parity_1_long(b), true);
-    T_EXPECT(parity_1_longlong(c), true);
+    T_EXPECT(parity_1(a), true);
+    T_EXPECT(parity_1(b), true);
+    T_EXPECT(parity_1(c), true);
 
     a = 0x10204081;
 #ifdef __ARCH_64__
@@ -237,17 +237,17 @@ test_f test_ones_parity(void)
 #endif
     c = 0x0102040801020418;
 
-    T_EXPECT(parity_1_int(a), false);
-    T_EXPECT(parity_1_long(b), false);
-    T_EXPECT(parity_1_longlong(c), false);
+    T_EXPECT(parity_1(a), false);
+    T_EXPECT(parity_1(b), false);
+    T_EXPECT(parity_1(c), false);
 
     a = 0;
     b = 0;
     c = 0;
 
-    T_EXPECT(parity_1_int(a), true);
-    T_EXPECT(parity_1_long(b), true);
-    T_EXPECT(parity_1_longlong(c), true);
+    T_EXPECT(parity_1(a), true);
+    T_EXPECT(parity_1(b), true);
+    T_EXPECT(parity_1(c), true);
 
     a = 0xFFFFFFFF;
 #ifdef __ARCH_64__
@@ -257,9 +257,9 @@ test_f test_ones_parity(void)
 #endif
     c = 0xFFFFFFFFFFFFFFFF;
 
-    T_EXPECT(parity_1_int(a), true);
-    T_EXPECT(parity_1_long(b), true);
-    T_EXPECT(parity_1_longlong(c), true);
+    T_EXPECT(parity_1(a), true);
+    T_EXPECT(parity_1(b), true);
+    T_EXPECT(parity_1(c), true);
 
     a = 0xFFFFFFFE;
 #ifdef __ARCH_64__
@@ -269,9 +269,9 @@ test_f test_ones_parity(void)
 #endif
     c = 0xFFFFFFFFFFFFFFFE;
 
-    T_EXPECT(parity_1_int(a), false);
-    T_EXPECT(parity_1_long(b), false);
-    T_EXPECT(parity_1_longlong(c), false);
+    T_EXPECT(parity_1(a), false);
+    T_EXPECT(parity_1(b), false);
+    T_EXPECT(parity_1(c), false);
 }
 
 test_f test_swap_bytes(void)

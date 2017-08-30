@@ -199,21 +199,21 @@ test_f test_hamming_weight(void)
 #endif
     unsigned long long c = 0x0102040801020408;
 
-    T_EXPECT(HAMM_WEIGHT_int(a), 4);
+    T_EXPECT(HAMM_WEIGHT(a), 4);
 #ifdef __ARCH_64__
-    T_EXPECT(HAMM_WEIGHT_long(b), 8);
+    T_EXPECT(HAMM_WEIGHT(b), 8);
 #elif defined(__ARCH_32__)
-    T_EXPECT(HAMM_WEIGHT_long(b), 4);
+    T_EXPECT(HAMM_WEIGHT(b), 4);
 #endif
-    T_EXPECT(HAMM_WEIGHT_longlong(c), 8);
+    T_EXPECT(HAMM_WEIGHT(c), 8);
 
     a = 0;
     b = 0;
     c = 0;
 
-    T_EXPECT(HAMM_WEIGHT_int(a), 0);
-    T_EXPECT(HAMM_WEIGHT_long(b), 0);
-    T_EXPECT(HAMM_WEIGHT_longlong(c), 0);
+    T_EXPECT(HAMM_WEIGHT(a), 0);
+    T_EXPECT(HAMM_WEIGHT(b), 0);
+    T_EXPECT(HAMM_WEIGHT(c), 0);
 
     a = 0xFFFFFFFF;
 #ifdef __ARCH_64__
@@ -223,9 +223,9 @@ test_f test_hamming_weight(void)
 #endif
     c = 0xFFFFFFFFFFFFFFFF;
 
-    T_EXPECT(HAMM_WEIGHT_int(a), sizeof(typeof(a)) << 3);
-    T_EXPECT(HAMM_WEIGHT_long(b), sizeof(typeof(b)) << 3);
-    T_EXPECT(HAMM_WEIGHT_longlong(c), sizeof(typeof(c)) << 3);
+    T_EXPECT(HAMM_WEIGHT(a), sizeof(typeof(a)) << 3);
+    T_EXPECT(HAMM_WEIGHT(b), sizeof(typeof(b)) << 3);
+    T_EXPECT(HAMM_WEIGHT(c), sizeof(typeof(c)) << 3);
 }
 
 test_f test_hamming_distance(void)
@@ -242,13 +242,13 @@ test_f test_hamming_distance(void)
     unsigned long long e = 0x0102040801020408;
     unsigned long long f = 0x1002400800401000;
 
-    T_EXPECT(HAMM_DIST_int(a, b), 3);
+    T_EXPECT(HAMM_DIST(a, b), 3);
 #ifdef __ARCH_64__
-    T_EXPECT(HAMM_DIST_long(c, d), 6);
+    T_EXPECT(HAMM_DIST(c, d), 6);
 #elif defined(__ARCH_32__)
-    T_EXPECT(HAMM_DIST_long(c, d), 5);
+    T_EXPECT(HAMM_DIST(c, d), 5);
 #endif
-    T_EXPECT(HAMM_DIST_longlong(e, f), 10);
+    T_EXPECT(HAMM_DIST(e, f), 10);
 
     a = 123456;
     b = 123456;
@@ -259,9 +259,9 @@ test_f test_hamming_distance(void)
     e = 123456789;
     f = 123456789;
 
-    T_EXPECT(HAMM_DIST_int(a, b), 0);
-    T_EXPECT(HAMM_DIST_long(c, d), 0);
-    T_EXPECT(HAMM_DIST_longlong(e, f), 0);
+    T_EXPECT(HAMM_DIST(a, b), 0);
+    T_EXPECT(HAMM_DIST(c, d), 0);
+    T_EXPECT(HAMM_DIST(e, f), 0);
 
     a = 0x1020;
     b = 0;
@@ -272,9 +272,9 @@ test_f test_hamming_distance(void)
     e = 0x12488421;
     f = 0;
 
-    T_EXPECT(HAMM_DIST_int(a, b), 2);
-    T_EXPECT(HAMM_DIST_long(c, d), 4);
-    T_EXPECT(HAMM_DIST_longlong(e, f), 8);
+    T_EXPECT(HAMM_DIST(a, b), 2);
+    T_EXPECT(HAMM_DIST(c, d), 4);
+    T_EXPECT(HAMM_DIST(e, f), 8);
 }
 
 test_f test_log2(void)
@@ -283,29 +283,29 @@ test_f test_log2(void)
     unsigned long b = BIT(15);
     unsigned long long c = BIT(40);
 
-    T_EXPECT(LOG2_int(a), 5);
-    T_EXPECT(LOG2_long(b), 15);
-    T_EXPECT(LOG2_longlong(c), 40);
+    T_EXPECT(LOG2(a), 5);
+    T_EXPECT(LOG2(b), 15);
+    T_EXPECT(LOG2(c), 40);
 
-    T_EXPECT(LOG2_int(--a), 4);
-    T_EXPECT(LOG2_long(--b), 14);
-    T_EXPECT(LOG2_longlong(--c), 39);
+    T_EXPECT(LOG2(--a), 4);
+    T_EXPECT(LOG2(--b), 14);
+    T_EXPECT(LOG2(--c), 39);
 
     a = 1;
     b = 1l;
     c = 1ll;
 
-    T_EXPECT(LOG2_int(a), 0);
-    T_EXPECT(LOG2_long(b), 0);
-    T_EXPECT(LOG2_longlong(c), 0);
+    T_EXPECT(LOG2(a), 0);
+    T_EXPECT(LOG2(b), 0);
+    T_EXPECT(LOG2(c), 0);
 
     a = 0;
     b = 0;
     c = 0;
 
-    T_EXPECT(LOG2_int(a), -1);
-    T_EXPECT(LOG2_long(b), -1);
-    T_EXPECT(LOG2_longlong(c), -1);
+    T_EXPECT(LOG2(a), -1);
+    T_EXPECT(LOG2(b), -1);
+    T_EXPECT(LOG2(c), -1);
 }
 
 CMP(char)
