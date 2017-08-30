@@ -45,6 +45,9 @@ int cmp_my_struct(void *a, void *b)
     return 0;
 }
 
+/*
+    To remove after manual testing
+*/
 ___unused___ static void bptree_print_node(BPTree_node *node)
 {
     int i;
@@ -391,6 +394,31 @@ test_f test_search(int fanout)
     bptree_destroy(tree);
 }
 
+test_f test_empty(int fanout)
+{
+    BPTree *tree;
+    int val;
+
+    size_t size;
+    int *t;
+
+    tree = bptree_create(fanout, sizeof(int), cmp_int);
+    T_ERROR(tree == NULL);
+
+    T_CHECK(bptree_min(tree, (void *)&val) != 0);
+    T_CHECK(bptree_max(tree, (void *)&val) != 0);
+    T_CHECK(bptree_search(tree, (void *)&val, (void *)&val) != 0);
+    T_CHECK(bptree_delete(tree, (void *)&val) != 0);
+    T_CHECK(bptree_to_array(tree, (void *)&t, &size) != 0);
+
+    T_EXPECT(bptree_get_data_size(tree), sizeof(int));
+    T_EXPECT(bptree_get_hight(tree), 0);
+    T_EXPECT(bptree_get_num_entries(tree), 0);
+    T_EXPECT(bptree_key_exist(tree, (void *)&val), false);
+
+    bptree_destroy(tree);
+}
+
 void test(void)
 {
     BPTREE_TEST_SET(test_create);
@@ -399,6 +427,7 @@ void test(void)
     BPTREE_TEST_SET(test_min_max);
     BPTREE_TEST_SET(test_key_exist);
     BPTREE_TEST_SET(test_search);
+    BPTREE_TEST_SET(test_empty);
 }
 
 int main(void)

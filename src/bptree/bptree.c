@@ -460,6 +460,25 @@ static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_
     return 0;
 }
 
+static void bptree_destroy_helper(BPTree_node *node, size_t size_of, void (*destructor)(void *data))
+{
+    size_t i;
+
+    TRACE("");
+
+    if (node == NULL)
+        return;
+
+    for (i = 0; i <= node->____keys_c; ++i)
+        if (node->____ptrs[i] != NULL)
+            bptree_destroy_helper(node->____ptrs[i], size_of, destructor);
+
+    if (destructor != NULL && node->____is_leaf)
+        bptree_node_destroy_with_entries(node, size_of, destructor);
+    else
+        bptree_node_destroy(node);
+}
+
 BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
 {
     BPTree *tree;
@@ -531,23 +550,20 @@ int bptree_insert(BPTree *tree, void *data)
     return 0;
 }
 
-static void bptree_destroy_helper(BPTree_node *node, size_t size_of, void (*destructor)(void *data))
+int bptree_delete(BPTree *tree, void *data_key)
 {
-    size_t i;
-
     TRACE("");
 
-    if (node == NULL)
-        return;
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
 
-    for (i = 0; i <= node->____keys_c; ++i)
-        if (node->____ptrs[i] != NULL)
-            bptree_destroy_helper(node->____ptrs[i], size_of, destructor);
+    if (data_key == NULL)
+        ERROR("data_key == NULL\n", 1, "");
 
-    if (destructor != NULL && node->____is_leaf)
-        bptree_node_destroy_with_entries(node, size_of, destructor);
-    else
-        bptree_node_destroy(node);
+    if (bptree_is_empty(tree))
+        ERROR("Tree is empty, nothing to delete\n", 1, "");
+
+    return 0;
 }
 
 void bptree_destroy(BPTree *tree)
@@ -657,13 +673,13 @@ bool bptree_key_exist(BPTree *tree, void *data_key)
     TRACE("");
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", false, "");
 
     if (data_key == NULL)
-        ERROR("data_key == NULL\n", 1, "");
+        ERROR("data_key == NULL\n", false, "");
 
     if (bptree_is_empty(tree))
-        ERROR("BPTree is empty\n", 1, "");
+        ERROR("BPTree is empty\n", false, "");
 
     node = bptree_find_node_with_key(tree, data_key);
     if (node == NULL)
