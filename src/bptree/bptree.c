@@ -313,7 +313,7 @@ static BPTree_node *bptree_node_get_node_ptr_with_key(BPTree_node *node, size_t 
 
     /* temporary solution */
     i = 0;
-    while (i < node->____keys_c && cmp(((BYTE *)node->____keys) + (i * size_of), key) < 0)
+    while (i < node->____keys_c && cmp(((BYTE *)node->____keys) + (i * size_of), key) <= 0)
         ++i;
 
     return node->____ptrs[i];

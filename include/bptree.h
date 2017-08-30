@@ -4,14 +4,12 @@
 /*
     Simple implementation of B+Tree
 
-    Only destroy funtion is recursive due the fact that B+Tree high is so small
-
+    Only destroy function is recursive due the fact that B+Tree high is so small
 
     To make Tree more balanced, place for sentinel is added to all nodes,
     always before splitting, insert is calling, so keys are more balanced.
 
     Also to make structure more cache friendly, KList is used instead of List2D
-
 
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com

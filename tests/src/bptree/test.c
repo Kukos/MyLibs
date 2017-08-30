@@ -75,14 +75,13 @@ ___unused___ static void bptree_print(BPTree *tree)
     do { \
         TEST(func(2)); \
         TEST(func(5)); \
-        TEST(func(15)); \
+        TEST(func(16)); \
         TEST(func(1000)); \
     } while (0)
 
 test_f test_create(int fanout)
 {
     BPTree *tree;
-
 
     tree = bptree_create(fanout, sizeof(int), cmp_int);
     T_ERROR(tree == NULL);
@@ -229,11 +228,177 @@ test_f test_destroy_with_entries(int fanout)
     bptree_destroy_with_entries(tree, my_struct_destroy);
 }
 
+test_f test_min_max(int fanout)
+{
+    BPTree *tree;
+
+    int val;
+    int i;
+    int r;
+
+    int *t;
+    size_t size = fanout << 2;
+
+    tree = bptree_create(fanout, sizeof(int), cmp_int);
+    T_ERROR(tree == NULL);
+
+    T_EXPECT(bptree_get_data_size(tree), sizeof(int));
+    T_EXPECT(bptree_get_hight(tree), 0);
+    T_EXPECT(bptree_get_num_entries(tree), 0);
+
+    t = (int *)malloc(size * sizeof(int));
+    T_ERROR(t == NULL);
+
+    for (i = 0; i < size; ++i)
+        t[i] = i + 1;
+
+    for (i = 0; i < size; ++i)
+    {
+        r = rand() % (size - i);
+        SWAP(t[r], t[size - i - 1]);
+    }
+
+    for (i = 0; i < size; ++i)
+    {
+        val = t[i];
+        T_EXPECT(bptree_insert(tree, (void *)&val), 0);
+    }
+
+    T_EXPECT(bptree_get_num_entries(tree), size);
+    sort(t, size, cmp_int, sizeof(int));
+
+    T_EXPECT(bptree_min(tree, (void *)&val), 0);
+    T_ASSERT(val, t[0]);
+
+    T_EXPECT(bptree_max(tree, (void *)&val), 0);
+    T_ASSERT(val, t[size - 1]);
+
+    FREE(t);
+
+    bptree_destroy(tree);
+}
+
+test_f test_key_exist(int fanout)
+{
+    BPTree *tree;
+
+    int val;
+    int i;
+    int r;
+
+    int *t;
+    size_t size = fanout << 2;
+
+    tree = bptree_create(fanout, sizeof(int), cmp_int);
+    T_ERROR(tree == NULL);
+
+    T_EXPECT(bptree_get_data_size(tree), sizeof(int));
+    T_EXPECT(bptree_get_hight(tree), 0);
+    T_EXPECT(bptree_get_num_entries(tree), 0);
+
+    t = (int *)malloc(size * sizeof(int));
+    T_ERROR(t == NULL);
+
+    for (i = 0; i < size; ++i)
+        t[i] = i + 1;
+
+    for (i = 0; i < size; ++i)
+    {
+        r = rand() % (size - i);
+        SWAP(t[r], t[size - i - 1]);
+    }
+
+    for (i = 0; i < size; ++i)
+    {
+        val = t[i];
+        T_EXPECT(bptree_insert(tree, (void *)&val), 0);
+    }
+
+    T_EXPECT(bptree_get_num_entries(tree), size);
+    sort(t, size, cmp_int, sizeof(int));
+
+    for (i = 0; i < size; ++i)
+    {
+        val = i + 1;
+        T_EXPECT(bptree_key_exist(tree, (void *)&val), true);
+
+        val = -i;
+        T_EXPECT(bptree_key_exist(tree, (void *)&val), false);
+
+        val = i + 1 + size;
+        T_EXPECT(bptree_key_exist(tree, (void *)&val), false);
+    }
+
+    FREE(t);
+
+    bptree_destroy(tree);
+}
+
+test_f test_search(int fanout)
+{
+    BPTree *tree;
+
+    int val;
+    int out;
+    int i;
+    int r;
+
+    int *t;
+    size_t size = fanout << 2;
+
+    tree = bptree_create(fanout, sizeof(int), cmp_int);
+    T_ERROR(tree == NULL);
+
+    T_EXPECT(bptree_get_data_size(tree), sizeof(int));
+    T_EXPECT(bptree_get_hight(tree), 0);
+    T_EXPECT(bptree_get_num_entries(tree), 0);
+
+    t = (int *)malloc(size * sizeof(int));
+    T_ERROR(t == NULL);
+
+    for (i = 0; i < size; ++i)
+        t[i] = i + 1;
+
+    for (i = 0; i < size; ++i)
+    {
+        r = rand() % (size - i);
+        SWAP(t[r], t[size - i - 1]);
+    }
+
+    for (i = 0; i < size; ++i)
+    {
+        val = t[i];
+        T_EXPECT(bptree_insert(tree, (void *)&val), 0);
+    }
+
+    T_EXPECT(bptree_get_num_entries(tree), size);
+    sort(t, size, cmp_int, sizeof(int));
+
+    for (i = 0; i < size; ++i)
+    {
+        val = i + 1;
+        T_EXPECT(bptree_search(tree, (void *)&val, (void *)&out), 0);
+        T_ASSERT(val, out);
+
+        val = -i;
+        T_CHECK(bptree_search(tree, (void *)&val, (void *)&out) != 0);
+
+        val = i + 1 + size;
+        T_CHECK(bptree_search(tree, (void *)&val, (void *)&out) != 0);
+    }
+    FREE(t);
+
+    bptree_destroy(tree);
+}
+
 void test(void)
 {
     BPTREE_TEST_SET(test_create);
     BPTREE_TEST_SET(test_insert);
     BPTREE_TEST_SET(test_destroy_with_entries);
+    BPTREE_TEST_SET(test_min_max);
+    BPTREE_TEST_SET(test_key_exist);
+    BPTREE_TEST_SET(test_search);
 }
 
 int main(void)
