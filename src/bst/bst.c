@@ -532,6 +532,9 @@ int bst_delete(Bst *tree, void *data_key)
     if (data_key == NULL)
         ERROR("data_key == NULL\n", 1, "");
 
+    if (tree->____root == NULL)
+        ERROR("Tree is empty\n", 1, "");
+
     node = bst_node_search(tree, data_key);
     if (node == NULL)
         ERROR("data with this key doesn't exist in tree, nothing to delete\n", 1, "");
