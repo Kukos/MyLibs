@@ -56,7 +56,7 @@ bool correct_hight(int hight, size_t n)
 
 bool correct_balanced_hight(int hight, size_t n)
 {
-    return hight < LOG2_long((unsigned long)n) + 2;
+    return hight < LOG2((unsigned long)n) + 2;
 }
 
 test_f test_create(void)

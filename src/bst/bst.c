@@ -748,7 +748,7 @@ int bst_balance(Bst *tree)
     n = (int)tree->____nodes;
 
     /* count k from formula k = n + 1 - 2^(floor(LOG2(n + 1))) */
-    k = n + 1 - (1 << (int)LOG2_int((unsigned int)(n + 1)));
+    k = n + 1 - (1 << (int)LOG2((unsigned int)(n + 1)));
 
     /* start from root and make k rotations */
     ptr = tree->____root;

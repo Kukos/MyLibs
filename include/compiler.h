@@ -46,11 +46,37 @@
 /* BUILTIN FUNC */
 
 /* get index of least bit ( from left ) or -1 iff X == 0  */
+#define least_1(x) \
+    __extension__ \
+    ({ \
+        unsigned long ________x = (x); \
+        if (sizeof(x) == sizeof(unsigned int)) \
+            ________x = least_1_int((unsigned int)x); \
+        else if (sizeof(x) == sizeof(unsigned long)) \
+            ________x = least_1_long((unsigned long)x); \
+        else if (sizeof(x) == sizeof(unsigned long long)) \
+            ________x = least_1_longlong((unsigned long long)x); \
+        ________x; \
+    })
+
 #define least_1_int(x)          (__builtin_ffs(x) - 1)
 #define least_1_long(x)         (__builtin_ffsl(x) - 1)
 #define least_1_longlong(x)     (__builtin_ffsll(x) - 1)
 
 /* get number of leading zeros */
+#define leading_0(x) \
+    __extension__ \
+    ({ \
+        unsigned long ________x = (x); \
+        if (sizeof(x) == sizeof(unsigned int)) \
+            ________x = leading_0_int((unsigned int)x); \
+        else if (sizeof(x) == sizeof(unsigned long)) \
+            ________x = leading_0_long((unsigned long)x); \
+        else if (sizeof(x) == sizeof(unsigned long long)) \
+            ________x = leading_0_longlong((unsigned long long)x); \
+        ________x; \
+    })
+
 #define leading_0_int(x) \
     __extension__ \
     ({ \
@@ -77,6 +103,19 @@
 
 
 /* get number of trailing zeros */
+#define trailing_0(x) \
+    __extension__ \
+    ({ \
+        unsigned long ________x = (x); \
+        if (sizeof(x) == sizeof(unsigned int)) \
+            ________x = trailing_0_int((unsigned int)x); \
+        else if (sizeof(x) == sizeof(unsigned long)) \
+            ________x = trailing_0_long((unsigned long)x); \
+        else if (sizeof(x) == sizeof(unsigned long long)) \
+            ________x = trailing_0_longlong((unsigned long long)x); \
+        ________x; \
+    })
+
 #define trailing_0_int(x) \
     __extension__ \
     ({ \
@@ -102,6 +141,19 @@
     })
 
 /* get number of ones */
+#define number_1(x) \
+    __extension__ \
+    ({ \
+        unsigned long ________x = (x); \
+        if (sizeof(x) == sizeof(unsigned int)) \
+            ________x = number_1_int((unsigned int)x); \
+        else if (sizeof(x) == sizeof(unsigned long)) \
+            ________x = number_1_long((unsigned long)x); \
+        else if (sizeof(x) == sizeof(unsigned long long)) \
+            ________x = number_1_longlong((unsigned long long)x); \
+        ________x; \
+    })
+
 #define number_1_int(x) \
     __extension__ \
     ({ \
@@ -127,6 +179,19 @@
     })
 
 /* get parity number of 1 ( number of 1 % 2) */
+#define parity_1(x) \
+    __extension__ \
+    ({ \
+        unsigned long ________x = (x); \
+        if (sizeof(x) == sizeof(unsigned int)) \
+            ________x = parity_1_int((unsigned int)x); \
+        else if (sizeof(x) == sizeof(unsigned long)) \
+            ________x = parity_1_long((unsigned long)x); \
+        else if (sizeof(x) == sizeof(unsigned long long)) \
+            ________x = parity_1_longlong((unsigned long long)x); \
+        ________x; \
+    })
+
 #define parity_1_int(x) \
     __extension__ \
     ({ \

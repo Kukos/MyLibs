@@ -84,16 +84,55 @@
 #define CAST_TO_BOOL(x) (!!(x))
 
 /* hamming weight */
+#define HAMM_WEIGHT(x) \
+    __extension__ \
+    ({ \
+        unsigned long ________x = (x); \
+        if (sizeof(x) == sizeof(unsigned int)) \
+            ________x = HAMM_WEIGHT_int((unsigned int)x); \
+        else if (sizeof(x) == sizeof(unsigned long)) \
+            ________x = HAMM_WEIGHT_long((unsigned long)x); \
+        else if (sizeof(x) == sizeof(unsigned long long)) \
+            ________x = HAMM_WEIGHT_longlong((unsigned long long)x); \
+        ________x; \
+    })
+
 #define HAMM_WEIGHT_int(n)          (number_1_int(n))
 #define HAMM_WEIGHT_long(n)         (number_1_long(n))
 #define HAMM_WEIGHT_longlong(n)     (number_1_longlong(n))
 
 /* hamming distance */
-#define HAMM_DIST_int(n, k)        (number_1_int((n) ^ (k)))
-#define HAMM_DIST_long(n, k)       (number_1_long((n) ^ (k)))
-#define HAMM_DIST_longlong(n, k)   (number_1_longlong((n) ^ (k)))
+#define HAMM_DIST(x, y) \
+    __extension__ \
+    ({ \
+        unsigned long ________x = (x); \
+        if (sizeof(x) == sizeof(unsigned int)) \
+            ________x = HAMM_DIST_int((unsigned int)x, (unsigned int)y); \
+        else if (sizeof(x) == sizeof(unsigned long)) \
+            ________x = HAMM_DIST_long((unsigned long)x, (unsigned long)y); \
+        else if (sizeof(x) == sizeof(unsigned long long)) \
+            ________x = HAMM_DIST_longlong((unsigned long long)x, (unsigned long long)y); \
+        ________x; \
+    })
+
+#define HAMM_DIST_int(n, k)        (HAMM_WEIGHT_int((n) ^ (k)))
+#define HAMM_DIST_long(n, k)       (HAMM_WEIGHT_long((n) ^ (k)))
+#define HAMM_DIST_longlong(n, k)   (HAMM_WEIGHT_longlong((n) ^ (k)))
 
 /* rly fast way to count log2 of n */
+#define LOG2(x) \
+    __extension__ \
+    ({ \
+        unsigned long ________x = (x); \
+        if (sizeof(x) == sizeof(unsigned int)) \
+            ________x = LOG2_int((unsigned int)x); \
+        else if (sizeof(x) == sizeof(unsigned long)) \
+            ________x = LOG2_long((unsigned long)x); \
+        else if (sizeof(x) == sizeof(unsigned long long)) \
+            ________x = LOG2_longlong((unsigned long long)x); \
+        ________x; \
+    })
+
 #define LOG2_int(n)             ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_int(n) - 1)
 #define LOG2_long(n)            ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_long(n) - 1)
 #define LOG2_longlong(n)        ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_longlong(n) - 1)
