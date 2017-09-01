@@ -51,6 +51,7 @@ typedef struct BPTree
 typedef struct BPTree_iterator
 {
     BPTree_node *____node;
+    BPTree_node *____end_node;
     size_t      ____index;
     size_t      ____size_of;
     bool        ____first_time;

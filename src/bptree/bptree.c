@@ -785,13 +785,19 @@ BPTree_iterator *bptree_iterator_create(BPTree *tree, iti_mode_t mode)
         ERROR("malloc error\n", NULL, "");
 
     if (mode == ITI_BEGIN)
+    {
         iterator->____node = bptree_get_first_leaf(tree);
+        iterator->____index = 0;
+    }
     else
+    {
         iterator->____node = bptree_get_last_leaf(tree);
+        iterator->____index = iterator->____node->____keys_c - 1;
+    }
 
     iterator->____size_of = tree->____size_of;
-    iterator->____index = 0;
     iterator->____first_time = true;
+    iterator->____end_node = iterator->____node;
 
     return iterator;
 }
@@ -814,14 +820,19 @@ int bptree_iterator_init(BPTree *tree, BPTree_iterator *iterator, iti_mode_t mod
         ERROR("malloc error\n", 1, "");
 
     if (mode == ITI_BEGIN)
+    {
         iterator->____node = bptree_get_first_leaf(tree);
+        iterator->____index = 0;
+    }
     else
+    {
         iterator->____node = bptree_get_last_leaf(tree);
+        iterator->____index = iterator->____node->____keys_c - 1;
+    }
 
     iterator->____size_of = tree->____size_of;
-    iterator->____index = 0;
     iterator->____first_time = true;
-
+    iterator->____end_node = iterator->____node;
 
     return 0;
 }
@@ -878,4 +889,44 @@ int bptree_iterator_prev(BPTree_iterator *iterator)
     }
 
     return 0;
+}
+
+int bptree_iterator_get_data(BPTree_iterator *iterator, void *val)
+{
+    TRACE("");
+
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
+
+    if (val == NULL)
+        ERROR("val == NULL\n", 1, "");
+
+    __ASSIGN__(*(BYTE *)val, ((BYTE *)iterator->____node->____keys)[iterator->____index * iterator->____size_of], iterator->____size_of);
+
+    return 0;
+}
+
+int bptree_iterator_get_node(BPTree_iterator *iterator, void *node)
+{
+    TRACE("");
+
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", 1, "");
+
+    if (node == NULL)
+        ERROR("node == NULL\n", 1, "");
+
+    *(void **)node = iterator->____node;
+
+    return 0;
+}
+
+bool bptree_iterator_end(BPTree_iterator *iterator)
+{
+    TRACE("");
+
+    if (iterator == NULL)
+        ERROR("iterator == NULL\n", true, "");
+
+    return !iterator->____first_time && iterator->____node == iterator->____end_node;
 }
