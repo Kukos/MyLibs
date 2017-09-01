@@ -464,6 +464,64 @@ test_f test_for_each(void)
     list2d_destroy(list);
 }
 
+test_f test_empty_for_each(void)
+{
+    List2D *list;
+
+    int t[] = {0, 0, 0};
+    int rt[] = {0, 0, 0};
+
+    size_t size = ARRAY_SIZE(t);
+    int i;
+
+    int data;
+    List2D_node *node;
+
+    list = list2d_create(sizeof(int), cmp_int, diff_int);
+    T_ERROR(list == NULL);
+    T_EXPECT(list2d_get_data_size(list), sizeof(int));
+    T_EXPECT(list2d_get_num_entries(list), 0);
+
+    i = 0;
+    for_each(list, List2D, node, data)
+    {
+        T_ASSERT(data, rt[i]);
+        T_CHECK(node != NULL);
+
+        ++i;
+    }
+
+    i = size - 1;
+    for_each_prev(list, List2D, node, data)
+    {
+        T_ASSERT(data, rt[i]);
+        T_CHECK(node != NULL);
+
+        --i;
+    }
+
+    i = 0;
+    for_each_data(list, List2D, data)
+    {
+        T_ASSERT(data, rt[i]);
+        ++i;
+    }
+
+    i = size - 1;
+    for_each_data_prev(list ,List2D, data)
+    {
+        T_ASSERT(data, rt[i]);
+        --i;
+    }
+
+    for_each_node(list, List2D, node)
+        T_CHECK(node != NULL);
+
+    for_each_node_prev(list, List2D, node)
+        T_CHECK(node != NULL);
+
+    list2d_destroy(list);
+}
 
 test_f test_empty(void)
 {
@@ -698,6 +756,69 @@ test_f test_slist_for_each(void)
     slist_destroy(slist);
 }
 
+test_f test_slist_empty_for_each(void)
+{
+    SList *slist;
+
+    int t[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    size_t size = ARRAY_SIZE(t);
+
+    int i;
+    void *node;
+    int val;
+
+    slist = slist_list2d_create(sizeof(int), cmp_int, diff_int);
+    T_ERROR(slist == NULL);
+    T_EXPECT(slist_get_data_size(slist), sizeof(int));
+    T_EXPECT(slist_get_num_entries(slist), 0);
+
+    for (i = 0; i < size; ++i)
+        T_EXPECT(slist_insert(slist, (void *)&t[i]), 0);
+
+
+    i = 0;
+    for_each(slist, SList, node, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(val, t[i]);
+        ++i;
+    }
+
+    i = size - 1;
+    for_each_prev(slist, SList, node, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(val, t[i]);
+        --i;
+    }
+
+    for_each_node(slist, SList, node)
+    {
+        T_CHECK(node != NULL);
+    }
+
+    for_each_node_prev(slist, SList, node)
+    {
+        T_CHECK(node != NULL);
+    }
+
+    i = 0;
+    for_each_data(slist, SList, val)
+    {
+        T_ASSERT(val, t[i]);
+        ++i;
+    }
+
+    i = size - 1;
+    for_each_data_prev(slist, SList, val)
+    {
+        T_ASSERT(val, t[i]);
+        --i;
+    }
+
+    slist_destroy(slist);
+}
+
 test_f test_slist_empty(void)
 {
     SList *list;
@@ -776,12 +897,14 @@ void test(void)
     TEST(test_insert_delete());
     TEST(test_merge());
     TEST(test_for_each());
+    TEST(test_empty_for_each());
     TEST(test_empty());
     TEST(test_merge_empty());
     TEST(test_slist_framework());
     TEST(test_slist_for_each());
     TEST(test_slist_empty());
     TEST(test_slist_merge_empty());
+    TEST(test_slist_empty_for_each());
 }
 
 int main(void)

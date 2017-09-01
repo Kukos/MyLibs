@@ -530,7 +530,10 @@ ___inline___ SList_iterator *slist_iterator_create(SList *list, iti_mode_t mode)
 
     it->____iterator = list->____it_create(list, mode);
     if (it->____iterator == NULL)
-        ERROR("iterator create error\n", NULL, "");
+    {
+        FREE(it);
+        return NULL;
+    }
 
     /* FILL HOOKS */
     it->____destroy    = list->____it_destroy;
@@ -558,7 +561,7 @@ ___inline___ int slist_iterator_init(SList *list, SList_iterator *it, iti_mode_t
 
     it->____iterator = list->____it_create(list, mode);
     if (it->____iterator == NULL)
-        ERROR("iterator create error\n", 1, "");
+        return 1;
 
     /* FILL HOOKS */
     it->____destroy    = list->____it_destroy;

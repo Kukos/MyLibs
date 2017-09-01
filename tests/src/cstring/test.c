@@ -841,6 +841,64 @@ test_f test_for_each(void)
     string_destroy(s);
 }
 
+test_f test_empty_for_each(void)
+{
+    String *s;
+    char *str = "";
+    char *node;
+    char data;
+    int i;
+
+    s = string_create_from_str(str);
+    T_ERROR(s == NULL);
+
+    i = 0;
+    for_each(s, String, node, data)
+    {
+        T_ASSERT(*node, str[i]);
+        T_ASSERT(data, str[i]);
+        ++i;
+    }
+
+    i = string_get_length(s) - 1;
+    for_each_prev(s, String, node, data)
+    {
+        T_ASSERT(*node, str[i]);
+        T_ASSERT(data, str[i]);
+        --i;
+    }
+
+    i = 0;
+    for_each_data(s, String, data)
+    {
+        T_ASSERT(data, str[i]);
+        ++i;
+    }
+
+    i = string_get_length(s) - 1;
+    for_each_data_prev(s, String, data)
+    {
+        T_ASSERT(data, str[i]);
+        --i;
+    }
+
+    i = 0;
+    for_each_node(s, String, node)
+    {
+        T_ASSERT(*node, str[i]);
+        ++i;
+    }
+
+    i = string_get_length(s) - 1;
+    for_each_node_prev(s, String, node)
+    {
+        T_ASSERT(*node, str[i]);
+        --i;
+    }
+
+    string_destroy(s);
+}
+
 test_f test_remove_c(void)
 {
     String *s;
@@ -1637,6 +1695,7 @@ void test(void)
     TEST(test_split_str());
     TEST(test_split_string());
     TEST(test_empty());
+    TEST(test_empty_for_each());
 }
 
 int main(void)

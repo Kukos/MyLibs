@@ -340,6 +340,54 @@ test_f test_for_each(void)
     trie_destroy(trie);
 }
 
+test_f test_empty_for_each(void)
+{
+    char *words[] = {"", "", ""};
+    char *wexp[] = {"", "", ""};
+    size_t size = ARRAY_SIZE(words);
+    size_t i;
+    Trie_node *node;
+    char *data;
+
+    Trie *trie;
+
+    trie = trie_create();
+    T_ERROR(trie == NULL);
+    T_EXPECT(trie_get_num_entries(trie), 0);
+
+    i = 0;
+    for_each(trie, Trie, node, data)
+    {
+        T_CHECK(node != NULL);
+        T_EXPECT(strcmp(wexp[i], data), 0);
+        ++i;
+    }
+
+    i = size - 1;
+    for_each_prev(trie, Trie, node, data)
+    {
+        T_CHECK(node != NULL);
+        T_EXPECT(strcmp(wexp[i], data), 0);
+        --i;
+    }
+
+    i = 0;
+    for_each_data(trie, Trie, data)
+         T_EXPECT(strcmp(wexp[i++], data), 0);
+
+    i = size - 1;
+    for_each_data_prev(trie, Trie, data)
+         T_EXPECT(strcmp(wexp[i--], data), 0);
+
+    for_each_node(trie, Trie, node)
+        T_CHECK(node != NULL);
+
+    for_each_node_prev(trie, Trie, node)
+        T_CHECK(node != NULL);
+
+    trie_destroy(trie);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -352,6 +400,7 @@ void test(void)
     TEST(test_convert_to_array());
     TEST(test_empty());
     TEST(test_for_each());
+    TEST(test_empty_for_each());
 }
 
 int main(void)

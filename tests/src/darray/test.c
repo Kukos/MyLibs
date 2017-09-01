@@ -1833,6 +1833,81 @@ test_f test_for_each(void)
 
 }
 
+test_f test_empty_for_each(void)
+{
+    Darray *da;
+
+    int t[] = {0, 0, 0};
+
+    int *dptr;
+    int i;
+    int val;
+    int *ptr;
+
+    size_t array_size = ARRAY_SIZE(t);
+
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    T_ERROR(da == NULL);
+    T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
+    T_EXPECT(darray_get_data_size(da), sizeof(int));
+    T_EXPECT(darray_get_num_entries(da), 0);
+
+    i = 0;
+    dptr = (int *)darray_get_array(da);
+
+    for_each(da, Darray, ptr, val)
+    {
+        T_ASSERT(val, t[i]);
+        T_ASSERT(ptr, dptr);
+
+        ++i;
+        ++dptr;
+    }
+
+    i = array_size - 1;
+    dptr = (int *)darray_get_array(da) + array_size - 1;
+
+    for_each_prev(da, Darray, ptr, val)
+    {
+        T_ASSERT(val, t[i]);
+        T_ASSERT(ptr, dptr);
+
+        --i;
+        --dptr;
+    }
+
+    i = 0;
+    for_each_data(da, Darray, val)
+    {
+        T_ASSERT(val, t[i]);
+        ++i;
+    }
+
+    i = array_size - 1;
+    for_each_data_prev(da, Darray, val)
+    {
+        T_ASSERT(val, t[i]);
+        --i;
+    }
+
+    dptr = (int *)darray_get_array(da);
+    for_each_node(da, Darray, ptr)
+    {
+        T_ASSERT(ptr, dptr);
+        ++dptr;
+    }
+
+    dptr = (int *)darray_get_array(da) + array_size - 1;
+    for_each_node_prev(da, Darray, ptr)
+    {
+        T_ASSERT(ptr, dptr);
+        --dptr;
+    }
+
+    darray_destroy(da);
+
+}
+
 test_f test_destroy_with_entries(void)
 {
     MyStruct *s;
@@ -1917,6 +1992,7 @@ void test(void)
     TEST(test_for_each());
     TEST(test_destroy_with_entries());
     TEST(test_empty());
+    TEST(test_empty_for_each());
 }
 
 int main(void)

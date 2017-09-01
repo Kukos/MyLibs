@@ -1066,6 +1066,9 @@ Rbt_iterator *rbt_iterator_create(Rbt *tree, iti_mode_t mode)
     if (mode != ITI_BEGIN && mode != ITI_ROOT && mode != ITI_END)
         ERROR("Incorrect mode\n", NULL, "");
 
+    if (tree->____root == NULL || tree->____root == sentinel)
+        return NULL;
+
     iterator = (Rbt_iterator *)malloc(sizeof(Rbt_iterator));
     if (iterator == NULL)
         ERROR("malloc error\n", NULL, "");
@@ -1104,6 +1107,9 @@ int rbt_iterator_init(Rbt *tree, Rbt_iterator *iterator, iti_mode_t mode)
 
     if (mode != ITI_BEGIN && mode != ITI_ROOT && mode != ITI_END)
         ERROR("Incorrect mode\n", 1, "");
+
+    if (tree->____root == NULL || tree->____root == sentinel)
+        return 1;
 
     iterator->____size_of = tree->____size_of;
 

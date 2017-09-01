@@ -514,7 +514,10 @@ ___inline___ Tree_iterator *tree_iterator_create(Tree *tree, iti_mode_t mode)
 
     it->____iterator = tree->____it_create(tree, mode);
     if (it->____iterator == NULL)
-        ERROR("iterator create error\n", NULL, "");
+    {
+        FREE(it);
+        return NULL;
+    }
 
     /* FILL HOOKS */
     it->____destroy    = tree->____it_destroy;
@@ -542,7 +545,7 @@ ___inline___ int tree_iterator_init(Tree *tree, Tree_iterator *it, iti_mode_t mo
 
     it->____iterator = tree->____it_create(tree, mode);
     if (it->____iterator == NULL)
-        ERROR("iterator create error\n", 1, "");
+        return 1;
 
     /* FILL HOOKS */
     it->____destroy    = tree->____it_destroy;

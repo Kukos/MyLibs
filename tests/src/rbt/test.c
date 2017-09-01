@@ -736,6 +736,76 @@ test_f test_for_each(void)
     rbt_destroy(tree);
 }
 
+test_f test_empty_for_each(void)
+{
+    Rbt *tree;
+    int t[] = {0, 0, 0};
+    size_t size = ARRAY_SIZE(t);
+    size_t i;
+
+    int val;
+    Rbt_node *node;
+
+    tree = rbt_create(sizeof(int), cmp_int);
+    T_ERROR(tree == NULL);
+    T_EXPECT(rbt_get_data_size(tree), sizeof(int));
+    T_EXPECT(rbt_get_num_entries(tree), 0);
+
+    i = 0;
+    for_each(tree, Rbt, node, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(t[i++], val);
+    }
+
+    i = 0;
+    for_each_data(tree, Rbt, val)
+        T_ASSERT(t[i++], val);
+
+    for_each_node(tree, Rbt, node)
+        T_CHECK(node != 0);
+
+    i = size - 1;
+    for_each_prev(tree, Rbt, node, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(t[i--], val);
+    }
+
+    i = size - 1;
+    for_each_data_prev(tree, Rbt, val)
+        T_ASSERT(t[i--], val);
+
+    for_each_node_prev(tree, Rbt, node)
+        T_CHECK(node != 0);
+
+    for_each_root(tree, Rbt, node, val)
+    {
+        T_CHECK(node != 0);
+        T_CHECK(val >= t[0] && val <= t[size - 1]);
+    }
+
+    for_each_data_root(tree, Rbt, val)
+        T_CHECK(val >= t[0] && val <= t[size - 1]);
+
+    for_each_node_root(tree, Rbt, node)
+        T_CHECK(node != 0);
+
+    for_each_root_prev(tree, Rbt, node, val)
+    {
+        T_CHECK(node != 0);
+        T_CHECK(val >= t[0] && val <= t[size - 1]);
+    }
+
+    for_each_data_root_prev(tree, Rbt, val)
+        T_CHECK(val >= t[0] && val <= t[size - 1]);
+
+    for_each_node_root_prev(tree, Rbt, node)
+        T_CHECK(node != 0);
+
+    rbt_destroy(tree);
+}
+
 test_f test_tree_framework(void)
 {
     Tree *tree;
@@ -954,6 +1024,76 @@ test_f test_tree_for_each(void)
     tree_destroy(tree);
 }
 
+test_f test_tree_empty_for_each(void)
+{
+    Tree *tree;
+    int t[] = {0, 0, 0};
+    size_t size = ARRAY_SIZE(t);
+    size_t i;
+
+    int val;
+    Rbt_node *node;
+
+    tree = tree_rbt_create(sizeof(int), cmp_int);
+    T_ERROR(tree == NULL);
+    T_EXPECT(tree_get_data_size(tree), sizeof(int));
+    T_EXPECT(tree_get_num_entries(tree), 0);
+
+    i = 0;
+    for_each(tree, Tree, node, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(t[i++], val);
+    }
+
+    i = 0;
+    for_each_data(tree, Tree, val)
+        T_ASSERT(t[i++], val);
+
+    for_each_node(tree, Tree, node)
+        T_CHECK(node != 0);
+
+    i = size - 1;
+    for_each_prev(tree, Tree, node, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(t[i--], val);
+    }
+
+    i = size - 1;
+    for_each_data_prev(tree, Tree, val)
+        T_ASSERT(t[i--], val);
+
+    for_each_node_prev(tree, Tree, node)
+        T_CHECK(node != 0);
+
+    for_each_root(tree, Tree, node, val)
+    {
+        T_CHECK(node != 0);
+        T_CHECK(val >= t[0] && val <= t[size - 1]);
+    }
+
+    for_each_data_root(tree, Tree, val)
+        T_CHECK(val >= t[0] && val <= t[size - 1]);
+
+    for_each_node_root(tree, Tree, node)
+        T_CHECK(node != 0);
+
+    for_each_root_prev(tree, Tree, node, val)
+    {
+        T_CHECK(node != 0);
+        T_CHECK(val >= t[0] && val <= t[size - 1]);
+    }
+
+    for_each_data_root_prev(tree, Tree, val)
+        T_CHECK(val >= t[0] && val <= t[size - 1]);
+
+    for_each_node_root_prev(tree, Tree, node)
+        T_CHECK(node != 0);
+
+    tree_destroy(tree);
+}
+
 void test(void)
 {
     TEST(test_create());
@@ -968,9 +1108,11 @@ void test(void)
     TEST(test_insert_delete());
     TEST(test_empty());
     TEST(test_for_each());
+    TEST(test_empty_for_each());
     TEST(test_tree_framework());
     TEST(test_tree_empty());
     TEST(test_tree_for_each());
+    TEST(test_tree_empty_for_each());
 }
 
 int main(void)

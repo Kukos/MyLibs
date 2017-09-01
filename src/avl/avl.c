@@ -1223,6 +1223,9 @@ Avl_iterator *avl_iterator_create(Avl *tree, iti_mode_t mode)
     if (mode != ITI_BEGIN && mode != ITI_ROOT && mode != ITI_END)
         ERROR("Incorrect mode\n", NULL, "");
 
+    if (tree->____root == NULL)
+        return NULL;
+
     iterator = (Avl_iterator *)malloc(sizeof(Avl_iterator));
     if (iterator == NULL)
         ERROR("malloc error\n", NULL, "");
@@ -1261,6 +1264,9 @@ int avl_iterator_init(Avl *tree, Avl_iterator *iterator, iti_mode_t mode)
 
     if (mode != ITI_BEGIN && mode != ITI_ROOT && mode != ITI_END)
         ERROR("Incorrect mode\n", 1, "");
+
+    if (tree->____root == NULL)
+        return 1;
 
     if (mode == ITI_BEGIN)
         iterator->____node = avl_min_node(tree->____root);

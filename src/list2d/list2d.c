@@ -783,6 +783,9 @@ List2D_iterator *list2d_iterator_create(List2D *list, iti_mode_t mode)
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Invalid mode\n", NULL, "");
 
+    if (list->____head == NULL)
+        return NULL;
+
     iterator = (List2D_iterator *)malloc(sizeof(List2D_iterator));
     if (iterator == NULL)
         ERROR("malloc error\n", NULL, "");
@@ -827,6 +830,9 @@ int list2d_iterator_init(List2D *list, List2D_iterator *iterator, iti_mode_t mod
 
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Invalid mode\n", 1, "");
+
+    if (list->____head == NULL)
+        return 1;
 
     iterator->____first_time = true;
 

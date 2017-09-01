@@ -594,6 +594,9 @@ List_iterator *list_iterator_create(List *list, iti_mode_t mode)
     if (mode != ITI_BEGIN)
         ERROR("Incorrect mode\n", NULL, "");
 
+    if (list->____head == NULL)
+        return NULL;
+
     iterator = (List_iterator *)malloc(sizeof(List_iterator));
     if (iterator == NULL)
         ERROR("malloc error\n", NULL, "");
@@ -626,6 +629,9 @@ int list_iterator_init(List *list, List_iterator *iterator, iti_mode_t mode)
 
     if (mode != ITI_BEGIN)
         ERROR("Incorrect mode\n", 1, "");
+
+    if (list->____head == NULL)
+        return 1;
 
     iterator->____node = list->____head;
     iterator->____size_of = list->____size_of;
