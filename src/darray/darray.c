@@ -666,6 +666,9 @@ Darray_iterator *darray_iterator_create(Darray *darray, iti_mode_t mode)
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Incorrect mode\n", NULL, "");
 
+    if (darray->____num_entries == 0)
+        return NULL;
+
     iterator = (Darray_iterator *)malloc(sizeof(Darray_iterator));
     if (iterator == NULL)
         ERROR("malloc error\n", NULL, "");
@@ -702,6 +705,9 @@ int darray_iterator_init(Darray *darray, Darray_iterator *iterator, iti_mode_t m
 
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Incorrect mode\n", 1, "");
+
+    if (darray->____num_entries == 0)
+        return 1;
 
     iterator->____array = darray->____array;
     iterator->____array_length = darray->____num_entries;

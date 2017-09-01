@@ -602,7 +602,13 @@ void trie_destroy(Trie *trie)
         return;
 
     if (trie->____entries == 0)
+    {
+        darray_destroy(trie->____hight_array);
+        trie_node_destroy(trie->____root);
+        FREE(trie);
+
         return;
+    }
 
     node = trie_min_node_d(trie->____root);
     temp = NULL;
@@ -831,6 +837,9 @@ Trie_iterator *trie_iterator_create(Trie *trie,iti_mode_t mode)
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Incorrect mode\n", NULL, "");
 
+    if (trie->____entries == 0)
+        return NULL;
+
     iterator = (Trie_iterator *)malloc(sizeof(Trie_iterator));
     if (iterator == NULL)
         ERROR("malloc error\n", NULL, "");
@@ -868,6 +877,9 @@ int trie_iterator_init(Trie *trie, Trie_iterator *iterator, iti_mode_t mode)
 
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Incorrect mode\n", 1, "");
+
+    if (trie->____entries == 0)
+        return 1;
 
     iterator->____word = NULL;
 

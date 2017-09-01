@@ -2132,6 +2132,9 @@ String_iterator *string_iterator_create(String *s, iti_mode_t mode)
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Incorrect mode\n", NULL, "");
 
+    if (string_is_empty(s))
+        return NULL;
+
     it = (String_iterator *)malloc(sizeof(String_iterator));
     if (it == NULL)
         ERROR("malloc error\n", NULL, "");
@@ -2167,6 +2170,9 @@ int string_iterator_init(String *s, String_iterator *it, iti_mode_t mode)
 
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Incorrect mode\n", 1, "");
+
+    if (string_is_empty(s))
+        return 1;
 
     it->____str = s->____str;
     if (mode == ITI_BEGIN)

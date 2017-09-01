@@ -272,6 +272,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_BEGIN); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) && \
                     !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
@@ -283,6 +284,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_END); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) && \
                     !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
@@ -294,6 +296,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) && \
                     !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
@@ -306,6 +309,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) && \
                     !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
@@ -318,6 +322,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_BEGIN); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
                 ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
@@ -328,6 +333,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_END); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
                 ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
@@ -338,6 +344,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
                 ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
@@ -349,6 +356,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_data)(______it, (void *)&(__data)) \
                 ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
@@ -360,6 +368,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_BEGIN); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) \
                 ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
@@ -370,6 +379,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_END); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) \
                 ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
@@ -380,6 +390,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) \
                 ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \
@@ -391,6 +402,7 @@ typedef char iti_mode_t;
         for (   ___unused___ IT_STRUCT_NAME(__type) *______it = \
                 concat(IT_STRUCT_NAME(__type), _create)(__struct, ITI_ROOT); \
                 ( \
+                    ______it != NULL && \
                     !concat(IT_STRUCT_NAME(__type), _end)(______it) && \
                     !concat(IT_STRUCT_NAME(__type), _get_node)(______it, (void *)&(__node)) \
                 ) || concat(IT_STRUCT_NAME(__type), _destroy_int(______it)); \

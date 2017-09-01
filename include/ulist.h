@@ -609,7 +609,10 @@ ___inline___ UList_iterator *ulist_iterator_create(UList *list, iti_mode_t mode)
 
     it->____iterator = list->____it_create(list, mode);
     if (it->____iterator == NULL)
-        ERROR("iterator create error\n", NULL, "");
+    {
+        FREE(it);
+        return NULL;
+    }
 
     /* FILL HOOKS */
     it->____destroy    = list->____it_destroy;
@@ -637,7 +640,7 @@ ___inline___ int ulist_iterator_init(UList *list, UList_iterator *it, iti_mode_t
 
     it->____iterator = list->____it_create(list, mode);
     if (it->____iterator == NULL)
-        ERROR("iterator create error\n", 1, "");
+        return 1;
 
     /* FILL HOOKS */
     it->____destroy    = list->____it_destroy;

@@ -524,6 +524,9 @@ Arraylist_iterator *arraylist_iterator_create(Arraylist *alist, iti_mode_t mode)
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Incorrect mode\n", NULL, "");
 
+    if (alist->____head == NULL)
+        return NULL;
+
     iterator = (Arraylist_iterator *)malloc(sizeof(Arraylist_iterator));
     if (iterator == NULL)
         ERROR("malloc error\n", NULL, "");
@@ -558,6 +561,9 @@ int arraylist_iterator_init(Arraylist *alist, Arraylist_iterator *iterator,
 
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Incorrect mode\n", 1, "");
+
+    if (alist->____head == NULL)
+        return 1;
 
     if(mode == ITI_BEGIN)
         iterator->____node = alist->____head;

@@ -885,6 +885,12 @@ Bst_iterator *bst_iterator_create(Bst *tree, iti_mode_t mode)
     if (iterator == NULL)
         ERROR("malloc error\n", NULL, "");
 
+    if (tree->____root == NULL)
+    {
+        FREE(iterator);
+        return NULL;
+    }
+
     if (mode == ITI_BEGIN)
         iterator->____node = bst_min_node(tree->____root);
     else if ( mode == ITI_END)
@@ -919,6 +925,9 @@ int bst_iterator_init(Bst *tree, Bst_iterator *iterator, iti_mode_t mode)
 
     if (mode != ITI_BEGIN && mode != ITI_END && mode != ITI_ROOT)
         ERROR("Incorrect node\n", 1, "");
+
+    if (tree->____root == NULL)
+        return 1;
 
     iterator->____size_of = tree->____size_of;
 
