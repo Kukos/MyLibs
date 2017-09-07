@@ -174,6 +174,71 @@ static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node);
 */
 static void bptree_destroy_helper(BPTree_node *node, size_t size_of, void (*destructor)(void *data));
 
+/*
+    Get index of Lower bound of Key
+
+    PARAMS
+    @IN node - pointer to BPTree node
+    @IN size_of - size of data
+    @IN key - key
+    @IN cmp - cmp function
+
+    RETURN
+    Index in @node where is lower bound
+*/
+static size_t bptree_lower_bound(BPTree_node *node, size_t size_of, void *key, int (*cmp)(void *a, void *b));
+
+/*
+    Do nothing
+
+    Needed by Tree Framework
+*/
+___unused___ static int bptree_balance(BPTree *tree);
+
+static int bptree_balance(BPTree *tree)
+{
+    TRACE("");
+    LOG("BPTree is self balanced, balance no needed\n", "");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (bptree_is_empty(tree))
+        ERROR("Tree is empty\n", 1, "");
+
+    return 0;
+}
+
+static size_t bptree_lower_bound(BPTree_node *node, size_t size_of, void *key, int (*cmp)(void *a, void *b))
+{
+    ssize_t offset_left;
+    ssize_t offset_right;
+    ssize_t offset_middle;
+
+    BYTE *_t;
+
+    TRACE("");
+
+    offset_left = 0;
+    offset_right = ((ssize_t)node->____keys_c) * (ssize_t)size_of;
+    offset_middle = 0;
+
+    _t = (BYTE *)node->____keys;
+
+    /* normal lower bound */
+    while (offset_left < offset_right)
+    {
+        offset_middle = ((offset_left / (ssize_t)size_of + offset_right / (ssize_t)size_of) >> 1) * (ssize_t)size_of;
+        if (cmp(key, (void *)&_t[offset_middle]) < 0)
+            offset_right = offset_middle;
+        else
+            offset_left = offset_middle + (ssize_t)size_of;
+    }
+
+    return (size_t)offset_left / size_of;
+}
+
+
 static BPTree_node *bptree_node_create(size_t size_of, int fanout, BPTree_node *parent, bool leaf)
 {
     BPTree_node *node;
@@ -311,11 +376,7 @@ static BPTree_node *bptree_node_get_node_ptr_with_key(BPTree_node *node, size_t 
     if (key == NULL)
         ERROR("key == NULL\n", NULL, "");
 
-    /* temporary solution */
-    i = 0;
-    while (i < node->____keys_c && cmp(((BYTE *)node->____keys) + (i * size_of), key) <= 0)
-        ++i;
-
+    i = bptree_lower_bound(node, size_of, key, cmp);
     return node->____ptrs[i];
 }
 
@@ -423,10 +484,7 @@ static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_
 
     TRACE("");
 
-    /* temporary solution */
-    i = 0;
-    while (i < node->____keys_c && tree->____cmp(((BYTE *)node->____keys) + (i * tree->____size_of), key) < 0)
-        ++i;
+    i = bptree_lower_bound(node, tree->____size_of, key, tree->____cmp);
 
     if (node->____keys_c > 0 && i < node->____keys_c)
     {
@@ -780,6 +838,9 @@ BPTree_iterator *bptree_iterator_create(BPTree *tree, iti_mode_t mode)
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Incorrect node\n", NULL, "");
 
+    if (bptree_is_empty(tree))
+        return NULL;
+
     iterator = (BPTree_iterator *)malloc(sizeof(BPTree_iterator));
     if (iterator == NULL)
         ERROR("malloc error\n", NULL, "");
@@ -814,6 +875,9 @@ int bptree_iterator_init(BPTree *tree, BPTree_iterator *iterator, iti_mode_t mod
 
     if (mode != ITI_BEGIN && mode != ITI_END)
         ERROR("Incorrect node\n", 1, "");
+
+    if (bptree_is_empty(tree))
+        return 1;
 
     iterator = (BPTree_iterator *)malloc(sizeof(BPTree_iterator));
     if (iterator == NULL)
@@ -929,4 +993,31 @@ bool bptree_iterator_end(BPTree_iterator *iterator)
         ERROR("iterator == NULL\n", true, "");
 
     return !iterator->____first_time && iterator->____node == iterator->____end_node;
+}
+
+TREE_WRAPPERS_CREATE(BPTree, bptree)
+
+Tree *tree_bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
+{
+    Tree *tree;
+
+    TRACE("");
+
+    /* create Tree */
+    tree = (Tree *)malloc(sizeof(Tree));
+    if (tree == NULL)
+        ERROR("malloc error\n", NULL, "");
+
+    /* create bptree */
+    tree->____tree = (void *)bptree_create(fanout, size_of, cmp);
+    if (tree->____tree == NULL)
+    {
+        FREE(tree);
+        ERROR("bptree_create error\n", NULL, "");
+    }
+
+    /* fill hooks */
+    TREE_WRAPPERS_ASSIGN(tree);
+
+    return tree;
 }

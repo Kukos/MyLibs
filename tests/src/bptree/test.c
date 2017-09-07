@@ -500,6 +500,64 @@ test_f test_for_each(int fanout)
     bptree_destroy(tree);
 }
 
+test_f test_empty_for_each(int fanout)
+{
+    BPTree *tree;
+    BPTree_node *node;
+
+    int val;
+    int i;
+
+    int t[] = {0, 0, 0};
+    size_t size = ARRAY_SIZE(t);
+
+    tree = bptree_create(fanout, sizeof(int), cmp_int);
+    T_ERROR(tree == NULL);
+
+    T_EXPECT(bptree_get_data_size(tree), sizeof(int));
+    T_EXPECT(bptree_get_hight(tree), 0);
+    T_EXPECT(bptree_get_num_entries(tree), 0);
+
+    i = 0;
+    for_each(tree, BPTree, node, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(t[i] , val);
+        ++i;
+    }
+
+    i = size - 1;
+    for_each_prev(tree, BPTree, node, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(t[i] , val);
+        --i;
+    }
+
+    i = 0;
+    for_each_data(tree, BPTree, val)
+    {
+        T_ASSERT(t[i] , val);
+        ++i;
+    }
+
+    i = size - 1;
+    for_each_data_prev(tree, BPTree, val)
+    {
+        T_CHECK(node != NULL);
+        T_ASSERT(t[i] , val);
+        --i;
+    }
+
+    for_each_node(tree, BPTree, node)
+        T_CHECK(node != NULL);
+
+    for_each_node_prev(tree, BPTree, node)
+        T_CHECK(node != NULL);
+
+    bptree_destroy(tree);
+}
+
 void test(void)
 {
     BPTREE_TEST_SET(test_create);
@@ -510,6 +568,7 @@ void test(void)
     BPTREE_TEST_SET(test_search);
     BPTREE_TEST_SET(test_empty);
     BPTREE_TEST_SET(test_for_each);
+    BPTREE_TEST_SET(test_empty_for_each);
 }
 
 int main(void)
