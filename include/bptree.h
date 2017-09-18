@@ -248,4 +248,19 @@ int bptree_get_data_size(BPTree *tree);
 */
 int bptree_get_hight(BPTree *tree);
 
+/*
+    Create tree with bulkload algorithm
+
+    PARAMS
+    @IN tree - pointer to BPTree
+    @IN keys - array of keys
+    @IN n - num of entries in keys array
+    @IN load_factor - percentage of filling node
+
+    RETURN
+    0 iff success
+    Non-zero value iff
+*/
+int *bptree_bulkload(BPTree *tree, void *keys, size_t n, double load_factor);
+
 #endif

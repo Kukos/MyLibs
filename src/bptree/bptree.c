@@ -826,6 +826,48 @@ int bptree_get_hight(BPTree *tree)
     return tree->____hight;
 }
 
+int *bptree_bulkload(BPTree *tree, void *keys, size_t n, int load_factor)
+{
+    void *array;
+    void *temp_array;
+    size_t size;
+
+    TRACE("");
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1, "");
+
+    if (keys == NULL)
+        ERROR("keys == NULL\n", 1, "");
+
+    if (load_factor > 100 || load_factor < 50)
+        ERROR("Incorrect load factor\n", 1, "");
+
+    /* tree is not empty, so copy array and insert to again with keys */
+    if (!bptree_is_empty(tree))
+    {
+        array = bptree_to_array(tree, (void *)temp, &size);
+        if (array == NULL)
+            ERROR("bptree to array error\n", 1, "");
+
+        temp_array = malloc(tree->____size_of * (size + n));
+        if (temp_array == NULL)
+        {
+            FREE(array);
+            ERROR("malloc error\n", 1, "");
+        }
+
+        (void)memcpy(temp_array, array, size * tree->____size_of);
+        (void)memcpy(((BYTE *)temp_array) + (size * tree->____size_of), keys, n * tree->____size_of);
+
+        FREE(keys);
+        keys = temp_array;
+        n += size;
+
+        (void)sort(keys, n, tree->____cmp, tree->____size_of);
+    }
+}
+
 BPTree_iterator *bptree_iterator_create(BPTree *tree, iti_mode_t mode)
 {
     BPTree_iterator *iterator;
