@@ -516,17 +516,17 @@ ___inline___ SList_iterator *slist_iterator_create(SList *list, iti_mode_t mode)
 {
     SList_iterator *it;
 
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", NULL, "");
+        ERROR("list == NULL\n", NULL);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", NULL, "");
+        ERROR("Incorrect mode\n", NULL);
 
     it = (SList_iterator *)malloc(sizeof(SList_iterator));
     if (it == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     it->____iterator = list->____it_create(list, mode);
     if (it->____iterator == NULL)
@@ -548,16 +548,16 @@ ___inline___ SList_iterator *slist_iterator_create(SList *list, iti_mode_t mode)
 
 ___inline___ int slist_iterator_init(SList *list, SList_iterator *it, iti_mode_t mode)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", 1, "");
+        ERROR("list == NULL\n", 1);
 
     if (it == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", 1, "");
+        ERROR("Incorrect mode\n", 1);
 
     it->____iterator = list->____it_create(list, mode);
     if (it->____iterator == NULL)

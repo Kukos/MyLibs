@@ -595,17 +595,17 @@ ___inline___ UList_iterator *ulist_iterator_create(UList *list, iti_mode_t mode)
 {
     UList_iterator *it;
 
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", NULL, "");
+        ERROR("list == NULL\n", NULL);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", NULL, "");
+        ERROR("Incorrect mode\n", NULL);
 
     it = (UList_iterator *)malloc(sizeof(UList_iterator));
     if (it == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     it->____iterator = list->____it_create(list, mode);
     if (it->____iterator == NULL)
@@ -627,16 +627,16 @@ ___inline___ UList_iterator *ulist_iterator_create(UList *list, iti_mode_t mode)
 
 ___inline___ int ulist_iterator_init(UList *list, UList_iterator *it, iti_mode_t mode)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", 1, "");
+        ERROR("list == NULL\n", 1);
 
     if (it == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", 1, "");
+        ERROR("Incorrect mode\n", 1);
 
     it->____iterator = list->____it_create(list, mode);
     if (it->____iterator == NULL)

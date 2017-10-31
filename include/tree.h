@@ -500,17 +500,17 @@ ___inline___ Tree_iterator *tree_iterator_create(Tree *tree, iti_mode_t mode)
 {
     Tree_iterator *it;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", NULL, "");
+        ERROR("tree == NULL\n", NULL);
 
     if (mode != ITI_BEGIN && mode != ITI_END && mode != ITI_ROOT)
-        ERROR("Incorrect mode\n", NULL, "");
+        ERROR("Incorrect mode\n", NULL);
 
     it = (Tree_iterator *)malloc(sizeof(Tree_iterator));
     if (it == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     it->____iterator = tree->____it_create(tree, mode);
     if (it->____iterator == NULL)
@@ -532,16 +532,16 @@ ___inline___ Tree_iterator *tree_iterator_create(Tree *tree, iti_mode_t mode)
 
 ___inline___ int tree_iterator_init(Tree *tree, Tree_iterator *it, iti_mode_t mode)
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (it == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (mode != ITI_BEGIN && mode != ITI_END && mode != ITI_ROOT)
-        ERROR("Incorrect mode\n", 1, "");
+        ERROR("Incorrect mode\n", 1);
 
     it->____iterator = tree->____it_create(tree, mode);
     if (it->____iterator == NULL)

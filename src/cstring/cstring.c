@@ -24,17 +24,17 @@
         String *s; \
         ssize_t ret; \
         \
-        TRACE(""); \
+        TRACE(); \
         \
         s = __string_create(__string_calc_size(bytes)); \
         if (s == NULL) \
-            ERROR("string_create error\n", NULL, ""); \
+            ERROR("string_create error\n", NULL); \
         \
         ret = snprintf(s->____str, s->____allocated, fmt, n); \
         if (ret < 0 || ret >= (ssize_t)s->____allocated) \
         { \
             string_destroy(s); \
-            ERROR("snprintf error\n", NULL, ""); \
+            ERROR("snprintf error\n", NULL); \
         } \
         \
         s->____len += (size_t)ret; \
@@ -46,13 +46,13 @@
 #define __string_delete_check_params(string, pos, chars) \
     do { \
         if (string == NULL) \
-            ERROR("string == NULL\n", 1, ""); \
+            ERROR("string == NULL\n", 1); \
         \
         if (pos >= string->____len) \
-            ERROR("Invalid pos\n", 1, ""); \
+            ERROR("Invalid pos\n", 1); \
         \
         if (chars > string->____len) \
-            ERROR("String is to short\n", 1, ""); \
+            ERROR("String is to short\n", 1); \
         \
         if (chars == 0) \
             return 0; \
@@ -199,17 +199,17 @@ static ___inline___ int __string_realloc(String *s, size_t new_len)
 {
     size_t size;
 
-    TRACE("");
+    TRACE();
 
     if (s == NULL)
-        ERROR("s == NULL\n", 1, "");
+        ERROR("s == NULL\n", 1);
 
     size = __string_calc_size(new_len);
     if (size != s->____allocated && size >= INIT_BYTES)
     {
         s->____str = (char *)realloc(s->____str, size);
         if (s->____str == NULL)
-            ERROR("realloc error\n", 1, "");
+            ERROR("realloc error\n", 1);
 
         s->____allocated = size;
     }
@@ -219,7 +219,7 @@ static ___inline___ int __string_realloc(String *s, size_t new_len)
 
 static ___inline___ int _string_delete(String *string, size_t pos, size_t chars)
 {
-    TRACE("");
+    TRACE();
 
     __string_delete_check_params(string, pos, chars);
 
@@ -228,7 +228,7 @@ static ___inline___ int _string_delete(String *string, size_t pos, size_t chars)
 
 static ___inline___ int _string_delete_wo_realloc(String *string, size_t pos, size_t chars)
 {
-    TRACE("");
+    TRACE();
 
     __string_delete_check_params(string, pos, chars);
 
@@ -239,17 +239,17 @@ static ___inline___ String *__string_create(size_t bytes)
 {
     String *s;
 
-    TRACE("");
+    TRACE();
 
     s = malloc(sizeof(String));
     if (s == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     s->____str = (char *)malloc(bytes);
     if (s->____str == NULL)
     {
         FREE(s);
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
     }
 
     s->____len = 0;
@@ -262,19 +262,19 @@ static ___inline___ int __string_delete(String *s, size_t pos, size_t bytes)
 {
     size_t new_len;
 
-    TRACE("");
+    TRACE();
 
     if (bytes == 0)
         return 0;
 
     if (bytes > s->____len)
-        ERROR("Cannot cut bytes, string is to short\n", 1, "");
+        ERROR("Cannot cut bytes, string is to short\n", 1);
 
     new_len = s->____len - bytes;
 
     if (pos + bytes < s->____len)
         if (memmove((void *)(s->____str + pos), (void *)(s->____str + pos + bytes), new_len - pos) == NULL)
-            ERROR("memmove error\n", 1, "");
+            ERROR("memmove error\n", 1);
 
     __string_realloc(s, new_len);
 
@@ -288,19 +288,19 @@ static ___inline___ int __string_delete_wo_realloc(String *s, size_t pos, size_t
 {
     size_t new_len;
 
-    TRACE("");
+    TRACE();
 
     if (bytes == 0)
         return 0;
 
     if (bytes > s->____len)
-        ERROR("Cannot cut bytes, string is to short\n", 1, "");
+        ERROR("Cannot cut bytes, string is to short\n", 1);
 
     new_len = s->____len - bytes;
 
     if (pos + bytes < s->____len)
         if (memmove((void *)(s->____str + pos), (void *)(s->____str + pos + bytes), new_len - pos) == NULL)
-            ERROR("memmove error\n", 1, "");
+            ERROR("memmove error\n", 1);
 
     s->____len = new_len;
     s->____str[s->____len] = '\0';
@@ -312,23 +312,23 @@ static ___inline___ int __string_insert(String *s, char *str, size_t pos, size_t
 {
     size_t new_len;
 
-    TRACE("");
+    TRACE();
 
     if (len == 0)
         return 0;
 
     if (pos > s->____len)
-        ERROR("Invalid pos\n", 1, "");
+        ERROR("Invalid pos\n", 1);
 
     new_len = s->____len + len;
     __string_realloc(s, new_len);
 
     if (pos < s->____len)
         if (memmove((void *)(s->____str + pos + len), (void *)(s->____str + pos), s->____len - pos) == NULL)
-            ERROR("memmove error\n", 1, "");
+            ERROR("memmove error\n", 1);
 
     if (memcpy((void *)(s->____str + pos), (void *)str, len) == NULL)
-        ERROR("memcpy error\n", 1, "");
+        ERROR("memcpy error\n", 1);
 
     s->____len += len;
     s->____str[s->____len] = '\0';
@@ -343,18 +343,18 @@ static ssize_t *kmp_states_create(const char *pattern)
     size_t len;
     ssize_t longest_prefix;
 
-    TRACE("");
+    TRACE();
 
     if(pattern == NULL)
-        ERROR("pattern == NULL\n", NULL, "");
+        ERROR("pattern == NULL\n", NULL);
 
     len = strlen(pattern);
     if (len == 0)
-        ERROR("String is empty\n", NULL, "");
+        ERROR("String is empty\n", NULL);
 
     states = (ssize_t *)malloc(sizeof(ssize_t) * len);
     if (states == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     /* start without prefix */
     longest_prefix = -1;
@@ -391,17 +391,17 @@ ssize_t kmp(const char *text, const char *pattern, bool first)
 	ssize_t matches;
     ssize_t end = -1;
 
-	TRACE("");
+	TRACE();
 
     if (text == NULL)
-        ERROR("text == NULL\n", -1, "");
+        ERROR("text == NULL\n", -1);
 
     if (pattern == NULL)
-        ERROR("pattern == NULL\n", -1, "");
+        ERROR("pattern == NULL\n", -1);
 
     states = kmp_states_create(pattern);
     if(states == NULL)
-        ERROR("kmp_states_create error\n", -1, "");
+        ERROR("kmp_states_create error\n", -1);
 
     text_len = (ssize_t)strlen(text);
     pattern_len = (ssize_t)strlen(pattern);
@@ -438,16 +438,16 @@ static ___inline___ ssize_t __string_find_str(String *string, const char *patter
     ssize_t ret;
     char c;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", -1, "");
+        ERROR("string == NULL\n", -1);
 
     if (end < begin)
-        ERROR("end < begin\n", -1, "");
+        ERROR("end < begin\n", -1);
 
     if (begin > string->____len || end > string->____len)
-        ERROR("begin or end grater than string len\n", -1, "");
+        ERROR("begin or end grater than string len\n", -1);
 
     c = string->____str[end];
     string->____str[end] = '\0';
@@ -464,16 +464,16 @@ static ___inline___ ssize_t __string_find_c(String *string, char c, size_t begin
 {
     ssize_t i;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", -1, "");
+        ERROR("string == NULL\n", -1);
 
     if (end < begin)
-        ERROR("end < begin\n", -1, "");
+        ERROR("end < begin\n", -1);
 
     if (begin >= string->____len || end > string->____len)
-        ERROR("begin or end grater than string len\n", -1, "");
+        ERROR("begin or end grater than string len\n", -1);
 
     if (first)
     {
@@ -493,14 +493,14 @@ static ___inline___ ssize_t __string_find_c(String *string, char c, size_t begin
 
 String *string_create(void)
 {
-    TRACE("");
+    TRACE();
 
     return __string_create(INIT_BYTES);
 }
 
 void string_destroy(String *string)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
         return;
@@ -511,30 +511,30 @@ void string_destroy(String *string)
 
 bool string_is_empty(String *string)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", true, "");
+        ERROR("string == NULL\n", true);
 
     return string->____len == 0;
 }
 
 char *string_get_str(String *string)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", NULL, "");
+        ERROR("string == NULL\n", NULL);
 
     return string->____str;
 }
 
 ssize_t string_get_length(String *string)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", -1, "");
+        ERROR("string == NULL\n", -1);
 
     return (ssize_t)string->____len;
 }
@@ -547,7 +547,7 @@ String *string_create_from_c(char c)
 String *string_create_from_str(char *str)
 {
     if (str == NULL)
-        ERROR("str == NULL\n", NULL ,"");
+        ERROR("str == NULL\n", NULL);
 
    __string_create_from(str, "%s", strlen(str));
 }
@@ -603,22 +603,22 @@ String *string_concat(String *s1, String *s2)
     size_t bytes;
     ssize_t ret;
 
-    TRACE("");
+    TRACE();
 
     if (string_is_empty(s1) || string_is_empty(s2))
-        ERROR("One of string is empty\n", NULL, "");
+        ERROR("One of string is empty\n", NULL);
 
     bytes = __string_calc_size(s1->____len + s2->____len);
 
     s = __string_create(bytes);
     if (s == NULL)
-        ERROR("__string_create error\n", NULL, "");
+        ERROR("__string_create error\n", NULL);
 
     ret = snprintf(s->____str, s->____allocated, "%s%s", s1->____str, s2->____str);
     if (ret < 0 || ret >= (ssize_t)s->____allocated)
     {
         FREE(s);
-        ERROR("snprintf error\n", NULL, "");
+        ERROR("snprintf error\n", NULL);
     }
 
     s->____len += (size_t)ret;
@@ -628,20 +628,20 @@ String *string_concat(String *s1, String *s2)
 
 char string_get_char(String *string, size_t index)
 {
-    TRACE("");
+    TRACE();
 
     if (index >= string->____len)
-        ERROR("Incorrect index\n", -1, "");
+        ERROR("Incorrect index\n", -1);
 
     return string->____str[index];
 }
 
 int string_set_char(String *string, size_t index, char c)
 {
-    TRACE("");
+    TRACE();
 
     if (index >= string->____len)
-        ERROR("Incorrect index\n", 1, "");
+        ERROR("Incorrect index\n", 1);
 
     string->____str[index] = c;
 
@@ -652,10 +652,10 @@ int string_toupper(String *string)
 {
     size_t i;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     for (i = 0; i < string->____len; ++i)
         string->____str[i] = (char)toupper((char)string->____str[i]);
@@ -667,10 +667,10 @@ int string_tolower(String *string)
 {
     size_t i;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     for (i = 0; i < string->____len; ++i)
         string->____str[i] = (char)tolower((char)string->____str[i]);
@@ -684,10 +684,10 @@ int string_trim(String *string)
     size_t begin;
     size_t end;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     /* Calculate spaces to delete from begining */
     i = 0;
@@ -709,23 +709,23 @@ int string_trim(String *string)
 
     /* delete whitespaces */
     if (__string_delete(string, 0, begin))
-        ERROR("__string_delete error\n", 1, "");
+        ERROR("__string_delete error\n", 1);
 
     if (__string_delete(string, string->____len - end, end))
-         ERROR("__string_delete error\n", 1, "");
+         ERROR("__string_delete error\n", 1);
 
     return 0;
 }
 
 int string_cmp(String *s1, String *s2)
 {
-    TRACE("");
+    TRACE();
 
     if (s1 == NULL)
-        ERROR("s1 == NULL\n", 0, "");
+        ERROR("s1 == NULL\n", 0);
 
     if (s2 == NULL)
-        ERROR("s2 == NULL\n", 0, "");
+        ERROR("s2 == NULL\n", 0);
 
     return strcmp(s1->____str, s2->____str);
 }
@@ -736,28 +736,28 @@ String *string_substr(String *string, size_t begin, size_t end)
     size_t bytes;
     ssize_t ret;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NLL\n", NULL, "");
+        ERROR("string == NLL\n", NULL);
 
     if (end < begin)
-        ERROR("end < begin\n", NULL, "");
+        ERROR("end < begin\n", NULL);
 
     if (begin >= string->____len || end >= string->____len)
-        ERROR("begin or end grater than string len\n", NULL, "");
+        ERROR("begin or end grater than string len\n", NULL);
 
     bytes = __string_calc_size(end - begin + 1);
 
     s = __string_create(bytes);
     if (s == NULL)
-        ERROR("__string_create error\n", NULL, "");
+        ERROR("__string_create error\n", NULL);
 
     ret = snprintf(s->____str, s->____allocated, "%.*s", (int)(end - begin + 1), string->____str + begin);
     if (ret < 0 || ret >= (ssize_t)s->____allocated)
     {
         FREE(s);
-        ERROR("snprintf error\n", NULL, "");
+        ERROR("snprintf error\n", NULL);
     }
 
     s->____len = (size_t)ret;
@@ -768,48 +768,48 @@ String *string_substr(String *string, size_t begin, size_t end)
 ssize_t string_find_c_first(String *string, char c)
 {
     if (string == NULL)
-        ERROR("string == NULL\n", -1, "");
+        ERROR("string == NULL\n", -1);
 
     if (string_is_empty(string))
-        ERROR("string is empty\n", -1, "");
+        ERROR("string is empty\n", -1);
 
     return __string_find_c(string, c, 0, string->____len, true);
 }
 
 ssize_t string_find_str_first(String *string, char *str)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", -1, "");
+        ERROR("string == NULL\n", -1);
 
     if (str == NULL)
-        ERROR("str == NULL\n", -1, "");
+        ERROR("str == NULL\n", -1);
 
     if (string_is_empty(string))
-        ERROR("string is empty\n", -1, "");
+        ERROR("string is empty\n", -1);
 
     if (strlen(str) == 0)
-        ERROR("pattern is empty\n", -1, "");
+        ERROR("pattern is empty\n", -1);
 
     return __string_find_str(string, str, 0, string->____len, true);
 }
 
 ssize_t string_find_string_first(String *s1, String *s2)
 {
-    TRACE("");
+    TRACE();
 
     if (s1 == NULL)
-        ERROR("s1 == NULL\n", -1, "");
+        ERROR("s1 == NULL\n", -1);
 
     if (s2 == NULL)
-        ERROR("s2 == NULL\n", -1, "");
+        ERROR("s2 == NULL\n", -1);
 
     if (string_is_empty(s1))
-        ERROR("string is empty\n", -1, "");
+        ERROR("string is empty\n", -1);
 
     if (string_is_empty(s2))
-        ERROR("pattern is empty\n", -1, "");
+        ERROR("pattern is empty\n", -1);
 
     return __string_find_str(s1, s2->____str, 0, s1->____len, true);
 }
@@ -817,48 +817,48 @@ ssize_t string_find_string_first(String *s1, String *s2)
 ssize_t string_find_c_last(String *string, char c)
 {
     if (string == NULL)
-        ERROR("string == NULL\n", -1, "");
+        ERROR("string == NULL\n", -1);
 
     if (string_is_empty(string))
-        ERROR("string is empty\n", -1, "");
+        ERROR("string is empty\n", -1);
 
     return __string_find_c(string, c, 0, string->____len, false);
 }
 
 ssize_t string_find_str_last(String *string, char *str)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", -1, "");
+        ERROR("string == NULL\n", -1);
 
     if (str == NULL)
-        ERROR("str == NULL\n", -1, "");
+        ERROR("str == NULL\n", -1);
 
     if (string_is_empty(string))
-        ERROR("string is empty\n", -1, "");
+        ERROR("string is empty\n", -1);
 
     if (strlen(str) == 0)
-        ERROR("pattern is empty\n", -1, "");
+        ERROR("pattern is empty\n", -1);
 
     return __string_find_str(string, str, 0, string->____len, false);
 }
 
 ssize_t string_find_string_last(String *s1, String *s2)
 {
-    TRACE("");
+    TRACE();
 
     if (s1 == NULL)
-        ERROR("s1 == NULL\n", -1, "");
+        ERROR("s1 == NULL\n", -1);
 
     if (s2 == NULL)
-        ERROR("s2 == NULL\n", -1, "");
+        ERROR("s2 == NULL\n", -1);
 
     if (string_is_empty(s1))
-        ERROR("string is empty\n", -1, "");
+        ERROR("string is empty\n", -1);
 
     if (string_is_empty(s2))
-        ERROR("pattern is empty\n", -1, "");
+        ERROR("pattern is empty\n", -1);
 
     return __string_find_str(s1, s2->____str, 0, s1->____len, false);
 }
@@ -867,14 +867,14 @@ ssize_t string_find_c_first_substr(String *string, char c, size_t begin, size_t 
 {
     ssize_t ret;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", -1, "");
+        ERROR("string == NULL\n", -1);
 
     ret = __string_find_c(string, c, begin, end + 1, true);
     if (ret == -1)
-        ERROR("__string_find_c\n", -1, "");
+        ERROR("__string_find_c\n", -1);
 
     return ret;
 }
@@ -883,27 +883,27 @@ ssize_t string_find_str_first_substr(String *string, char *str, size_t begin, si
 {
     ssize_t ret;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", -1, "");
+        ERROR("string == NULL\n", -1);
 
     ret = __string_find_str(string, str, begin, end + 1, true);
     if (ret == -1)
-        ERROR("__string_find_str\n", -1, "");
+        ERROR("__string_find_str\n", -1);
 
     return ret;
 }
 
 ssize_t string_find_string_first_substr(String *s1, String *s2, size_t begin, size_t end)
 {
-    TRACE("");
+    TRACE();
 
     if (s1 == NULL)
-        ERROR("s1 == NULL\n", -1, "");
+        ERROR("s1 == NULL\n", -1);
 
     if (s2 == NULL)
-        ERROR("s2 == NULL\n", -1, "");
+        ERROR("s2 == NULL\n", -1);
 
     return string_find_str_first_substr(s1, s2->____str, begin, end + 1);
 }
@@ -912,14 +912,14 @@ ssize_t string_find_c_last_substr(String *string, char c, size_t begin, size_t e
 {
      ssize_t ret;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", -1, "");
+        ERROR("string == NULL\n", -1);
 
     ret = __string_find_c(string, c, begin, end + 1, false);
     if (ret == -1)
-        ERROR("__string_find_c\n", -1, "");
+        ERROR("__string_find_c\n", -1);
 
     return ret;
 }
@@ -928,27 +928,27 @@ ssize_t string_find_str_last_substr(String *string, char *str, size_t begin, siz
 {
     ssize_t ret;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", -1, "");
+        ERROR("string == NULL\n", -1);
 
     ret = __string_find_str(string, str, begin, end + 1, false);
     if (ret == -1)
-        ERROR("__string_find_str\n", -1, "");
+        ERROR("__string_find_str\n", -1);
 
     return ret;
 }
 
 ssize_t string_find_string_last_substr(String *s1, String *s2, size_t begin, size_t end)
 {
-    TRACE("");
+    TRACE();
 
     if (s1 == NULL)
-        ERROR("s1 == NULL\n", -1, "");
+        ERROR("s1 == NULL\n", -1);
 
     if (s2 == NULL)
-        ERROR("s2 == NULL\n", -1, "");
+        ERROR("s2 == NULL\n", -1);
 
     return string_find_str_last_substr(s1, s2->____str, begin, end + 1);
 }
@@ -956,20 +956,20 @@ ssize_t string_find_string_last_substr(String *s1, String *s2, size_t begin, siz
 String *string_clone(String *string)
 {
     String *s;
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", NULL, "");
+        ERROR("string == NULL\n", NULL);
 
     s = __string_create(string->____allocated);
     if (s == NULL)
-        ERROR("__string_create error\n", NULL, "");
+        ERROR("__string_create error\n", NULL);
 
     s->____len = string->____len;
     if (memcpy((void *)s->____str, (void *)string->____str, string->____len + 1) == NULL)
     {
         string_destroy(s);
-        ERROR("memcpy error\n", NULL, "");
+        ERROR("memcpy error\n", NULL);
     }
 
     return s;
@@ -977,20 +977,20 @@ String *string_clone(String *string)
 
 int string_delete(String *string, size_t pos, size_t chars)
 {
-    TRACE("");
+    TRACE();
 
     return _string_delete(string, pos, chars);
 }
 
 int string_cut(String *string, size_t chars)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (chars > string->____len)
-        ERROR("String is to short\n", 1, "");
+        ERROR("String is to short\n", 1);
 
     if (chars == 0)
         return 0;
@@ -1002,10 +1002,10 @@ int string_append_c(String *string, char c)
 {
     char buf[2];
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     buf[0] = c;
     buf[1] = '\0';
@@ -1015,26 +1015,26 @@ int string_append_c(String *string, char c)
 
 int string_append_str(String *string, char *str)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str == NULL)
-        ERROR("str == NULL\n", 1, "");
+        ERROR("str == NULL\n", 1);
 
     return __string_insert(string, str, string->____len, strlen(str));
 }
 
 int string_append_string(String *s1, String *s2)
 {
-    TRACE("");
+    TRACE();
 
     if (s1 == NULL)
-        ERROR("s1 == NULL\n", 1, "");
+        ERROR("s1 == NULL\n", 1);
 
     if (s2 == NULL)
-        ERROR("s2 == NULL\n", 1, "");
+        ERROR("s2 == NULL\n", 1);
 
     return __string_insert(s1, s2->____str, s1->____len, s2->____len);
 }
@@ -1043,13 +1043,13 @@ int string_insert_c(String *string, char c, size_t pos)
 {
     char buf[2];
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (pos > string->____len)
-        ERROR("Invalid pos\n", 1, "");
+        ERROR("Invalid pos\n", 1);
 
     buf[0] = c;
     buf[1] = '\0';
@@ -1059,32 +1059,32 @@ int string_insert_c(String *string, char c, size_t pos)
 
 int string_insert_str(String *string, char *str, size_t pos)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str == NULL)
-        ERROR("str == NULL\n", 1, "");
+        ERROR("str == NULL\n", 1);
 
     if (pos > string->____len)
-        ERROR("Invalid pos\n", 1, "");
+        ERROR("Invalid pos\n", 1);
 
     return __string_insert(string, str, pos, strlen(str));
 }
 
 int string_insert_string(String *s1, String *s2, size_t pos)
 {
-    TRACE("");
+    TRACE();
 
     if (s1 == NULL)
-        ERROR("s1 == NULL\n", 1, "");
+        ERROR("s1 == NULL\n", 1);
 
     if (s2 == NULL)
-        ERROR("s2 == NULL\n", 1, "");
+        ERROR("s2 == NULL\n", 1);
 
     if (pos > s1->____len)
-        ERROR("Invalid pos\n", 1, "");
+        ERROR("Invalid pos\n", 1);
 
     return __string_insert(s1, s2->____str, pos, s2->____len);
 }
@@ -1093,17 +1093,17 @@ int string_remove_c_first(String *string, char c)
 {
     ssize_t pos;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     pos = string_find_c_first(string, c);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     return string_delete(string, (size_t)pos, 1);
 }
@@ -1112,17 +1112,17 @@ int string_remove_c_last(String *string, char c)
 {
     ssize_t pos;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     pos = string_find_c_last(string, c);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     return string_delete(string, (size_t)pos, 1);
 }
@@ -1132,13 +1132,13 @@ int string_remove_c_all(String *string, char c)
     ssize_t pos;
     size_t offset;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
 
     offset = 0;
@@ -1147,7 +1147,7 @@ int string_remove_c_all(String *string, char c)
     {
         offset = (size_t)pos;
         if (_string_delete_wo_realloc(string, (size_t)pos, 1))
-            ERROR("string_delete error\n", 1, "");
+            ERROR("string_delete error\n", 1);
     }
 
     return __string_realloc(string, string->____len);
@@ -1157,20 +1157,20 @@ int string_remove_str_first(String *string, char *str)
 {
     ssize_t pos;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str == NULL)
-        ERROR("str == NULL\n", 1, "");
+        ERROR("str == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     pos = string_find_str_first(string, str);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     return string_delete(string, (size_t)pos, strlen(str));
 }
@@ -1179,20 +1179,20 @@ int string_remove_str_last(String *string, char *str)
 {
     ssize_t pos;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str == NULL)
-        ERROR("str == NULL\n", 1, "");
+        ERROR("str == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     pos = string_find_str_last(string, str);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     return string_delete(string, (size_t)pos, strlen(str));
 }
@@ -1203,16 +1203,16 @@ int string_remove_str_all(String *string, char *str)
     size_t offset;
     size_t str_len;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str == NULL)
-        ERROR("str == NULL\n", 1, "");
+        ERROR("str == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     str_len = strlen(str);
 
@@ -1223,7 +1223,7 @@ int string_remove_str_all(String *string, char *str)
         offset = (size_t)pos;
 
         if (_string_delete_wo_realloc(string, (size_t)pos, str_len))
-            ERROR("string_delete error\n", 1, "");
+            ERROR("string_delete error\n", 1);
     }
 
     return __string_realloc(string, string->____len);
@@ -1231,48 +1231,48 @@ int string_remove_str_all(String *string, char *str)
 
 int string_remove_string_first(String *string, String *pattern)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (pattern == NULL)
-        ERROR("pattern == NULL\n", 1, "");
+        ERROR("pattern == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     return string_remove_str_first(string, pattern->____str);
 }
 
 int string_remove_string_last(String *string, String *pattern)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (pattern == NULL)
-        ERROR("pattern == NULL\n", 1, "");
+        ERROR("pattern == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     return string_remove_str_last(string, pattern->____str);
 }
 
 int string_remove_string_all(String *string, String *pattern)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (pattern == NULL)
-        ERROR("pattern == NULL\n", 1, "");
+        ERROR("pattern == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     return string_remove_str_all(string, pattern->____str);
 }
@@ -1281,20 +1281,20 @@ int string_replace_c_by_c_first(String *string, char c1, char c2)
 {
     ssize_t pos;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (c1 == c2)
         return 0;
 
     pos = string_find_c_first(string, c1);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     return string_set_char(string, (size_t)pos, c2);
 }
@@ -1303,20 +1303,20 @@ int string_replace_c_by_c_last(String *string, char c1, char c2)
 {
     ssize_t pos;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (c1 == c2)
         return 0;
 
     pos = string_find_c_last(string, c1);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     return string_set_char(string, (size_t)pos, c2);
 }
@@ -1326,13 +1326,13 @@ int string_replace_c_by_c_all(String *string, char c1, char c2)
     ssize_t pos;
     size_t offset;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (c1 == c2)
         return 0;
@@ -1344,7 +1344,7 @@ int string_replace_c_by_c_all(String *string, char c1, char c2)
         offset = (size_t)pos + 1;
 
         if (string_set_char(string, (size_t)pos, c2))
-            ERROR("string_set_char error\n", 1, "");
+            ERROR("string_set_char error\n", 1);
     }
 
     return 0;
@@ -1355,19 +1355,19 @@ int string_replace_c_by_str_first(String *string, char c1, char *str)
     ssize_t pos;
     char buf[2];
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str == NULL)
-        ERROR("str == NULL\n", 1, "");
+        ERROR("str == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (strlen(str) == 0)
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     buf[0] = c1;
     buf[1] = '\0';
@@ -1377,10 +1377,10 @@ int string_replace_c_by_str_first(String *string, char c1, char *str)
 
     pos = string_find_c_first(string, c1);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     if (_string_delete(string, (size_t)pos, 1))
-        ERROR("_string_delete error\n", 1, "");
+        ERROR("_string_delete error\n", 1);
 
     return string_insert_str(string, str, (size_t)pos);
 }
@@ -1390,19 +1390,19 @@ int string_replace_c_by_str_last(String *string, char c1, char *str)
     ssize_t pos;
     char buf[2];
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str == NULL)
-        ERROR("str == NULL\n", 1, "");
+        ERROR("str == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (strlen(str) == 0)
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     buf[0] = c1;
     buf[1] = '\0';
@@ -1412,10 +1412,10 @@ int string_replace_c_by_str_last(String *string, char c1, char *str)
 
     pos = string_find_c_last(string, c1);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     if (_string_delete(string, (size_t)pos, 1))
-        ERROR("_string_delete error\n", 1, "");
+        ERROR("_string_delete error\n", 1);
 
     return string_insert_str(string, str, (size_t)pos);
 }
@@ -1428,20 +1428,20 @@ int string_replace_c_by_str_all(String *string, char c1, char *str)
     char buf[2];
     size_t str_len;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str == NULL)
-        ERROR("str == NULL\n", 1, "");
+        ERROR("str == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     str_len = strlen(str);
     if (str_len == 0)
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     buf[0] = c1;
     buf[1] = '\0';
@@ -1454,12 +1454,12 @@ int string_replace_c_by_str_all(String *string, char c1, char *str)
          ((pos = __string_find_c(string, c1, offset, string->____len, true)) != -1))
     {
         if (_string_delete(string, (size_t)pos, 1))
-            ERROR("_string_delete error\n", 1, "");
+            ERROR("_string_delete error\n", 1);
 
         offset = (size_t)pos;
 
         if (string_insert_str(string, str, (size_t)pos))
-            ERROR("string_set_char error\n", 1, "");
+            ERROR("string_set_char error\n", 1);
     }
 
     return 0;
@@ -1467,57 +1467,57 @@ int string_replace_c_by_str_all(String *string, char c1, char *str)
 
 int string_replace_c_by_string_first(String *string, char c1, String *string2)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string2 == NULL)
-        ERROR("string2 == NULL\n", 1, "");
+        ERROR("string2 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (string_is_empty(string2))
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     return string_replace_c_by_str_first(string, c1, string2->____str);
 }
 
 int string_replace_c_by_string_last(String *string, char c1, String *string2)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string2 == NULL)
-        ERROR("string2 == NULL\n", 1, "");
+        ERROR("string2 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (string_is_empty(string2))
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     return string_replace_c_by_str_last(string, c1, string2->____str);
 }
 
 int string_replace_c_by_string_all(String *string, char c1, String *string2)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string2 == NULL)
-        ERROR("string2 == NULL\n", 1, "");
+        ERROR("string2 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (string_is_empty(string2))
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     return string_replace_c_by_str_all(string, c1, string2->____str);
 }
@@ -1527,19 +1527,19 @@ int string_replace_str_by_c_first(String *string, char *str1, char c)
     ssize_t pos;
     char buf[2];
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str1 == NULL)
-        ERROR("str1 == NULL\n", 1, "");
+        ERROR("str1 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (strlen(str1) == 0)
-        ERROR("str1 is empty\n", 1, "");
+        ERROR("str1 is empty\n", 1);
 
     buf[0] = c;
     buf[1] = '\0';
@@ -1549,10 +1549,10 @@ int string_replace_str_by_c_first(String *string, char *str1, char c)
 
     pos = string_find_str_first(string, str1);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     if (_string_delete(string, (size_t)pos, strlen(str1)))
-        ERROR("_string_delete error\n", 1, "");
+        ERROR("_string_delete error\n", 1);
 
     return string_insert_c(string, c, (size_t)pos);
 }
@@ -1562,19 +1562,19 @@ int string_replace_str_by_c_last(String *string, char *str1, char c)
     ssize_t pos;
     char buf[2];
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str1 == NULL)
-        ERROR("str1 == NULL\n", 1, "");
+        ERROR("str1 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (strlen(str1) == 0)
-        ERROR("str1 is empty\n", 1, "");
+        ERROR("str1 is empty\n", 1);
 
     buf[0] = c;
     buf[1] = '\0';
@@ -1583,10 +1583,10 @@ int string_replace_str_by_c_last(String *string, char *str1, char c)
 
     pos = string_find_str_last(string, str1);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     if (_string_delete(string, (size_t)pos, strlen(str1)))
-        ERROR("_string_delete error\n", 1, "");
+        ERROR("_string_delete error\n", 1);
 
     return string_insert_c(string, c, (size_t)pos);
 }
@@ -1598,20 +1598,20 @@ int string_replace_str_by_c_all(String *string, char *str1, char c)
     size_t offset;
     char buf[2];
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str1 == NULL)
-        ERROR("str1 == NULL\n", 1, "");
+        ERROR("str1 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     len = strlen(str1);
     if (len == 0)
-        ERROR("str1 is empty\n", 1, "");
+        ERROR("str1 is empty\n", 1);
 
     buf[0] = c;
     buf[1] = '\0';
@@ -1624,10 +1624,10 @@ int string_replace_str_by_c_all(String *string, char *str1, char c)
     {
         offset = (size_t)pos + 1;
         if (_string_delete(string, (size_t)pos, len))
-            ERROR("_string_delete error\n", 1, "");
+            ERROR("_string_delete error\n", 1);
 
         if (string_insert_c(string, c, (size_t)pos))
-            ERROR("string_insert_c error\n", 1, "");
+            ERROR("string_insert_c error\n", 1);
     }
 
     return 0;
@@ -1637,35 +1637,35 @@ int string_replace_str_by_str_first(String *string, char *str1, char *str2)
 {
     ssize_t pos;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str1 == NULL)
-        ERROR("str1 == NULL\n", 1, "");
+        ERROR("str1 == NULL\n", 1);
 
     if (str2 == NULL)
-        ERROR("str2 == NULL\n", 1, "");
+        ERROR("str2 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (strlen(str1) == 0)
-        ERROR("str1 is empty\n", 1, "");
+        ERROR("str1 is empty\n", 1);
 
     if (strlen(str2) == 0)
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     if (strcmp(str1, str2) == 0)
         return 0;
 
     pos = string_find_str_first(string, str1);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     if (_string_delete(string, (size_t)pos, strlen(str1)))
-        ERROR("_string_delete error\n", 1, "");
+        ERROR("_string_delete error\n", 1);
 
     return string_insert_str(string, str2, (size_t)pos);
 }
@@ -1674,35 +1674,35 @@ int string_replace_str_by_str_last(String *string, char *str1, char *str2)
 {
     ssize_t pos;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str1 == NULL)
-        ERROR("str1 == NULL\n", 1, "");
+        ERROR("str1 == NULL\n", 1);
 
     if (str2 == NULL)
-        ERROR("str2 == NULL\n", 1, "");
+        ERROR("str2 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (strlen(str1) == 0)
-        ERROR("str1 is empty\n", 1, "");
+        ERROR("str1 is empty\n", 1);
 
     if (strlen(str2) == 0)
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     if (strcmp(str1, str2) == 0)
         return 0;
 
     pos = string_find_str_last(string, str1);
     if (pos == -1)
-        ERROR("Pattern doesn't match in string\n", 1, "");
+        ERROR("Pattern doesn't match in string\n", 1);
 
     if (_string_delete(string, (size_t)pos, strlen(str1)))
-        ERROR("_string_delete error\n", 1, "");
+        ERROR("_string_delete error\n", 1);
 
     return string_insert_str(string, str2, (size_t)pos);
 }
@@ -1714,27 +1714,27 @@ int string_replace_str_by_str_all(String *string, char *str1, char *str2)
     size_t len2;
     size_t offset;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str1 == NULL)
-        ERROR("str1 == NULL\n", 1, "");
+        ERROR("str1 == NULL\n", 1);
 
     if (str2 == NULL)
-        ERROR("str2 == NULL\n", 1, "");
+        ERROR("str2 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     len1 = strlen(str1);
     if (len1 == 0)
-        ERROR("str1 is empty\n", 1, "");
+        ERROR("str1 is empty\n", 1);
 
     len2 = strlen(str2);
     if (len2 == 0)
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     if (strcmp(str1, str2) == 0)
         return 0;
@@ -1746,10 +1746,10 @@ int string_replace_str_by_str_all(String *string, char *str1, char *str2)
         offset = (size_t)pos;
 
         if (_string_delete(string, (size_t)pos, len1))
-            ERROR("_string_delete error\n", 1, "");
+            ERROR("_string_delete error\n", 1);
 
         if (string_insert_str(string, str2, (size_t)pos))
-            ERROR("string_insert_str error\n", 1, "");
+            ERROR("string_insert_str error\n", 1);
 
         offset += (size_t)ABS((ssize_t)(len1 - len2));
     }
@@ -1759,25 +1759,25 @@ int string_replace_str_by_str_all(String *string, char *str1, char *str2)
 
 int string_replace_str_by_string_first(String *string, char *str1, String *string2)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str1 == NULL)
-        ERROR("str1 == NULL\n", 1, "");
+        ERROR("str1 == NULL\n", 1);
 
     if (string2 == NULL)
-        ERROR("string2 == NULL\n", 1, "");
+        ERROR("string2 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (strlen(str1) == 0)
-        ERROR("str1 is empty\n", 1, "");
+        ERROR("str1 is empty\n", 1);
 
     if (string_is_empty(string2))
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     if (strcmp(str1, string2->____str) == 0)
         return 0;
@@ -1787,25 +1787,25 @@ int string_replace_str_by_string_first(String *string, char *str1, String *strin
 
 int string_replace_str_by_string_last(String *string, char *str1, String *string2)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str1 == NULL)
-        ERROR("str1 == NULL\n", 1, "");
+        ERROR("str1 == NULL\n", 1);
 
     if (string2 == NULL)
-        ERROR("string2 == NULL\n", 1, "");
+        ERROR("string2 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (strlen(str1) == 0)
-        ERROR("str1 is empty\n", 1, "");
+        ERROR("str1 is empty\n", 1);
 
     if (string_is_empty(string2))
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     if (strcmp(str1, string2->____str) == 0)
         return 0;
@@ -1815,25 +1815,25 @@ int string_replace_str_by_string_last(String *string, char *str1, String *string
 
 int string_replace_str_by_string_all(String *string, char *str1, String *string2)
 {
-    TRACE("");
+    TRACE();
 
      if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (str1 == NULL)
-        ERROR("str1 == NULL\n", 1, "");
+        ERROR("str1 == NULL\n", 1);
 
     if (string2 == NULL)
-        ERROR("string2 == NULL\n", 1, "");
+        ERROR("string2 == NULL\n", 1);
 
     if (string_is_empty(string))
-        ERROR("String is empty\n", 1, "");
+        ERROR("String is empty\n", 1);
 
     if (strlen(str1) == 0)
-        ERROR("str1 is empty\n", 1, "");
+        ERROR("str1 is empty\n", 1);
 
     if (string_is_empty(string2))
-        ERROR("Please use remove instead of replace by empty string\n", 1, "");
+        ERROR("Please use remove instead of replace by empty string\n", 1);
 
     if (strcmp(str1, string2->____str) == 0)
         return 0;
@@ -1843,117 +1843,117 @@ int string_replace_str_by_string_all(String *string, char *str1, String *string2
 
 int string_replace_string_by_c_first(String *string, String *string1, char c)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string1 == NULL)
-        ERROR("string1 == NULL\n", 1, "");
+        ERROR("string1 == NULL\n", 1);
 
     return string_replace_str_by_c_first(string, string1->____str, c);
 }
 
 int string_replace_string_by_c_last(String *string, String *string1, char c)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string1 == NULL)
-        ERROR("string1 == NULL\n", 1, "");
+        ERROR("string1 == NULL\n", 1);
 
     return string_replace_str_by_c_last(string, string1->____str, c);
 }
 
 int string_replace_string_by_c_all(String *string, String *string1, char c)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string1 == NULL)
-        ERROR("string1 == NULL\n", 1, "");
+        ERROR("string1 == NULL\n", 1);
 
     return string_replace_str_by_c_all(string, string1->____str, c);
 }
 
 int string_replace_string_by_str_first(String *string, String *string1, char *str)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string1 == NULL)
-        ERROR("string1 == NULL\n", 1, "");
+        ERROR("string1 == NULL\n", 1);
 
     return string_replace_str_by_str_first(string, string1->____str, str);
 }
 
 int string_replace_string_by_str_last(String *string, String *string1, char *str)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string1 == NULL)
-        ERROR("string1 == NULL\n", 1, "");
+        ERROR("string1 == NULL\n", 1);
 
     return string_replace_str_by_str_last(string, string1->____str, str);
 }
 
 int string_replace_string_by_str_all(String *string, String *string1, char *str)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string1 == NULL)
-        ERROR("string1 == NULL\n", 1, "");
+        ERROR("string1 == NULL\n", 1);
 
     return string_replace_str_by_str_all(string, string1->____str, str);
 }
 
 int string_replace_string_by_string_first(String *string, String *string1, String *string2)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string1 == NULL)
-        ERROR("string1 == NULL\n", 1, "");
+        ERROR("string1 == NULL\n", 1);
 
     return string_replace_str_by_string_first(string, string1->____str, string2);
 }
 
 int string_replace_string_by_string_last(String *string, String *string1, String *string2)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string1 == NULL)
-        ERROR("string1 == NULL\n", 1, "");
+        ERROR("string1 == NULL\n", 1);
 
     return string_replace_str_by_string_last(string, string1->____str, string2);
 }
 
 int string_replace_string_by_string_all(String *string, String *string1, String *string2)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", 1, "");
+        ERROR("string == NULL\n", 1);
 
     if (string1 == NULL)
-        ERROR("string1 == NULL\n", 1, "");
+        ERROR("string1 == NULL\n", 1);
 
     return string_replace_str_by_string_all(string, string1->____str, string2);
 }
@@ -1966,20 +1966,20 @@ String **string_split_c(String *string, char c, size_t *size)
     String **array;
     String *temp;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", NULL, "");
+        ERROR("string == NULL\n", NULL);
 
     if (size == NULL)
-        ERROR("size == NULL\n", NULL, "");
+        ERROR("size == NULL\n", NULL);
 
     if (string_is_empty(string))
-        ERROR("string is empty\n", NULL, "");
+        ERROR("string is empty\n", NULL);
 
     darray = darray_create(DARRAY_UNSORTED, 0, sizeof(String *), NULL);
     if (darray == NULL)
-        ERROR("darray == NULL\n", NULL, "");
+        ERROR("darray == NULL\n", NULL);
 
     i = 0;
     while (i < string->____len)
@@ -1989,19 +1989,19 @@ String **string_split_c(String *string, char c, size_t *size)
         {
             temp = string_substr(string, i, (size_t)pos - 1);
             if (temp == NULL)
-                ERROR("string_substr error\n", NULL, "");
+                ERROR("string_substr error\n", NULL);
 
             if (darray_insert(darray, (void *)&temp))
-                ERROR("darray insert error\n", NULL, "");
+                ERROR("darray insert error\n", NULL);
         }
         else if (pos == -1)
         {
             temp = string_substr(string, i, string->____len - 1);
             if (temp == NULL)
-                ERROR("string_substr error\n", NULL, "");
+                ERROR("string_substr error\n", NULL);
 
             if (darray_insert(darray, (void *)&temp))
-                ERROR("darray insert error\n", NULL, "");
+                ERROR("darray insert error\n", NULL);
 
             break;
         }
@@ -2011,7 +2011,7 @@ String **string_split_c(String *string, char c, size_t *size)
 
     array = (String **)malloc(sizeof(String *) * (size_t)darray_get_num_entries(darray));
     if (array == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     i = 0;
     for_each_data(darray, Darray, temp)
@@ -2033,27 +2033,27 @@ String **string_split_str(String *string, char *str, size_t *size)
     String **array;
     String *temp;
 
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", NULL, "");
+        ERROR("string == NULL\n", NULL);
 
     if (str == NULL)
-        ERROR("str == NULL\n", NULL, "");
+        ERROR("str == NULL\n", NULL);
 
     if (size == NULL)
-        ERROR("size == NULL\n", NULL, "");
+        ERROR("size == NULL\n", NULL);
 
     if (string_is_empty(string))
-        ERROR("string is empty\n", NULL, "");
+        ERROR("string is empty\n", NULL);
 
     len = strlen(str);
     if (len == 0)
-        ERROR("len == 0\n", NULL, "");
+        ERROR("len == 0\n", NULL);
 
     darray = darray_create(DARRAY_UNSORTED, 0, sizeof(String *), NULL);
     if (darray == NULL)
-        ERROR("darray == NULL\n", NULL, "");
+        ERROR("darray == NULL\n", NULL);
 
     i = 0;
     while (i < string->____len)
@@ -2063,19 +2063,19 @@ String **string_split_str(String *string, char *str, size_t *size)
         {
             temp = string_substr(string, i, (size_t)pos - 1);
             if (temp == NULL)
-                ERROR("string_substr error\n", NULL, "");
+                ERROR("string_substr error\n", NULL);
 
             if (darray_insert(darray, (void *)&temp))
-                ERROR("darray insert error\n", NULL, "");
+                ERROR("darray insert error\n", NULL);
         }
         else if (pos == -1)
         {
             temp = string_substr(string, i, string->____len - 1);
             if (temp == NULL)
-                ERROR("string_substr error\n", NULL, "");
+                ERROR("string_substr error\n", NULL);
 
             if (darray_insert(darray, (void *)&temp))
-                ERROR("darray insert error\n", NULL, "");
+                ERROR("darray insert error\n", NULL);
 
             break;
         }
@@ -2085,7 +2085,7 @@ String **string_split_str(String *string, char *str, size_t *size)
 
     array = (String **)malloc(sizeof(String *) * (size_t)darray_get_num_entries(darray));
     if (array == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     i = 0;
     for_each_data(darray, Darray, temp)
@@ -2100,22 +2100,22 @@ String **string_split_str(String *string, char *str, size_t *size)
 
 String **string_split_string(String *string, String *string2, size_t *size)
 {
-    TRACE("");
+    TRACE();
 
     if (string == NULL)
-        ERROR("string == NULL\n", NULL, "");
+        ERROR("string == NULL\n", NULL);
 
     if (string2 == NULL)
-        ERROR("string2 == NULL\n", NULL, "");
+        ERROR("string2 == NULL\n", NULL);
 
     if (size == NULL)
-        ERROR("size == NULL\n", NULL, "");
+        ERROR("size == NULL\n", NULL);
 
     if (string_is_empty(string))
-        ERROR("string is empty\n", NULL, "");
+        ERROR("string is empty\n", NULL);
 
     if (string_is_empty(string2))
-        ERROR("string2 is empty\n", NULL, "");
+        ERROR("string2 is empty\n", NULL);
 
     return string_split_str(string, string2->____str, size);
 }
@@ -2124,20 +2124,20 @@ String_iterator *string_iterator_create(String *s, iti_mode_t mode)
 {
     String_iterator *it;
 
-    TRACE("");
+    TRACE();
 
     if (s == NULL)
-        ERROR("s == NULL\n", NULL, "");
+        ERROR("s == NULL\n", NULL);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", NULL, "");
+        ERROR("Incorrect mode\n", NULL);
 
     if (string_is_empty(s))
         return NULL;
 
     it = (String_iterator *)malloc(sizeof(String_iterator));
     if (it == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     it->____str = s->____str;
     if (mode == ITI_BEGIN)
@@ -2150,7 +2150,7 @@ String_iterator *string_iterator_create(String *s, iti_mode_t mode)
 
 void string_iterator_destroy(String_iterator *it)
 {
-    TRACE("");
+    TRACE();
 
     if (it == NULL)
         return;
@@ -2160,16 +2160,16 @@ void string_iterator_destroy(String_iterator *it)
 
 int string_iterator_init(String *s, String_iterator *it, iti_mode_t mode)
 {
-    TRACE("");
+    TRACE();
 
     if (s == NULL)
-        ERROR("s == NULL\n", 1, "");
+        ERROR("s == NULL\n", 1);
 
     if (it == NULL)
-        ERROR("it == NULL\n", 1, "");
+        ERROR("it == NULL\n", 1);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", 1, "");
+        ERROR("Incorrect mode\n", 1);
 
     if (string_is_empty(s))
         return 1;
@@ -2185,10 +2185,10 @@ int string_iterator_init(String *s, String_iterator *it, iti_mode_t mode)
 
 int string_iterator_next(String_iterator *it)
 {
-    TRACE("");
+    TRACE();
 
     if (it == NULL)
-        ERROR("it == NULL", 1, "");
+        ERROR("it == NULL", 1);
 
     ++it->____index;
 
@@ -2197,10 +2197,10 @@ int string_iterator_next(String_iterator *it)
 
 int string_iterator_prev(String_iterator *it)
 {
-    TRACE("");
+    TRACE();
 
     if (it == NULL)
-        ERROR("it == NULL", 1, "");
+        ERROR("it == NULL", 1);
 
     --it->____index;
 
@@ -2209,10 +2209,10 @@ int string_iterator_prev(String_iterator *it)
 
 int string_iterator_get_data(String_iterator *it, void *val)
 {
-    TRACE("");
+    TRACE();
 
     if (it == NULL)
-        ERROR("it == NULL", 1, "");
+        ERROR("it == NULL", 1);
 
     *(char *)val = it->____str[it->____index];
 
@@ -2221,10 +2221,10 @@ int string_iterator_get_data(String_iterator *it, void *val)
 
 int string_iterator_get_node(String_iterator *it, void *node)
 {
-    TRACE("");
+    TRACE();
 
     if (it == NULL)
-        ERROR("it == NULL", 1, "");
+        ERROR("it == NULL", 1);
 
     *(void **)node = (it->____str + it->____index);
 
@@ -2233,10 +2233,10 @@ int string_iterator_get_node(String_iterator *it, void *node)
 
 bool string_iterator_end(String_iterator *it)
 {
-    TRACE("");
+    TRACE();
 
     if (it == NULL)
-        ERROR("it == NULL", 1, "");
+        ERROR("it == NULL", 1);
 
     return it->____index == -1 || it->____str[it->____index] == '\0';
 }

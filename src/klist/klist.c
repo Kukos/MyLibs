@@ -51,16 +51,16 @@ static ___inline___ bool klist_is_empty(KList_master *list)
 
 static ___inline___ int klist_insert(KList_master *list, KList *_new, KList *prev, KList *next, bool change_head)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", 1, "");
+        ERROR("list == NULL\n", 1);
 
     if (_new == NULL || prev == NULL || next == NULL)
-        ERROR("new == NULL || prev == NULL || next == NULL\n", 1, "");
+        ERROR("new == NULL || prev == NULL || next == NULL\n", 1);
 
     if (_new->____parent != NULL)
-        ERROR("Node has parent, please delete node from list\n", 1, "");
+        ERROR("Node has parent, please delete node from list\n", 1);
 
     if (klist_is_empty(list))
         list->____head = _new;
@@ -84,10 +84,10 @@ static ___inline___ int klist_insert(KList_master *list, KList *_new, KList *pre
 
 static ___inline___ int klist_delete(KList *entry)
 {
-    TRACE("");
+    TRACE();
 
     if (entry == NULL)
-        ERROR("entry == NULL\n", 1, "");
+        ERROR("entry == NULL\n", 1);
 
     entry->____next->____prev = entry->____prev;
     entry->____prev->____next = entry->____next;
@@ -112,10 +112,10 @@ static ___inline___ KList *klist_pos(KList_master *list, size_t pos)
     KList *ptr;
     size_t i;
 
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", NULL, "");
+        ERROR("list == NULL\n", NULL);
 
     if (klist_is_empty(list))
         return NULL;
@@ -131,10 +131,10 @@ static ___inline___ KList *klist_pos(KList_master *list, size_t pos)
 
 int klist_insert_first(KList_master *list, KList *entry)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL || entry == NULL)
-        ERROR("list == NULL || entry == NULL\n", 1, "");
+        ERROR("list == NULL || entry == NULL\n", 1);
 
    if (!klist_is_empty(list))
         return klist_insert(list, entry, list->____head->____prev, list->____head, true);
@@ -144,10 +144,10 @@ int klist_insert_first(KList_master *list, KList *entry)
 
 int klist_insert_last(KList_master *list, KList *entry)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL || entry == NULL)
-        ERROR("list == NULL || entry == NULL\n", 1, "");
+        ERROR("list == NULL || entry == NULL\n", 1);
 
     if (!klist_is_empty(list))
         return klist_insert(list, entry, list->____head->____prev, list->____head, false);
@@ -157,26 +157,26 @@ int klist_insert_last(KList_master *list, KList *entry)
 
 int klist_insert_before(KList *node, KList *entry)
 {
-    TRACE("");
+    TRACE();
 
     if (node == NULL || entry == NULL)
-        ERROR("list == NULL || entry == NULL\n", 1, "");
+        ERROR("list == NULL || entry == NULL\n", 1);
 
     if (node->____parent == NULL)
-        ERROR("Node hasn't parent\n", 1, "");
+        ERROR("Node hasn't parent\n", 1);
 
     return klist_insert(node->____parent, entry, node->____prev, node, true);
 }
 
 int klist_insert_after(KList *node, KList *entry)
 {
-    TRACE("");
+    TRACE();
 
     if (node == NULL || entry == NULL)
-        ERROR("list == NULL || entry == NULL\n", 1, "");
+        ERROR("list == NULL || entry == NULL\n", 1);
 
     if (node->____parent == NULL)
-        ERROR("Node hasn't parent\n", 1, "");
+        ERROR("Node hasn't parent\n", 1);
 
     return klist_insert(node->____parent, entry, node, node->____next, false);
 }
@@ -185,22 +185,22 @@ int klist_insert_pos(KList_master *list, size_t pos, KList *entry)
 {
     KList *ptr;
 
-    TRACE("");
+    TRACE();
 
     if (list == NULL || entry == NULL)
-        ERROR("list == NULL || entry == NULL\n", 1, "");
+        ERROR("list == NULL || entry == NULL\n", 1);
 
     if (klist_is_empty(list))
     {
         if (pos == 0)
             return klist_insert(list, entry, entry, entry, true);
         else
-            ERROR("pos is invalif\n", 1, "");
+            ERROR("pos is invalif\n", 1);
     }
 
     ptr = klist_pos(list, pos);
     if (ptr == NULL)
-        ERROR("pos is invalid\n", 1, "");
+        ERROR("pos is invalid\n", 1);
 
     return klist_insert(list, entry, ptr->____prev, ptr, pos == 0);
 }
@@ -209,13 +209,13 @@ int klist_delete_first(KList_master *list)
 {
     KList *ptr;
 
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", 1, "");
+        ERROR("list == NULL\n", 1);
 
     if (klist_is_empty(list))
-        ERROR("list is empty\n", 1, "");
+        ERROR("list is empty\n", 1);
 
     ptr = klist_pos(list, 0);
     return klist_delete(ptr);
@@ -225,13 +225,13 @@ int klist_delete_last(KList_master *list)
 {
     KList *ptr;
 
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", 1, "");
+        ERROR("list == NULL\n", 1);
 
     if (klist_is_empty(list))
-        ERROR("list is empty\n", 1, "");
+        ERROR("list is empty\n", 1);
 
     ptr = klist_pos(list, 0);
     return klist_delete(ptr->____prev);
@@ -239,13 +239,13 @@ int klist_delete_last(KList_master *list)
 
 int klist_delete_node(KList *node)
 {
-    TRACE("");
+    TRACE();
 
     if (node == NULL)
-        ERROR("node == NULL\n", 1, "");
+        ERROR("node == NULL\n", 1);
 
     if (node->____parent == NULL)
-        ERROR("Node hasn't parent\n", 1, "");
+        ERROR("Node hasn't parent\n", 1);
 
     return klist_delete(node);
 }
@@ -254,47 +254,47 @@ int klist_delete_pos(KList_master *list, size_t pos)
 {
     KList *ptr;
 
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", 1, "");
+        ERROR("list == NULL\n", 1);
 
     if (klist_is_empty(list))
-        ERROR("list is empty\n", 1, "");
+        ERROR("list is empty\n", 1);
 
     ptr = klist_pos(list, pos);
     if (ptr == NULL)
-        ERROR("Invalid pos\n", 1, "");
+        ERROR("Invalid pos\n", 1);
 
     return klist_delete(ptr);
 }
 
 KList *klist_get_pos(KList_master *list, size_t pos)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", NULL, "");
+        ERROR("list == NULL\n", NULL);
 
     return klist_pos(list, pos);
 }
 
 ssize_t klist_get_num_entries(KList_master *list)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", -1, "");
+        ERROR("list == NULL\n", -1);
 
     return (ssize_t)list->____length;
 }
 
 KList *klist_get_head(KList_master *list)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", NULL, "");
+        ERROR("list == NULL\n", NULL);
 
     if (klist_is_empty(list))
         return NULL;
@@ -304,10 +304,10 @@ KList *klist_get_head(KList_master *list)
 
 KList *klist_get_tail(KList_master *list)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", NULL, "");
+        ERROR("list == NULL\n", NULL);
 
     if (klist_is_empty(list))
         return NULL;
@@ -319,11 +319,11 @@ KList_master *klist_master_create(void)
 {
     KList_master *list;
 
-    TRACE("");
+    TRACE();
 
     list = (KList_master *)malloc(sizeof(KList_master));
     if (list == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     list->____head = NULL;
     list->____length = 0;
@@ -333,7 +333,7 @@ KList_master *klist_master_create(void)
 
 void klist_master_destroy(KList_master *list)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
         return;
@@ -343,10 +343,10 @@ void klist_master_destroy(KList_master *list)
 
 KList_master *klist_get_parent(KList *list)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", NULL, "");
+        ERROR("list == NULL\n", NULL);
 
     if (list->____parent == NULL)
         return NULL;

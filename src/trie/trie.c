@@ -161,11 +161,11 @@ static ___inline___ Trie_node *trie_node_create(Trie_node *parent)
 {
     Trie_node *node;
 
-    TRACE("");
+    TRACE();
 
     node = (Trie_node *)malloc(sizeof(Trie_node));
     if (node == NULL)
-        ERROR("node == NULL\n", NULL, "");
+        ERROR("node == NULL\n", NULL);
 
     node->____parent = parent;
     (void)memset(node->____children, 0, sizeof(Trie_node *) * ALPHABET_SIZE);
@@ -176,7 +176,7 @@ static ___inline___ Trie_node *trie_node_create(Trie_node *parent)
 
 static ___inline___ void trie_node_destroy(Trie_node *node)
 {
-    TRACE("");
+    TRACE();
 
     if (node == NULL)
         return;
@@ -188,10 +188,10 @@ static ___inline___ bool trie_node_has_child(Trie_node *node)
 {
     size_t i;
 
-    TRACE("");
+    TRACE();
 
     if (node == NULL)
-        ERROR("node == NULL\n", false, "");
+        ERROR("node == NULL\n", false);
 
     for (i = 0; i < ALPHABET_SIZE; ++i)
         if (node->____children[i] != NULL)
@@ -204,7 +204,7 @@ static ___inline___ int trie_node_get_child_index(Trie_node *parent, Trie_node *
 {
     size_t i;
 
-    TRACE("");
+    TRACE();
 
     assert(parent != NULL);
     assert(node != NULL);
@@ -224,7 +224,7 @@ static Trie_node *trie_node_search(Trie_node *root,char *word)
 
     Trie_node *ptr;
 
-    TRACE("");
+    TRACE();
 
     assert(root != NULL);
 
@@ -257,14 +257,14 @@ static Trie_node *trie_min_node(Trie_node *node,char **word)
     size_t i;
     size_t offset;
 
-    TRACE("");
+    TRACE();
 
     assert(node != NULL);
     assert(word != NULL);
 
     letters = darray_create(DARRAY_UNSORTED, 0, sizeof(char), NULL);
     if (letters == NULL)
-        ERROR("darray error\n", NULL, "");
+        ERROR("darray error\n", NULL);
 
     parent = NULL;
     if (node->____parent != NULL)
@@ -274,7 +274,7 @@ static Trie_node *trie_min_node(Trie_node *node,char **word)
         {
             darray_destroy(letters);
 
-            ERROR("darray_insert error\n", NULL, "");
+            ERROR("darray_insert error\n", NULL);
         }
     }
 
@@ -290,7 +290,7 @@ static Trie_node *trie_min_node(Trie_node *node,char **word)
                 {
                     darray_destroy(letters);
 
-                    ERROR("darray insert error\n", NULL, "");
+                    ERROR("darray insert error\n", NULL);
                 }
 
                 node = node->____children[i];
@@ -307,7 +307,7 @@ static Trie_node *trie_min_node(Trie_node *node,char **word)
     {
         darray_destroy(letters);
 
-        ERROR("darray_insert error\n", NULL, "");
+        ERROR("darray_insert error\n", NULL);
     }
 
     offset = 0;
@@ -323,7 +323,7 @@ static Trie_node *trie_min_node(Trie_node *node,char **word)
     {
         darray_destroy(letters);
 
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
     }
 
     if(memcpy((void *)(*word + offset), (void *)darray_get_array(letters),
@@ -332,7 +332,7 @@ static Trie_node *trie_min_node(Trie_node *node,char **word)
         darray_destroy(letters);
         FREE(*word);
 
-        ERROR("memcpy error\n", NULL, "");
+        ERROR("memcpy error\n", NULL);
     }
 
     darray_destroy(letters);
@@ -351,14 +351,14 @@ static Trie_node *trie_max_node(Trie_node *node,char **word)
     Darray *letters;
     Trie_node *parent;
 
-    TRACE("");
+    TRACE();
 
     assert(node != NULL);
     assert(word != NULL);
 
     letters = darray_create(DARRAY_UNSORTED, 0, sizeof(char), NULL);
     if (letters == NULL)
-        ERROR("darray_create error\n", NULL, "");
+        ERROR("darray_create error\n", NULL);
 
     parent = NULL;
     if (node->____parent != NULL)
@@ -368,7 +368,7 @@ static Trie_node *trie_max_node(Trie_node *node,char **word)
         {
             darray_destroy(letters);
 
-            ERROR("darray_insert error\n", NULL, "");
+            ERROR("darray_insert error\n", NULL);
         }
     }
 
@@ -384,7 +384,7 @@ static Trie_node *trie_max_node(Trie_node *node,char **word)
                 {
                     darray_destroy(letters);
 
-                    ERROR("darray insert error\n", NULL, "");
+                    ERROR("darray insert error\n", NULL);
                 }
 
                 node = node->____children[i];
@@ -401,7 +401,7 @@ static Trie_node *trie_max_node(Trie_node *node,char **word)
     {
         darray_destroy(letters);
 
-        ERROR("darray_insert error\n", NULL, "");
+        ERROR("darray_insert error\n", NULL);
     }
 
     if (*word == NULL)
@@ -417,7 +417,7 @@ static Trie_node *trie_max_node(Trie_node *node,char **word)
     {
         darray_destroy(letters);
 
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
     }
 
     if (memcpy((void *)(*word + offset), (void *)darray_get_array(letters),
@@ -426,7 +426,7 @@ static Trie_node *trie_max_node(Trie_node *node,char **word)
         darray_destroy(letters);
         FREE(*word);
 
-        ERROR("memcpy error\n", NULL, "");
+        ERROR("memcpy error\n", NULL);
     }
 
     darray_destroy(letters);
@@ -441,7 +441,7 @@ static Trie_node *trie_node_successor(Trie_node *node, char **word)
 
     Trie_node *parent;
 
-    TRACE("");
+    TRACE();
 
     assert(node != NULL);
     assert(word != NULL);
@@ -479,7 +479,7 @@ static Trie_node *trie_node_predecessor(Trie_node *node, char **word)
 
     Trie_node *parent;
 
-    TRACE("");
+    TRACE();
 
     assert(node != NULL);
     assert(word != NULL);
@@ -515,7 +515,7 @@ static Trie_node *trie_min_node_d(Trie_node *node)
     size_t i;
     Trie_node *parent;
 
-    TRACE("");
+    TRACE();
 
     assert(node != NULL);
 
@@ -544,7 +544,7 @@ static Trie_node *trie_node_successor_d(Trie_node *node)
     size_t i;
     Trie_node *parent;
 
-    TRACE("");
+    TRACE();
 
     assert(node != NULL);
     parent = node->____parent;
@@ -569,22 +569,22 @@ Trie *trie_create(void)
 {
     Trie *trie;
 
-    TRACE("");
+    TRACE();
 
     trie = (Trie *)malloc(sizeof(Trie));
     if (trie == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     trie->____root = trie_node_create(NULL);
     if (trie->____root == NULL)
     {
         FREE(trie);
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
     }
 
     trie->____hight_array = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
     if (trie->____hight_array == NULL)
-        ERROR("darray create error\n", NULL, "");
+        ERROR("darray create error\n", NULL);
 
     trie->____entries = 0;
 
@@ -596,7 +596,7 @@ void trie_destroy(Trie *trie)
     Trie_node *node;
     Trie_node *temp;
 
-    TRACE("");
+    TRACE();
 
     if (trie == NULL)
         return;
@@ -634,10 +634,10 @@ int trie_insert(Trie *trie, char *word)
     Trie_node *ptr;
     Trie_node *parent;
 
-    TRACE("");
+    TRACE();
 
     if (trie == NULL || word == NULL)
-        ERROR("trie == NULL || word == NULL\n", 1, "");
+        ERROR("trie == NULL || word == NULL\n", 1);
 
     length = strlen(word);
 
@@ -650,17 +650,17 @@ int trie_insert(Trie *trie, char *word)
         {
             substr = (char *)malloc(sizeof(char) * (i + 1));
             if (substr == NULL)
-                ERROR("Wrong character!\n", 1, "");
+                ERROR("Wrong character!\n", 1);
 
             if (memcpy((void *)substr, (void *)word, sizeof(char) * i) == NULL)
-                ERROR("Wrong character!\n", 1, "");
+                ERROR("Wrong character!\n", 1);
 
             *(substr + i) = NULL_CHAR;
 
             trie_delete(trie, substr);
             FREE(substr);
 
-            ERROR("Wrong character!\n", 1, "");
+            ERROR("Wrong character!\n", 1);
         }
 
         /* if has not child, create child with new letter */
@@ -677,20 +677,20 @@ int trie_insert(Trie *trie, char *word)
     ++trie->____entries;
 
     if (darray_insert(trie->____hight_array, (void *)&length))
-        ERROR("darray insert error\n", 1, "");
+        ERROR("darray insert error\n", 1);
 
     return 0;
 }
 
 bool trie_find(Trie *trie, char *word)
 {
-    TRACE("");
+    TRACE();
 
     if (trie == NULL)
-        ERROR("trie == NULL\n", false, "");
+        ERROR("trie == NULL\n", false);
 
     if (word == NULL)
-        ERROR("word == NULL\n", false, "");
+        ERROR("word == NULL\n", false);
 
     return  trie_node_search(trie->____root, word) != NULL;
 }
@@ -704,13 +704,13 @@ int trie_delete(Trie *trie, char *word)
     Trie_node *node;
     Trie_node *parent;
 
-    TRACE("");
+    TRACE();
 
     if (trie == NULL)
-        ERROR("trie == NULL\n", 1, "");
+        ERROR("trie == NULL\n", 1);
 
     if (trie->____entries == 0)
-        ERROR("Nothing to delete\n", 1, "");
+        ERROR("Nothing to delete\n", 1);
 
     node = trie_node_search(trie->____root, word);
     if (node == NULL)
@@ -736,7 +736,7 @@ int trie_delete(Trie *trie, char *word)
 
     len = (int)strlen(word);
     if (darray_delete_pos(trie->____hight_array, (size_t)darray_search_first(trie->____hight_array, (void *)&len, (void *)&dummy)))
-        ERROR("darray delete error\n", 1, "");
+        ERROR("darray delete error\n", 1);
 
     return 0;
 }
@@ -749,20 +749,20 @@ char **trie_to_array(Trie *trie, size_t *size)
     size_t l;
     size_t i;
 
-    TRACE("");
+    TRACE();
 
     if (trie == NULL)
-        ERROR("trie == NULL\n", NULL, "");
+        ERROR("trie == NULL\n", NULL);
 
     if (size == NULL)
-        ERROR("size == NULL\n", NULL, "");
+        ERROR("size == NULL\n", NULL);
 
     if (trie->____entries == 0)
-        ERROR("trie is empty\n", NULL, "");
+        ERROR("trie is empty\n", NULL);
 
     words = (char **)malloc(sizeof(char*) * trie->____entries);
     if (words == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     i = 0;
     for_each_data(trie, Trie, data)
@@ -777,7 +777,7 @@ char **trie_to_array(Trie *trie, size_t *size)
 
             FREE(words);
 
-            ERROR("malloc error\n", NULL, "");
+            ERROR("malloc error\n", NULL);
         }
         if (memcpy((void *)words[i], (void *)data, l) == NULL)
         {
@@ -786,7 +786,7 @@ char **trie_to_array(Trie *trie, size_t *size)
 
             FREE(words);
 
-            ERROR("malloc error\n", NULL, "");
+            ERROR("malloc error\n", NULL);
         }
 
         words[i][l - 1] = NULL_CHAR;
@@ -799,10 +799,10 @@ char **trie_to_array(Trie *trie, size_t *size)
 
 ssize_t trie_get_num_entries(Trie *trie)
 {
-    TRACE("");
+    TRACE();
 
     if (trie == NULL)
-        ERROR("trie == NULL\n", (ssize_t)-1, "");
+        ERROR("trie == NULL\n", (ssize_t)-1);
 
     return (ssize_t)trie->____entries;
 }
@@ -811,16 +811,16 @@ int trie_get_hight(Trie *trie)
 {
     int max;
 
-    TRACE("");
+    TRACE();
 
     if (trie == NULL)
-        ERROR("trie == NULL\n", -1, "");
+        ERROR("trie == NULL\n", -1);
 
     if (trie->____entries == 0)
         return 1;
 
     if (darray_max(trie->____hight_array, (void *)&max) < (ssize_t)0)
-        ERROR("darray get max error\n", -1, "");
+        ERROR("darray get max error\n", -1);
 
     return max + 1;
 }
@@ -829,20 +829,20 @@ Trie_iterator *trie_iterator_create(Trie *trie,iti_mode_t mode)
 {
     Trie_iterator *iterator;
 
-    TRACE("");
+    TRACE();
 
     if (trie == NULL)
-        ERROR("trie == NULL\n", NULL, "");
+        ERROR("trie == NULL\n", NULL);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", NULL, "");
+        ERROR("Incorrect mode\n", NULL);
 
     if (trie->____entries == 0)
         return NULL;
 
     iterator = (Trie_iterator *)malloc(sizeof(Trie_iterator));
     if (iterator == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     iterator->____word = NULL;
 
@@ -856,7 +856,7 @@ Trie_iterator *trie_iterator_create(Trie *trie,iti_mode_t mode)
 
 void trie_iterator_destroy(Trie_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
         return;
@@ -867,16 +867,16 @@ void trie_iterator_destroy(Trie_iterator *iterator)
 
 int trie_iterator_init(Trie *trie, Trie_iterator *iterator, iti_mode_t mode)
 {
-    TRACE("");
+    TRACE();
 
     if (trie == NULL)
-        ERROR("trie == NULL\n", 1, "");
+        ERROR("trie == NULL\n", 1);
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", 1, "");
+        ERROR("Incorrect mode\n", 1);
 
     if (trie->____entries == 0)
         return 1;
@@ -893,10 +893,10 @@ int trie_iterator_init(Trie *trie, Trie_iterator *iterator, iti_mode_t mode)
 
 int trie_iterator_next(Trie_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     iterator->____node = trie_node_successor(iterator->____node, &iterator->____word);
 
@@ -905,10 +905,10 @@ int trie_iterator_next(Trie_iterator *iterator)
 
 int trie_iterator_prev(Trie_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     iterator->____node = trie_node_predecessor(iterator->____node, &iterator->____word);
 
@@ -917,20 +917,20 @@ int trie_iterator_prev(Trie_iterator *iterator)
 
 bool trie_iterator_end(Trie_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", true, "");
+        ERROR("iterator == NULL\n", true);
 
     return iterator->____node == NULL;
 }
 
 int trie_iterator_get_data(Trie_iterator *iterator, void *val)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL || val == NULL)
-        ERROR("iterator == NULL || val == NULL\n", 1, "");
+        ERROR("iterator == NULL || val == NULL\n", 1);
 
     *(char **)val = iterator->____word;
 
@@ -939,10 +939,10 @@ int trie_iterator_get_data(Trie_iterator *iterator, void *val)
 
 int trie_iterator_get_node(Trie_iterator *iterator, void *node)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL || node == NULL)
-        ERROR("iterator == NULL || val == NULL\n", 1, "");
+        ERROR("iterator == NULL || val == NULL\n", 1);
 
     *(void **)node = iterator->____node;
 

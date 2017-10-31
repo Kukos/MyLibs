@@ -19,23 +19,23 @@ Ring_buffer *ring_buffer_create(size_t data_size, size_t max_entries, void(*dest
 {
     Ring_buffer *rb;
 
-    TRACE("");
+    TRACE();
 
     if (data_size == 0)
-        ERROR("data_size == 0\n", NULL, "");
+        ERROR("data_size == 0\n", NULL);
 
     if (max_entries == 0)
-        ERROR("max_entries == 0\n", NULL, "");
+        ERROR("max_entries == 0\n", NULL);
 
     rb = (Ring_buffer *)malloc(sizeof(Ring_buffer));
     if (rb == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     rb->____buf = malloc(data_size * max_entries);
     if (rb->____buf == NULL)
     {
         FREE(rb);
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
     }
 
     rb->____head = 0;
@@ -50,7 +50,7 @@ Ring_buffer *ring_buffer_create(size_t data_size, size_t max_entries, void(*dest
 
 void ring_buffer_destroy(Ring_buffer *rb)
 {
-    TRACE("");
+    TRACE();
 
     if (rb == NULL)
         return;
@@ -64,7 +64,7 @@ void ring_buffer_destroy_with_entries(Ring_buffer *rb)
     BYTE *t;
     size_t i;
 
-    TRACE("");
+    TRACE();
 
     if (rb == NULL)
         return;
@@ -96,13 +96,13 @@ int ring_buffer_enqueue(Ring_buffer *rb, void *data)
     BYTE *_t;
     BYTE *_val;
 
-    TRACE("");
+    TRACE();
 
     if (rb == NULL)
-        ERROR("rb == NULL\n", 1, "");
+        ERROR("rb == NULL\n", 1);
 
     if (data == NULL)
-        ERROR("data == NULL\n", 1, "");
+        ERROR("data == NULL\n", 1);
 
     if (ring_buffer_is_full(rb))
     {
@@ -127,16 +127,16 @@ int ring_buffer_get_head(Ring_buffer *rb, void *data)
 {
     BYTE *_t;
 
-    TRACE("");
+    TRACE();
 
     if (rb == NULL)
-        ERROR("rb == NULL\n", 1, "");
+        ERROR("rb == NULL\n", 1);
 
     if (data == NULL)
-        ERROR("data == NULL\n", 1, "");
+        ERROR("data == NULL\n", 1);
 
     if (ring_buffer_is_empty(rb))
-        ERROR("Ring Buffer is empty\n", 1, "");
+        ERROR("Ring Buffer is empty\n", 1);
 
     _t = (BYTE *)rb->____buf;
 
@@ -147,13 +147,13 @@ int ring_buffer_get_head(Ring_buffer *rb, void *data)
 
 int ring_buffer_dequeue(Ring_buffer *rb, void *data)
 {
-    TRACE("");
+    TRACE();
 
     int ret;
 
     ret = ring_buffer_get_head(rb, data);
     if (ret)
-        ERROR("Get head error\n", 1, "");
+        ERROR("Get head error\n", 1);
 
     RB_NEXT_HEAD(rb);
     --rb->____num_entries;
@@ -169,16 +169,16 @@ int ring_buffer_to_array(Ring_buffer *rb, void *array, size_t *size)
     void *t;
     BYTE *_t;
 
-    TRACE("");
+    TRACE();
 
     if (rb == NULL)
-        ERROR("rb == NULL\n", 1, "");
+        ERROR("rb == NULL\n", 1);
 
     if (array == NULL)
-        ERROR("array == NULL\n", 1, "");
+        ERROR("array == NULL\n", 1);
 
     if (ring_buffer_is_empty(rb))
-        ERROR("Ring Buffer is empty\n", 1, "");
+        ERROR("Ring Buffer is empty\n", 1);
 
     if (ring_buffer_is_full(rb))
     {
@@ -194,28 +194,28 @@ int ring_buffer_to_array(Ring_buffer *rb, void *array, size_t *size)
 
     t = malloc(bytes_to_move);
     if (t == NULL)
-        ERROR("malloc error\n", 1, "");
+        ERROR("malloc error\n", 1);
 
     _t = (BYTE *)rb->____buf;
 
     if (ring_buffer_is_full(rb))
     {
         if (memcpy(t, (void *)_t, bytes_to_move) == NULL)
-            ERROR("memcpy error\n", 1, "");
+            ERROR("memcpy error\n", 1);
     }
     else
     {
         if (rb->____head < rb->____tail)
         {
             if (memcpy(t, (void *)(_t + rb->____head), bytes_to_move) == NULL)
-                ERROR("memcpy error\n", 1, "");
+                ERROR("memcpy error\n", 1);
         }
         else
         {
             temp_bytes_to_move = (rb->____max_entries * rb->____data_size) - rb->____head;
             if (memcpy(t, (void *)(_t + rb->____head), temp_bytes_to_move) == NULL
                 || memcpy((void *)((BYTE *)t + temp_bytes_to_move), _t, rb->____tail) == NULL )
-                ERROR("memcpy error\n", 1, "");
+                ERROR("memcpy error\n", 1);
         }
     }
 
@@ -229,34 +229,34 @@ int ring_buffer_to_array(Ring_buffer *rb, void *array, size_t *size)
 
 bool ring_buffer_is_full(Ring_buffer *rb)
 {
-    TRACE("");
+    TRACE();
 
     return rb == NULL || rb->____num_entries == rb->____max_entries;
 }
 
 bool ring_buffer_is_empty(Ring_buffer *rb)
 {
-    TRACE("");
+    TRACE();
 
     return rb == NULL || rb->____num_entries == 0;
 }
 
 ssize_t ring_buffer_get_num_entries(Ring_buffer *rb)
 {
-    TRACE("");
+    TRACE();
 
     if (rb == NULL)
-        ERROR("rb == NULL\n", -1, "");
+        ERROR("rb == NULL\n", -1);
 
     return (ssize_t)rb->____num_entries;
 }
 
 int ring_buffer_get_data_size(Ring_buffer *rb)
 {
-    TRACE("");
+    TRACE();
 
     if (rb == NULL)
-        ERROR("rb == NULL\n", -1, "");
+        ERROR("rb == NULL\n", -1);
 
 
     return (int)rb->____data_size;

@@ -14,7 +14,7 @@ int getch(void)
 {
     int ch; /* getchar return int instead of char !!! */
 
-	TRACE("");
+	TRACE();
 
 	/* get current settings */
     if (tcgetattr(STDIN_FILENO, &old_attr) == -1)

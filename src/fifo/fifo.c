@@ -12,21 +12,21 @@ Fifo *fifo_create(int size_of)
 {
     Fifo *fifo;
 
-    TRACE("");
+    TRACE();
 
     if (size_of < 1)
-        ERROR("size_of < 1\n", NULL, "");
+        ERROR("size_of < 1\n", NULL);
 
     fifo = (Fifo *)malloc(sizeof(Fifo));
     if (fifo == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     fifo->____array = malloc(INIT_SIZE * (size_t)size_of);
     if (fifo->____array == NULL)
     {
         FREE(fifo);
 
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
     }
 
     fifo->____head = 0;
@@ -39,7 +39,7 @@ Fifo *fifo_create(int size_of)
 
 void fifo_destroy(Fifo *fifo)
 {
-    TRACE("");
+    TRACE();
 
     if (fifo == NULL)
         return;
@@ -50,7 +50,7 @@ void fifo_destroy(Fifo *fifo)
 
 void fifo_destroy_with_entries(Fifo *fifo, void (*destructor)(void *data))
 {
-    TRACE("");
+    TRACE();
 
     size_t i;
     BYTE *t;
@@ -80,7 +80,7 @@ void fifo_destroy_with_entries(Fifo *fifo, void (*destructor)(void *data))
 
 bool fifo_is_empty(Fifo *fifo)
 {
-    TRACE("");
+    TRACE();
 
     return fifo == NULL || fifo->____array == NULL || fifo->____head == fifo->____tail;
 }
@@ -94,10 +94,10 @@ int fifo_enqueue(Fifo *fifo, void *val)
     size_t entries_tail;
     size_t to_move;
 
-    TRACE("");
+    TRACE();
 
     if (fifo == NULL || val == NULL)
-        ERROR("fifo == NULL || val == NULL\n", 1, "");
+        ERROR("fifo == NULL || val == NULL\n", 1);
 
     _t = (BYTE *)fifo->____array;
     _val = (BYTE *)val;
@@ -114,7 +114,7 @@ int fifo_enqueue(Fifo *fifo, void *val)
         /* resize array */
         fifo->____size <<= 1;
         if ((fifo->____array = realloc(fifo->____array, fifo->____size * fifo->____size_of)) == NULL)
-            ERROR("realloc error\n", 1, "");
+            ERROR("realloc error\n", 1);
 
         /* if head is not at begining of fifo we need move entries */
         if (fifo->____head)
@@ -128,17 +128,17 @@ int fifo_enqueue(Fifo *fifo, void *val)
             /* move last entries at the end of new array */
             to_move = entries_tail * fifo->____size_of;
             if (memcpy((void *)(_t + (fifo->____size * fifo->____size_of) - to_move), _t, to_move) == NULL)
-                ERROR("memcpy error\n", 1, "");
+                ERROR("memcpy error\n", 1);
 
             /* move head entries at beginig of new array */
             if (memmove(_t, (void *)(_t + (fifo->____head * fifo->____size_of)), entries_head * fifo->____size_of) == NULL)
-                ERROR("memmove error\n", 1, "");
+                ERROR("memmove error\n", 1);
 
             /* move entries from end array to end of fifo */
             if (memcpy(     (void *)(_t + entries_head * fifo->____size_of),
                             (void *)(_t + (fifo->____size * fifo->____size_of) - to_move),
                             to_move) == NULL)
-                ERROR("memcpy error\n", 1, "");
+                ERROR("memcpy error\n", 1);
 
             fifo->____head = 0;
         }
@@ -153,13 +153,13 @@ int fifo_get_head(Fifo *fifo, void *val)
 {
     BYTE *_t;
 
-    TRACE("");
+    TRACE();
 
     if (fifo == NULL || val == NULL)
-        ERROR("fifo == NULL || val == NULL\n", 1, "");
+        ERROR("fifo == NULL || val == NULL\n", 1);
 
     if (fifo_is_empty(fifo))
-        ERROR("fifo is empty\n", 1, "");
+        ERROR("fifo is empty\n", 1);
 
     _t = (BYTE *)fifo->____array;
 
@@ -178,13 +178,13 @@ int fifo_dequeue(Fifo *fifo, void *val)
     size_t entries_tail;
     size_t buffer_entries;
 
-    TRACE("");
+    TRACE();
 
     if (fifo == NULL || val == NULL)
-        ERROR("fifo == NULL || val == NULL\n", 1, "");
+        ERROR("fifo == NULL || val == NULL\n", 1);
 
     if (fifo_is_empty(fifo))
-        ERROR("fifo is empty\n", 1, "");
+        ERROR("fifo is empty\n", 1);
 
     _t = (BYTE *)fifo->____array;
 
@@ -206,7 +206,7 @@ int fifo_dequeue(Fifo *fifo, void *val)
         {
             if (memmove(_t, (void *)(_t + (fifo->____head * fifo->____size_of)),
                             (fifo->____tail - fifo->____head) * fifo->____size_of) == NULL)
-                ERROR("memmove error\n", 1, "");
+                ERROR("memmove error\n", 1);
 
             fifo->____tail -= fifo->____head;
         }
@@ -226,7 +226,7 @@ int fifo_dequeue(Fifo *fifo, void *val)
                 || memmove((void *)(_t + (entries_head * fifo->____size_of)), _t,
                             entries_tail * fifo->____size_of) == NULL
                 || memcpy(_t, (void *)buffer, buffer_entries * fifo->____size_of) == NULL)
-                        ERROR("memcpy error\n", 1, "");
+                        ERROR("memcpy error\n", 1);
             }
             else
             {
@@ -235,7 +235,7 @@ int fifo_dequeue(Fifo *fifo, void *val)
                             entries_head * fifo->____size_of) == NULL
                 || memcpy((void *)(_t + (entries_head * fifo->____size_of)),
                           (void *)buffer, buffer_entries * fifo->____size_of) == NULL )
-                    ERROR("memcpy error\n", 1, "");
+                    ERROR("memcpy error\n", 1);
             }
 
             fifo->____tail = entries_head + entries_tail;
@@ -246,7 +246,7 @@ int fifo_dequeue(Fifo *fifo, void *val)
         fifo->____head = 0;
 
         if ((fifo->____array = realloc(fifo->____array, fifo->____size * fifo->____size_of)) == NULL )
-            ERROR("realloc error\n", 1, "");
+            ERROR("realloc error\n", 1);
     }
 
     return 0;
@@ -260,13 +260,13 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size)
     void *t;
     BYTE *_t;
 
-    TRACE("");
+    TRACE();
 
     if (fifo == NULL || array == NULL)
-        ERROR("fifo == NULL || array == NULL\n", 1, "");
+        ERROR("fifo == NULL || array == NULL\n", 1);
 
     if (fifo_is_empty(fifo))
-        ERROR("fifo is empty\n", 1, "");
+        ERROR("fifo is empty\n", 1);
 
     if( fifo->____tail < fifo->____head)
         entries = fifo->____tail + fifo->____size - fifo->____head;
@@ -275,7 +275,7 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size)
 
     t = malloc(entries * fifo->____size_of);
     if (t == NULL)
-        ERROR("malloc error\n", 1, "");
+        ERROR("malloc error\n", 1);
 
     _t = (BYTE *)fifo->____array;
 
@@ -283,7 +283,7 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size)
     {
         if (memcpy(t, (void *)(_t + (fifo->____head * fifo->____size_of)),
         entries * fifo->____size_of) == NULL)
-            ERROR("memcpy error\n", 1, "");
+            ERROR("memcpy error\n", 1);
     }
     else
     {
@@ -291,7 +291,7 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size)
         if (memcpy(t, (void *)(_t + (fifo->____head * fifo->____size_of)), bytes_to_move) == NULL
                 || memcpy((void *)((BYTE *)t + bytes_to_move), _t,
                           fifo->____tail * fifo->____size_of) == NULL )
-            ERROR("memcpy error\n", 1, "");
+            ERROR("memcpy error\n", 1);
     }
 
     if (size != NULL)
@@ -304,10 +304,10 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size)
 
 int fifo_get_data_size(Fifo *fifo)
 {
-    TRACE("");
+    TRACE();
 
     if (fifo == NULL)
-        ERROR("fifo == NULL\n", -1, "");
+        ERROR("fifo == NULL\n", -1);
 
     return (int)fifo->____size_of;
 }
@@ -316,10 +316,10 @@ ssize_t fifo_get_num_entries(Fifo *fifo)
 {
     ssize_t entries;
 
-    TRACE("");
+    TRACE();
 
     if (fifo == NULL)
-        ERROR("fifo == NULL\n", -1, "");
+        ERROR("fifo == NULL\n", -1);
 
     if (fifo->____tail < fifo->____head)
         entries = (ssize_t)fifo->____tail + (ssize_t)fifo->____size - (ssize_t)fifo->____head;
