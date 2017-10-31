@@ -336,4 +336,6 @@
 /* garbage_collected by function with only 1 arg: pointer to this variable */
 #define ___garbage_collector___(func) __attribute__(( cleanup(func) ))
 
+#define ___restrict___ restrict
+
 #endif

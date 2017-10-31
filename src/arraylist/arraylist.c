@@ -19,9 +19,9 @@
     NULL if failure
     Pointer if success
 */
-___inline___ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev,
-                                                           Arraylist_node  *next,
-                                                           void            *data,
+___inline___ static Arraylist_node *arraylist_node_create( const Arraylist_node  *prev,
+                                                           const Arraylist_node  *next,
+                                                           const void            *data,
                                                            int             size_of);
 /*
     Destory node
@@ -34,10 +34,10 @@ ___inline___ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev
 */
 ___inline___ static void arraylist_node_destroy(Arraylist_node *node);
 
-___inline___ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev,
-                                                         Arraylist_node  *next,
-                                                         void            *data,
-                                                         int size_of)
+___inline___ static Arraylist_node *arraylist_node_create(  const Arraylist_node  *prev,
+                                                            const Arraylist_node  *next,
+                                                            const void            *data,
+                                                            int size_of)
 {
     Arraylist_node *node;
 
@@ -57,8 +57,8 @@ ___inline___ static Arraylist_node *arraylist_node_create( Arraylist_node  *prev
         ERROR("malloc error\n", NULL);
 	}
 
-    node->____next = next;
-    node->____prev = prev;
+    node->____next = (Arraylist_node *)next;
+    node->____prev = (Arraylist_node *)prev;
     node->____size_of = (size_t)size_of;
     __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data,size_of);
 
@@ -150,7 +150,7 @@ void arraylist_destroy_with_entries(Arraylist *alist,
     return;
 }
 
-int arraylist_insert_first(Arraylist *alist, void *data)
+int arraylist_insert_first(Arraylist *alist, const void *data)
 {
     Arraylist_node *node;
 
@@ -181,7 +181,7 @@ int arraylist_insert_first(Arraylist *alist, void *data)
     return 0;
 }
 
-int arraylist_insert_last(Arraylist *alist, void *data)
+int arraylist_insert_last(Arraylist *alist, const void *data)
 {
     Arraylist_node *node;
 
@@ -211,7 +211,7 @@ int arraylist_insert_last(Arraylist *alist, void *data)
     return 0;
 }
 
-int arraylist_insert_pos(Arraylist *alist, size_t pos, void *data)
+int arraylist_insert_pos(Arraylist *alist, size_t pos, const void *data)
 {
     Arraylist_node *node;
     Arraylist_node *ptr;
@@ -376,7 +376,7 @@ int arraylist_delete_pos(Arraylist *alist, size_t pos)
     return 0;
 }
 
-int arraylist_get_pos(Arraylist *alist, size_t pos, void *data)
+int arraylist_get_pos(const Arraylist *alist, size_t pos, void *data)
 {
     Arraylist_node *ptr;
     size_t i;
@@ -411,7 +411,7 @@ int arraylist_get_pos(Arraylist *alist, size_t pos, void *data)
     return 0;
 }
 
-Arraylist *arraylist_merge(Arraylist *alist1, Arraylist *alist2)
+Arraylist *arraylist_merge(const Arraylist  * ___restrict___ alist1, const Arraylist * ___restrict___ alist2)
 {
     Arraylist_node *ptr1;
     Arraylist_node *ptr2;
@@ -444,7 +444,7 @@ Arraylist *arraylist_merge(Arraylist *alist1, Arraylist *alist2)
     return result;
 }
 
-int arraylist_to_array(Arraylist *alist, void *array, size_t *size)
+int arraylist_to_array(const Arraylist *alist, void *array, size_t *size)
 {
     Arraylist_node *ptr;
     BYTE *t;
@@ -480,7 +480,7 @@ int arraylist_to_array(Arraylist *alist, void *array, size_t *size)
     return 0;
 }
 
-int arraylist_get_data_size(Arraylist *alist)
+int arraylist_get_data_size(const Arraylist *alist)
 {
     TRACE();
 
@@ -490,7 +490,7 @@ int arraylist_get_data_size(Arraylist *alist)
     return (int)alist->____size_of;
 }
 
-ssize_t arraylist_get_num_entries(Arraylist *alist)
+ssize_t arraylist_get_num_entries(const Arraylist *alist)
 {
     TRACE();
 
@@ -500,7 +500,7 @@ ssize_t arraylist_get_num_entries(Arraylist *alist)
     return (ssize_t)alist->____length;
 }
 
-int arraylist_node_get_data(Arraylist_node *node, void *data)
+int arraylist_node_get_data(const Arraylist_node *node, void *data)
 {
     TRACE();
 
@@ -512,7 +512,7 @@ int arraylist_node_get_data(Arraylist_node *node, void *data)
     return 0;
 }
 
-Arraylist_iterator *arraylist_iterator_create(Arraylist *alist, iti_mode_t mode)
+Arraylist_iterator *arraylist_iterator_create(const Arraylist *alist, iti_mode_t mode)
 {
     Arraylist_iterator *iterator;
 
@@ -551,7 +551,7 @@ void arraylist_iterator_destroy(Arraylist_iterator *iterator)
     FREE(iterator);
 }
 
-int arraylist_iterator_init(Arraylist *alist, Arraylist_iterator *iterator,
+int arraylist_iterator_init(const Arraylist *alist, Arraylist_iterator *iterator,
         iti_mode_t mode)
 {
     TRACE();
@@ -599,7 +599,7 @@ int arraylist_iterator_prev(Arraylist_iterator *iterator)
     return 0;
 }
 
-int arraylist_iterator_get_data(Arraylist_iterator *iterator, void *val)
+int arraylist_iterator_get_data(const Arraylist_iterator *iterator, void *val)
 {
     TRACE();
 
@@ -611,7 +611,7 @@ int arraylist_iterator_get_data(Arraylist_iterator *iterator, void *val)
     return 0;
 }
 
-int arraylist_iterator_get_node(Arraylist_iterator *iterator, void *node)
+int arraylist_iterator_get_node(const Arraylist_iterator *iterator, void *node)
 {
     TRACE();
 
@@ -623,7 +623,7 @@ int arraylist_iterator_get_node(Arraylist_iterator *iterator, void *node)
     return 0;
 }
 
-bool arraylist_iterator_end(Arraylist_iterator *iterator)
+bool arraylist_iterator_end(const Arraylist_iterator *iterator)
 {
     TRACE();
 
