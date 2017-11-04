@@ -37,8 +37,8 @@ success "Libs Compiled"
 
 # Create dirs and copy libs
 info "Installing libs to $lib_dir ..."
-mkdir -p $lib_dir >/dev/null 2>&1 || error "mkdir error"
+mkdir -p "$lib_dir" >/dev/null 2>&1 || error "mkdir error"
 
-cp -R ../obj/* $lib_dir >/dev/null 2>&1 || error "cp error"
+cp -R ../obj/* "$lib_dir" >/dev/null 2>&1 || error "cp error"
 
 success "DONE"
