@@ -13,7 +13,7 @@
     true iff klist is empty
     false iff klist is not empty
 */
-static ___inline___ bool klist_is_empty(KList_master *list);
+static ___inline___ bool klist_is_empty(const KList_master *list);
 
 /*
     Insert new node between prev and next nodes
@@ -42,9 +42,9 @@ static ___inline___ int klist_insert(KList_master *list, KList *_new, KList *pre
     NULL iff failure
     Pointer to KList iff success
 */
-static ___inline___ KList *klist_pos(KList_master *list, size_t pos);
+static ___inline___ KList *klist_pos(const KList_master *list, size_t pos);
 
-static ___inline___ bool klist_is_empty(KList_master *list)
+static ___inline___ bool klist_is_empty(const KList_master *list)
 {
 	return !CAST_TO_BOOL(list->____length);
 }
@@ -107,7 +107,7 @@ static ___inline___ int klist_delete(KList *entry)
     return 0;
 }
 
-static ___inline___ KList *klist_pos(KList_master *list, size_t pos)
+static ___inline___ KList *klist_pos(const KList_master *list, size_t pos)
 {
     KList *ptr;
     size_t i;
@@ -269,7 +269,7 @@ int klist_delete_pos(KList_master *list, size_t pos)
     return klist_delete(ptr);
 }
 
-KList *klist_get_pos(KList_master *list, size_t pos)
+KList *klist_get_pos(const KList_master *list, size_t pos)
 {
     TRACE();
 
@@ -279,7 +279,7 @@ KList *klist_get_pos(KList_master *list, size_t pos)
     return klist_pos(list, pos);
 }
 
-ssize_t klist_get_num_entries(KList_master *list)
+ssize_t klist_get_num_entries(const KList_master *list)
 {
     TRACE();
 
@@ -289,7 +289,7 @@ ssize_t klist_get_num_entries(KList_master *list)
     return (ssize_t)list->____length;
 }
 
-KList *klist_get_head(KList_master *list)
+KList *klist_get_head(const KList_master *list)
 {
     TRACE();
 
@@ -302,7 +302,7 @@ KList *klist_get_head(KList_master *list)
         return list->____head;
 }
 
-KList *klist_get_tail(KList_master *list)
+KList *klist_get_tail(const KList_master *list)
 {
     TRACE();
 
@@ -341,7 +341,7 @@ void klist_master_destroy(KList_master *list)
     FREE(list);
 }
 
-KList_master *klist_get_parent(KList *list)
+KList_master *klist_get_parent(const KList *list)
 {
     TRACE();
 

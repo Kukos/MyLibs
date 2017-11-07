@@ -30,7 +30,7 @@ typedef struct List
     List_node       *____head;
     List_node       *____tail;      /* needed for insert guardian */
 
-    int (*____cmp)(void* a, void *b);
+    int (*____cmp)(const void* a, const void *b);
 
 }List;
 
@@ -70,7 +70,7 @@ IT_FUNC(List, list)
     NULL if failure
     Pointer if success
 */
-SList *slist_list_create(int size_of, int (*cmp)(void* a, void *b));
+SList *slist_list_create(int size_of, int (*cmp)(const void *a, const void *b));
 
 
 /*
@@ -84,7 +84,7 @@ SList *slist_list_create(int size_of, int (*cmp)(void* a, void *b));
     NULL iff failure
     Pointer iff success
 */
-List *list_create(int size_of, int (*cmp)(void* a, void *b));
+List *list_create(int size_of, int (*cmp)(const void *a, const void *b));
 
 /*
     Destroy list
@@ -120,7 +120,7 @@ void list_destroy_with_entries(List *list, void (*destructor)(void *data));
     0 iff success
 	Non-zero value iff failure
 */
-int list_insert(List *list, void *entry);
+int list_insert(List *list, const void *entry);
 
 /*
     Delete the first entry which cmp(list->entry, entry) == 0
@@ -133,7 +133,7 @@ int list_insert(List *list, void *entry);
 	0 iff success
 	Non-zero value iff failure (i.e entry doesn't exist in list )
 */
-int list_delete(List *list,void *entry);
+int list_delete(List *list, const void *entry);
 
 /*
     Delete all entries which cmp(list->entry,entry) == 0
@@ -146,7 +146,7 @@ int list_delete(List *list,void *entry);
     -1 iff failure (i.e entry doesn't exist in list )
     Number of delete entries iff success
 */
-int list_delete_all(List *list, void *entry);
+int list_delete_all(List *list, const void *entry);
 
 /*
     Allocate new list and merge list1 & list2 to the new list
@@ -159,7 +159,7 @@ int list_delete_all(List *list, void *entry);
     NULL iff failure
     Pointer to list iff success
 */
-List *list_merge(List *list1, List *list2);
+List *list_merge(const List * ___restrict___ list1, const List * ___restrict___ list2);
 
 /*
     Search for entry which cmp(list.entry,val) == 0,
@@ -188,7 +188,7 @@ List *list_merge(List *list1, List *list2);
     0 iff success
 	Non-zero value iff failure
 */
-int list_search(List *list, void *val, void *entry);
+int list_search(List *list, const void *val, void *entry);
 
 /*
     Create array from list
@@ -202,7 +202,7 @@ int list_search(List *list, void *val, void *entry);
     0 iff success
 	Non-zero value iff failure
 */
-int list_to_array(List *list, void *array, size_t *size);
+int list_to_array(const List *list, void *array, size_t *size);
 
 /*
     Get size of data List
@@ -214,7 +214,7 @@ int list_to_array(List *list, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-int list_get_data_size(List *list);
+int list_get_data_size(const List *list);
 
 /*
     Get number of entries in List
@@ -226,6 +226,6 @@ int list_get_data_size(List *list);
     -1 iff failure
     sizeof iff success
 */
-ssize_t list_get_num_entries(List *list);
+ssize_t list_get_num_entries(const List *list);
 
 #endif

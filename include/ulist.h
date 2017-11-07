@@ -159,27 +159,27 @@ ___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_
     \
     static ___unused___ int ____get_pos(const void *list, size_t pos, void *data) \
     { \
-        return concat(prefix, _get_pos)((type *)list, pos, data); \
+        return concat(prefix, _get_pos)((const type *)list, pos, data); \
     } \
     \
     static ___unused___ void *____merge(const void * ___restrict___ list1, const void * ___restrict___ list2) \
     { \
-        return (void *)concat(prefix, _merge)((type *)list1, (type *)list2); \
+        return (void *)concat(prefix, _merge)((const type * ___restrict___)list1, (const type * ___restrict___)list2); \
     } \
     \
     static ___unused___ int ____to_array(const void *list, void *array, size_t *size) \
     { \
-        return concat(prefix, _to_array)((type *)list, array, size); \
+        return concat(prefix, _to_array)((const type *)list, array, size); \
     } \
     \
     static ___unused___ int ____get_data_size(const void *list) \
     { \
-        return concat(prefix, _get_data_size)((type *)list); \
+        return concat(prefix, _get_data_size)((const type *)list); \
     } \
     \
     static ___unused___ ssize_t ____get_num_entries(const void *list) \
     { \
-        return concat(prefix, _get_num_entries)((type *)list); \
+        return concat(prefix, _get_num_entries)((const type *)list); \
     }
 
 

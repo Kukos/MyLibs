@@ -18,7 +18,7 @@
     NULL iff failure
     Pointer to List_node iff success
 */
-___inline___ static List_node *list_node_create(List_node *next, void* data,
+___inline___ static List_node *list_node_create(const List_node *next, const void *data,
                 int size_of);
 
 
@@ -34,7 +34,7 @@ ___inline___ static List_node *list_node_create(List_node *next, void* data,
 ___inline___ static void list_node_destroy(List_node *node);
 
 
-___inline___ static List_node *list_node_create(List_node *next, void *data,
+___inline___ static List_node *list_node_create(const List_node *next, const void *data,
      int size_of)
 {
     List_node *node;
@@ -55,7 +55,7 @@ ___inline___ static List_node *list_node_create(List_node *next, void *data,
         ERROR("malloc error\n", NULL);
 	}
 
-    node->____next = next;
+    node->____next = (List_node *)next;
     __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
 
     return node;
@@ -74,7 +74,7 @@ static void list_node_destroy(List_node *node)
 
 
 
-List *list_create(int size_of, int (*cmp)(void* a, void *b))
+List *list_create(int size_of, int (*cmp)(const void *a, const void *b))
 {
     List *list;
 
@@ -149,7 +149,7 @@ void list_destroy_with_entries(List *list, void (*destructor)(void *data))
     return;
 }
 
-int list_insert(List *list, void *entry)
+int list_insert(List *list, const void *entry)
 {
     List_node *node;
     List_node *ptr;
@@ -220,7 +220,7 @@ int list_insert(List *list, void *entry)
     return 0;
 }
 
-int list_delete(List *list, void *entry)
+int list_delete(List *list, const void *entry)
 {
     List_node *ptr;
     List_node *prev;
@@ -289,7 +289,7 @@ int list_delete(List *list, void *entry)
     return 0;
 }
 
-int list_delete_all(List *list, void *entry)
+int list_delete_all(List *list, const void *entry)
 {
     List_node *ptr;
     List_node *prev;
@@ -375,7 +375,7 @@ int list_delete_all(List *list, void *entry)
     return (int)deleted;
 }
 
-List *list_merge(List *list1, List *list2)
+List *list_merge(const List * ___restrict___ list1, const List * ___restrict___ list2)
 {
     List *list3;
     List_node *ptr1;
@@ -470,7 +470,7 @@ List *list_merge(List *list1, List *list2)
     return list3;
 }
 
-int list_search(List *list, void *val, void *entry)
+int list_search(List *list, const void *val, void *entry)
 {
     List_node *ptr;
     List_node *guard;
@@ -518,7 +518,7 @@ int list_search(List *list, void *val, void *entry)
     }
 }
 
-int list_to_array(List *list, void *array, size_t *size)
+int list_to_array(const List *list, void *array, size_t *size)
 {
     List_node *ptr;
     BYTE *t;
@@ -562,7 +562,7 @@ int list_to_array(List *list, void *array, size_t *size)
     return 0;
 }
 
-int list_get_data_size(List *list)
+int list_get_data_size(const List *list)
 {
     TRACE();
 
@@ -572,7 +572,7 @@ int list_get_data_size(List *list)
     return (int)list->____size_of;
 }
 
-ssize_t list_get_num_entries(List *list)
+ssize_t list_get_num_entries(const List *list)
 {
     TRACE();
 
@@ -582,7 +582,7 @@ ssize_t list_get_num_entries(List *list)
     return (ssize_t)list->____length;
 }
 
-List_iterator *list_iterator_create(List *list, iti_mode_t mode)
+List_iterator *list_iterator_create(const List *list, iti_mode_t mode)
 {
     List_iterator *iterator;
 
@@ -617,7 +617,7 @@ void list_iterator_destroy(List_iterator *iterator)
     FREE(iterator);
 }
 
-int list_iterator_init(List *list, List_iterator *iterator, iti_mode_t mode)
+int list_iterator_init(const List *list, List_iterator *iterator, iti_mode_t mode)
 {
     TRACE();
 
@@ -663,7 +663,7 @@ int list_iterator_prev(List_iterator *iterator)
     return 0;
 }
 
-int list_iterator_get_data(List_iterator *iterator, void *val)
+int list_iterator_get_data(const List_iterator *iterator, void *val)
 {
     TRACE();
 
@@ -678,7 +678,7 @@ int list_iterator_get_data(List_iterator *iterator, void *val)
     return 0;
 }
 
-int list_iterator_get_node(List_iterator *iterator, void *node)
+int list_iterator_get_node(const List_iterator *iterator, void *node)
 {
     TRACE();
 
@@ -693,7 +693,7 @@ int list_iterator_get_node(List_iterator *iterator, void *node)
     return 0;
 }
 
-bool list_iterator_end(List_iterator *iterator)
+bool list_iterator_end(const List_iterator *iterator)
 {
     TRACE();
 
@@ -705,7 +705,7 @@ bool list_iterator_end(List_iterator *iterator)
 
 SLIST_WRAPPERS_CREATE(List, list)
 
-SList *slist_list_create(int size_of, int (*cmp)(void* a, void *b))
+SList *slist_list_create(int size_of, int (*cmp)(const void *a, const void *b))
 {
     SList *list;
 
