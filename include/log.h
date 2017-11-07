@@ -121,7 +121,7 @@ void __attribute__(( format(printf,1, 2) ))  __error__(const char *msg, ...);
     0 iff success
     non-zero value iff failure
 */
-int log_init(FILE *fd, int to_file);
+int log_init(const FILE *fd, int to_file);
 
 /*
     deinit log system
