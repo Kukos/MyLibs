@@ -34,11 +34,11 @@
     %0 if success
     %Non-zero value if failure
 */
-___inline___ static int merge(    void        *t,
+___inline___ static int merge(  void        *t,
                                 size_t      offset_left,
                                 size_t      offset_middle,
                                 size_t      offset_right,
-                                int         (*cmp)(void *a, void *b),
+                                int         (*cmp)(const void *a, const void *b),
                                 int         size_of,
                                 void        *buffer);
 
@@ -57,12 +57,12 @@ ___inline___ static int merge(    void        *t,
     %0 if success
     %Non-zero value if failure
 */
-___inline___ static int medians_of_3(     void        *t,
-                                        size_t      offset_index1,
-                                        size_t      offset_index2,
-                                        size_t      offset_index3,
-                                        int         (*cmp)(void *a, void *b),
-                                        size_t      *median_pos);
+___inline___ static int medians_of_3(   const void        *t,
+                                        size_t            offset_index1,
+                                        size_t            offset_index2,
+                                        size_t            offset_index3,
+                                        int               (*cmp)(const void *a, const void *b),
+                                        size_t            *median_pos);
 
 
 /*
@@ -82,13 +82,13 @@ ___inline___ static int medians_of_3(     void        *t,
     %Non-zero value if failure
 
 */
-___inline___ static int tukey_medians(    void        *t,
-                                        size_t      offset_left,
-                                        size_t      offset_right,
-                                        size_t      epsilon,
-                                        int         (*cmp)(void *a, void *b),
-                                        int         size_of,
-                                        size_t      *median_pos);
+___inline___ static int tukey_medians(  const void        *t,
+                                        size_t            offset_left,
+                                        size_t            offset_right,
+                                        size_t            psilon,
+                                        int               (*cmp)(const void *a, const void *b),
+                                        int               size_of,
+                                        size_t            *median_pos);
 
 
 /*
@@ -110,7 +110,7 @@ ___inline___ static int tukey_medians(    void        *t,
 static int partition_bentley(   void        *t,
                                 size_t      offset_left,
                                 size_t      offset_right,
-                                int         (*cmp)(void *a, void *b),
+                                int         (*cmp)(const void *a, const void *b),
                                 int         size_of,
                                 size_t      *offset_left_index,
                                 size_t      *offset_right_index);
@@ -133,15 +133,15 @@ static int partition_bentley(   void        *t,
 static int _quicksort(  void        *t,
                         size_t      offset_left,
                         size_t      offset_right,
-                        int         (*cmp)(void *a, void *b),
+                        int         (*cmp)(const void *a, const void *b),
                         int         size_of);
 
 
-___inline___ static int merge(    void        *t,
+___inline___ static int merge(  void        *t,
                                 size_t      offset_left,
                                 size_t      offset_middle,
                                 size_t      offset_right,
-                                int         (*cmp)(void *a, void *b),
+                                int         (*cmp)(const void *a, const void *b),
                                 int         size_of,
                                 void        *buffer)
 {
@@ -203,12 +203,12 @@ ___inline___ static int merge(    void        *t,
     return 0;
 }
 
-___inline___ static int medians_of_3(     void        *t,
-                                        size_t      offset_index1,
-                                        size_t      offset_index2,
-                                        size_t      offset_index3,
-                                        int         (*cmp)(void *a, void *b),
-                                        size_t      *median_pos)
+___inline___ static int medians_of_3(   const void        *t,
+                                        size_t            offset_index1,
+                                        size_t            offset_index2,
+                                        size_t            offset_index3,
+                                        int               (*cmp)(const void *a, const void *b),
+                                        size_t            *median_pos)
 {
     BYTE *_t;
 
@@ -264,13 +264,13 @@ ___inline___ static int medians_of_3(     void        *t,
     }
 }
 
-___inline___ static int tukey_medians(    void        *t,
-                                        size_t      offset_left,
-                                        size_t      offset_right,
-                                        size_t      epsilon,
-                                        int         (*cmp)(void *a, void *b),
-                                        int         size_of,
-                                        size_t      *median_pos)
+___inline___ static int tukey_medians(  const void        *t,
+                                        size_t            offset_left,
+                                        size_t            offset_right,
+                                        size_t            epsilon,
+                                        int               (*cmp)(const void *a, const void *b),
+                                        int               size_of,
+                                        size_t            *median_pos)
 {
     size_t offset_middle;
     size_t m1;
@@ -312,7 +312,7 @@ ___inline___ static int tukey_medians(    void        *t,
 static int partition_bentley(   void        *t,
                                 size_t      offset_left,
                                 size_t      offset_right,
-                                int         (*cmp)(void *a,void *b),
+                                int         (*cmp)(const void *a, const void *b),
                                 int         size_of,
                                 size_t      *offset_left_index,
                                 size_t      *offset_right_index)
@@ -420,7 +420,7 @@ static int partition_bentley(   void        *t,
 static int _quicksort(  void        *t,
                         size_t      offset_left,
                         size_t      offset_right,
-                        int         (*cmp)(void *a, void *b),
+                        int         (*cmp)(const void *a, const void *b),
                         int         size_of)
 {
     BYTE *_t;
@@ -495,7 +495,7 @@ static int _quicksort(  void        *t,
     return 0;
 }
 
-int insort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+int insort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     /* we use buffer instead of temporary variable */
     BYTE buffer[MAXWORD];
@@ -552,7 +552,7 @@ int insort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_o
     return 0;
 }
 
-int binsort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+int binsort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     size_t size;
 
@@ -655,7 +655,7 @@ int binsort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_
     return 0;
 }
 
-int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+int mergesort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     ssize_t i;
     ssize_t offset_i;
@@ -733,7 +733,7 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
     return 0;
 }
 
-int quicksort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+int quicksort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     TRACE();
 
@@ -752,7 +752,7 @@ int quicksort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
     return _quicksort(t, 0, (num_elements - 1) * (size_t)size_of, cmp, size_of);
 }
 
-int sort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+int sort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     TRACE();
 
