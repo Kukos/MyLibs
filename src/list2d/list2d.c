@@ -19,10 +19,10 @@
     NULL if failure
     Pointer to List_node if success
 */
-___inline___ static List2D_node *list2d_node_create(    List2D_node     *prev,
-                                                        List2D_node     *next,
-                                                        void            *data,
-                                                        int             size_of);
+___inline___ static List2D_node *list2d_node_create(    const List2D_node     *prev,
+                                                        const List2D_node     *next,
+                                                        const void            *data,
+                                                        int                   size_of);
 
 /*
     Destory node
@@ -35,10 +35,10 @@ ___inline___ static List2D_node *list2d_node_create(    List2D_node     *prev,
 */
 ___inline___ static void list2d_node_destroy(List2D_node *node);
 
-___inline___ static List2D_node *list2d_node_create(    List2D_node     *prev,
-                                                        List2D_node     *next,
-                                                        void            *data,
-                                                        int             size_of)
+___inline___ static List2D_node *list2d_node_create(    const List2D_node     *prev,
+                                                        const List2D_node     *next,
+                                                        const void            *data,
+                                                        int                   size_of)
 {
     List2D_node *node;
 
@@ -58,8 +58,8 @@ ___inline___ static List2D_node *list2d_node_create(    List2D_node     *prev,
         ERROR("malloc error\n", NULL);
     }
 
-    node->____next = next;
-    node->____prev = prev;
+    node->____next = (List2D_node *)next;
+    node->____prev = (List2D_node *)prev;
 
     __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
 
@@ -77,7 +77,7 @@ ___inline___ static void list2d_node_destroy(List2D_node *node)
     FREE(node);
 }
 
-List2D *list2d_create(int size_of, int (*cmp)(void* a, void *b), int (*diff)(void* a, void* b))
+List2D *list2d_create(int size_of, int (*cmp)(const void *a, const void *b), int (*diff)(const void *a, const void *b))
 {
     List2D *list;
 
@@ -177,7 +177,7 @@ void list2d_destroy_with_entries(List2D *list, void (*destructor)(void *data))
     return;
 }
 
-int list2d_insert(List2D *list, void *entry)
+int list2d_insert(List2D *list, const void *entry)
 {
     List2D_node *node;
     List2D_node *ptr;
@@ -282,7 +282,7 @@ int list2d_insert(List2D *list, void *entry)
     return 0;
 }
 
-int list2d_delete(List2D *list, void *entry)
+int list2d_delete(List2D *list, const void *entry)
 {
     List2D_node *guard;
     List2D_node *ptr;
@@ -365,7 +365,7 @@ int list2d_delete(List2D *list, void *entry)
     return 0;
 }
 
-int list2d_delete_all(List2D *list, void *entry)
+int list2d_delete_all(List2D *list, const void *entry)
 {
     List2D_node     *guard;
     List2D_node     *ptr;
@@ -487,7 +487,7 @@ int list2d_delete_all(List2D *list, void *entry)
     return deleted;
 }
 
-int list2d_search(List2D *list, void *val, void *entry)
+int list2d_search(List2D *list, const void *val, void *entry)
 {
     List2D_node *guard;
     List2D_node *ptr;
@@ -565,7 +565,7 @@ int list2d_search(List2D *list, void *val, void *entry)
     return 1;
 }
 
-int list2d_to_array(List2D *list, void *array, size_t *size)
+int list2d_to_array(const List2D *list, void *array, size_t *size)
 {
     List2D_node     *ptr;
     List2D_node     *end;
@@ -612,7 +612,7 @@ int list2d_to_array(List2D *list, void *array, size_t *size)
     return 0;
 }
 
-List2D *list2d_merge(List2D *list1, List2D *list2)
+List2D *list2d_merge(const List2D * ___restrict___ list1, const List2D * ___restrict___ list2)
 {
     List2D          *result;
 
@@ -751,7 +751,7 @@ List2D *list2d_merge(List2D *list1, List2D *list2)
     return result;
 }
 
-int list2d_get_data_size(List2D *list)
+int list2d_get_data_size(const List2D *list)
 {
     TRACE();
 
@@ -761,7 +761,7 @@ int list2d_get_data_size(List2D *list)
     return (int)list->____size_of;
 }
 
-ssize_t list2d_get_num_entries(List2D *list)
+ssize_t list2d_get_num_entries(const List2D *list)
 {
     TRACE();
 
@@ -771,7 +771,7 @@ ssize_t list2d_get_num_entries(List2D *list)
     return (ssize_t)list->____length;
 }
 
-List2D_iterator *list2d_iterator_create(List2D *list, iti_mode_t mode)
+List2D_iterator *list2d_iterator_create(const List2D *list, iti_mode_t mode)
 {
     List2D_iterator *iterator;
 
@@ -818,7 +818,7 @@ void list2d_iterator_destroy(List2D_iterator *iterator)
     FREE(iterator);
 }
 
-int list2d_iterator_init(List2D *list, List2D_iterator *iterator, iti_mode_t mode)
+int list2d_iterator_init(const List2D *list, List2D_iterator *iterator, iti_mode_t mode)
 {
     TRACE();
 
@@ -884,7 +884,7 @@ int list2d_iterator_prev(List2D_iterator *iterator)
     return 0;
 }
 
-int list2d_iterator_get_data(List2D_iterator *iterator, void *val)
+int list2d_iterator_get_data(const List2D_iterator *iterator, void *val)
 {
     TRACE();
 
@@ -899,7 +899,7 @@ int list2d_iterator_get_data(List2D_iterator *iterator, void *val)
     return 0;
 }
 
-int list2d_iterator_get_node(List2D_iterator *iterator, void *node)
+int list2d_iterator_get_node(const List2D_iterator *iterator, void *node)
 {
     TRACE();
 
@@ -914,7 +914,7 @@ int list2d_iterator_get_node(List2D_iterator *iterator, void *node)
     return 0;
 }
 
-bool list2d_iterator_end(List2D_iterator *iterator)
+bool list2d_iterator_end(const List2D_iterator *iterator)
 {
     TRACE();
 
@@ -927,8 +927,8 @@ bool list2d_iterator_end(List2D_iterator *iterator)
 
 SLIST_WRAPPERS_CREATE(List2D, list2d)
 
-SList *slist_list2d_create(int size_of, int (*cmp)(void* a,void *b),
-    int (*diff)(void* a, void* b))
+SList *slist_list2d_create(int size_of, int (*cmp)(const void *a, const void *b),
+    int (*diff)(const void *a, const void *b))
 {
     SList *list;
 

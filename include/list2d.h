@@ -56,8 +56,8 @@ typedef struct List2D
 
     List2D_node     *____head;
 
-    int (*____cmp)(void* a, void *b);
-    int (*____diff)(void* a, void* b);
+    int (*____cmp)(const void *a, const void *b);
+    int (*____diff)(const void *a, const void *b);
 
 }List2D;
 
@@ -98,8 +98,8 @@ IT_FUNC(List2D, list2d)
     NULL iff failure
     Pointer iff success
 */
-SList *slist_list2d_create(int size_of, int (*cmp)(void* a,void *b),
-    int (*diff)(void* a, void* b));
+SList *slist_list2d_create(int size_of, int (*cmp)(const void *a, const void *b),
+    int (*diff)(const void *a, const void *b));
 
 /*
     Create list
@@ -113,8 +113,8 @@ SList *slist_list2d_create(int size_of, int (*cmp)(void* a,void *b),
     NULL iff failure
     Pointer iff success
 */
-List2D *list2d_create(int size_of, int (*cmp)(void* a,void *b),
-    int (*diff)(void* a, void* b));
+List2D *list2d_create(int size_of, int (*cmp)(const void *a, const void *b),
+    int (*diff)(const void *a, const void *b));
 
 /*
     Destroy list
@@ -150,7 +150,7 @@ void list2d_destroy_with_entries(List2D *list, void (*destructor)(void *data));
     0 iff success
 	Non-zero value iff failure
 */
-int list2d_insert(List2D *list, void *entry);
+int list2d_insert(List2D *list, const void *entry);
 
 /*
     Delete the first entry which cmp(list->entry,entry) == 0
@@ -163,7 +163,7 @@ int list2d_insert(List2D *list, void *entry);
 	0 iff success
 	Non-zero value iff failure ( i.e entry doesn't exist in list )
 */
-int list2d_delete(List2D *list, void *entry);
+int list2d_delete(List2D *list, const void *entry);
 
 /*
     Delete all entries which cmp(list->entry,entry) == 0
@@ -176,7 +176,7 @@ int list2d_delete(List2D *list, void *entry);
     -1 iff failure ( i.e entry doesn't exist in list )
     Number of delete entries iff success
 */
-int list2d_delete_all(List2D *list, void *entry);
+int list2d_delete_all(List2D *list, const void *entry);
 
 /*
     Allocate new list and merge list1 & list2 to the new list
@@ -189,7 +189,7 @@ int list2d_delete_all(List2D *list, void *entry);
     NULL iff failure
     Pointer to list iff success
 */
-List2D *list2d_merge(List2D *list1, List2D *list2);
+List2D *list2d_merge(const List2D * ___restrict___ list1, const List2D * ___restrict___ list2);
 
 /*
     Search for entry which cmp(list.entry,val) == 0,
@@ -218,7 +218,7 @@ List2D *list2d_merge(List2D *list1, List2D *list2);
     0 iff success
 	Non-zero value iff failure
 */
-int list2d_search(List2D *list, void *val, void *entry);
+int list2d_search(List2D *list, const void *val, void *entry);
 
 /*
     Create array from list
@@ -232,7 +232,7 @@ int list2d_search(List2D *list, void *val, void *entry);
     0 iff success
 	Non-zero value iff failure
 */
-int list2d_to_array(List2D *list, void *array, size_t *size);
+int list2d_to_array(const List2D *list, void *array, size_t *size);
 
 /*
     Get size of data List
@@ -244,7 +244,7 @@ int list2d_to_array(List2D *list, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-int list2d_get_data_size(List2D *list);
+int list2d_get_data_size(const List2D *list);
 
 /*
     Get number of entries in List
@@ -256,6 +256,6 @@ int list2d_get_data_size(List2D *list);
     -1 iff failure
     sizeof iff success
 */
-ssize_t list2d_get_num_entries(List2D *list);
+ssize_t list2d_get_num_entries(const List2D *list);
 
 #endif
