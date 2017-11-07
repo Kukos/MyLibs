@@ -302,3 +302,4 @@ clean:
 	$(MAKE) -f $(D_TRIE)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_UFSET)/Makefile clean --no-print-directory
 	$(Q)$(MAKE) -f $(TEST_DIR)/Makefile clean --no-print-directory
+	$(Q)$(RM) $(ODIR)
