@@ -3,7 +3,7 @@
 #include <log.h>
 #include <generic.h>
 
-ssize_t find_first_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+ssize_t find_first_unsorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     BYTE *_t;
 
@@ -33,7 +33,7 @@ ssize_t find_first_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(v
     return -1;
 }
 
-ssize_t find_last_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+ssize_t find_last_unsorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     BYTE *_t;
 
@@ -63,7 +63,7 @@ ssize_t find_last_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(vo
     return -1;
 }
 
-ssize_t find_first_sorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+ssize_t find_first_sorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     BYTE *_t;
 
@@ -104,7 +104,7 @@ ssize_t find_first_sorted(void *key, void *t, size_t num_elements, int(*cmp)(voi
     return -1;
 }
 
-ssize_t find_last_sorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+ssize_t find_last_sorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     BYTE *_t;
 
