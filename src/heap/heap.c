@@ -27,8 +27,8 @@
     1 - (a, b) fulfills min heap property
     0 - (a, b) don't fulfills min heap property
 */
-static int __min_heap_cmp(Heap_entry *a, Heap_entry *b,
-    int (*cmp)(void *a, void *b));
+static int __min_heap_cmp(const Heap_entry *a, const Heap_entry *b,
+    int (*cmp)(const void *a, const void *b));
 
 /*
     cmp function for max heap property
@@ -42,18 +42,18 @@ static int __min_heap_cmp(Heap_entry *a, Heap_entry *b,
     1 - (a, b) fulfills max heap property
     0 - (a, b) don't fulfills max heap property
 */
-static int __max_heap_cmp(Heap_entry *a, Heap_entry *b,
-    int (*cmp)(void *a, void *b));
+static int __max_heap_cmp(const Heap_entry *a, const Heap_entry *b,
+    int (*cmp)(const void *a, const void *b));
 
 
-static int __min_heap_cmp(Heap_entry *a, Heap_entry *b,
-    int (*cmp)(void *a, void *b))
+static int __min_heap_cmp(const Heap_entry *a, const Heap_entry *b,
+    int (*cmp)(const void *a, const void *b))
 {
     return cmp(a->____data, b->____data) > 0;
 }
 
-static int __max_heap_cmp(Heap_entry *a, Heap_entry *b,
-    int (*cmp)(void *a, void *b))
+static int __max_heap_cmp(const Heap_entry *a, const Heap_entry *b,
+    int (*cmp)(const void *a, const void *b))
 {
     return cmp(a->____data, b->____data) < 0;
 }
@@ -83,7 +83,7 @@ static void heap_entry_destructor(void *entry)
     %Non-zero value iff failure
 */
 ___inline___ static int __heap_heapify(Heap *heap, size_t index,
-    int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
+    int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)));
 
 /*
     Build heap from array
@@ -99,7 +99,7 @@ ___inline___ static int __heap_heapify(Heap *heap, size_t index,
     %Non-zero value if failure
 */
 ___inline___ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
-    int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
+    int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)));
 
 
 /*
@@ -115,7 +115,7 @@ ___inline___ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
     %Non-zero value if failure
 */
 ___inline___ static int __heap_insert(Heap *heap, Heap_entry *entry,
-    int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
+    int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)));
 
 /*
     Extract first element
@@ -129,7 +129,7 @@ ___inline___ static int __heap_insert(Heap *heap, Heap_entry *entry,
     %pointer if success
 */
 ___inline___ static Heap_entry *__heap_extract_top(Heap *heap,
-    int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
+    int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)));
 
 /*
     Get first
@@ -143,8 +143,8 @@ ___inline___ static Heap_entry *__heap_extract_top(Heap *heap,
     %pointer if success
 
 */
-___inline___ static Heap_entry *__heap_get_top(Heap *heap,
-    int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
+___inline___ static Heap_entry *__heap_get_top(const Heap *heap,
+    int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)));
 
 /*
     Change the key value, create before new entry with changed,
@@ -161,11 +161,11 @@ ___inline___ static Heap_entry *__heap_get_top(Heap *heap,
     %0 if success
     %Non-zero value if failure
 */
-___inline___ static int __heap_change_key(Heap *heap, size_t index, void *new_data,
-        int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)));
+___inline___ static int __heap_change_key(Heap *heap, size_t index, const void *new_data,
+        int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)));
 
 ___inline___ static int __heap_heapify(Heap *heap, size_t index,
-        int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
+        int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)))
 {
     Heap_entry **array;
     Heap_entry *temp;
@@ -210,7 +210,7 @@ ___inline___ static int __heap_heapify(Heap *heap, size_t index,
 }
 
 ___inline___ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
-    int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
+    int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)))
 {
     ssize_t i;
 
@@ -236,7 +236,7 @@ ___inline___ static int __heap_build(Heap *heap, Heap_entry **array, size_t n,
 }
 
 ___inline___ static int __heap_insert(Heap *heap, Heap_entry *entry,
-    int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
+    int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)))
 {
     Heap_entry **array;
     size_t i;
@@ -263,8 +263,8 @@ ___inline___ static int __heap_insert(Heap *heap, Heap_entry *entry,
     return 0;
 }
 
-___inline___ static Heap_entry *__heap_get_top(Heap *heap,
-    int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
+___inline___ static Heap_entry *__heap_get_top(const Heap *heap,
+    int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)))
 {
     TRACE();
 
@@ -278,7 +278,7 @@ ___inline___ static Heap_entry *__heap_get_top(Heap *heap,
 }
 
 ___inline___ static Heap_entry *__heap_extract_top(Heap *heap,
-    int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
+    int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)))
 
 {
     Heap_entry **array;
@@ -307,8 +307,8 @@ ___inline___ static Heap_entry *__heap_extract_top(Heap *heap,
     return entry;
 }
 
-___inline___ static int __heap_change_key(Heap *heap, size_t index, void *new_data,
-        int (*cmp)(Heap_entry *a, Heap_entry *b, int (*cmp)(void *a, void *b)))
+___inline___ static int __heap_change_key(Heap *heap, size_t index, const void *new_data,
+        int (*cmp)(const Heap_entry *a, const Heap_entry *b, int (*cmp)(const void *a, const void *b)))
 {
     Heap_entry **array;
     size_t i;
@@ -332,7 +332,7 @@ ___inline___ static int __heap_change_key(Heap *heap, size_t index, void *new_da
     return 0;
 }
 
-Heap_entry *heap_entry_create(void *data, int size_of)
+Heap_entry *heap_entry_create(const void *data, int size_of)
 {
     Heap_entry *entry;
 
@@ -374,7 +374,7 @@ void heap_entry_destroy(Heap_entry *entry)
     FREE(entry);
 }
 
-ssize_t heap_entry_get_pos(Heap_entry *entry)
+ssize_t heap_entry_get_pos(const Heap_entry *entry)
 {
     TRACE();
 
@@ -384,7 +384,7 @@ ssize_t heap_entry_get_pos(Heap_entry *entry)
     return entry->____pos;
 }
 
-void *heap_entry_get_data(Heap_entry *entry)
+void *heap_entry_get_data(const Heap_entry *entry)
 {
     TRACE();
 
@@ -394,7 +394,7 @@ void *heap_entry_get_data(Heap_entry *entry)
     return entry->____data;
 }
 Heap* heap_create(heap_type type, int size_of, int ary,
-     int (*cmp)(void *a, void *b))
+     int (*cmp)(const void *a, const void *b))
 {
     Heap *heap;
 
@@ -506,7 +506,7 @@ Heap_entry *heap_extract_top(Heap *heap)
         return __heap_extract_top(heap, __max_heap_cmp);
 }
 
-Heap_entry *heap_get_top(Heap *heap)
+Heap_entry *heap_get_top(const Heap *heap)
 {
     TRACE();
 
@@ -522,7 +522,7 @@ Heap_entry *heap_get_top(Heap *heap)
         return __heap_get_top(heap, __max_heap_cmp);
 }
 
-int heap_change_key(Heap *heap, size_t index, void *new_data)
+int heap_change_key(Heap *heap, size_t index, const void *new_data)
 {
     Heap_entry **array;
 
@@ -558,7 +558,7 @@ int heap_change_key(Heap *heap, size_t index, void *new_data)
     return 0;
 }
 
-bool heap_is_empty(Heap *heap)
+bool heap_is_empty(const Heap *heap)
 {
     TRACE();
 
@@ -568,7 +568,7 @@ bool heap_is_empty(Heap *heap)
     return darray_get_num_entries(heap->____darray) == 0;
 }
 
-ssize_t heap_get_num_entries(Heap *heap)
+ssize_t heap_get_num_entries(const Heap *heap)
 {
     TRACE();
 
@@ -578,7 +578,7 @@ ssize_t heap_get_num_entries(Heap *heap)
     return darray_get_num_entries(heap->____darray);
 }
 
-int heap_get_data_size(Heap *heap)
+int heap_get_data_size(const Heap *heap)
 {
     TRACE();
 
