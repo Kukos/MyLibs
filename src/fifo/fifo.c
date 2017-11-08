@@ -78,14 +78,14 @@ void fifo_destroy_with_entries(Fifo *fifo, void (*destructor)(void *data))
     FREE(fifo);
 }
 
-bool fifo_is_empty(Fifo *fifo)
+bool fifo_is_empty(const Fifo *fifo)
 {
     TRACE();
 
     return fifo == NULL || fifo->____array == NULL || fifo->____head == fifo->____tail;
 }
 
-int fifo_enqueue(Fifo *fifo, void *val)
+int fifo_enqueue(Fifo *fifo, const void *val)
 {
     BYTE *_t;
     BYTE *_val;
@@ -149,7 +149,7 @@ int fifo_enqueue(Fifo *fifo, void *val)
     return 0;
 }
 
-int fifo_get_head(Fifo *fifo, void *val)
+int fifo_get_head(const Fifo *fifo, void *val)
 {
     BYTE *_t;
 
@@ -252,7 +252,7 @@ int fifo_dequeue(Fifo *fifo, void *val)
     return 0;
 }
 
-int fifo_to_array(Fifo *fifo, void *array, size_t *size)
+int fifo_to_array(const Fifo *fifo, void *array, size_t *size)
 {
     size_t entries;
     size_t bytes_to_move;
@@ -302,7 +302,7 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size)
     return 0;
 }
 
-int fifo_get_data_size(Fifo *fifo)
+int fifo_get_data_size(const Fifo *fifo)
 {
     TRACE();
 
@@ -312,7 +312,7 @@ int fifo_get_data_size(Fifo *fifo)
     return (int)fifo->____size_of;
 }
 
-ssize_t fifo_get_num_entries(Fifo *fifo)
+ssize_t fifo_get_num_entries(const Fifo *fifo)
 {
     ssize_t entries;
 

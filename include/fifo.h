@@ -85,7 +85,7 @@ void fifo_destroy_with_entries(Fifo *fifo, void (*destructor)(void *data));
     %0 iff success
 	%Non-zero value iff failure
 */
-int fifo_enqueue(Fifo *fifo, void *val);
+int fifo_enqueue(Fifo *fifo, const void *val);
 
 /*
     Get first element and delete from queue
@@ -112,7 +112,7 @@ int fifo_dequeue(Fifo *fifo, void *val);
 	%0 iff success
 	%Non-zero value iff failure
 */
-int fifo_to_array(Fifo *fifo, void *array, size_t *size);
+int fifo_to_array(const Fifo *fifo, void *array, size_t *size);
 
 /*
     PARAMS
@@ -122,7 +122,7 @@ int fifo_to_array(Fifo *fifo, void *array, size_t *size);
     %TRUE iff fifo is empty
     %FALSE iff fifo is not empty or failure
 */
-bool fifo_is_empty(Fifo *fifo);
+bool fifo_is_empty(const Fifo *fifo);
 
 /*
     GET element from queue head
@@ -135,7 +135,7 @@ bool fifo_is_empty(Fifo *fifo);
 	%0 iff success
 	%Non-zero value iff failure
 */
-int fifo_get_head(Fifo *fifo, void *val);
+int fifo_get_head(const Fifo *fifo, void *val);
 
 /*
     Get number of entries in fifo
@@ -147,7 +147,7 @@ int fifo_get_head(Fifo *fifo, void *val);
     %-1 iff failure
     %Num of entries iff success
 */
-ssize_t fifo_get_num_entries(Fifo *fifo);
+ssize_t fifo_get_num_entries(const Fifo *fifo);
 
 /*
     Get size of
@@ -159,6 +159,6 @@ ssize_t fifo_get_num_entries(Fifo *fifo);
     %-1 iff failure
     %sizeof iff success
 */
-int fifo_get_data_size(Fifo *fifo);
+int fifo_get_data_size(const Fifo *fifo);
 
 #endif
