@@ -135,7 +135,7 @@ static ___inline___ int __string_delete_wo_realloc(String *s, size_t pos, size_t
     0 iff success
     Non-zero value iff failure
 */
-static ___inline___ int __string_insert(String *s, char *str, size_t pos, size_t len);
+static ___inline___ int __string_insert(String *s, const char *str, size_t pos, size_t len);
 
 /*
     Create states for Knuth-Morris-Pratt algorithm
@@ -177,7 +177,7 @@ static ssize_t kmp(const char *text, const char *pattern, bool first);
     -1 iff text hasn't pattern
     index of pattern begining in text iff success
 */
-static ___inline___ ssize_t __string_find_str(String *string, const char *pattern, size_t begin, size_t end, bool first);
+static ___inline___ ssize_t __string_find_str(const String *string, const char *pattern, size_t begin, size_t end, bool first);
 
 /*
     Find pattern in string
@@ -193,7 +193,7 @@ static ___inline___ ssize_t __string_find_str(String *string, const char *patter
     -1 iff text hasn't pattern
     index of pattern begining in text iff success
 */
-static ___inline___ ssize_t __string_find_c(String *string, char c, size_t begin, size_t end, bool first);
+static ___inline___ ssize_t __string_find_c(const String *string, char c, size_t begin, size_t end, bool first);
 
 static ___inline___ int __string_realloc(String *s, size_t new_len)
 {
@@ -308,7 +308,7 @@ static ___inline___ int __string_delete_wo_realloc(String *s, size_t pos, size_t
     return 0;
 }
 
-static ___inline___ int __string_insert(String *s, char *str, size_t pos, size_t len)
+static ___inline___ int __string_insert(String *s, const char *str, size_t pos, size_t len)
 {
     size_t new_len;
 
@@ -433,7 +433,7 @@ ssize_t kmp(const char *text, const char *pattern, bool first)
     return end;
 }
 
-static ___inline___ ssize_t __string_find_str(String *string, const char *pattern, size_t begin, size_t end, bool first)
+static ___inline___ ssize_t __string_find_str(const String *string, const char *pattern, size_t begin, size_t end, bool first)
 {
     ssize_t ret;
     char c;
@@ -460,7 +460,7 @@ static ___inline___ ssize_t __string_find_str(String *string, const char *patter
     return ret + (ssize_t)begin;
 }
 
-static ___inline___ ssize_t __string_find_c(String *string, char c, size_t begin, size_t end, bool first)
+static ___inline___ ssize_t __string_find_c(const String *string, char c, size_t begin, size_t end, bool first)
 {
     ssize_t i;
 
@@ -509,7 +509,7 @@ void string_destroy(String *string)
     FREE(string);
 }
 
-bool string_is_empty(String *string)
+bool string_is_empty(const String *string)
 {
     TRACE();
 
@@ -519,7 +519,7 @@ bool string_is_empty(String *string)
     return string->____len == 0;
 }
 
-char *string_get_str(String *string)
+char *string_get_str(const String *string)
 {
     TRACE();
 
@@ -529,7 +529,7 @@ char *string_get_str(String *string)
     return string->____str;
 }
 
-ssize_t string_get_length(String *string)
+ssize_t string_get_length(const String *string)
 {
     TRACE();
 
@@ -544,7 +544,7 @@ String *string_create_from_c(char c)
    __string_create_from(c, "%c", INIT_BYTES);
 }
 
-String *string_create_from_str(char *str)
+String *string_create_from_str(const char *str)
 {
     if (str == NULL)
         ERROR("str == NULL\n", NULL);
@@ -597,7 +597,7 @@ String *string_create_from_ld(long double n)
     __string_create_from(n, "%Lf", INIT_BYTES);
 }
 
-String *string_concat(String *s1, String *s2)
+String *string_concat(const String *s1, const String *s2)
 {
     String *s;
     size_t bytes;
@@ -626,7 +626,7 @@ String *string_concat(String *s1, String *s2)
     return s;
 }
 
-char string_get_char(String *string, size_t index)
+char string_get_char(const String *string, size_t index)
 {
     TRACE();
 
@@ -717,7 +717,7 @@ int string_trim(String *string)
     return 0;
 }
 
-int string_cmp(String *s1, String *s2)
+int string_cmp(const String *s1, const String *s2)
 {
     TRACE();
 
@@ -730,7 +730,7 @@ int string_cmp(String *s1, String *s2)
     return strcmp(s1->____str, s2->____str);
 }
 
-String *string_substr(String *string, size_t begin, size_t end)
+String *string_substr(const String *string, size_t begin, size_t end)
 {
     String *s;
     size_t bytes;
@@ -765,7 +765,7 @@ String *string_substr(String *string, size_t begin, size_t end)
     return s;
 }
 
-ssize_t string_find_c_first(String *string, char c)
+ssize_t string_find_c_first(const String *string, char c)
 {
     if (string == NULL)
         ERROR("string == NULL\n", -1);
@@ -776,7 +776,7 @@ ssize_t string_find_c_first(String *string, char c)
     return __string_find_c(string, c, 0, string->____len, true);
 }
 
-ssize_t string_find_str_first(String *string, char *str)
+ssize_t string_find_str_first(const String *string, const char *str)
 {
     TRACE();
 
@@ -795,7 +795,7 @@ ssize_t string_find_str_first(String *string, char *str)
     return __string_find_str(string, str, 0, string->____len, true);
 }
 
-ssize_t string_find_string_first(String *s1, String *s2)
+ssize_t string_find_string_first(const String *s1, const String *s2)
 {
     TRACE();
 
@@ -814,7 +814,7 @@ ssize_t string_find_string_first(String *s1, String *s2)
     return __string_find_str(s1, s2->____str, 0, s1->____len, true);
 }
 
-ssize_t string_find_c_last(String *string, char c)
+ssize_t string_find_c_last(const String *string, char c)
 {
     if (string == NULL)
         ERROR("string == NULL\n", -1);
@@ -825,7 +825,7 @@ ssize_t string_find_c_last(String *string, char c)
     return __string_find_c(string, c, 0, string->____len, false);
 }
 
-ssize_t string_find_str_last(String *string, char *str)
+ssize_t string_find_str_last(const String *string, const char *str)
 {
     TRACE();
 
@@ -844,7 +844,7 @@ ssize_t string_find_str_last(String *string, char *str)
     return __string_find_str(string, str, 0, string->____len, false);
 }
 
-ssize_t string_find_string_last(String *s1, String *s2)
+ssize_t string_find_string_last(const String *s1, const String *s2)
 {
     TRACE();
 
@@ -863,7 +863,7 @@ ssize_t string_find_string_last(String *s1, String *s2)
     return __string_find_str(s1, s2->____str, 0, s1->____len, false);
 }
 
-ssize_t string_find_c_first_substr(String *string, char c, size_t begin, size_t end)
+ssize_t string_find_c_first_substr(const String *string, char c, size_t begin, size_t end)
 {
     ssize_t ret;
 
@@ -879,7 +879,7 @@ ssize_t string_find_c_first_substr(String *string, char c, size_t begin, size_t 
     return ret;
 }
 
-ssize_t string_find_str_first_substr(String *string, char *str, size_t begin, size_t end)
+ssize_t string_find_str_first_substr(const String *string, const char *str, size_t begin, size_t end)
 {
     ssize_t ret;
 
@@ -895,7 +895,7 @@ ssize_t string_find_str_first_substr(String *string, char *str, size_t begin, si
     return ret;
 }
 
-ssize_t string_find_string_first_substr(String *s1, String *s2, size_t begin, size_t end)
+ssize_t string_find_string_first_substr(const String *s1, const String *s2, size_t begin, size_t end)
 {
     TRACE();
 
@@ -908,7 +908,7 @@ ssize_t string_find_string_first_substr(String *s1, String *s2, size_t begin, si
     return string_find_str_first_substr(s1, s2->____str, begin, end + 1);
 }
 
-ssize_t string_find_c_last_substr(String *string, char c, size_t begin, size_t end)
+ssize_t string_find_c_last_substr(const String *string, char c, size_t begin, size_t end)
 {
      ssize_t ret;
 
@@ -924,7 +924,7 @@ ssize_t string_find_c_last_substr(String *string, char c, size_t begin, size_t e
     return ret;
 }
 
-ssize_t string_find_str_last_substr(String *string, char *str, size_t begin, size_t end)
+ssize_t string_find_str_last_substr(const String *string, const char *str, size_t begin, size_t end)
 {
     ssize_t ret;
 
@@ -940,7 +940,7 @@ ssize_t string_find_str_last_substr(String *string, char *str, size_t begin, siz
     return ret;
 }
 
-ssize_t string_find_string_last_substr(String *s1, String *s2, size_t begin, size_t end)
+ssize_t string_find_string_last_substr(const String *s1, const String *s2, size_t begin, size_t end)
 {
     TRACE();
 
@@ -953,7 +953,7 @@ ssize_t string_find_string_last_substr(String *s1, String *s2, size_t begin, siz
     return string_find_str_last_substr(s1, s2->____str, begin, end + 1);
 }
 
-String *string_clone(String *string)
+String *string_clone(const String *string)
 {
     String *s;
     TRACE();
@@ -1013,7 +1013,7 @@ int string_append_c(String *string, char c)
     return __string_insert(string, buf, string->____len, 1);
 }
 
-int string_append_str(String *string, char *str)
+int string_append_str(String *string, const char *str)
 {
     TRACE();
 
@@ -1026,7 +1026,7 @@ int string_append_str(String *string, char *str)
     return __string_insert(string, str, string->____len, strlen(str));
 }
 
-int string_append_string(String *s1, String *s2)
+int string_append_string(String *s1, const String *s2)
 {
     TRACE();
 
@@ -1057,7 +1057,7 @@ int string_insert_c(String *string, char c, size_t pos)
     return __string_insert(string, buf, pos, 1);
 }
 
-int string_insert_str(String *string, char *str, size_t pos)
+int string_insert_str(String *string, const char *str, size_t pos)
 {
     TRACE();
 
@@ -1073,7 +1073,7 @@ int string_insert_str(String *string, char *str, size_t pos)
     return __string_insert(string, str, pos, strlen(str));
 }
 
-int string_insert_string(String *s1, String *s2, size_t pos)
+int string_insert_string(String *s1, const String *s2, size_t pos)
 {
     TRACE();
 
@@ -1153,7 +1153,7 @@ int string_remove_c_all(String *string, char c)
     return __string_realloc(string, string->____len);
 }
 
-int string_remove_str_first(String *string, char *str)
+int string_remove_str_first(String *string, const char *str)
 {
     ssize_t pos;
 
@@ -1175,7 +1175,7 @@ int string_remove_str_first(String *string, char *str)
     return string_delete(string, (size_t)pos, strlen(str));
 }
 
-int string_remove_str_last(String *string, char *str)
+int string_remove_str_last(String *string, const char *str)
 {
     ssize_t pos;
 
@@ -1197,7 +1197,7 @@ int string_remove_str_last(String *string, char *str)
     return string_delete(string, (size_t)pos, strlen(str));
 }
 
-int string_remove_str_all(String *string, char *str)
+int string_remove_str_all(String *string, const char *str)
 {
     ssize_t pos;
     size_t offset;
@@ -1229,7 +1229,7 @@ int string_remove_str_all(String *string, char *str)
     return __string_realloc(string, string->____len);
 }
 
-int string_remove_string_first(String *string, String *pattern)
+int string_remove_string_first(String *string, const String *pattern)
 {
     TRACE();
 
@@ -1245,7 +1245,7 @@ int string_remove_string_first(String *string, String *pattern)
     return string_remove_str_first(string, pattern->____str);
 }
 
-int string_remove_string_last(String *string, String *pattern)
+int string_remove_string_last(String *string, const String *pattern)
 {
     TRACE();
 
@@ -1261,7 +1261,7 @@ int string_remove_string_last(String *string, String *pattern)
     return string_remove_str_last(string, pattern->____str);
 }
 
-int string_remove_string_all(String *string, String *pattern)
+int string_remove_string_all(String *string, const String *pattern)
 {
     TRACE();
 
@@ -1350,7 +1350,7 @@ int string_replace_c_by_c_all(String *string, char c1, char c2)
     return 0;
 }
 
-int string_replace_c_by_str_first(String *string, char c1, char *str)
+int string_replace_c_by_str_first(String *string, char c1, const char *str)
 {
     ssize_t pos;
     char buf[2];
@@ -1385,7 +1385,7 @@ int string_replace_c_by_str_first(String *string, char c1, char *str)
     return string_insert_str(string, str, (size_t)pos);
 }
 
-int string_replace_c_by_str_last(String *string, char c1, char *str)
+int string_replace_c_by_str_last(String *string, char c1, const char *str)
 {
     ssize_t pos;
     char buf[2];
@@ -1420,7 +1420,7 @@ int string_replace_c_by_str_last(String *string, char c1, char *str)
     return string_insert_str(string, str, (size_t)pos);
 }
 
-int string_replace_c_by_str_all(String *string, char c1, char *str)
+int string_replace_c_by_str_all(String *string, char c1, const char *str)
 {
     ssize_t pos;
     size_t offset;
@@ -1465,7 +1465,7 @@ int string_replace_c_by_str_all(String *string, char c1, char *str)
     return 0;
 }
 
-int string_replace_c_by_string_first(String *string, char c1, String *string2)
+int string_replace_c_by_string_first(String *string, char c1, const String *string2)
 {
     TRACE();
 
@@ -1484,7 +1484,7 @@ int string_replace_c_by_string_first(String *string, char c1, String *string2)
     return string_replace_c_by_str_first(string, c1, string2->____str);
 }
 
-int string_replace_c_by_string_last(String *string, char c1, String *string2)
+int string_replace_c_by_string_last(String *string, char c1, const String *string2)
 {
     TRACE();
 
@@ -1503,7 +1503,7 @@ int string_replace_c_by_string_last(String *string, char c1, String *string2)
     return string_replace_c_by_str_last(string, c1, string2->____str);
 }
 
-int string_replace_c_by_string_all(String *string, char c1, String *string2)
+int string_replace_c_by_string_all(String *string, char c1, const String *string2)
 {
     TRACE();
 
@@ -1522,7 +1522,7 @@ int string_replace_c_by_string_all(String *string, char c1, String *string2)
     return string_replace_c_by_str_all(string, c1, string2->____str);
 }
 
-int string_replace_str_by_c_first(String *string, char *str1, char c)
+int string_replace_str_by_c_first(String *string, const char *str1, char c)
 {
     ssize_t pos;
     char buf[2];
@@ -1557,7 +1557,7 @@ int string_replace_str_by_c_first(String *string, char *str1, char c)
     return string_insert_c(string, c, (size_t)pos);
 }
 
-int string_replace_str_by_c_last(String *string, char *str1, char c)
+int string_replace_str_by_c_last(String *string, const char *str1, char c)
 {
     ssize_t pos;
     char buf[2];
@@ -1591,7 +1591,7 @@ int string_replace_str_by_c_last(String *string, char *str1, char c)
     return string_insert_c(string, c, (size_t)pos);
 }
 
-int string_replace_str_by_c_all(String *string, char *str1, char c)
+int string_replace_str_by_c_all(String *string, const char *str1, char c)
 {
     ssize_t pos;
     size_t len;
@@ -1633,7 +1633,7 @@ int string_replace_str_by_c_all(String *string, char *str1, char c)
     return 0;
 }
 
-int string_replace_str_by_str_first(String *string, char *str1, char *str2)
+int string_replace_str_by_str_first(String *string, const char *str1, const char *str2)
 {
     ssize_t pos;
 
@@ -1670,7 +1670,7 @@ int string_replace_str_by_str_first(String *string, char *str1, char *str2)
     return string_insert_str(string, str2, (size_t)pos);
 }
 
-int string_replace_str_by_str_last(String *string, char *str1, char *str2)
+int string_replace_str_by_str_last(String *string, const char *str1, const char *str2)
 {
     ssize_t pos;
 
@@ -1707,7 +1707,7 @@ int string_replace_str_by_str_last(String *string, char *str1, char *str2)
     return string_insert_str(string, str2, (size_t)pos);
 }
 
-int string_replace_str_by_str_all(String *string, char *str1, char *str2)
+int string_replace_str_by_str_all(String *string, const char *str1, const char *str2)
 {
     ssize_t pos;
     size_t len1;
@@ -1757,7 +1757,7 @@ int string_replace_str_by_str_all(String *string, char *str1, char *str2)
     return 0;
 }
 
-int string_replace_str_by_string_first(String *string, char *str1, String *string2)
+int string_replace_str_by_string_first(String *string, const char *str1, const String *string2)
 {
     TRACE();
 
@@ -1785,7 +1785,7 @@ int string_replace_str_by_string_first(String *string, char *str1, String *strin
     return string_replace_str_by_str_first(string, str1, string2->____str);
 }
 
-int string_replace_str_by_string_last(String *string, char *str1, String *string2)
+int string_replace_str_by_string_last(String *string, const char *str1, const String *string2)
 {
     TRACE();
 
@@ -1813,7 +1813,7 @@ int string_replace_str_by_string_last(String *string, char *str1, String *string
     return string_replace_str_by_str_last(string, str1, string2->____str);
 }
 
-int string_replace_str_by_string_all(String *string, char *str1, String *string2)
+int string_replace_str_by_string_all(String *string, const char *str1, const String *string2)
 {
     TRACE();
 
@@ -1841,7 +1841,7 @@ int string_replace_str_by_string_all(String *string, char *str1, String *string2
     return string_replace_str_by_str_all(string, str1, string2->____str);
 }
 
-int string_replace_string_by_c_first(String *string, String *string1, char c)
+int string_replace_string_by_c_first(String *string, const String *string1, char c)
 {
     TRACE();
 
@@ -1854,7 +1854,7 @@ int string_replace_string_by_c_first(String *string, String *string1, char c)
     return string_replace_str_by_c_first(string, string1->____str, c);
 }
 
-int string_replace_string_by_c_last(String *string, String *string1, char c)
+int string_replace_string_by_c_last(String *string, const String *string1, char c)
 {
     TRACE();
 
@@ -1867,7 +1867,7 @@ int string_replace_string_by_c_last(String *string, String *string1, char c)
     return string_replace_str_by_c_last(string, string1->____str, c);
 }
 
-int string_replace_string_by_c_all(String *string, String *string1, char c)
+int string_replace_string_by_c_all(String *string, const String *string1, char c)
 {
     TRACE();
 
@@ -1880,7 +1880,7 @@ int string_replace_string_by_c_all(String *string, String *string1, char c)
     return string_replace_str_by_c_all(string, string1->____str, c);
 }
 
-int string_replace_string_by_str_first(String *string, String *string1, char *str)
+int string_replace_string_by_str_first(String *string, const String *string1, const char *str)
 {
     TRACE();
 
@@ -1893,7 +1893,7 @@ int string_replace_string_by_str_first(String *string, String *string1, char *st
     return string_replace_str_by_str_first(string, string1->____str, str);
 }
 
-int string_replace_string_by_str_last(String *string, String *string1, char *str)
+int string_replace_string_by_str_last(String *string, const String *string1, const char *str)
 {
     TRACE();
 
@@ -1906,7 +1906,7 @@ int string_replace_string_by_str_last(String *string, String *string1, char *str
     return string_replace_str_by_str_last(string, string1->____str, str);
 }
 
-int string_replace_string_by_str_all(String *string, String *string1, char *str)
+int string_replace_string_by_str_all(String *string, const String *string1, const char *str)
 {
     TRACE();
 
@@ -1919,7 +1919,7 @@ int string_replace_string_by_str_all(String *string, String *string1, char *str)
     return string_replace_str_by_str_all(string, string1->____str, str);
 }
 
-int string_replace_string_by_string_first(String *string, String *string1, String *string2)
+int string_replace_string_by_string_first(String *string, const String *string1, const String *string2)
 {
     TRACE();
 
@@ -1932,7 +1932,7 @@ int string_replace_string_by_string_first(String *string, String *string1, Strin
     return string_replace_str_by_string_first(string, string1->____str, string2);
 }
 
-int string_replace_string_by_string_last(String *string, String *string1, String *string2)
+int string_replace_string_by_string_last(String *string, const String *string1, const String *string2)
 {
     TRACE();
 
@@ -1945,7 +1945,7 @@ int string_replace_string_by_string_last(String *string, String *string1, String
     return string_replace_str_by_string_last(string, string1->____str, string2);
 }
 
-int string_replace_string_by_string_all(String *string, String *string1, String *string2)
+int string_replace_string_by_string_all(String *string, const String *string1, const String *string2)
 {
     TRACE();
 
@@ -1958,7 +1958,7 @@ int string_replace_string_by_string_all(String *string, String *string1, String 
     return string_replace_str_by_string_all(string, string1->____str, string2);
 }
 
-String **string_split_c(String *string, char c, size_t *size)
+String **string_split_c(const String *string, char c, size_t *size)
 {
     ssize_t pos;
     size_t i;
@@ -2024,7 +2024,7 @@ String **string_split_c(String *string, char c, size_t *size)
     return array;
 }
 
-String **string_split_str(String *string, char *str, size_t *size)
+String **string_split_str(const String *string, const char *str, size_t *size)
 {
     ssize_t pos;
     size_t i;
@@ -2098,7 +2098,7 @@ String **string_split_str(String *string, char *str, size_t *size)
     return array;
 }
 
-String **string_split_string(String *string, String *string2, size_t *size)
+String **string_split_string(const String *string, const String *string2, size_t *size)
 {
     TRACE();
 
@@ -2120,7 +2120,7 @@ String **string_split_string(String *string, String *string2, size_t *size)
     return string_split_str(string, string2->____str, size);
 }
 
-String_iterator *string_iterator_create(String *s, iti_mode_t mode)
+String_iterator *string_iterator_create(const String *s, iti_mode_t mode)
 {
     String_iterator *it;
 
@@ -2158,7 +2158,7 @@ void string_iterator_destroy(String_iterator *it)
     FREE(it);
 }
 
-int string_iterator_init(String *s, String_iterator *it, iti_mode_t mode)
+int string_iterator_init(const String *s, String_iterator *it, iti_mode_t mode)
 {
     TRACE();
 
@@ -2207,7 +2207,7 @@ int string_iterator_prev(String_iterator *it)
     return 0;
 }
 
-int string_iterator_get_data(String_iterator *it, void *val)
+int string_iterator_get_data(const String_iterator *it, void *val)
 {
     TRACE();
 
@@ -2219,7 +2219,7 @@ int string_iterator_get_data(String_iterator *it, void *val)
     return 0;
 }
 
-int string_iterator_get_node(String_iterator *it, void *node)
+int string_iterator_get_node(const String_iterator *it, void *node)
 {
     TRACE();
 
@@ -2231,7 +2231,7 @@ int string_iterator_get_node(String_iterator *it, void *node)
     return 0;
 }
 
-bool string_iterator_end(String_iterator *it)
+bool string_iterator_end(const String_iterator *it)
 {
     TRACE();
 
