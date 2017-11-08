@@ -58,7 +58,7 @@ void ufs_master_destroy_with_entries(UFSMaster *master, void (*destructor)(void 
     FREE(master);
 }
 
-UFSentry *ufs_entry_create(void *data, int size_of)
+UFSentry *ufs_entry_create(const void *data, int size_of)
 {
     UFSentry *entry;
 
@@ -123,7 +123,7 @@ UFset *ufset_create(UFSentry *entry, UFSMaster *master)
     if (set == NULL)
         ERROR("malloc error\n", NULL);
 
-    set->____entry = entry;
+    set->____entry = (UFSentry *)entry;
     entry->____ufs_ptr = set;
 
     set->____parent = set;
@@ -244,7 +244,7 @@ ssize_t ufset_get_num_entries(UFset *set)
     return (ssize_t)counter;
 }
 
-ssize_t ufs_master_get_num_entries(UFSMaster *master)
+ssize_t ufs_master_get_num_entries(const UFSMaster *master)
 {
     TRACE();
 
@@ -254,7 +254,7 @@ ssize_t ufs_master_get_num_entries(UFSMaster *master)
     return darray_get_num_entries(master->____set);
 }
 
-int ufs_master_get_hight(UFSMaster *master)
+int ufs_master_get_hight(const UFSMaster *master)
 {
     TRACE();
 
