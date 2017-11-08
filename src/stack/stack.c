@@ -52,7 +52,7 @@ void stack_destroy_with_entries(Stack *stack, void (*destructor)(void *data))
     FREE(stack);
 }
 
-int stack_push(Stack *stack, void *val)
+int stack_push(Stack *stack, const void *val)
 {
     TRACE();
 
@@ -83,7 +83,7 @@ int stack_pop(Stack *stack, void* val)
     return darray_delete(stack->____darray);
 }
 
-bool stack_is_empty(Stack *stack)
+bool stack_is_empty(const Stack *stack)
 {
     TRACE();
 
@@ -91,7 +91,7 @@ bool stack_is_empty(Stack *stack)
          || darray_get_num_entries(stack->____darray) == 0);
 }
 
-int stack_get_top(Stack *stack, void *val)
+int stack_get_top(const Stack *stack, void *val)
 {
     BYTE *_t;
 
@@ -112,7 +112,7 @@ int stack_get_top(Stack *stack, void *val)
     return 0;
 }
 
-int stack_to_array(Stack *stack, void *array, size_t *size)
+int stack_to_array(const Stack *stack, void *array, size_t *size)
 {
     void *t;
 
@@ -140,7 +140,7 @@ int stack_to_array(Stack *stack, void *array, size_t *size)
     return 0;
 }
 
-void *stack_get_array(Stack *stack)
+void *stack_get_array(const Stack *stack)
 {
     TRACE();
 
@@ -150,7 +150,7 @@ void *stack_get_array(Stack *stack)
     return darray_get_array(stack->____darray);
 }
 
-ssize_t stack_get_num_entries(Stack *stack)
+ssize_t stack_get_num_entries(const Stack *stack)
 {
     TRACE();
 
@@ -160,7 +160,7 @@ ssize_t stack_get_num_entries(Stack *stack)
     return darray_get_num_entries(stack->____darray);
 }
 
-int stack_get_data_size(Stack *stack)
+int stack_get_data_size(const Stack *stack)
 {
     TRACE();
 
