@@ -79,7 +79,7 @@ void trie_destroy(Trie *trie);
     %0 iff success
     %Non-zero value iff failure
 */
-int trie_insert(Trie *trie, char *word);
+int trie_insert(Trie *trie, const char *word);
 
 /*
     Search word in trie
@@ -92,7 +92,7 @@ int trie_insert(Trie *trie, char *word);
     %FALSE iff word doesn't exist in trie
     %TRUE iff word exists in trie
 */
-bool trie_find(Trie *trie, char *word);
+bool trie_find(const Trie *trie, const char *word);
 
 /*
     Delete word from trie
@@ -105,7 +105,7 @@ bool trie_find(Trie *trie, char *word);
     %0 iff success
     %Non-zero value iff failure
 */
-int trie_delete(Trie *trie, char *word);
+int trie_delete(Trie *trie, const char *word);
 
 /*
     Get words from TRIE to array
@@ -118,7 +118,7 @@ int trie_delete(Trie *trie, char *word);
     %NULL iff failure
     %Pointer to array iff success
 */
-char **trie_to_array(Trie *trie, size_t *size);
+char **trie_to_array(const Trie *trie, size_t *size);
 
 /*
     Get Num entries in TRIE
@@ -130,7 +130,7 @@ char **trie_to_array(Trie *trie, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-ssize_t trie_get_num_entries(Trie *trie);
+ssize_t trie_get_num_entries(const Trie *trie);
 
 /*
     Get hight of TRIE
@@ -142,6 +142,6 @@ ssize_t trie_get_num_entries(Trie *trie);
     -1 iff failure
     Trie Hight iff success
 */
-int trie_get_hight(Trie *trie);
+int trie_get_hight(const Trie *trie);
 
 #endif
