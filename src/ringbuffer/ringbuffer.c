@@ -91,7 +91,7 @@ void ring_buffer_destroy_with_entries(Ring_buffer *rb)
     ring_buffer_destroy(rb);
 }
 
-int ring_buffer_enqueue(Ring_buffer *rb, void *data)
+int ring_buffer_enqueue(Ring_buffer *rb, const void *data)
 {
     BYTE *_t;
     BYTE *_val;
@@ -123,7 +123,7 @@ int ring_buffer_enqueue(Ring_buffer *rb, void *data)
     return 0;
 }
 
-int ring_buffer_get_head(Ring_buffer *rb, void *data)
+int ring_buffer_get_head(const Ring_buffer *rb, void *data)
 {
     BYTE *_t;
 
@@ -161,7 +161,7 @@ int ring_buffer_dequeue(Ring_buffer *rb, void *data)
     return 0;
 }
 
-int ring_buffer_to_array(Ring_buffer *rb, void *array, size_t *size)
+int ring_buffer_to_array(const Ring_buffer *rb, void *array, size_t *size)
 {
     size_t bytes_to_move;
     size_t temp_bytes_to_move;
@@ -227,21 +227,21 @@ int ring_buffer_to_array(Ring_buffer *rb, void *array, size_t *size)
     return 0;
 }
 
-bool ring_buffer_is_full(Ring_buffer *rb)
+bool ring_buffer_is_full(const Ring_buffer *rb)
 {
     TRACE();
 
     return rb == NULL || rb->____num_entries == rb->____max_entries;
 }
 
-bool ring_buffer_is_empty(Ring_buffer *rb)
+bool ring_buffer_is_empty(const Ring_buffer *rb)
 {
     TRACE();
 
     return rb == NULL || rb->____num_entries == 0;
 }
 
-ssize_t ring_buffer_get_num_entries(Ring_buffer *rb)
+ssize_t ring_buffer_get_num_entries(const Ring_buffer *rb)
 {
     TRACE();
 
@@ -251,7 +251,7 @@ ssize_t ring_buffer_get_num_entries(Ring_buffer *rb)
     return (ssize_t)rb->____num_entries;
 }
 
-int ring_buffer_get_data_size(Ring_buffer *rb)
+int ring_buffer_get_data_size(const Ring_buffer *rb)
 {
     TRACE();
 
