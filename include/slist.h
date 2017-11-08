@@ -53,7 +53,7 @@ typedef struct SList
     int         (*____insert)(void *list, const void *data);
     int         (*____delete)(void *list, const void *data);
     int         (*____delete_all)(void *list, const void *data);
-    int         (*____search)(void *list, const void *in, void *out);
+    int         (*____search)(const void *list, const void *in, void *out);
     void*       (*____merge)(const void * ___restrict___ list1, const void * ___restrict___ list2);
     int         (*____to_array)(const void *list, void *array, size_t *size);
     int         (*____get_data_size)(const void *list);
@@ -106,7 +106,7 @@ ___inline___ int slist_iterator_init(const SList *list, SList_iterator *it, iti_
     static ___unused___ int ____insert(void *list, const void *data); \
     static ___unused___ int ____delete(void *list, const void *data); \
     static ___unused___ int ____delete_all(void *list, const void *data); \
-    static ___unused___ int ____search(void *list, const void *in, void *out); \
+    static ___unused___ int ____search(const void *list, const void *in, void *out); \
     static ___unused___ void *____merge(const void * ___restrict___ list1, const void * ___restrict___ list2); \
     static ___unused___ int ____to_array(const void *list, void *array, size_t *size); \
     static ___unused___ int ____get_data_size(const void *list); \
@@ -136,9 +136,9 @@ ___inline___ int slist_iterator_init(const SList *list, SList_iterator *it, iti_
         return concat(prefix, _delete_all)((type *)list, data); \
     } \
     \
-    static ___unused___ int ____search(void *list, const void *in, void *out) \
+    static ___unused___ int ____search(const void *list, const void *in, void *out) \
     { \
-        return concat(prefix, _search)((type *)list, in, out); \
+        return concat(prefix, _search)((const type *)list, in, out); \
     } \
     \
     static ___unused___ void *____merge(const void * ___restrict___ list1, const void * ___restrict___ list2) \
@@ -304,7 +304,7 @@ ___inline___ int slist_delete_all(SList *list, const void *data);
     0 iff success
 	Non-zero value iff failure
 */
-___inline___ int slist_search(SList *list, const void *in, void *out);
+___inline___ int slist_search(const SList *list, const void *in, void *out);
 
 /*
     Merge 2 SList (IFF they have the same time)
@@ -433,7 +433,7 @@ ___inline___ int slist_delete_all(SList *list, const void *data)
     return list->____delete_all(slist_get_list(list), data);
 }
 
-___inline___ int slist_search(SList *list, const void *in, void *out)
+___inline___ int slist_search(const SList *list, const void *in, void *out)
 {
     if (list == NULL)
         return 1;
