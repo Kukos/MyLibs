@@ -487,7 +487,7 @@ int list2d_delete_all(List2D *list, const void *entry)
     return deleted;
 }
 
-int list2d_search(List2D *list, const void *val, void *entry)
+int list2d_search(const List2D *list, const void *val, void *entry)
 {
     List2D_node *guard;
     List2D_node *ptr;

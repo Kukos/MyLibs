@@ -218,7 +218,7 @@ List2D *list2d_merge(const List2D * ___restrict___ list1, const List2D * ___rest
     0 iff success
 	Non-zero value iff failure
 */
-int list2d_search(List2D *list, const void *val, void *entry);
+int list2d_search(const List2D *list, const void *val, void *entry);
 
 /*
     Create array from list

@@ -188,7 +188,7 @@ List *list_merge(const List * ___restrict___ list1, const List * ___restrict___ 
     0 iff success
 	Non-zero value iff failure
 */
-int list_search(List *list, const void *val, void *entry);
+int list_search(const List *list, const void *val, void *entry);
 
 /*
     Create array from list

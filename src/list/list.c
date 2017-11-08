@@ -470,7 +470,7 @@ List *list_merge(const List * ___restrict___ list1, const List * ___restrict___ 
     return list3;
 }
 
-int list_search(List *list, const void *val, void *entry)
+int list_search(const List *list, const void *val, void *entry)
 {
     List_node *ptr;
     List_node *guard;
