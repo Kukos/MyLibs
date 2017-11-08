@@ -165,7 +165,7 @@ int file_buffer_append(File_buffer *fb, const char *data)
     return 0;
 }
 
-int file_buffer_synch(File_buffer *fb)
+int file_buffer_synch(const File_buffer *fb)
 {
 	TRACE();
 
@@ -178,7 +178,7 @@ int file_buffer_synch(File_buffer *fb)
     return 0;
 }
 
-char *file_buffer_get_buff(File_buffer *fb)
+char *file_buffer_get_buff(const File_buffer *fb)
 {
 	TRACE();
 
@@ -188,7 +188,7 @@ char *file_buffer_get_buff(File_buffer *fb)
 	return fb->____buffer;
 }
 
-ssize_t file_buffer_get_size(File_buffer *fb)
+ssize_t file_buffer_get_size(const File_buffer *fb)
 {
 	TRACE();
 
