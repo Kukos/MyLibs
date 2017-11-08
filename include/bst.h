@@ -41,7 +41,7 @@ typedef struct Bst
     size_t      ____nodes;
     size_t      ____size_of;
 
-    int (*____cmp)(void* a,void *b);
+    int (*____cmp)(const void* a, const void *b);
 }Bst;
 
 IT_FUNC(Bst, bst)
@@ -57,7 +57,7 @@ IT_FUNC(Bst, bst)
     NULL iff failure
     Pointer to Tree iff success
 */
-Tree *tree_bst_create(int size_of, int (*cmp)(void* a,void *b));
+Tree *tree_bst_create(int size_of, int (*cmp)(const void *a, const void *b));
 
 /*
     Create BST
@@ -70,7 +70,7 @@ Tree *tree_bst_create(int size_of, int (*cmp)(void* a,void *b));
     NULL iff failure
     Pointer to bst iff success
 */
-Bst* bst_create(int size_of, int (*cmp)(void* a,void *b));
+Bst* bst_create(int size_of, int (*cmp)(const void *a, const void *b));
 
 #define BST_CREATE(PTR, TYPE, CMP) \
     do { \
@@ -114,7 +114,7 @@ void bst_destroy_with_entries(Bst *tree, void (*destructor)(void *data));
     0 iff success
     Non-zero value iff failure
 */
-int bst_insert(Bst *tree, void *data);
+int bst_insert(Bst *tree, const void *data);
 
 /*
     Getter of min value ( using cmp ) in tree
@@ -127,7 +127,7 @@ int bst_insert(Bst *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int bst_min(Bst *tree, void *data);
+int bst_min(const Bst *tree, void *data);
 
 /*
     Getter of max value ( using cmp ) in tree
@@ -140,7 +140,7 @@ int bst_min(Bst *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int bst_max(Bst *tree, void *data);
+int bst_max(const Bst *tree, void *data);
 
 /*
     Search for data with key equals key @data_key ( using cmp )
@@ -154,7 +154,7 @@ int bst_max(Bst *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
- int bst_search(Bst *tree, void *data_key, void *data_out);
+ int bst_search(const Bst *tree, const void *data_key, void *data_out);
 
  /*
  	Check existing of key in tree
@@ -167,7 +167,7 @@ int bst_max(Bst *tree, void *data);
  	false iff key doesn't exist in tree
  	true iff key exists in tree
  */
- bool bst_key_exist(Bst *tree, void *data_key);
+ bool bst_key_exist(const Bst *tree, const void *data_key);
 
 /*
     Delete data with key equals @data_key ( using cmp )
@@ -180,7 +180,7 @@ int bst_max(Bst *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int bst_delete(Bst *tree, void *data_key);
+int bst_delete(Bst *tree, const void *data_key);
 
 /*
     Balance tree using DSW algorithm
@@ -206,7 +206,7 @@ int bst_balance(Bst *tree);
     0 iff success
     Non-zero value iff failure
 */
-int bst_to_array(Bst *tree, void *array, size_t *size);
+int bst_to_array(const Bst *tree, void *array, size_t *size);
 
 /*
     Get Num entries of BST
@@ -218,7 +218,7 @@ int bst_to_array(Bst *tree, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-ssize_t bst_get_num_entries(Bst *tree);
+ssize_t bst_get_num_entries(const Bst *tree);
 
 /*
     Get Size of BST data
@@ -230,7 +230,7 @@ ssize_t bst_get_num_entries(Bst *tree);
     -1 iff failure
     Size of data
 */
-int bst_get_data_size(Bst *tree);
+int bst_get_data_size(const Bst *tree);
 
 /*
     RECURSIVE getter with O(n) complexity
@@ -242,6 +242,6 @@ int bst_get_data_size(Bst *tree);
     -1 iff failure
     Hight iff success
 */
-int bst_get_hight(Bst *tree);
+int bst_get_hight(const Bst *tree);
 
 #endif
