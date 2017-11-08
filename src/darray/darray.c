@@ -21,8 +21,8 @@
     %-1 iff failure
     %Pos iff success
 */
-___inline___ static ssize_t darray_unsorted_search_first(Darray *darray,
-                                                void *val_in, void *val_out);
+___inline___ static ssize_t darray_unsorted_search_first(const Darray *darray,
+                                                const void *val_in, void *val_out);
 
 /*
     PARAMS
@@ -34,8 +34,8 @@ ___inline___ static ssize_t darray_unsorted_search_first(Darray *darray,
     %-1 iff failure
     %Pos iff success
 */
-___inline___ static ssize_t darray_unsorted_search_last(Darray *darray,
-                                                void *val_in, void *val_out);
+___inline___ static ssize_t darray_unsorted_search_last(const Darray *darray,
+                                                const void *val_in, void *val_out);
 
 /*
     PARAMS
@@ -47,8 +47,8 @@ ___inline___ static ssize_t darray_unsorted_search_last(Darray *darray,
     %-1 iff failure
     %Pos iff success
 */
-___inline___ static ssize_t darray_sorted_search_first(Darray *darray,
-                                                void *val_in, void *val_out);
+___inline___ static ssize_t darray_sorted_search_first(const Darray *darray,
+                                                const void *val_in, void *val_out);
 
 /*
     PARAMS
@@ -60,8 +60,8 @@ ___inline___ static ssize_t darray_sorted_search_first(Darray *darray,
     %-1 iff failure
     %Pos iff success
 */
-___inline___ static ssize_t darray_sorted_search_last(Darray *darray,
-                                                void *val_in, void *val_out);
+___inline___ static ssize_t darray_sorted_search_last(const Darray *darray,
+                                                const void *val_in, void *val_out);
 
 /*
     Find pos where val i MAX ( <= val )
@@ -74,7 +74,7 @@ ___inline___ static ssize_t darray_sorted_search_last(Darray *darray,
     %-1 iff failure
     %Pos iff success
 */
-___inline___ static ssize_t upper_bound(Darray *darray, void *val);
+___inline___ static ssize_t upper_bound(const Darray *darray, const void *val);
 
 
 /*
@@ -90,10 +90,10 @@ ___inline___ static ssize_t upper_bound(Darray *darray, void *val);
     %0 iff success
     %Non-zero value iff failure
 */
-static int _darray_insert_pos(Darray *darray, void *entry, size_t pos, bool check);
+static int _darray_insert_pos(Darray *darray, const void *entry, size_t pos, bool check);
 
-___inline___ static ssize_t darray_unsorted_search_first(Darray *darray,
-                                                    void *val_in, void *val_out)
+___inline___ static ssize_t darray_unsorted_search_first(const Darray *darray,
+                                                    const void *val_in, void *val_out)
 {
     BYTE *_t;
     ssize_t index;
@@ -118,8 +118,8 @@ ___inline___ static ssize_t darray_unsorted_search_first(Darray *darray,
     return index;
 }
 
-___inline___ static ssize_t darray_unsorted_search_last(Darray *darray,
-                                                    void *val_in, void *val_out)
+___inline___ static ssize_t darray_unsorted_search_last(const Darray *darray,
+                                                    const void *val_in, void *val_out)
 {
     BYTE *_t;
     ssize_t index;
@@ -145,8 +145,8 @@ ___inline___ static ssize_t darray_unsorted_search_last(Darray *darray,
     return index;
 }
 
-___inline___ static ssize_t darray_sorted_search_first(Darray *darray,
-                                                    void *val_in, void *val_out)
+___inline___ static ssize_t darray_sorted_search_first(const Darray *darray,
+                                                    const void *val_in, void *val_out)
 {
     BYTE *_t;
     ssize_t index;
@@ -172,8 +172,8 @@ ___inline___ static ssize_t darray_sorted_search_first(Darray *darray,
     return index;
 }
 
-___inline___ static ssize_t darray_sorted_search_last(Darray *darray,
-                                            void *val_in, void *val_out)
+___inline___ static ssize_t darray_sorted_search_last(const Darray *darray,
+                                            const void *val_in, void *val_out)
 {
     BYTE *_t;
     ssize_t index;
@@ -200,7 +200,7 @@ ___inline___ static ssize_t darray_sorted_search_last(Darray *darray,
     return index;
 }
 
-___inline___ static ssize_t upper_bound(Darray *darray, void *val)
+___inline___ static ssize_t upper_bound(const Darray *darray, const void *val)
 {
     ssize_t offset_left;
     ssize_t offset_right;
@@ -239,7 +239,7 @@ ___inline___ static ssize_t upper_bound(Darray *darray, void *val)
     return offset_middle / (ssize_t)darray->____size_of;
 }
 
-static int _darray_insert_pos(Darray *darray, void *entry, size_t pos, bool check)
+static int _darray_insert_pos(Darray *darray, const void *entry, size_t pos, bool check)
 {
     BYTE *_t;
     BYTE *_entry;
@@ -282,7 +282,7 @@ static int _darray_insert_pos(Darray *darray, void *entry, size_t pos, bool chec
 }
 
 Darray *darray_create(DARRAY_TYPE type, size_t size, int size_of,
-        int (*cmp)(void *a, void*b))
+        int (*cmp)(const void *a, const void *b))
 {
     Darray *da;
 
@@ -356,7 +356,7 @@ void darray_destroy_with_entries(Darray *darray, void (*destructor)(void *data))
 }
 
 
-int darray_insert(Darray *darray, void *entry)
+int darray_insert(Darray *darray, const void *entry)
 {
     int status;
     ssize_t pos;
@@ -388,7 +388,7 @@ int darray_insert(Darray *darray, void *entry)
     return 0;
 }
 
-int darray_insert_pos(Darray *darray, void *entry, size_t pos)
+int darray_insert_pos(Darray *darray, const void *entry, size_t pos)
 {
     TRACE();
 
@@ -452,7 +452,7 @@ int darray_delete_pos(Darray *darray, size_t pos)
     return 0;
 }
 
-ssize_t darray_search_first(Darray *darray, void *val_in, void *val_out)
+ssize_t darray_search_first(const Darray *darray, const void *val_in, void *val_out)
 {
     TRACE();
 
@@ -473,7 +473,7 @@ ssize_t darray_search_first(Darray *darray, void *val_in, void *val_out)
     }
 }
 
-ssize_t darray_search_last(Darray *darray, void *val_in, void *val_out)
+ssize_t darray_search_last(const Darray *darray, const void *val_in, void *val_out)
 {
     TRACE();
 
@@ -513,7 +513,7 @@ int darray_sort(Darray *darray)
     return sort(darray->____array, darray->____num_entries, darray->____cmp, (int)darray->____size_of);
 }
 
-ssize_t darray_min(Darray *darray, void *val)
+ssize_t darray_min(const Darray *darray, const void *val)
 {
     size_t pos;
 
@@ -563,7 +563,7 @@ ssize_t darray_min(Darray *darray, void *val)
     return (ssize_t)pos / (ssize_t)darray->____size_of;
 }
 
-ssize_t darray_max(Darray *darray, void *val)
+ssize_t darray_max(const Darray *darray, const void *val)
 {
     size_t pos;
 
@@ -614,7 +614,7 @@ ssize_t darray_max(Darray *darray, void *val)
     return (ssize_t)pos / (ssize_t)darray->____size_of;
 }
 
-void *darray_get_array(Darray *darray)
+void *darray_get_array(const Darray *darray)
 {
     TRACE();
 
@@ -624,7 +624,7 @@ void *darray_get_array(Darray *darray)
     return darray->____array;
 }
 
-ssize_t darray_get_num_entries(Darray *darray)
+ssize_t darray_get_num_entries(const Darray *darray)
 {
     TRACE();
 
@@ -634,7 +634,7 @@ ssize_t darray_get_num_entries(Darray *darray)
     return (ssize_t)darray->____num_entries;
 }
 
-DARRAY_TYPE darray_get_type(Darray *darray)
+DARRAY_TYPE darray_get_type(const Darray *darray)
 {
     TRACE();
 
@@ -644,7 +644,7 @@ DARRAY_TYPE darray_get_type(Darray *darray)
     return darray->____type;
 }
 
-int darray_get_data_size(Darray *darray)
+int darray_get_data_size(const Darray *darray)
 {
     TRACE();
 
@@ -654,7 +654,7 @@ int darray_get_data_size(Darray *darray)
     return (int)darray->____size_of;
 }
 
-Darray_iterator *darray_iterator_create(Darray *darray, iti_mode_t mode)
+Darray_iterator *darray_iterator_create(const Darray *darray, iti_mode_t mode)
 {
     Darray_iterator *iterator;
 
@@ -696,7 +696,7 @@ void darray_iterator_destroy(Darray_iterator *iterator)
     FREE(iterator);
 }
 
-int darray_iterator_init(Darray *darray, Darray_iterator *iterator, iti_mode_t mode)
+int darray_iterator_init(const Darray *darray, Darray_iterator *iterator, iti_mode_t mode)
 {
     TRACE();
 
@@ -746,7 +746,7 @@ int darray_iterator_prev(Darray_iterator *iterator)
     return 0;
 }
 
-int darray_iterator_get_data(Darray_iterator *iterator, void *val)
+int darray_iterator_get_data(const Darray_iterator *iterator, void *val)
 {
     BYTE *t;
 
@@ -762,7 +762,7 @@ int darray_iterator_get_data(Darray_iterator *iterator, void *val)
     return 0;
 }
 
-int darray_iterator_get_node(Darray_iterator *iterator, void *node)
+int darray_iterator_get_node(const Darray_iterator *iterator, void *node)
 {
     TRACE();
 
@@ -774,7 +774,7 @@ int darray_iterator_get_node(Darray_iterator *iterator, void *node)
     return 0;
 }
 
-bool darray_iterator_end(Darray_iterator *iterator)
+bool darray_iterator_end(const Darray_iterator *iterator)
 {
     TRACE();
 
