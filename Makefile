@@ -28,6 +28,9 @@ IDIR := $(PROJECT_DIR)/include
 SDIR := $(PROJECT_DIR)/src
 ODIR := $(PROJECT_DIR)/obj
 
+SCRIPT_DIR := $(PROJECT_DIR)/scripts
+INSTALL_SCRIPT_NAME := install_libs.sh
+
 # Object directories
 O_LIBS := $(ODIR)/libs
 O_HEADERS := $(ODIR)/include
@@ -144,6 +147,7 @@ S_UFSET := $(D_UFSET)/*.c $(S_LOG) $(S_ASSERT) $(S_DARRAY)
 TEST_COMMON_INC := $(F_TEST) $(I_COMPILER) $(I_COMMON) $(I_SORT) $(I_SEARCH)
 TEST_COMMON_SRC := $(S_COMPILER) $(S_COMMON) $(S_SORT) $(S_SEARCH)
 
+# Verbose mode
 ifeq ("$(origin V)", "command line")
   VERBOSE = $(V)
 endif
@@ -158,6 +162,15 @@ else
   Q = @
 endif
 
+INSTALL_PATH = 
+
+# Path for install libs
+ifeq ("$(origin P)", "command line")
+  INSTALL_PATH = $(P)
+endif
+
+
+# Print functions
 define print_info
 	$(if $(Q), @echo "$(1)")
 endef
@@ -303,3 +316,6 @@ clean:
 	$(MAKE) -f $(D_UFSET)/Makefile clean --no-print-directory
 	$(Q)$(MAKE) -f $(TEST_DIR)/Makefile clean --no-print-directory
 	$(Q)$(RM) $(ODIR)
+
+install:
+	$(Q)$(SCRIPT_DIR)/$(INSTALL_SCRIPT_NAME) $(INSTALL_PATH)

@@ -9,8 +9,9 @@
 THIS_DIR=`readlink -f "${BASH_SOURCE[0]}" 2>/dev/null||echo $0`
 
 # This directory path
-DIR=`dirname "${THIS}"`
-
+DIR=`dirname "${THIS_DIR}"`
+echo $THIS_DIR
+echo $DIR
 source $DIR/log.sh
 
 DEFAULT_DIR=~/mylibs
@@ -29,6 +30,7 @@ info "Compiling libs ..."
 
 # Compile libs
 this_dir=`pwd`
+cd "$DIR"
 cd ../
 make >/dev/null 2>&1 || error "make error"
 cd $this_dir
