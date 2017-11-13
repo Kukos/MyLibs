@@ -1,5 +1,18 @@
 export
 
+#Main Makefile
+# Author: Michal Kukowski
+# email: michalkukowski10@gmail.com
+
+# Targets:
+# help - print targets (visible for user) + parameters
+# install[P = Path] - install libs to path P or default Path
+# test - make static tests
+# all[D=1] - make all libraries when D ==1 then target will be build in Debug mode
+
+# Makefile supports Verbose mode, put V=1 after target name to set verbose mode
+
+
 MV := mv
 RM := rm -rf
 CP := cp 2>/dev/null
@@ -323,3 +336,13 @@ clean:
 
 install:
 	$(Q)$(SCRIPT_DIR)/$(INSTALL_SCRIPT_NAME) $(INSTALL_PATH)
+
+help:
+	@echo "Main Makefile"
+	@echo -e
+	@echo "Targets:"
+	@echo "    all[D=1]          - build libraries, D =1 --> debug mode"
+	@echo "    test              - make static tests"
+	@echo "    install[P = Path] - install libs to path P or default Path"
+	@echo -e
+	@echo "Makefile supports Verbose mode when V=1"
