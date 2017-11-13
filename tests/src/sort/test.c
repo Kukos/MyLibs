@@ -21,7 +21,7 @@ CMP(int)
 CMP(double)
 CMP(char)
 
-int cmp_mystruct(void *a, void *b)
+int cmp_mystruct(const void *a, const void *b)
 {
     if ((*(MyStruct **)a)->key < (*(MyStruct **)b)->key)
         return -1;
@@ -32,7 +32,7 @@ int cmp_mystruct(void *a, void *b)
     return 0;
 }
 
-bool array_is_sorted(void *array, size_t n, int size_of, int (*cmp)(void *a, void *b))
+bool array_is_sorted(void *array, size_t n, int size_of, int (*cmp)(const void *a, const void *b))
 {
     size_t i;
     size_t size;
