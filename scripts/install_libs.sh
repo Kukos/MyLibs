@@ -10,8 +10,6 @@ THIS_DIR=`readlink -f "${BASH_SOURCE[0]}" 2>/dev/null||echo $0`
 
 # This directory path
 DIR=`dirname "${THIS_DIR}"`
-echo $THIS_DIR
-echo $DIR
 source $DIR/log.sh
 
 DEFAULT_DIR=~/mylibs
