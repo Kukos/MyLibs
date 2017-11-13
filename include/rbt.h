@@ -44,7 +44,7 @@ typedef struct Rbt
     size_t      ____nodes;
     size_t      ____size_of;
 
-    int (*____cmp)(void *a, void *b);
+    int (*____cmp)(const void *a, const void *b);
 }Rbt;
 
 IT_FUNC(Rbt, rbt)
@@ -60,7 +60,7 @@ IT_FUNC(Rbt, rbt)
     NULL iff failure
     Pointer to RBT iff success
 */
-Tree *tree_rbt_create(int size_of, int (*cmp)(void* a,void *b));
+Tree *tree_rbt_create(int size_of, int (*cmp)(const void* a, const void *b));
 
 /*
     Create RBT
@@ -73,7 +73,7 @@ Tree *tree_rbt_create(int size_of, int (*cmp)(void* a,void *b));
     NULL iff failure
     Pointer to RBT iff success
 */
-Rbt* rbt_create(int size_of,int (*cmp)(void *a, void *b));
+Rbt* rbt_create(int size_of,int (*cmp)(const void *a, const void *b));
 
 #define RBT_CREATE(PTR, TYPE, CMP) \
     do { \
@@ -117,7 +117,7 @@ void rbt_destroy_with_entries(Rbt *tree, void (*destructor)(void *data));
     0 iff success
     Non-zero value iff failure
 */
-int rbt_insert(Rbt *tree, void *data);
+int rbt_insert(Rbt *tree, const void *data);
 
 /*
     Getter of min value ( using cmp ) in tree
@@ -130,7 +130,7 @@ int rbt_insert(Rbt *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int rbt_min(Rbt *tree, void *data);
+int rbt_min(const Rbt *tree, void *data);
 
 /*
     Getter of max value ( using cmp ) in tree
@@ -143,7 +143,7 @@ int rbt_min(Rbt *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int rbt_max(Rbt *tree, void *data);
+int rbt_max(const Rbt *tree, void *data);
 
 /*
     Search for data with key equals key @data_key ( using cmp )
@@ -157,7 +157,7 @@ int rbt_max(Rbt *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
- int rbt_search(Rbt *tree, void *data_key, void *data_out);
+ int rbt_search(const Rbt *tree, const void *data_key, void *data_out);
 
  /*
  	Check existing of key in tree
@@ -170,7 +170,7 @@ int rbt_max(Rbt *tree, void *data);
  	false iff key doesn't exist in tree
  	true iff key exists in tree
  */
- bool rbt_key_exist(Rbt *tree, void *data_key);
+ bool rbt_key_exist(const Rbt *tree, const void *data_key);
 
 /*
     Delete data with key equals @data_key ( using cmp )
@@ -183,7 +183,7 @@ int rbt_max(Rbt *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int rbt_delete(Rbt *tree, void *data_key);
+int rbt_delete(Rbt *tree, const void *data_key);
 
 /*
     Convert rbt to sorted array
@@ -197,7 +197,7 @@ int rbt_delete(Rbt *tree, void *data_key);
     0 iff success
     Non-zero value iff failure
 */
-int rbt_to_array(Rbt *tree, void *array, size_t *size);
+int rbt_to_array(const Rbt *tree, void *array, size_t *size);
 
 /*
     Get Num entries of RBT
@@ -209,7 +209,7 @@ int rbt_to_array(Rbt *tree, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-ssize_t rbt_get_num_entries(Rbt *tree);
+ssize_t rbt_get_num_entries(const Rbt *tree);
 
 /*
     Get Size of RBT data
@@ -221,7 +221,7 @@ ssize_t rbt_get_num_entries(Rbt *tree);
     -1 iff failure
     Size of data
 */
-int rbt_get_data_size(Rbt *tree);
+int rbt_get_data_size(const Rbt *tree);
 
 /*
     RECURSIVE getter with O(n) complexity
@@ -233,6 +233,6 @@ int rbt_get_data_size(Rbt *tree);
     -1 iff failure
     Hight iff success
 */
-int rbt_get_hight(Rbt *tree);
+int rbt_get_hight(const Rbt *tree);
 
 #endif
