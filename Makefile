@@ -169,6 +169,10 @@ ifeq ("$(origin P)", "command line")
   INSTALL_PATH = $(P)
 endif
 
+# DEBUG MODE
+ifeq ("$(origin D)", "command line")
+  CFLAGS += -g3 -D DEBUG_MODE -D TRACE_MODE
+endif
 
 # Print functions
 define print_info
