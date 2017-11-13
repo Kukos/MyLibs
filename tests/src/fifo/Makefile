@@ -18,5 +18,9 @@ test: $(_OBJ)
 run:
 	$(Q)$(THIS_DIR)/$(TEST_EXEC_NAME)
 
+memcheck:
+	$(call print_memcheck,$(NAME))
+	$(Q)($(VALGRIND) $(VALGRIND_FLAGS) $(THIS_DIR)/$(TEST_EXEC_NAME) 2>&1 | $(GREP) "$(PASS_STRING)" && $(call passed_memcheck)) || $(call failed_memcheck)
+
 clean:
 	$(Q)$(RM) $(_OBJ)
