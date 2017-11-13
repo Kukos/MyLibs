@@ -22,7 +22,7 @@
     NULL iff failure
     Pointer to node iff success
 */
-___inline___ static Avl_node *avl_node_create(void *data, int size_of, Avl_node *parent);
+___inline___ static Avl_node *avl_node_create(const void *data, int size_of, const Avl_node *parent);
 
 /*
     Deallocate Avl node
@@ -46,7 +46,7 @@ ___inline___ static void avl_node_destroy(Avl_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-___inline___ static Avl_node* avl_min_node(Avl_node *node);
+___inline___ static Avl_node* avl_min_node(const Avl_node *node);
 
 /*
     Search for node with max key
@@ -58,7 +58,7 @@ ___inline___ static Avl_node* avl_min_node(Avl_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-___inline___ static Avl_node *avl_max_node(Avl_node *node);
+___inline___ static Avl_node *avl_max_node(const Avl_node *node);
 
 /*
     Search for node with key equals @data_key ( using cmp )
@@ -70,7 +70,7 @@ ___inline___ static Avl_node *avl_max_node(Avl_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-___inline___ static Avl_node *avl_node_search(Avl *tree, void *data_key);
+___inline___ static Avl_node *avl_node_search(const Avl *tree, const void *data_key);
 
 /*
     Get successor of node
@@ -82,7 +82,7 @@ ___inline___ static Avl_node *avl_node_search(Avl *tree, void *data_key);
     NULL iff failure
     Pointer to node iff success
 */
-___inline___ static Avl_node *avl_successor(Avl_node *node);
+___inline___ static Avl_node *avl_successor(const Avl_node *node);
 
 /*
     Get predecessor of node
@@ -95,7 +95,7 @@ ___inline___ static Avl_node *avl_successor(Avl_node *node);
     Pointer to node iff success
 */
 
-___inline___ static Avl_node *avl_predecessor(Avl_node *node);
+___inline___ static Avl_node *avl_predecessor(const Avl_node *node);
 
 /*
     Double Left Roation, start from @node
@@ -191,7 +191,7 @@ static int avl_balance(Avl *tree);
     RETURN
     hight of subtree with root @node
 */
-static int __avl_rek_get_hight(Avl_node *node);
+static int __avl_rek_get_hight(const Avl_node *node);
 
 static int avl_balance(Avl *tree)
 {
@@ -207,7 +207,7 @@ static int avl_balance(Avl *tree)
     return 0;
 }
 
-___inline___ static Avl_node *avl_node_create(void *data, int size_of, Avl_node *parent)
+___inline___ static Avl_node *avl_node_create(const void *data, int size_of, const Avl_node *parent)
 {
     Avl_node *node;
 
@@ -229,7 +229,7 @@ ___inline___ static Avl_node *avl_node_create(void *data, int size_of, Avl_node 
 
     __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
 
-    node->____parent = parent;
+    node->____parent = (Avl_node *)parent;
     node->____left_son = NULL;
     node->____right_son = NULL;
 
@@ -249,7 +249,7 @@ ___inline___ static void avl_node_destroy(Avl_node *node)
     FREE(node);
 }
 
-___inline___ static Avl_node *avl_successor(Avl_node *node)
+___inline___ static Avl_node *avl_successor(const Avl_node *node)
 {
     Avl_node *parent;
 
@@ -270,7 +270,7 @@ ___inline___ static Avl_node *avl_successor(Avl_node *node)
     return parent;
 }
 
-___inline___ static Avl_node *avl_predecessor(Avl_node *node)
+___inline___ static Avl_node *avl_predecessor(const Avl_node *node)
 {
     Avl_node *parent;
 
@@ -291,7 +291,7 @@ ___inline___ static Avl_node *avl_predecessor(Avl_node *node)
     return parent;
 }
 
-___inline___ static Avl_node *avl_node_search(Avl *tree, void *data_key)
+___inline___ static Avl_node *avl_node_search(const Avl *tree, const void *data_key)
 {
     Avl_node *node;
 
@@ -315,7 +315,7 @@ ___inline___ static Avl_node *avl_node_search(Avl *tree, void *data_key)
     return NULL;
 }
 
-___inline___ static Avl_node *avl_max_node(Avl_node *node)
+___inline___ static Avl_node *avl_max_node(const Avl_node *node)
 {
     Avl_node *parent;
 
@@ -326,14 +326,14 @@ ___inline___ static Avl_node *avl_max_node(Avl_node *node)
     parent = NULL;
     while (node != NULL)
     {
-        parent = node;
+        parent = (Avl_node *)node;
         node = node->____right_son;
     }
 
     return parent;
 }
 
-___inline___ static Avl_node *avl_min_node(Avl_node *node)
+___inline___ static Avl_node *avl_min_node(const Avl_node *node)
 {
     Avl_node *parent;
 
@@ -344,7 +344,7 @@ ___inline___ static Avl_node *avl_min_node(Avl_node *node)
     parent = NULL;
     while (node != NULL)
     {
-        parent = node;
+        parent = (Avl_node *)node;
         node = node->____left_son;
     }
 
@@ -755,7 +755,7 @@ static int avl_delete_fixup(Avl *tree, Avl_node *parent, Avl_node *node)
     return 0;
 }
 
-static int __avl_rek_get_hight(Avl_node *node)
+static int __avl_rek_get_hight(const Avl_node *node)
 {
     int left;
     int right;
@@ -769,7 +769,7 @@ static int __avl_rek_get_hight(Avl_node *node)
     return MAX(left, right) + 1;
 }
 
-Avl *avl_create(int size_of, int (*cmp)(void *a, void *b))
+Avl *avl_create(int size_of, int (*cmp)(const void *a, const void *b))
 {
     Avl *tree;
 
@@ -854,7 +854,7 @@ void avl_destroy_with_entries(Avl *tree, void (*destructor)(void *data))
     FREE(tree);
 }
 
-int avl_insert(Avl *tree, void *data)
+int avl_insert(Avl *tree, const void *data)
 {
     Avl_node *node;
     Avl_node *parent;
@@ -915,7 +915,7 @@ int avl_insert(Avl *tree, void *data)
     return 0;
 }
 
-int avl_delete(Avl *tree, void *data_key)
+int avl_delete(Avl *tree, const void *data_key)
 {
     Avl_node *node;
     Avl_node *temp;
@@ -1044,7 +1044,7 @@ int avl_delete(Avl *tree, void *data_key)
     return 0;
 }
 
-int avl_min(Avl *tree, void *data)
+int avl_min(const Avl *tree, void *data)
 {
     Avl_node *node;
 
@@ -1068,7 +1068,7 @@ int avl_min(Avl *tree, void *data)
     return 0;
 }
 
-int avl_max(Avl *tree, void *data)
+int avl_max(const Avl *tree, void *data)
 {
     Avl_node *node;
 
@@ -1092,7 +1092,7 @@ int avl_max(Avl *tree, void *data)
     return 0;
 }
 
- int avl_search(Avl *tree, void *data_key, void *data_out)
+ int avl_search(const Avl *tree, const void *data_key, void *data_out)
 {
     Avl_node *node;
 
@@ -1119,7 +1119,7 @@ int avl_max(Avl *tree, void *data)
     return 0;
 }
 
-bool avl_key_exist(Avl *tree, void *data_key)
+bool avl_key_exist(const Avl *tree, const void *data_key)
 {
     TRACE();
 
@@ -1135,7 +1135,7 @@ bool avl_key_exist(Avl *tree, void *data_key)
     return avl_node_search(tree, data_key) != NULL;
 }
 
-int avl_to_array(Avl *tree, void *array, size_t *size)
+int avl_to_array(const Avl *tree, void *array, size_t *size)
 {
     void *t;
     BYTE *_t;
@@ -1178,7 +1178,7 @@ int avl_to_array(Avl *tree, void *array, size_t *size)
     return 0;
 }
 
-ssize_t avl_get_num_entries(Avl *tree)
+ssize_t avl_get_num_entries(const Avl *tree)
 {
     TRACE();
 
@@ -1188,7 +1188,7 @@ ssize_t avl_get_num_entries(Avl *tree)
     return (ssize_t)tree->____nodes;
 }
 
-int avl_get_data_size(Avl *tree)
+int avl_get_data_size(const Avl *tree)
 {
     TRACE();
 
@@ -1198,7 +1198,7 @@ int avl_get_data_size(Avl *tree)
     return (int)tree->____size_of;
 }
 
-int avl_get_hight(Avl *tree)
+int avl_get_hight(const Avl *tree)
 {
     TRACE();
 
@@ -1211,7 +1211,7 @@ int avl_get_hight(Avl *tree)
     return __avl_rek_get_hight(tree->____root);
 }
 
-Avl_iterator *avl_iterator_create(Avl *tree, iti_mode_t mode)
+Avl_iterator *avl_iterator_create(const Avl *tree, iti_mode_t mode)
 {
     Avl_iterator *iterator;
 
@@ -1252,7 +1252,7 @@ void avl_iterator_destroy(Avl_iterator *iterator)
     FREE(iterator);
 }
 
-int avl_iterator_init(Avl *tree, Avl_iterator *iterator, iti_mode_t mode)
+int avl_iterator_init(const Avl *tree, Avl_iterator *iterator, iti_mode_t mode)
 {
     TRACE();
 
@@ -1306,7 +1306,7 @@ int avl_iterator_prev(Avl_iterator *iterator)
     return 0;
 }
 
-int avl_iterator_get_data(Avl_iterator *iterator, void *val)
+int avl_iterator_get_data(const Avl_iterator *iterator, void *val)
 {
     TRACE();
 
@@ -1322,7 +1322,7 @@ int avl_iterator_get_data(Avl_iterator *iterator, void *val)
     return 0;
 }
 
-int avl_iterator_get_node(Avl_iterator *iterator, void *node)
+int avl_iterator_get_node(const Avl_iterator *iterator, void *node)
 {
     TRACE();
 
@@ -1338,7 +1338,7 @@ int avl_iterator_get_node(Avl_iterator *iterator, void *node)
     return 0;
 }
 
-bool avl_iterator_end(Avl_iterator *iterator)
+bool avl_iterator_end(const Avl_iterator *iterator)
 {
     TRACE();
 
@@ -1350,7 +1350,7 @@ bool avl_iterator_end(Avl_iterator *iterator)
 
 TREE_WRAPPERS_CREATE(Avl, avl)
 
-Tree *tree_avl_create(int size_of, int (*cmp)(void* a,void *b))
+Tree *tree_avl_create(int size_of, int (*cmp)(const void *a, const void *b))
 {
     Tree *tree;
 

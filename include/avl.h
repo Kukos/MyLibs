@@ -44,7 +44,7 @@ typedef struct Avl
     size_t      ____nodes;
     size_t      ____size_of;
 
-    int (*____cmp)(void *a, void *b);
+    int (*____cmp)(const void *a, const void *b);
 }Avl;
 
 IT_FUNC(Avl, avl)
@@ -60,7 +60,7 @@ IT_FUNC(Avl, avl)
     NULL iff failure
     Pointer to Tree iff success
 */
-Tree *tree_avl_create(int size_of, int (*cmp)(void* a,void *b));
+Tree *tree_avl_create(int size_of, int (*cmp)(const void *a, const void *b));
 
 /*
     Create AVL
@@ -73,7 +73,7 @@ Tree *tree_avl_create(int size_of, int (*cmp)(void* a,void *b));
     NULL iff failure
     Pointer to Avl iff success
 */
-Avl *avl_create(int size_of, int (*cmp)(void *a, void *b));
+Avl *avl_create(int size_of, int (*cmp)(const void *a, const void *b));
 
 #define AVL_CREATE(PTR,TYPE,CMP) \
     do { \
@@ -117,7 +117,7 @@ void avl_destroy_with_entries(Avl *tree, void (*destructor)(void *data));
     0 iff success
     Non-zero value iff failure
 */
-int avl_insert(Avl *tree, void *data);
+int avl_insert(Avl *tree, const void *data);
 
 /*
     Getter of min value ( using cmp ) in tree
@@ -130,7 +130,7 @@ int avl_insert(Avl *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int avl_min(Avl *tree, void *data);
+int avl_min(const Avl *tree, void *data);
 
 /*
     Getter of max value ( using cmp ) in tree
@@ -143,7 +143,7 @@ int avl_min(Avl *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int avl_max(Avl *tree, void *data);
+int avl_max(const Avl *tree, void *data);
 
 /*
     Search for data with key equals key @data_key ( using cmp )
@@ -157,7 +157,7 @@ int avl_max(Avl *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
- int avl_search(Avl *tree, void *data_key, void *data_out);
+ int avl_search(const Avl *tree, const void *data_key, void *data_out);
 
  /*
  	Check existing of key in tree
@@ -170,7 +170,7 @@ int avl_max(Avl *tree, void *data);
  	false iff key doesn't exist in tree
  	true iff key exists in tree
  */
- bool avl_key_exist(Avl *tree, void *data_key);
+ bool avl_key_exist(const Avl *tree, const void *data_key);
 
 /*
     Delete data with key equals @data_key ( using cmp )
@@ -183,7 +183,7 @@ int avl_max(Avl *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int avl_delete(Avl *tree, void *data_key);
+int avl_delete(Avl *tree, const void *data_key);
 
 /*
     Convert bst to sorted array
@@ -197,7 +197,7 @@ int avl_delete(Avl *tree, void *data_key);
     0 iff success
     Non-zero value iff failure
 */
-int avl_to_array(Avl *tree, void *array, size_t *size);
+int avl_to_array(const Avl *tree, void *array, size_t *size);
 
 /*
     Get Num entries of AVL
@@ -209,7 +209,7 @@ int avl_to_array(Avl *tree, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-ssize_t avl_get_num_entries(Avl *tree);
+ssize_t avl_get_num_entries(const Avl *tree);
 
 /*
     Get Size of AVL data
@@ -221,7 +221,7 @@ ssize_t avl_get_num_entries(Avl *tree);
     -1 iff failure
     Size of data
 */
-int avl_get_data_size(Avl *tree);
+int avl_get_data_size(const Avl *tree);
 
 /*
     RECURSIVE getter with O(n) complexity
@@ -233,6 +233,6 @@ int avl_get_data_size(Avl *tree);
     -1 iff failure
     Hight iff success
 */
-int avl_get_hight(Avl *tree);
+int avl_get_hight(const Avl *tree);
 
 #endif
