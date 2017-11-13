@@ -5,7 +5,7 @@
     Binary Search Tree without recursive function[^1], but with parent pointer
 
     ^1 -> only 1 function is recursive: bst_get_hight, because function is rarely use
-    it's better to have O(n) recursive getter isntead of additional O(log(n)) operation
+    it's better to have O(n) recursive getter instead of additional O(log(n)) operation
     during insert and delete
 
     Author: Michal Kukowski
