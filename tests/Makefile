@@ -1,6 +1,6 @@
 export
 
-MAX_MEMCHECK_LINE_LENGTH = 20
+MAX_MEMCHECK_LINE_LENGTH = 16
 
 define print_test_make
 	$(if $(Q), @echo "[MAKE TEST]   $(1)")
@@ -8,7 +8,7 @@ endef
 
 # Mem check info
 define print_memcheck
-	$(if $(Q), @echo -n "[MEMCHECK]    $$(1)    ")
+	$(if $(Q), @echo -n "[MEMTEST]    $$(1)"; printf "%*s" $$(shell echo "$(MAX_MEMCHECK_LINE_LENGTH) - $$(shell echo -n $$(1) | wc -m)" | bc) "")
 endef
 
 define passed_memcheck
