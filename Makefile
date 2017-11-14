@@ -18,6 +18,8 @@ MV := mv
 RM := rm -rf
 CP := cp 2>/dev/null
 AR := ar rcs
+WC := wc
+BC := bc
 GREP := grep -q
 
 CC := gcc

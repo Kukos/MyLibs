@@ -8,7 +8,7 @@ endef
 
 # Mem check info
 define print_memcheck
-	$(if $(Q), @echo -n "[MEMTEST]    $$(1)"; printf "%*s" $$(shell echo "$(MAX_MEMCHECK_LINE_LENGTH) - $$(shell echo -n $$(1) | wc -m)" | bc) "")
+	$(if $(Q), @echo -n "[MEMTEST]    $$(1)"; printf "%*s" $$(shell echo "$(MAX_MEMCHECK_LINE_LENGTH) - $$(shell echo -n $$(1) | $(WC) -m)" | $(BC)) "")
 endef
 
 define passed_memcheck
