@@ -5,7 +5,12 @@
 
 # This script install needed tools to use & "play with" libs
 
-source log.sh
+# Full path of this script
+THIS_DIR=`readlink -f "${BASH_SOURCE[0]}" 2>/dev/null||echo $0`
+
+# This directory path
+DIR=`dirname "${THIS_DIR}"`
+source $DIR/log.sh
 
 # C / C++
 C_PACKAGES=("gcc" "make")

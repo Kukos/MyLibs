@@ -345,6 +345,10 @@ memcheck:
 	$(Q)$(MAKE) -f $(TEST_DIR)/Makefile --no-print-directory && \
 	$(MAKE) -f $(TEST_DIR)/Makefile memcheck --no-print-directory
 
+memusage:
+	$(Q)$(MAKE) -f $(TEST_DIR)/Makefile --no-print-directory && \
+	$(MAKE) -f $(TEST_DIR)/Makefile memusage --no-print-directory
+
 help:
 	@echo "Main Makefile"
 	@echo -e

@@ -19,11 +19,17 @@ define failed_memcheck
     echo "\033[1;31m[FAILED]\033[0m"
 endef
 
+# Mem usage
+define print_memusage
+	$(if $(Q), @echo "[MEMUSAGE]   $$(1)")
+endef
+
 TEST_SRC := $(TEST_DIR)/src
 TEST_EXEC_NAME := test.out
 
 VALGRIND := valgrind
-VALGRIND_FLAGS := --leak-check=full
+VALGRIND_MEMCHECK_FLAGS := --leak-check=full
+VALGRIND_MEMUSAGE_FLAGS := --tool=massif --stacks=yes
 PASS_STRING := All heap blocks were freed -- no leaks are possible
 
 all: arraylist avl bst common compiler cstring darray fifo filebuffer heap klist list list2d rbt ringbuffer search sort stack trie ufset
@@ -138,6 +144,7 @@ clean:
 	$(MAKE) -f $(TEST_SRC)/compiler/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/cstring/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/darray/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/fifo/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/filebuffer/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/heap/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/klist/Makefile clean --no-print-directory && \
@@ -172,3 +179,25 @@ memcheck:
 	$(MAKE) -f $(TEST_SRC)/stack/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/trie/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/ufset/Makefile memcheck --no-print-directory
+
+memusage:
+	$(Q)$(MAKE) -f $(TEST_SRC)/arraylist/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/avl/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/bst/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/common/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/compiler/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/cstring/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/darray/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/fifo/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/filebuffer/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/heap/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/klist/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/list/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/list2d/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/rbt/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/ringbuffer/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/search/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/sort/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/stack/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/trie/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/ufset/Makefile memusage --no-print-directory
