@@ -10,6 +10,7 @@ export
 # test - make static tests
 # all[D=1] - make all libraries when D ==1 then target will be build in Debug mode
 # memcheck - make memcheck using valgrind for all tests
+# memusage - prepare mem measurements
 
 # Makefile supports Verbose mode, put V=1 after target name to set verbose mode
 
@@ -357,5 +358,6 @@ help:
 	@echo "    test              - make static tests"
 	@echo "    install[P = Path] - install libs to path P or default Path"
 	@echo "    memcheck          - make mem check using valgrind for tests"
+	@echo "    memusage          - prepare mem measurements"
 	@echo -e
 	@echo "Makefile supports Verbose mode when V=1"
