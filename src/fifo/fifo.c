@@ -116,6 +116,8 @@ int fifo_enqueue(Fifo *fifo, const void *val)
         if ((fifo->____array = realloc(fifo->____array, fifo->____size * fifo->____size_of)) == NULL)
             ERROR("realloc error\n", 1);
 
+        /* fifo has been reallocated so update pointer */
+        _t = (BYTE *)fifo->____array;
         /* if head is not at begining of fifo we need move entries */
         if (fifo->____head)
         {
@@ -135,14 +137,13 @@ int fifo_enqueue(Fifo *fifo, const void *val)
                 ERROR("memmove error\n", 1);
 
             /* move entries from end array to end of fifo */
-            if (memcpy(     (void *)(_t + entries_head * fifo->____size_of),
-                            (void *)(_t + (fifo->____size * fifo->____size_of) - to_move),
-                            to_move) == NULL)
+            if (memcpy( (void *)(_t + entries_head * fifo->____size_of),
+                        (void *)(_t + (fifo->____size * fifo->____size_of) - to_move),
+                        to_move) == NULL)
                 ERROR("memcpy error\n", 1);
 
             fifo->____head = 0;
         }
-
         fifo->____tail = fifo->____size >> 1;
     }
 
@@ -205,10 +206,10 @@ int fifo_dequeue(Fifo *fifo, void *val)
         if (fifo->____head < fifo->____tail)
         {
             if (memmove(_t, (void *)(_t + (fifo->____head * fifo->____size_of)),
-                            (fifo->____tail - fifo->____head) * fifo->____size_of) == NULL)
+                            entries * fifo->____size_of) == NULL)
                 ERROR("memmove error\n", 1);
 
-            fifo->____tail -= fifo->____head;
+            fifo->____tail = entries;
         }
         else
         {
@@ -268,7 +269,7 @@ int fifo_to_array(const Fifo *fifo, void *array, size_t *size)
     if (fifo_is_empty(fifo))
         ERROR("fifo is empty\n", 1);
 
-    if( fifo->____tail < fifo->____head)
+    if (fifo->____tail < fifo->____head)
         entries = fifo->____tail + fifo->____size - fifo->____head;
     else
         entries = fifo->____tail - fifo->____head;
@@ -281,8 +282,7 @@ int fifo_to_array(const Fifo *fifo, void *array, size_t *size)
 
     if (fifo->____head < fifo->____tail)
     {
-        if (memcpy(t, (void *)(_t + (fifo->____head * fifo->____size_of)),
-        entries * fifo->____size_of) == NULL)
+        if (memcpy(t, (void *)(_t + (fifo->____head * fifo->____size_of)), entries * fifo->____size_of) == NULL)
             ERROR("memcpy error\n", 1);
     }
     else

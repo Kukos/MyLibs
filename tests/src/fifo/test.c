@@ -297,7 +297,6 @@ test_f test_insert_delete(void)
             T_EXPECT(fifo_enqueue(q, (void *)&t[i]), 0);
 
     T_EXPECT(fifo_get_num_entries(q), array_size);
-
     T_EXPECT(fifo_to_array(q, (void *)&rt, &rsize), 0);
     T_ASSERT(rsize, array_size);
 
