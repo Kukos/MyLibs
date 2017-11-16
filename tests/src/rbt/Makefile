@@ -30,4 +30,5 @@ memusage:
 
 clean:
 	$(Q)$(RM) $(_OBJ)
+	$(Q)$(RM) $(THIS_DIR)/$(TEST_EXEC_NAME)
 	$(Q)$(RM) $(MEMUSAGE_FILE)
