@@ -37,9 +37,9 @@ typedef struct SList_iterator
     void    (*____destroy)(void *iterator);
     int     (*____next)(void *iterator);
     int     (*____prev)(void *iterator);
-    int     (*____get_data)(void *iterator, void *data);
-    int     (*____get_node)(void *iterator, void *node);
-    bool    (*____end)(void *iterator);
+    int     (*____get_data)(const void *iterator, void *data);
+    int     (*____get_node)(const void *iterator, void *node);
+    bool    (*____end)(const void *iterator);
 
 }SList_iterator;
 
@@ -50,24 +50,24 @@ typedef struct SList
    /* private functions */
     void        (*____destroy)(void *list);
     void        (*____destroy_with_entries)(void *list, void (*destructor)(void *data));
-    int         (*____insert)(void *list, void *data);
-    int         (*____delete)(void *list, void *data);
-    int         (*____delete_all)(void *list, void *data);
-    int         (*____search)(void *list, void *in, void *out);
-    void*       (*____merge)(void *list1, void *list2);
-    int         (*____to_array)(void *list, void *array, size_t *size);
-    int         (*____get_data_size)(void *list);
-    ssize_t     (*____get_num_entries)(void *list);
+    int         (*____insert)(void *list, const void *data);
+    int         (*____delete)(void *list, const void *data);
+    int         (*____delete_all)(void *list, const void *data);
+    int         (*____search)(const void *list, const void *in, void *out);
+    void*       (*____merge)(const void * ___restrict___ list1, const void * ___restrict___ list2);
+    int         (*____to_array)(const void *list, void *array, size_t *size);
+    int         (*____get_data_size)(const void *list);
+    ssize_t     (*____get_num_entries)(const void *list);
 
     /* to create iterator */
-    void*       (*____it_create)(void *list, iti_mode_t mode);
-    int         (*____it_init)(void *list, void *it, iti_mode_t mode);
+    void*       (*____it_create)(const void *list, iti_mode_t mode);
+    int         (*____it_init)(const void *list, void *it, iti_mode_t mode);
     void        (*____it_destroy)(void *iterator);
     int         (*____it_next)(void *iterator);
     int         (*____it_prev)(void *iterator);
-    int         (*____it_get_data)(void *iterator, void *data);
-    int         (*____it_get_node)(void *iterator, void *node);
-    bool        (*____it_end)(void *iterator);
+    int         (*____it_get_data)(const void *iterator, void *data);
+    int         (*____it_get_node)(const void *iterator, void *node);
+    bool        (*____it_end)(const void *iterator);
 
 }SList;
 
@@ -82,7 +82,7 @@ typedef struct SList
     NULL iff failure
     Pointer to SList_iterator iff success
 */
-___inline___ SList_iterator *slist_iterator_create(SList *list, iti_mode_t mode);
+___inline___ SList_iterator *slist_iterator_create(const SList *list, iti_mode_t mode);
 
 /*
     Init SList iterator
@@ -96,21 +96,21 @@ ___inline___ SList_iterator *slist_iterator_create(SList *list, iti_mode_t mode)
     0 iff success
     Non-zero value iff failure
 */
-___inline___ int slist_iterator_init(SList *list, SList_iterator *it, iti_mode_t mode);
+___inline___ int slist_iterator_init(const SList *list, SList_iterator *it, iti_mode_t mode);
 
 /* Macro to create wrappers to your struct to provide assignment to framework functions */
 #define SLIST_WRAPPERS_CREATE(type, prefix) \
     SLIST_ITERATOR_WRAPPERS_CREATE(concat(type, _iterator), concat(prefix, _iterator)) \
     static ___unused___ void ____destroy(void *list); \
     static ___unused___ void ____destroy_with_entries(void *list, void (*destructor)(void *data)); \
-    static ___unused___ int ____insert(void *list, void *data); \
-    static ___unused___ int ____delete(void *list, void *data); \
-    static ___unused___ int ____delete_all(void *list, void *data); \
-    static ___unused___ int ____search(void *list, void *in, void *out); \
-    static ___unused___ void *____merge(void *list1, void *list2); \
-    static ___unused___ int ____to_array(void *list, void *array, size_t *size); \
-    static ___unused___ int ____get_data_size(void *list); \
-    static ___unused___ ssize_t ____get_num_entries(void *list); \
+    static ___unused___ int ____insert(void *list, const void *data); \
+    static ___unused___ int ____delete(void *list, const void *data); \
+    static ___unused___ int ____delete_all(void *list, const void *data); \
+    static ___unused___ int ____search(const void *list, const void *in, void *out); \
+    static ___unused___ void *____merge(const void * ___restrict___ list1, const void * ___restrict___ list2); \
+    static ___unused___ int ____to_array(const void *list, void *array, size_t *size); \
+    static ___unused___ int ____get_data_size(const void *list); \
+    static ___unused___ ssize_t ____get_num_entries(const void *list); \
     static ___unused___ void ____destroy(void *list) \
     { \
         concat(prefix, _destroy)((type *)list); \
@@ -121,44 +121,44 @@ ___inline___ int slist_iterator_init(SList *list, SList_iterator *it, iti_mode_t
         concat(prefix, _destroy_with_entries)((type *)list, destructor); \
     } \
     \
-    static ___unused___ int ____insert(void *list, void *data) \
+    static ___unused___ int ____insert(void *list, const void *data) \
     { \
         return concat(prefix, _insert)((type *)list, data); \
     } \
     \
-    static ___unused___ int ____delete(void *list, void *data) \
+    static ___unused___ int ____delete(void *list, const void *data) \
     { \
         return concat(prefix, _delete)((type *)list, data); \
     } \
     \
-    static ___unused___ int ____delete_all(void *list, void *data) \
+    static ___unused___ int ____delete_all(void *list, const void *data) \
     { \
         return concat(prefix, _delete_all)((type *)list, data); \
     } \
     \
-    static ___unused___ int ____search(void *list, void *in, void *out) \
+    static ___unused___ int ____search(const void *list, const void *in, void *out) \
     { \
-        return concat(prefix, _search)((type *)list, in, out); \
+        return concat(prefix, _search)((const type *)list, in, out); \
     } \
     \
-    static ___unused___ void *____merge(void *list1, void *list2) \
+    static ___unused___ void *____merge(const void * ___restrict___ list1, const void * ___restrict___ list2) \
     { \
-        return (void *)concat(prefix, _merge)((type *)list1, (type *)list2); \
+        return (void *)concat(prefix, _merge)((const type * ___restrict___)list1, (const type *___restrict___)list2); \
     } \
     \
-    static ___unused___ int ____to_array(void *list, void *array, size_t *size) \
+    static ___unused___ int ____to_array(const void *list, void *array, size_t *size) \
     { \
-        return concat(prefix, _to_array)((type *)list, array, size); \
+        return concat(prefix, _to_array)((const type *)list, array, size); \
     } \
     \
-    static ___unused___ int ____get_data_size(void *list) \
+    static ___unused___ int ____get_data_size(const void *list) \
     { \
-        return concat(prefix, _get_data_size)((type *)list); \
+        return concat(prefix, _get_data_size)((const type *)list); \
     } \
     \
-    static ___unused___ ssize_t ____get_num_entries(void *list) \
+    static ___unused___ ssize_t ____get_num_entries(const void *list) \
     { \
-        return concat(prefix, _get_num_entries)((type *)list); \
+        return concat(prefix, _get_num_entries)((const type *)list); \
     }
 
 
@@ -172,7 +172,7 @@ ___inline___ int slist_iterator_init(SList *list, SList_iterator *it, iti_mode_t
         (list)->____search                = ____search; \
         (list)->____merge                 = ____merge; \
         (list)->____to_array              = ____to_array; \
-        (list)->____get_data_size           = ____get_data_size; \
+        (list)->____get_data_size         = ____get_data_size; \
         (list)->____get_num_entries       = ____get_num_entries; \
         (list)->____it_create             = ____it_create; \
         (list)->____it_init               = ____it_init; \
@@ -196,7 +196,7 @@ ___inline___ int slist_iterator_init(SList *list, SList_iterator *it, iti_mode_t
     true iff lists have the same type
 
 */
-___inline___ bool slist_the_same_type(SList *list1, SList *list2);
+___inline___ bool slist_the_same_type(const SList * ___restrict___ list1, const SList * ___restrict___ list2);
 
 /*
     Get list from generic SList
@@ -208,7 +208,7 @@ ___inline___ bool slist_the_same_type(SList *list1, SList *list2);
     NULL iff failure
     Pointer to list iff success
 */
-___inline___ void *slist_get_list(SList *list);
+___inline___ void *slist_get_list(const SList *list);
 
 
 /*
@@ -249,7 +249,7 @@ ___inline___ void slist_destroy_with_entries(SList *list, void (*destructor)(voi
     0 - iff success
     Non-zero iff failure
 */
-___inline___ int slist_insert(SList *list, void *data);
+___inline___ int slist_insert(SList *list, const void *data);
 
 /*
     Delete the first data which cmp(list->data, data) == 0
@@ -262,7 +262,7 @@ ___inline___ int slist_insert(SList *list, void *data);
 	0 iff success
 	Non-zero value iff failure (i.e data doesn't exist in list )
 */
-___inline___ int slist_delete(SList *list, void *data);
+___inline___ int slist_delete(SList *list, const void *data);
 
 /*
     Delete all entries which cmp(list->data, data) == 0
@@ -275,7 +275,7 @@ ___inline___ int slist_delete(SList *list, void *data);
     -1 iff failure (i.e data doesn't exist in list )
     Number of delete entries iff success
 */
-___inline___ int slist_delete_all(SList *list, void *data);
+___inline___ int slist_delete_all(SList *list, const void *data);
 
 /*
     Search for data which cmp(list->data, in) == 0,
@@ -304,7 +304,7 @@ ___inline___ int slist_delete_all(SList *list, void *data);
     0 iff success
 	Non-zero value iff failure
 */
-___inline___ int slist_search(SList *list, void *in, void *out);
+___inline___ int slist_search(const SList *list, const void *in, void *out);
 
 /*
     Merge 2 SList (IFF they have the same time)
@@ -317,7 +317,7 @@ ___inline___ int slist_search(SList *list, void *in, void *out);
     NULL iff failure
     pointer to New SList iff success
 */
-___inline___ SList *slist_merge(SList *list1, SList *list2);
+___inline___ SList *slist_merge(const SList * ___restrict___ list1, const SList * ___restrict___ list2);
 
 /*
     Convert SList to array
@@ -331,7 +331,7 @@ ___inline___ SList *slist_merge(SList *list1, SList *list2);
     0 iff success
     Non-zero iff failure
 */
-___inline___ int slist_to_array(SList *list, void *array, size_t *size);
+___inline___ int slist_to_array(const SList *list, void *array, size_t *size);
 
 /*
     Get SList data size_of
@@ -343,7 +343,7 @@ ___inline___ int slist_to_array(SList *list, void *array, size_t *size);
     -1 iff failure
     SList data size of iff success
 */
-___inline___ int slist_get_data_size(SList *list);
+___inline___ int slist_get_data_size(const SList *list);
 
 /*
     Get SList num of entries
@@ -355,9 +355,9 @@ ___inline___ int slist_get_data_size(SList *list);
     -1 iff failure
     Num entries iff success
 */
-___inline___ ssize_t slist_get_num_entries(SList *list);
+___inline___ ssize_t slist_get_num_entries(const SList *list);
 
-___inline___ bool slist_the_same_type(SList *list1, SList *list2)
+___inline___ bool slist_the_same_type(const SList * ___restrict___ list1, const SList * ___restrict___ list2)
 {
     if (list1 == NULL || list2 == NULL)
         return false;
@@ -370,7 +370,7 @@ ___inline___ bool slist_the_same_type(SList *list1, SList *list2)
              list1->____search                  != list2->____search                ||
              list1->____merge                   != list2->____merge                 ||
              list1->____to_array                != list2->____to_array              ||
-             list1->____get_data_size             != list2->____get_data_size           ||
+             list1->____get_data_size           != list2->____get_data_size           ||
              list1->____get_num_entries         != list2->____get_num_entries       ||
              list1->____it_create               != list2->____it_create             ||
              list1->____it_init                 != list2->____it_init               ||
@@ -383,7 +383,7 @@ ___inline___ bool slist_the_same_type(SList *list1, SList *list2)
              );
 }
 
-___inline___ void *slist_get_list(SList *list)
+___inline___ void *slist_get_list(const SList *list)
 {
     if (list == NULL)
         return NULL;
@@ -409,7 +409,7 @@ ___inline___ void slist_destroy_with_entries(SList *list, void (*destructor)(voi
     FREE(list);
 }
 
-___inline___ int slist_insert(SList *list, void *data)
+___inline___ int slist_insert(SList *list, const void *data)
 {
     if (list == NULL)
         return 1;
@@ -417,7 +417,7 @@ ___inline___ int slist_insert(SList *list, void *data)
     return list->____insert(slist_get_list(list), data);
 }
 
-___inline___ int slist_delete(SList *list, void *data)
+___inline___ int slist_delete(SList *list, const void *data)
 {
     if (list == NULL)
         return 1;
@@ -425,7 +425,7 @@ ___inline___ int slist_delete(SList *list, void *data)
     return list->____delete(slist_get_list(list), data);
 }
 
-___inline___ int slist_delete_all(SList *list, void *data)
+___inline___ int slist_delete_all(SList *list, const void *data)
 {
     if (list == NULL)
         return 1;
@@ -433,7 +433,7 @@ ___inline___ int slist_delete_all(SList *list, void *data)
     return list->____delete_all(slist_get_list(list), data);
 }
 
-___inline___ int slist_search(SList *list, void *in, void *out)
+___inline___ int slist_search(const SList *list, const void *in, void *out)
 {
     if (list == NULL)
         return 1;
@@ -441,7 +441,7 @@ ___inline___ int slist_search(SList *list, void *in, void *out)
     return list->____search(slist_get_list(list), in, out);
 }
 
-___inline___ SList *slist_merge(SList *list1, SList *list2)
+___inline___ SList *slist_merge(const SList * ___restrict___ list1, const SList * ___restrict___ list2)
 {
     SList *list3;
 
@@ -474,7 +474,7 @@ ___inline___ SList *slist_merge(SList *list1, SList *list2)
     list3->____search               = list1->____search;
     list3->____merge                = list1->____merge;
     list3->____to_array             = list1->____to_array;
-    list3->____get_data_size          = list1->____get_data_size;
+    list3->____get_data_size        = list1->____get_data_size;
     list3->____get_num_entries      = list1->____get_num_entries;
 
     list3->____it_create            = list1->____it_create;
@@ -489,7 +489,7 @@ ___inline___ SList *slist_merge(SList *list1, SList *list2)
     return list3;
 }
 
-___inline___ int slist_to_array(SList *list, void *array, size_t *size)
+___inline___ int slist_to_array(const SList *list, void *array, size_t *size)
 {
     if (list == NULL)
         return 1;
@@ -497,7 +497,7 @@ ___inline___ int slist_to_array(SList *list, void *array, size_t *size)
     return list->____to_array(slist_get_list(list), array, size);
 }
 
-___inline___ int slist_get_data_size(SList *list)
+___inline___ int slist_get_data_size(const SList *list)
 {
     if (list == NULL)
         return 1;
@@ -505,28 +505,28 @@ ___inline___ int slist_get_data_size(SList *list)
     return list->____get_data_size(slist_get_list(list));
 }
 
-___inline___ ssize_t slist_get_num_entries(SList *list)
+___inline___ ssize_t slist_get_num_entries(const SList *list)
 {
     if (list == NULL)
         return 1;
 
     return list->____get_num_entries(slist_get_list(list));
 }
-___inline___ SList_iterator *slist_iterator_create(SList *list, iti_mode_t mode)
+___inline___ SList_iterator *slist_iterator_create(const SList *list, iti_mode_t mode)
 {
     SList_iterator *it;
 
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", NULL, "");
+        ERROR("list == NULL\n", NULL);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", NULL, "");
+        ERROR("Incorrect mode\n", NULL);
 
     it = (SList_iterator *)malloc(sizeof(SList_iterator));
     if (it == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     it->____iterator = list->____it_create(list, mode);
     if (it->____iterator == NULL)
@@ -546,18 +546,18 @@ ___inline___ SList_iterator *slist_iterator_create(SList *list, iti_mode_t mode)
     return it;
 }
 
-___inline___ int slist_iterator_init(SList *list, SList_iterator *it, iti_mode_t mode)
+___inline___ int slist_iterator_init(const SList *list, SList_iterator *it, iti_mode_t mode)
 {
-    TRACE("");
+    TRACE();
 
     if (list == NULL)
-        ERROR("list == NULL\n", 1, "");
+        ERROR("list == NULL\n", 1);
 
     if (it == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", 1, "");
+        ERROR("Incorrect mode\n", 1);
 
     it->____iterator = list->____it_create(list, mode);
     if (it->____iterator == NULL)
@@ -578,19 +578,19 @@ IT_FUNC_CONTAINER(SList, slist)
 
 /* use this macro to create wrappers for iterator */
 #define SLIST_ITERATOR_WRAPPERS_CREATE(type, prefix) \
-    static ___unused___ void* ____it_create(void *list, iti_mode_t mode); \
-    static ___unused___ int ____it_init(void *list, void *it, iti_mode_t mode); \
+    static ___unused___ void* ____it_create(const void *list, iti_mode_t mode); \
+    static ___unused___ int ____it_init(const void *list, void *it, iti_mode_t mode); \
     static ___unused___ void ____it_destroy(void *it); \
     static ___unused___ int ____it_next(void *it); \
     static ___unused___ int ____it_prev(void *it); \
-    static ___unused___ int ____it_get_data(void *it, void *data); \
-    static ___unused___ int ____it_get_node(void *it, void *node); \
-    static ___unused___ bool ____it_end(void *it); \
-    static ___unused___ void* ____it_create(void *list, iti_mode_t mode) \
+    static ___unused___ int ____it_get_data(const void *it, void *data); \
+    static ___unused___ int ____it_get_node(const void *it, void *node); \
+    static ___unused___ bool ____it_end(const void *it); \
+    static ___unused___ void* ____it_create(const void *list, iti_mode_t mode) \
     { \
         return concat(prefix, _create)(slist_get_list(list), mode); \
     } \
-    static ___unused___ int ____it_init(void *list, void *it, iti_mode_t mode) \
+    static ___unused___ int ____it_init(const void *list, void *it, iti_mode_t mode) \
     { \
         return concat(prefix, _init)(list, (type *)it, mode); \
     } \
@@ -609,19 +609,19 @@ IT_FUNC_CONTAINER(SList, slist)
         return concat(prefix, _prev)((type *)it); \
     } \
     \
-    static ___unused___ int ____it_get_data(void *it, void *data) \
+    static ___unused___ int ____it_get_data(const void *it, void *data) \
     { \
-        return concat(prefix, _get_data)((type *)it, data); \
+        return concat(prefix, _get_data)((const type *)it, data); \
     } \
     \
-    static ___unused___ int ____it_get_node(void *it, void *node) \
+    static ___unused___ int ____it_get_node(const void *it, void *node) \
     { \
-        return concat(prefix, _get_node)((type *)it, node); \
+        return concat(prefix, _get_node)((const type *)it, node); \
     } \
     \
-    static ___unused___ bool ____it_end(void *it) \
+    static ___unused___ bool ____it_end(const void *it) \
     { \
-        return concat(prefix, _end)((type *)it); \
+        return concat(prefix, _end)((const type *)it); \
     }
 
 #endif

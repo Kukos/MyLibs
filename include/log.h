@@ -49,21 +49,23 @@ ___inline___ long ______log_strlen______(const char *str)
 #define __LOG__     "[LOG]\tFUNC: %s%*.sLINE: %d\n", __func__, \
                  (int)(LOG_MAX_FUNC_SPACE - ______log_strlen______(__func__)), "", __LINE__
 
-#define TRACE(...) \
+#define TRACE() \
     do { \
-        __trace_call__(__TRACE__, ##__VA_ARGS__); \
+        __trace_call__(__TRACE__); \
     } while (0)
 
-#define LOG(msg, ...) \
+#define LOG(...) __LOG(__VA_ARGS__, "") 
+#define __LOG(msg, ...) \
     do { \
         __log__(__LOG__); \
-        __log__("\t" msg, ##__VA_ARGS__); \
+        __log__("\t" msg "%s", ##__VA_ARGS__); \
     } while (0)
 
-#define ERROR(msg, errno, ...) \
+#define ERROR(...) __ERROR(__VA_ARGS__, "") 
+#define __ERROR(msg, errno, ...) \
     do { \
         __error__(__ERROR__); \
-        __error__("\t" msg, ##__VA_ARGS__); \
+        __error__("\t" msg "%s", ##__VA_ARGS__); \
         \
         return errno; \
     } while (0)
@@ -81,7 +83,7 @@ ___inline___ long ______log_strlen______(const char *str)
 	RETURN:
 	This is a void function
 */
-void __log__(const char *msg, ...);
+void __attribute__(( format(printf,1, 2) )) __log__(const char *msg, ...);
 
 /*
 	Simple trace calling funcion
@@ -94,7 +96,7 @@ void __log__(const char *msg, ...);
 	RETURN:
 	This is a void function
 */
-void __trace_call__(const char *msg, ...);
+void __attribute__(( format(printf,1, 2) ))  __trace_call__(const char *msg, ...);
 
 /*
 	Simple log error function
@@ -106,7 +108,7 @@ void __trace_call__(const char *msg, ...);
 	RETURN:
 	This is a void function
 */
-void __error__(const char *msg, ...);
+void __attribute__(( format(printf,1, 2) ))  __error__(const char *msg, ...);
 
 /*
     initialize log system
@@ -119,7 +121,7 @@ void __error__(const char *msg, ...);
     0 iff success
     non-zero value iff failure
 */
-int log_init(FILE *fd, int to_file);
+int log_init(const FILE *fd, int to_file);
 
 /*
     deinit log system

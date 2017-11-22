@@ -9,21 +9,21 @@ Stack *stack_create(int size_of)
 {
     Stack *s;
 
-    TRACE("");
+    TRACE();
 
     if (size_of < 1)
-        ERROR("size_of < 1\n", NULL, "");
+        ERROR("size_of < 1\n", NULL);
 
     s = (Stack *)malloc(sizeof(Stack));
     if (s == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     /* Stack is a unsorted dynamic array */
     s->____darray = darray_create(DARRAY_UNSORTED, 0, size_of, NULL);
     if (s->____darray == NULL)
     {
         FREE(s);
-        ERROR("darray_create error\n", NULL, "");
+        ERROR("darray_create error\n", NULL);
     }
 
     return s;
@@ -31,7 +31,7 @@ Stack *stack_create(int size_of)
 
 void stack_destroy(Stack *stack)
 {
-    TRACE("");
+    TRACE();
 
     if (stack == NULL)
         return;
@@ -42,7 +42,7 @@ void stack_destroy(Stack *stack)
 
 void stack_destroy_with_entries(Stack *stack, void (*destructor)(void *data))
 {
-    TRACE("");
+    TRACE();
 
     if (stack == NULL)
         return;
@@ -52,12 +52,12 @@ void stack_destroy_with_entries(Stack *stack, void (*destructor)(void *data))
     FREE(stack);
 }
 
-int stack_push(Stack *stack, void *val)
+int stack_push(Stack *stack, const void *val)
 {
-    TRACE("");
+    TRACE();
 
     if (stack == NULL || val == NULL)
-        ERROR("stack == NULL || val == NULL\n", 1, "");
+        ERROR("stack == NULL || val == NULL\n", 1);
 
     return darray_insert(stack->____darray,val);
 }
@@ -66,13 +66,13 @@ int stack_pop(Stack *stack, void* val)
 {
     BYTE *_t;
 
-    TRACE("");
+    TRACE();
 
     if (stack == NULL || val == NULL)
-        ERROR("stack == NULL || val == NULL\n", 1, "");
+        ERROR("stack == NULL || val == NULL\n", 1);
 
     if (stack_is_empty(stack))
-        ERROR("stack is empty\n", 1, "");
+        ERROR("stack is empty\n", 1);
 
     _t = (BYTE *)darray_get_array(stack->____darray);
 
@@ -83,25 +83,25 @@ int stack_pop(Stack *stack, void* val)
     return darray_delete(stack->____darray);
 }
 
-bool stack_is_empty(Stack *stack)
+bool stack_is_empty(const Stack *stack)
 {
-    TRACE("");
+    TRACE();
 
     return (stack == NULL || stack->____darray == NULL
          || darray_get_num_entries(stack->____darray) == 0);
 }
 
-int stack_get_top(Stack *stack, void *val)
+int stack_get_top(const Stack *stack, void *val)
 {
     BYTE *_t;
 
-    TRACE("");
+    TRACE();
 
     if (stack == NULL || val == NULL)
-        ERROR("stack == NULL || val == NULL\n", 1, "");
+        ERROR("stack == NULL || val == NULL\n", 1);
 
     if (stack_is_empty(stack))
-        ERROR("stack is empty\n", 1, "");
+        ERROR("stack is empty\n", 1);
 
     _t = (BYTE *)darray_get_array(stack->____darray);
 
@@ -112,25 +112,25 @@ int stack_get_top(Stack *stack, void *val)
     return 0;
 }
 
-int stack_to_array(Stack *stack, void *array, size_t *size)
+int stack_to_array(const Stack *stack, void *array, size_t *size)
 {
     void *t;
 
-    TRACE("");
+    TRACE();
 
     if (stack == NULL || array == NULL)
-        ERROR("stack == NULL || array == NULL\n", 1, "");
+        ERROR("stack == NULL || array == NULL\n", 1);
 
     if (stack_is_empty(stack))
-        ERROR("stack is empty\n",1 ,"");
+        ERROR("stack is empty\n",1);
 
     t = malloc((size_t)darray_get_num_entries(stack->____darray) * (size_t)darray_get_data_size(stack->____darray));
     if (t == NULL)
-        ERROR("malloc error\n", 1, "");
+        ERROR("malloc error\n", 1);
 
     if (memcpy(t, darray_get_array(stack->____darray),
     (size_t)darray_get_num_entries(stack->____darray) * (size_t)darray_get_data_size(stack->____darray)) == NULL)
-        ERROR("memcpy error\n", 1 ,"");
+        ERROR("memcpy error\n", 1);
 
     if (size != NULL)
         *size = (size_t)darray_get_num_entries(stack->____darray);
@@ -140,32 +140,32 @@ int stack_to_array(Stack *stack, void *array, size_t *size)
     return 0;
 }
 
-void *stack_get_array(Stack *stack)
+void *stack_get_array(const Stack *stack)
 {
-    TRACE("");
+    TRACE();
 
     if (stack == NULL)
-        ERROR("stack == NULL\n", NULL, "");
+        ERROR("stack == NULL\n", NULL);
 
     return darray_get_array(stack->____darray);
 }
 
-ssize_t stack_get_num_entries(Stack *stack)
+ssize_t stack_get_num_entries(const Stack *stack)
 {
-    TRACE("");
+    TRACE();
 
     if (stack == NULL)
-        ERROR("stack == NULL\n", -1, "");
+        ERROR("stack == NULL\n", -1);
 
     return darray_get_num_entries(stack->____darray);
 }
 
-int stack_get_data_size(Stack *stack)
+int stack_get_data_size(const Stack *stack)
 {
-    TRACE("");
+    TRACE();
 
     if (stack == NULL)
-        ERROR("stack == NULL\n", -1, "");
+        ERROR("stack == NULL\n", -1);
 
     return darray_get_data_size(stack->____darray);
 }

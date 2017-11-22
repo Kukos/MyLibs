@@ -104,7 +104,7 @@ int file_buffer_append(File_buffer *fb, const char *data);
 	%0 iff success
 	%Non-zero value iff failure
 */
-int file_buffer_synch(File_buffer *fb);
+int file_buffer_synch(const File_buffer *fb);
 
 /*
 	Get Buffer
@@ -116,7 +116,7 @@ int file_buffer_synch(File_buffer *fb);
 	%Pointer to buffer iff success
 	%NULL iff failure
 */
-char *file_buffer_get_buff(File_buffer *fb);
+char *file_buffer_get_buff(const File_buffer *fb);
 
 /*
 	Get Size of buffered file
@@ -128,6 +128,6 @@ char *file_buffer_get_buff(File_buffer *fb);
 	%Size iff success
 	%-1 iff failure
 */
-ssize_t file_buffer_get_size(File_buffer *fb);
+ssize_t file_buffer_get_size(const File_buffer *fb);
 
 #endif

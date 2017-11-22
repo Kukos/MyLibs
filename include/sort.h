@@ -56,7 +56,7 @@
     %0 if success
     %Non-zero value if failure
 */
-int insort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
+int insort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
 
 /*
     Define for binsort, please check binsort funciton description
@@ -76,7 +76,7 @@ int insort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_o
    	%0 if success
     %Non-zero value if failure
 */
-int binsort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
+int binsort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
 
 
 /*
@@ -97,7 +97,7 @@ int binsort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_
     %0 if success
     %Non-zero value if failure
 */
-int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
+int mergesort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
 
 
 /*
@@ -118,7 +118,7 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
     %0 if success
     %Non-zero value if failure
 */
-int quicksort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
+int quicksort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
 
 /*
     Define for sort, please check sort funciton description
@@ -138,6 +138,6 @@ int quicksort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int siz
     %0 if success
     %Non-zero value if failure
 */
-int sort(void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
+int sort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
 
 #endif

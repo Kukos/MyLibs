@@ -86,7 +86,7 @@ void ufs_master_destroy_with_entries(UFSMaster *master, void (*destructor)(void 
 	%NULL iff failure
 	%Pointer to UFS Entry iff success
 */
-UFSentry *ufs_entry_create(void *data, int size_of);
+UFSentry *ufs_entry_create(const void *data, int size_of);
 
 /*
 	Deallocate mem
@@ -205,7 +205,7 @@ ssize_t ufset_get_num_entries(UFset *set);
     %-1 iff failure
     %Num of entries iff success
 */
-ssize_t ufs_master_get_num_entries(UFSMaster *master);
+ssize_t ufs_master_get_num_entries(const UFSMaster *master);
 
 /*
     Get hight of UFS FOREST
@@ -217,6 +217,6 @@ ssize_t ufs_master_get_num_entries(UFSMaster *master);
     -1 iff failure
     Hight iff success
 */
-int ufs_master_get_hight(UFSMaster *master);
+int ufs_master_get_hight(const UFSMaster *master);
 
 #endif

@@ -160,7 +160,7 @@
     Macro create static function for cmp whole array (type must by simple type)
 */
 #define ARRAY_EQUAL(type) \
-    static ___unused___ bool concat(array_equal_, type)(type *t1, type *t2, size_t size) \
+    static ___unused___ bool concat(array_equal_, type)(const type *t1, const type *t2, size_t size) \
     { \
         size_t i; \
         \
@@ -193,7 +193,7 @@
     Macro create static function for cmp 2 vars (type must by simple type)
 */
 #define CMP(type) \
-    static ___unused___ int concat(cmp_, type)(void *a, void *b) \
+    static ___unused___ int concat(cmp_, type)(const void *a, const void *b) \
     { \
         if (a == NULL || b == NULL) \
             return -10000; \

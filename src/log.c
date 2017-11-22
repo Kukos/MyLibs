@@ -89,7 +89,7 @@ void __error__(const char *msg, ...) { (void)msg; }
 #endif
 
 #ifdef DEBUG_MODE
-int log_init(FILE *fd, int to_file)
+int log_init(const FILE *fd, int to_file)
 {
 	struct stat st;
 	struct tm t;
@@ -156,7 +156,7 @@ int log_init(FILE *fd, int to_file)
 	return 0;
 }
 #else
-int log_init(FILE *fd, int to_file) { (void)fd; (void)to_file; return 0; }
+int log_init(const FILE *fd, int to_file) { (void)fd; (void)to_file; return 0; }
 #endif
 
 #ifdef DEBUG_MODE

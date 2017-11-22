@@ -20,9 +20,9 @@ static ___unused___ char ____sentinel_buffer[SENTINEL_BUFFER_SIZE] = { SENTINEL_
 static ___unused___ Rbt_node ____sentinel =
 {
     .____data       = (void *)&____sentinel_buffer,
-    .____left_son   = &____sentinel,
-    .____right_son  = &____sentinel,
-    .____parent     = &____sentinel
+    .____left_son   = (Rbt_node *)&____sentinel,
+    .____right_son  = (Rbt_node *)&____sentinel,
+    .____parent     = (Rbt_node *)&____sentinel
 };
 
 static Rbt_node *sentinel = &____sentinel;
@@ -39,7 +39,7 @@ static Rbt_node *sentinel = &____sentinel;
     NULL iff failure
     Pointer to node iff success
 */
-___inline___ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node *parent);
+___inline___ static Rbt_node *rbt_node_create(const void *data, int size_of, const Rbt_node *parent);
 
 /*
     Deallocate rbt node
@@ -63,7 +63,7 @@ ___inline___ static void rbt_node_destroy(Rbt_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-___inline___ static Rbt_node* rbt_min_node(Rbt_node *node);
+___inline___ static Rbt_node* rbt_min_node(const Rbt_node *node);
 
 /*
     Search for node with max key
@@ -75,7 +75,7 @@ ___inline___ static Rbt_node* rbt_min_node(Rbt_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-___inline___ static Rbt_node *rbt_max_node(Rbt_node *node);
+___inline___ static Rbt_node *rbt_max_node(const Rbt_node *node);
 
 /*
     Search for node with key equals @data_key ( using cmp )
@@ -87,7 +87,7 @@ ___inline___ static Rbt_node *rbt_max_node(Rbt_node *node);
     NULL iff failure
     Pointer to node iff success
 */
-___inline___ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key);
+___inline___ static Rbt_node *rbt_node_search(const Rbt *tree, const void *data_key);
 
 /*
     Get successor of node
@@ -99,7 +99,7 @@ ___inline___ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key);
     NULL iff failure
     Pointer to node iff success
 */
-___inline___ static Rbt_node *rbt_successor(Rbt_node *node);
+___inline___ static Rbt_node *rbt_successor(const Rbt_node *node);
 
 /*
     Get predecessor of node
@@ -112,7 +112,7 @@ ___inline___ static Rbt_node *rbt_successor(Rbt_node *node);
     Pointer to node iff success
 */
 
-___inline___ static Rbt_node *rbt_predecessor(Rbt_node *node);
+___inline___ static Rbt_node *rbt_predecessor(const Rbt_node *node);
 
 /*
     Right tree rotate
@@ -180,33 +180,33 @@ static int rbt_balance(Rbt *tree);
     RETURN
     hight of subtree with root @node
 */
-static int __rbt_rek_get_hight(Rbt_node *node);
+static int __rbt_rek_get_hight(const Rbt_node *node);
 
-___inline___ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node *parent)
+___inline___ static Rbt_node *rbt_node_create(const void *data, int size_of, const Rbt_node *parent)
 {
     Rbt_node *node;
 
-    TRACE("");
+    TRACE();
 
     assert(data != NULL);
     assert(size_of >= 1);
 
     node = (Rbt_node *)malloc(sizeof(Rbt_node));
     if (node == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     node->____data = malloc((size_t)size_of);
     if (node->____data == NULL)
 	{
 		FREE(node);
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 	}
 
     __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
 
-    node->____parent = parent;
-    node->____left_son = sentinel;
-    node->____right_son = sentinel;
+    node->____parent = (Rbt_node *)parent;
+    node->____left_son = (Rbt_node *)sentinel;
+    node->____right_son = (Rbt_node *)sentinel;
 
     node->____color = RBT_RED; /* always we create red nodes */
 
@@ -215,7 +215,7 @@ ___inline___ static Rbt_node *rbt_node_create(void *data, int size_of, Rbt_node 
 
 ___inline___ static void rbt_node_destroy(Rbt_node *node)
 {
-    TRACE("");
+    TRACE();
 
     if (node == NULL)
         return;
@@ -224,11 +224,11 @@ ___inline___ static void rbt_node_destroy(Rbt_node *node)
     FREE(node);
 }
 
-___inline___ static Rbt_node *rbt_successor(Rbt_node *node)
+___inline___ static Rbt_node *rbt_successor(const Rbt_node *node)
 {
     Rbt_node *parent;
 
-    TRACE("");
+    TRACE();
 
     assert(node != NULL);
     assert(node != sentinel);
@@ -239,18 +239,18 @@ ___inline___ static Rbt_node *rbt_successor(Rbt_node *node)
     parent = node->____parent;
     while (parent != sentinel && node == parent->____right_son)
     {
-        node = parent;
+        node = (Rbt_node *)parent;
         parent = parent->____parent;
     }
 
     return parent;
 }
 
-___inline___ static Rbt_node *rbt_predecessor(Rbt_node *node)
+___inline___ static Rbt_node *rbt_predecessor(const Rbt_node *node)
 {
     Rbt_node *parent;
 
-    TRACE("");
+    TRACE();
 
     assert(node != NULL);
     assert(node != sentinel);
@@ -261,17 +261,17 @@ ___inline___ static Rbt_node *rbt_predecessor(Rbt_node *node)
     parent = node->____parent;
     while (parent != sentinel && node == parent->____left_son)
     {
-        node = parent;
+        node = (Rbt_node *)parent;
         parent = parent->____parent;
     }
     return parent;
 }
 
-___inline___ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key)
+___inline___ static Rbt_node *rbt_node_search(const Rbt *tree, const void *data_key)
 {
     Rbt_node *node;
 
-    TRACE("");
+    TRACE();
 
     assert(tree != NULL);
     assert(data_key != NULL);
@@ -291,11 +291,11 @@ ___inline___ static Rbt_node *rbt_node_search(Rbt *tree, void *data_key)
     return NULL;
 }
 
-___inline___ static Rbt_node *rbt_max_node(Rbt_node *node)
+___inline___ static Rbt_node *rbt_max_node(const Rbt_node *node)
 {
     Rbt_node *parent;
 
-    TRACE("");
+    TRACE();
 
     assert(node != NULL);
     assert(node != sentinel);
@@ -303,18 +303,18 @@ ___inline___ static Rbt_node *rbt_max_node(Rbt_node *node)
     parent = NULL;
     while (node != sentinel)
     {
-        parent = node;
+        parent = (Rbt_node *)node;
         node = node->____right_son;
     }
 
     return parent;
 }
 
-___inline___ static Rbt_node *rbt_min_node(Rbt_node *node)
+___inline___ static Rbt_node *rbt_min_node(const Rbt_node *node)
 {
     Rbt_node *parent;
 
-    TRACE("");
+    TRACE();
 
     assert(node != NULL);
     assert(node != sentinel);
@@ -322,7 +322,7 @@ ___inline___ static Rbt_node *rbt_min_node(Rbt_node *node)
     parent = NULL;
     while (node != sentinel)
     {
-        parent = node;
+        parent = (Rbt_node *)node;
         node = node->____left_son;
     }
 
@@ -343,7 +343,7 @@ ___inline___ static void rbt_rotate_right(Rbt *tree, Rbt_node *node)
 {
     Rbt_node *left_son;
 
-    TRACE("");
+    TRACE();
 
     assert(tree != NULL);
     assert(node != NULL);
@@ -389,7 +389,7 @@ ___inline___ static void rbt_rotate_left(Rbt *tree, Rbt_node *node)
 {
     Rbt_node *right_son;
 
-    TRACE("");
+    TRACE();
 
     assert(tree != NULL);
     assert(node != NULL);
@@ -426,7 +426,7 @@ static int rbt_insert_fixup(Rbt *tree, Rbt_node *node)
 {
     Rbt_node *uncle;
 
-    TRACE("");
+    TRACE();
 
     assert(tree != NULL);
     assert(node != NULL);
@@ -491,7 +491,7 @@ static int rbt_delete_fixup(Rbt *tree, Rbt_node *node)
 {
     Rbt_node *ptr;
 
-    TRACE("");
+    TRACE();
 
     assert(tree != NULL);
     assert(node != NULL);
@@ -576,7 +576,7 @@ static int rbt_delete_fixup(Rbt *tree, Rbt_node *node)
     return 0;
 }
 
-static int __rbt_rek_get_hight(Rbt_node *node)
+static int __rbt_rek_get_hight(const Rbt_node *node)
 {
     int left;
     int right;
@@ -590,21 +590,21 @@ static int __rbt_rek_get_hight(Rbt_node *node)
     return MAX(left, right) + 1;
 }
 
-Rbt* rbt_create(int size_of, int (*cmp)(void *a, void *b))
+Rbt* rbt_create(int size_of, int (*cmp)(const void *a, const void *b))
 {
     Rbt *tree;
 
-    TRACE("");
+    TRACE();
 
     if (size_of < 1)
-        ERROR("size_of < 1\n", NULL, "");
+        ERROR("size_of < 1\n", NULL);
 
     if (cmp == NULL)
-        ERROR("cmp == NULL\n", NULL, "");
+        ERROR("cmp == NULL\n", NULL);
 
     tree = (Rbt *)malloc(sizeof(Rbt));
     if (tree == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     tree->____root = sentinel;
     tree->____size_of = (size_t)size_of;
@@ -620,7 +620,7 @@ void rbt_destroy(Rbt *tree)
     Rbt_node *node;
     Rbt_node *temp;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
         return;
@@ -648,7 +648,7 @@ void rbt_destroy_with_entries(Rbt *tree, void (*destructor)(void *data))
     Rbt_node *node;
     Rbt_node *temp;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
         return;
@@ -675,26 +675,26 @@ void rbt_destroy_with_entries(Rbt *tree, void (*destructor)(void *data))
     FREE(tree);
 }
 
-int rbt_insert(Rbt *tree, void *data)
+int rbt_insert(Rbt *tree, const void *data)
 {
     Rbt_node *node;
     Rbt_node *parent;
     Rbt_node *new_node;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (data == NULL)
-        ERROR("data == NULL\n", 1, "");
+        ERROR("data == NULL\n", 1);
 
     /* special case - empty tree */
     if (tree->____root == sentinel)
     {
         node = rbt_node_create(data, (int)tree->____size_of, sentinel);
 		if (node == NULL)
-			ERROR("rbt_node_create\n", 1, "");
+			ERROR("rbt_node_create\n", 1);
 
         /* root is always black */
         node->____color = RBT_BLACK;
@@ -721,7 +721,7 @@ int rbt_insert(Rbt *tree, void *data)
 
         new_node = rbt_node_create(data, (int)tree->____size_of, parent);
 		if (new_node == NULL)
-			ERROR("rbt_node_create\n", 1, "");
+			ERROR("rbt_node_create\n", 1);
 
         /* new node is the right son */
         if (tree->____cmp(new_node->____data, parent->____data) > 0)
@@ -730,14 +730,14 @@ int rbt_insert(Rbt *tree, void *data)
             parent->____left_son = new_node;
 
         if (rbt_insert_fixup(tree, new_node))
-            ERROR("rbt_insert_fixup error\n", 1, "");
+            ERROR("rbt_insert_fixup error\n", 1);
     }
 
     ++tree->____nodes;
     return 0;
 }
 
-int rbt_delete(Rbt *tree, void *data_key)
+int rbt_delete(Rbt *tree, const void *data_key)
 {
     Rbt_node *node;
     Rbt_node *temp;
@@ -745,20 +745,20 @@ int rbt_delete(Rbt *tree, void *data_key)
 
     rbt_color_t color;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (data_key == NULL)
-        ERROR("data_key == NULL\n", 1, "");
+        ERROR("data_key == NULL\n", 1);
 
     if (tree->____root == sentinel)
-        ERROR("Empty Tree\n", 1, "");
+        ERROR("Empty Tree\n", 1);
 
     node = rbt_node_search(tree, data_key);
     if (node == NULL)
-        ERROR("key doesn't exist in tree, nothing to delete\n", 1, "");
+        ERROR("key doesn't exist in tree, nothing to delete\n", 1);
 
     temp = sentinel;
     color = node->____color;
@@ -863,78 +863,78 @@ int rbt_delete(Rbt *tree, void *data_key)
     /* if deleted node was black tree need fixup */
     if (color == RBT_BLACK)
         if (rbt_delete_fixup(tree,temp))
-            ERROR("rbt_delete_fixup error\n", 1, "");
+            ERROR("rbt_delete_fixup error\n", 1);
 
     rbt_node_destroy(node);
 
     return 0;
 }
 
-int rbt_min(Rbt *tree, void *data)
+int rbt_min(const Rbt *tree, void *data)
 {
     Rbt_node *node;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (data == NULL)
-        ERROR("data == NULL\n", 1, "");
+        ERROR("data == NULL\n", 1);
 
     if (tree->____root == sentinel)
-        ERROR("Empty Tree\n", 1, "");
+        ERROR("Empty Tree\n", 1);
 
     node = rbt_min_node(tree->____root);
     if(node == NULL)
-        ERROR("rbt_min_node error\n", 1, "");
+        ERROR("rbt_min_node error\n", 1);
 
     __ASSIGN__(*(BYTE *)data, *(BYTE *)node->____data, tree->____size_of);
 
     return 0;
 }
 
-int rbt_max(Rbt *tree, void *data)
+int rbt_max(const Rbt *tree, void *data)
 {
     Rbt_node *node;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (data == NULL)
-        ERROR("data == NULL\n", 1, "");
+        ERROR("data == NULL\n", 1);
 
     if (tree->____root == sentinel)
-        ERROR("Empty Tree\n", 1, "");
+        ERROR("Empty Tree\n", 1);
 
     node = rbt_max_node(tree->____root);
     if(node == NULL)
-        ERROR("rbt_max_node error\n", 1, "");
+        ERROR("rbt_max_node error\n", 1);
 
     __ASSIGN__(*(BYTE *)data, *(BYTE *)node->____data, tree->____size_of);
 
     return 0;
 }
 
-int rbt_search(Rbt *tree, void *data_key, void *data_out)
+int rbt_search(const Rbt *tree, const void *data_key, void *data_out)
 {
     Rbt_node *node;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (data_key == NULL)
-        ERROR("data_key == NULL\n", 1, "");
+        ERROR("data_key == NULL\n", 1);
 
     if (data_out == NULL)
-        ERROR("data_out == NULL\n", 1, "");
+        ERROR("data_out == NULL\n", 1);
 
     if (tree->____root == sentinel)
-        ERROR("Empty Tree\n", 1, "");
+        ERROR("Empty Tree\n", 1);
 
     node = rbt_node_search(tree, data_key);
     if (node == NULL)
@@ -945,53 +945,53 @@ int rbt_search(Rbt *tree, void *data_key, void *data_out)
     return 0;
 }
 
-bool rbt_key_exist(Rbt *tree, void *data_key)
+bool rbt_key_exist(const Rbt *tree, const void *data_key)
 {
-   TRACE("");
+   TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", false, "");
+        ERROR("tree == NULL\n", false);
 
     if (data_key == NULL)
-        ERROR("data_key == NULL\n", false, "");
+        ERROR("data_key == NULL\n", false);
 
     if (tree->____root == sentinel)
-        ERROR("Empty Tree\n", false, "");
+        ERROR("Empty Tree\n", false);
 
    return rbt_node_search(tree, data_key) != NULL;
 }
 
-int rbt_to_array(Rbt *tree, void *array, size_t *size)
+int rbt_to_array(const Rbt *tree, void *array, size_t *size)
 {
     void *t;
     BYTE *_t;
     Rbt_node *node;
     size_t offset;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (array == NULL)
-        ERROR("array == NULL\n", 1, "");
+        ERROR("array == NULL\n", 1);
 
     if (size == NULL)
-        ERROR("size == NULL\n", 1, "");
+        ERROR("size == NULL\n", 1);
 
     if (tree->____root == sentinel)
-        ERROR("Empty Tree\n", 1, "");
+        ERROR("Empty Tree\n", 1);
 
     t = malloc(tree->____size_of * tree->____nodes);
 	if (t == NULL)
-		ERROR("malloc error\n", 1, "");
+		ERROR("malloc error\n", 1);
 
     _t = (BYTE *)t;
     offset = 0;
 
     node = rbt_min_node(tree->____root);
     if (node == NULL)
-        ERROR("rbt_min_node error\n", 1, "");
+        ERROR("rbt_min_node error\n", 1);
 
     while(node != sentinel && node != NULL)
     {
@@ -1009,44 +1009,44 @@ int rbt_to_array(Rbt *tree, void *array, size_t *size)
 
 static int rbt_balance(Rbt *tree)
 {
-    TRACE("");
-    LOG("RBT is self balanced, balance no needed\n", "");
+    TRACE();
+    LOG("RBT is self balanced, balance no needed\n");
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (tree->____root == sentinel)
-        ERROR("Tree is empty\n", 1, "");
+        ERROR("Tree is empty\n", 1);
 
     return 0;
 }
 
-ssize_t rbt_get_num_entries(Rbt *tree)
+ssize_t rbt_get_num_entries(const Rbt *tree)
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", (ssize_t)-1, "");
+        ERROR("tree == NULL\n", (ssize_t)-1);
 
     return (ssize_t)tree->____nodes;
 }
 
-int rbt_get_data_size(Rbt *tree)
+int rbt_get_data_size(const Rbt *tree)
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", -1, "");
+        ERROR("tree == NULL\n", -1);
 
     return (int)tree->____size_of;
 }
 
-int rbt_get_hight(Rbt *tree)
+int rbt_get_hight(const Rbt *tree)
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", -1, "");
+        ERROR("tree == NULL\n", -1);
 
     if (tree->____root == sentinel)
         return 0;
@@ -1054,24 +1054,24 @@ int rbt_get_hight(Rbt *tree)
     return __rbt_rek_get_hight(tree->____root);
 }
 
-Rbt_iterator *rbt_iterator_create(Rbt *tree, iti_mode_t mode)
+Rbt_iterator *rbt_iterator_create(const Rbt *tree, iti_mode_t mode)
 {
     Rbt_iterator *iterator;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", NULL, "");
+        ERROR("tree == NULL\n", NULL);
 
     if (mode != ITI_BEGIN && mode != ITI_ROOT && mode != ITI_END)
-        ERROR("Incorrect mode\n", NULL, "");
+        ERROR("Incorrect mode\n", NULL);
 
     if (tree->____root == NULL || tree->____root == sentinel)
         return NULL;
 
     iterator = (Rbt_iterator *)malloc(sizeof(Rbt_iterator));
     if (iterator == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     if (mode == ITI_BEGIN)
         iterator->____node = rbt_min_node(tree->____root);
@@ -1087,7 +1087,7 @@ Rbt_iterator *rbt_iterator_create(Rbt *tree, iti_mode_t mode)
 
 void rbt_iterator_destroy(Rbt_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
         return;
@@ -1095,18 +1095,18 @@ void rbt_iterator_destroy(Rbt_iterator *iterator)
     FREE(iterator);
 }
 
-int rbt_iterator_init(Rbt *tree, Rbt_iterator *iterator, iti_mode_t mode)
+int rbt_iterator_init(const Rbt *tree, Rbt_iterator *iterator, iti_mode_t mode)
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (mode != ITI_BEGIN && mode != ITI_ROOT && mode != ITI_END)
-        ERROR("Incorrect mode\n", 1, "");
+        ERROR("Incorrect mode\n", 1);
 
     if (tree->____root == NULL || tree->____root == sentinel)
         return 1;
@@ -1127,10 +1127,10 @@ int rbt_iterator_init(Rbt *tree, Rbt_iterator *iterator, iti_mode_t mode)
 
 int rbt_iterator_next(Rbt_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     iterator->____node = rbt_successor(iterator->____node);
 
@@ -1139,75 +1139,75 @@ int rbt_iterator_next(Rbt_iterator *iterator)
 
 int rbt_iterator_prev(Rbt_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     iterator->____node = rbt_predecessor(iterator->____node);
 
     return 0;
 }
 
-int rbt_iterator_get_data(Rbt_iterator *iterator, void *val)
+int rbt_iterator_get_data(const Rbt_iterator *iterator, void *val)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (val == NULL)
-        ERROR("val == NULL\n", 1, "");
+        ERROR("val == NULL\n", 1);
 
     __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->____node->____data, iterator->____size_of);
 
     return 0;
 }
 
-int rbt_iterator_get_node(Rbt_iterator *iterator, void *node)
+int rbt_iterator_get_node(const Rbt_iterator *iterator, void *node)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (node == NULL)
-        ERROR("node == NULL\n", 1, "");
+        ERROR("node == NULL\n", 1);
 
     *(void **)node = iterator->____node;
 
     return 0;
 }
 
-bool rbt_iterator_end(Rbt_iterator *iterator)
+bool rbt_iterator_end(const Rbt_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", true, "");
+        ERROR("iterator == NULL\n", true);
 
     return iterator->____node == sentinel || iterator->____node == NULL;
 }
 
 TREE_WRAPPERS_CREATE(Rbt, rbt)
 
-Tree *tree_rbt_create(int size_of, int (*cmp)(void* a,void *b))
+Tree *tree_rbt_create(int size_of, int (*cmp)(const void *a, const void *b))
 {
     Tree *tree;
 
-    TRACE("");
+    TRACE();
 
     /* create Tree */
     tree = (Tree *)malloc(sizeof(Tree));
     if (tree == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     /* create rbt */
     tree->____tree = (void *)rbt_create(size_of, cmp);
     if (tree->____tree == NULL)
     {
         FREE(tree);
-        ERROR("rbt_create error\n", NULL, "");
+        ERROR("rbt_create error\n", NULL);
     }
 
     /* fill hooks */

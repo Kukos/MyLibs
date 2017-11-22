@@ -122,7 +122,7 @@ void arraylist_destroy_with_entries(Arraylist *alist,
     0 iff success
     Non-zero value of failure
 */
-int arraylist_insert_first(Arraylist *alist, void *data);
+int arraylist_insert_first(Arraylist *alist, const void *data);
 
 /*
     Insert Data at the end of the alist
@@ -135,7 +135,7 @@ int arraylist_insert_first(Arraylist *alist, void *data);
     0 iff success
     Non-zero value of failure
 */
-int arraylist_insert_last(Arraylist *alist, void *data);
+int arraylist_insert_last(Arraylist *alist, const void *data);
 
 /*
     Insert Data at @pos
@@ -149,7 +149,7 @@ int arraylist_insert_last(Arraylist *alist, void *data);
     0 iff success
     Non-zero value of failure
 */
-int arraylist_insert_pos(Arraylist *alist, size_t pos, void *data);
+int arraylist_insert_pos(Arraylist *alist, size_t pos, const void *data);
 
 /*
     Delete first data od alist
@@ -202,7 +202,7 @@ int arraylist_delete_pos(Arraylist *alist, size_t pos);
     0 iff success
     Non-zero value of failure
 */
-int arraylist_get_pos(Arraylist *alist, size_t pos, void *data);
+int arraylist_get_pos(const Arraylist *alist, size_t pos, void *data);
 
 /*
     Allocate new alist and merge alist1 & alist2 to the new alist
@@ -215,7 +215,7 @@ int arraylist_get_pos(Arraylist *alist, size_t pos, void *data);
     NULL if failure
     Pointer to alist if success
 */
-Arraylist *arraylist_merge(Arraylist *alist1, Arraylist *alist2);
+Arraylist *arraylist_merge(const Arraylist * ___restrict___ alist1, const Arraylist  * ___restrict___ alist2);
 
 /*
     Create array from alist
@@ -229,7 +229,7 @@ Arraylist *arraylist_merge(Arraylist *alist1, Arraylist *alist2);
     0 if success
 	Non-zero value if failure
 */
-int arraylist_to_array(Arraylist *alist, void *array, size_t *size);
+int arraylist_to_array(const Arraylist *alist, void *array, size_t *size);
 
 /*
     Get size of
@@ -241,7 +241,7 @@ int arraylist_to_array(Arraylist *alist, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-int arraylist_get_data_size(Arraylist *alist);
+int arraylist_get_data_size(const Arraylist *alist);
 
 /*
     Get number of entries in arraylist
@@ -253,7 +253,7 @@ int arraylist_get_data_size(Arraylist *alist);
     -1 iff failure
     sizeof iff success
 */
-ssize_t arraylist_get_num_entries(Arraylist *alist);
+ssize_t arraylist_get_num_entries(const Arraylist *alist);
 
 /*
     Get Node data
@@ -266,6 +266,6 @@ ssize_t arraylist_get_num_entries(Arraylist *alist);
     Non-zero iff failure
     0 iff success
 */
-int arraylist_node_get_data(Arraylist_node *node, void *data);
+int arraylist_node_get_data(const Arraylist_node *node, void *data);
 
 #endif

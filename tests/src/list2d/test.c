@@ -6,7 +6,7 @@
 #include <time.h>
 
 #define DIFF(type) \
-    static ___unused___ int concat(diff_, type)(void *a, void *b) \
+    static ___unused___ int concat(diff_, type)(const void *a, const void *b) \
     { \
        return (int)ABS((*(type *)b - *(type *)a)); \
     }
@@ -25,7 +25,7 @@ void my_struct_destroy(void *s)
     FREE(ms);
 }
 
-int cmp_my_struct(void *a, void *b)
+int cmp_my_struct(const void *a, const void *b)
 {
     MyStruct *s1 = *(MyStruct **)a;
     MyStruct *s2 = *(MyStruct **)b;
@@ -39,7 +39,7 @@ int cmp_my_struct(void *a, void *b)
     return 0;
 }
 
-int diff_my_struct(void *a, void *b)
+int diff_my_struct(const void *a, const void *b)
 {
     MyStruct *s1 = *(MyStruct **)a;
     MyStruct *s2 = *(MyStruct **)b;

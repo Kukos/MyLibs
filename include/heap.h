@@ -35,7 +35,7 @@ typedef struct Heap_entry
 typedef struct Heap
 {
     Darray      *____darray;                     /* dynamic array for heap */
-    int         (*____cmp)(void *a, void *b);   /* compare function */
+    int         (*____cmp)(const void *a, const void *b);   /* compare function */
 
     int         ____size_of;                    /* size of data */
     int         ____ary;                        /* heap ary */
@@ -54,7 +54,7 @@ typedef struct Heap
     %NULL iff failure
     %pointer iff success
 */
-Heap_entry *heap_entry_create(void *data, int size_of);
+Heap_entry *heap_entry_create(const void *data, int size_of);
 
 #define HEAP_ENTRY_CREATE(PTR, DATA, TYPE) \
     do { \
@@ -82,7 +82,7 @@ void heap_entry_destroy(Heap_entry *entry);
     Pos of entry iff success
     -2 iff failure
 */
-ssize_t heap_entry_get_pos(Heap_entry *entry);
+ssize_t heap_entry_get_pos(const Heap_entry *entry);
 
 /*
     Get heap data
@@ -94,7 +94,7 @@ ssize_t heap_entry_get_pos(Heap_entry *entry);
     data iff success
     NULL iff failure
 */
-void *heap_entry_get_data(Heap_entry *entry);
+void *heap_entry_get_data(const Heap_entry *entry);
 
 /*
     Create heap
@@ -110,7 +110,7 @@ void *heap_entry_get_data(Heap_entry *entry);
     %pointer iff success
 */
 Heap *heap_create(heap_type type, int size_of, int ary,
-     int (*cmp)(void *a, void *b));
+     int (*cmp)(const void *a, const void *b));
 
 #define HEAP_CREATE(HEAP, HTYPE, DTYPE, ARY, CMP) \
     do { \
@@ -193,7 +193,7 @@ Heap_entry *heap_extract_top(Heap *heap);
     %pointer iff success
 
 */
-Heap_entry *heap_get_top(Heap *heap);
+Heap_entry *heap_get_top(const Heap *heap);
 
 /*
     Change the key value, create before new entry with changed,
@@ -213,7 +213,7 @@ Heap_entry *heap_get_top(Heap *heap);
     %0 iff success
     %Non-zero value iff failure
 */
-int heap_change_key(Heap *heap, size_t index, void *new_data);
+int heap_change_key(Heap *heap, size_t index, const void *new_data);
 
 /*
     Check heap capacity
@@ -225,7 +225,7 @@ int heap_change_key(Heap *heap, size_t index, void *new_data);
     %false iff not empty
     %true iff empty or heap is null
 */
-bool heap_is_empty(Heap *heap);
+bool heap_is_empty(const Heap *heap);
 
 /*
     Get Num entries in heap
@@ -237,7 +237,7 @@ bool heap_is_empty(Heap *heap);
     -1 iff failure
     Num of entries iff success
 */
-ssize_t heap_get_num_entries(Heap *heap);
+ssize_t heap_get_num_entries(const Heap *heap);
 
 /*
     Get heap data size
@@ -249,6 +249,6 @@ ssize_t heap_get_num_entries(Heap *heap);
     -1 iff failure
     Data size iff success
 */
-int heap_get_data_size(Heap *heap);
+int heap_get_data_size(const Heap *heap);
 
 #endif

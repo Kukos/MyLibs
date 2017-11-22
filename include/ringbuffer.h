@@ -90,7 +90,7 @@ void ring_buffer_destroy_with_entries(Ring_buffer *rb);
     0 iff success
     Non-zero value iff failure
 */
-int ring_buffer_enqueue(Ring_buffer *rb, void *data);
+int ring_buffer_enqueue(Ring_buffer *rb, const void *data);
 
 
 /*
@@ -104,7 +104,7 @@ int ring_buffer_enqueue(Ring_buffer *rb, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int ring_buffer_get_head(Ring_buffer *rb, void *data);
+int ring_buffer_get_head(const Ring_buffer *rb, void *data);
 
 /*
     Get and Delete data from head Ring buffer FIFO
@@ -130,7 +130,7 @@ int ring_buffer_dequeue(Ring_buffer *rb, void *data);
     false iff ring buffer is not full
 
 */
-bool ring_buffer_is_full(Ring_buffer *rb);
+bool ring_buffer_is_full(const Ring_buffer *rb);
 
 /*
     Check ring buffer entries and empty info
@@ -143,7 +143,7 @@ bool ring_buffer_is_full(Ring_buffer *rb);
     false iff ring buffer is not empty
 
 */
-bool ring_buffer_is_empty(Ring_buffer *rb);
+bool ring_buffer_is_empty(const Ring_buffer *rb);
 
 /*
     Convert Ring Buffer to array
@@ -157,7 +157,7 @@ bool ring_buffer_is_empty(Ring_buffer *rb);
 	0 iff success
 	Non-zero value iff failure
 */
-int ring_buffer_to_array(Ring_buffer *rb, void *array, size_t *size);
+int ring_buffer_to_array(const Ring_buffer *rb, void *array, size_t *size);
 
 /*
     Get number of entries in Ring Buffer
@@ -169,7 +169,7 @@ int ring_buffer_to_array(Ring_buffer *rb, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-ssize_t ring_buffer_get_num_entries(Ring_buffer *rb);
+ssize_t ring_buffer_get_num_entries(const Ring_buffer *rb);
 
 /*
     Get size of
@@ -181,6 +181,6 @@ ssize_t ring_buffer_get_num_entries(Ring_buffer *rb);
     -1 iff failure
     sizeof iff success
 */
-int ring_buffer_get_data_size(Ring_buffer *rb);
+int ring_buffer_get_data_size(const Ring_buffer *rb);
 
 #endif

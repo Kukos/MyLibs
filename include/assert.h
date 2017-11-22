@@ -44,7 +44,7 @@ extern void __assert_msg(const char *msg, ...);
             if ((expr) == 0) \
             { \
                 __assert_msg(ASSERT_MSG); \
-                __assert_msg("FAILED:\t" tostring(expr) "\n", ""); \
+                __assert_msg("FAILED:\t" tostring(expr) "\n" "%s", ""); \
                 stack_trace(); \
                 exit(1); \
             } \

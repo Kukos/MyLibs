@@ -218,7 +218,7 @@ int klist_delete_node(KList *node);
     Pointer to KList at @pos
 
 */
-KList *klist_get_pos(KList_master *list, size_t pos);
+KList *klist_get_pos(const KList_master *list, size_t pos);
 
 /*
     Get list length
@@ -230,7 +230,7 @@ KList *klist_get_pos(KList_master *list, size_t pos);
     -1 iff failure
     List length iff success
 */
-ssize_t klist_get_num_entries(KList_master *list);
+ssize_t klist_get_num_entries(const KList_master *list);
 
 /*
     Get KList HEAD
@@ -242,7 +242,7 @@ ssize_t klist_get_num_entries(KList_master *list);
     NULL iff failure
     Pointer to head iff success
 */
-KList *klist_get_head(KList_master *list);
+KList *klist_get_head(const KList_master *list);
 
 /*
     Get KList TAIL
@@ -254,7 +254,7 @@ KList *klist_get_head(KList_master *list);
     NULL iff failure
     Pointer to tail iff success
 */
-KList *klist_get_tail(KList_master *list);
+KList *klist_get_tail(const KList_master *list);
 
 /*
     Get parent of klist
@@ -266,6 +266,6 @@ KList *klist_get_tail(KList_master *list);
     NULL iff failure
     Pointer to klist_master iff success
 */
-KList_master *klist_get_parent(KList *list);
+KList_master *klist_get_parent(const KList *list);
 
 #endif

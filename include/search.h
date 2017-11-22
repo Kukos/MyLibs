@@ -28,7 +28,7 @@
     -1 iff key doesn't exist in array
     Index in array where is key
 */
-ssize_t find_first_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
+ssize_t find_first_unsorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
 
 /*
     Find Last occurrence of @key in array @t
@@ -45,7 +45,7 @@ ssize_t find_first_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(v
     -1 iff key doesn't exist in array
     Index in array where is key
 */
-ssize_t find_last_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
+ssize_t find_last_unsorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
 
 /*
     Find First occurrence of @key in array @t
@@ -62,7 +62,7 @@ ssize_t find_last_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(vo
     -1 iff key doesn't exist in array
     Index in array where is key
 */
-ssize_t find_first_sorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
+ssize_t find_first_sorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
 
 /*
     Find Last occurrence of @key in array @t
@@ -79,7 +79,7 @@ ssize_t find_first_sorted(void *key, void *t, size_t num_elements, int(*cmp)(voi
     -1 iff key doesn't exist in array
     Index in array where is key
 */
-ssize_t find_last_sorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of);
+ssize_t find_last_sorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
 
 
 #endif

@@ -16,7 +16,7 @@ ___inline___ static size_t align_size(size_t size);
 
 ___inline___ static bool is_aligned(size_t size)
 {
-	TRACE("");
+	TRACE();
 
 	/* pagesize is always power of 2 */
 	return !(CAST_TO_BOOL(size & ((size_t)getpagesize())));
@@ -27,7 +27,7 @@ ___inline___ static size_t align_size(size_t size)
 	/* page size is always power of two */
 	size_t page_size = (size_t)getpagesize();
 
-	TRACE("");
+	TRACE();
 
 	if (size == 0)
 		return page_size;
@@ -58,14 +58,14 @@ File_buffer *file_buffer_create(int fd, int protect_flag)
 	File_buffer *fb;
 	struct stat ft;
 
-	TRACE("");
+	TRACE();
 
 	if (fd < 0)
-		ERROR("fd < 0\n", NULL, "");
+		ERROR("fd < 0\n", NULL);
 
     fb = (File_buffer *)malloc(sizeof(File_buffer));
     if (fb == NULL)
-		ERROR("malloc error\n", NULL, "");
+		ERROR("malloc error\n", NULL);
 
     fb->____fd = fd;
     fb->____protect_flag = protect_flag;
@@ -74,7 +74,7 @@ File_buffer *file_buffer_create(int fd, int protect_flag)
     if (fstat(fd, &ft) == -1)
 	{
 		FREE(fb);
-		ERROR("fstat error\n", NULL, "");
+		ERROR("fstat error\n", NULL);
 	}
 
     fb->____size = (size_t)ft.st_size;
@@ -84,7 +84,7 @@ File_buffer *file_buffer_create(int fd, int protect_flag)
 			 protect_flag, MAP_SHARED, fd, 0)) == MAP_FAILED)
 	{
 		FREE(fb);
-		ERROR("mmap error\n", NULL, "");
+		ERROR("mmap error\n", NULL);
 	}
 
     return fb;
@@ -94,10 +94,10 @@ File_buffer *file_buffer_create_from_path(const char *path, int protect_flag, in
 {
 	int fd;
 
-	TRACE("");
+	TRACE();
 
 	if (path == NULL)
-		ERROR("path == NULL\n", NULL, "");
+		ERROR("path == NULL\n", NULL);
 
 	fd = open(path, open_flag, 0644);
 	return file_buffer_create(fd, protect_flag);
@@ -105,18 +105,18 @@ File_buffer *file_buffer_create_from_path(const char *path, int protect_flag, in
 
 int file_buffer_destroy(File_buffer *fb)
 {
-	TRACE("");
+	TRACE();
 
     if (fb == NULL)
 		return 1;
 
     /* before detach sunchronize */
     if (file_buffer_synch(fb))
-		ERROR("msync error\n", 1, "");
+		ERROR("msync error\n", 1);
 
     /* unmap file */
     if (munmap((void *)fb->____buffer, fb->____mapped_size) == -1)
-       	ERROR("munmap error\n", 1, "");
+       	ERROR("munmap error\n", 1);
 
     FREE(fb);
 
@@ -129,20 +129,20 @@ int file_buffer_append(File_buffer *fb, const char *data)
     off_t new_size;
 	size_t new_aligned_size;
 
-	TRACE("");
+	TRACE();
 
 	if (fb == NULL || data == NULL)
-		ERROR("fb == NULL || data == NULL\n", 1, "");
+		ERROR("fb == NULL || data == NULL\n", 1);
 
 	length = strlen(data);
 	if (length == 0)
-		ERROR("data has 0 len\n", 1, "");
+		ERROR("data has 0 len\n", 1);
 
 	new_size = (off_t)(fb->____size + length);
 
 	/* resize file */
     if (ftruncate(fb->____fd, new_size) == -1)
-        ERROR("ftruncate error\n", 1, "");
+        ERROR("ftruncate error\n", 1);
 
 	new_aligned_size = align_size((size_t)new_size);
 
@@ -151,49 +151,49 @@ int file_buffer_append(File_buffer *fb, const char *data)
 	{
     	if ((fb->____buffer = (char *)mremap((void *)fb->____buffer, fb->____mapped_size,
 	 			new_aligned_size, MREMAP_MAYMOVE)) == MAP_FAILED)
-     		ERROR("mremap error\n", 1, "");
+     		ERROR("mremap error\n", 1);
 
 		fb->____mapped_size = new_aligned_size;
 	}
 
 	/* write data to buffer */
     if (memcpy((void *)(fb->____buffer + fb->____size), data, length) == NULL)
-		ERROR("memcpy error\n", 1, "");
+		ERROR("memcpy error\n", 1);
 
     fb->____size = (size_t)new_size;
 
     return 0;
 }
 
-int file_buffer_synch(File_buffer *fb)
+int file_buffer_synch(const File_buffer *fb)
 {
-	TRACE("");
+	TRACE();
 
     if (fb == NULL)
-		ERROR("fb == NULL\n", 1, "");
+		ERROR("fb == NULL\n", 1);
 
     if ((msync((void *)fb->____buffer, fb->____size, MS_SYNC)) == -1)
-        ERROR("msync error\n", 1, "");
+        ERROR("msync error\n", 1);
 
     return 0;
 }
 
-char *file_buffer_get_buff(File_buffer *fb)
+char *file_buffer_get_buff(const File_buffer *fb)
 {
-	TRACE("");
+	TRACE();
 
 	if (fb == NULL)
-		ERROR("fb == NULL\n", NULL, "");
+		ERROR("fb == NULL\n", NULL);
 
 	return fb->____buffer;
 }
 
-ssize_t file_buffer_get_size(File_buffer *fb)
+ssize_t file_buffer_get_size(const File_buffer *fb)
 {
-	TRACE("");
+	TRACE();
 
 	if (fb == NULL)
-		ERROR("fb == NULL\n", -1, "");
+		ERROR("fb == NULL\n", -1);
 
 	return (ssize_t)fb->____size;
 }

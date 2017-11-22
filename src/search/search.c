@@ -3,26 +3,26 @@
 #include <log.h>
 #include <generic.h>
 
-ssize_t find_first_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+ssize_t find_first_unsorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     BYTE *_t;
 
     size_t i;
     size_t max;
 
-    TRACE("");
+    TRACE();
 
     if (key == NULL)
-        ERROR("key == NULL\n", -1, "");
+        ERROR("key == NULL\n", -1);
 
     if (t == NULL)
-        ERROR("t == NULL\n", -1, "");
+        ERROR("t == NULL\n", -1);
 
     if (cmp == NULL)
-        ERROR("cmp == NULL\n", -1, "");
+        ERROR("cmp == NULL\n", -1);
 
     if (num_elements == 0)
-        ERROR("Empty array\n", -1, "");
+        ERROR("Empty array\n", -1);
 
     _t = (BYTE *)t;
     max = (size_t)(num_elements * (size_t)size_of);
@@ -33,26 +33,26 @@ ssize_t find_first_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(v
     return -1;
 }
 
-ssize_t find_last_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+ssize_t find_last_unsorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     BYTE *_t;
 
     ssize_t i;
     ssize_t max;
 
-    TRACE("");
+    TRACE();
 
     if (key == NULL)
-        ERROR("key == NULL\n", -1, "");
+        ERROR("key == NULL\n", -1);
 
     if (t == NULL)
-        ERROR("t == NULL\n", -1, "");
+        ERROR("t == NULL\n", -1);
 
     if (cmp == NULL)
-        ERROR("cmp == NULL\n", -1, "");
+        ERROR("cmp == NULL\n", -1);
 
     if (num_elements == 0)
-        ERROR("Empty array\n", -1, "");
+        ERROR("Empty array\n", -1);
 
     _t = (BYTE *)t;
     max = (ssize_t)((ssize_t)(num_elements - 1) * (ssize_t)size_of);
@@ -63,7 +63,7 @@ ssize_t find_last_unsorted(void *key, void *t, size_t num_elements, int(*cmp)(vo
     return -1;
 }
 
-ssize_t find_first_sorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+ssize_t find_first_sorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     BYTE *_t;
 
@@ -71,19 +71,19 @@ ssize_t find_first_sorted(void *key, void *t, size_t num_elements, int(*cmp)(voi
     size_t right;
     size_t middle;
 
-    TRACE("");
+    TRACE();
 
     if (key == NULL)
-        ERROR("key == NULL\n", -1, "");
+        ERROR("key == NULL\n", -1);
 
     if (t == NULL)
-        ERROR("t == NULL\n", -1, "");
+        ERROR("t == NULL\n", -1);
 
     if (cmp == NULL)
-        ERROR("cmp == NULL\n", -1, "");
+        ERROR("cmp == NULL\n", -1);
 
     if (num_elements == 0)
-        ERROR("Empty array\n", -1, "");
+        ERROR("Empty array\n", -1);
 
      _t = (BYTE *)t;
 
@@ -104,7 +104,7 @@ ssize_t find_first_sorted(void *key, void *t, size_t num_elements, int(*cmp)(voi
     return -1;
 }
 
-ssize_t find_last_sorted(void *key, void *t, size_t num_elements, int(*cmp)(void *a, void *b), int size_of)
+ssize_t find_last_sorted(const void *key, const void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
 {
     BYTE *_t;
 
@@ -112,19 +112,19 @@ ssize_t find_last_sorted(void *key, void *t, size_t num_elements, int(*cmp)(void
     size_t right;
     size_t middle;
 
-    TRACE("");
+    TRACE();
 
     if (key == NULL)
-        ERROR("key == NULL\n", -1, "");
+        ERROR("key == NULL\n", -1);
 
     if (t == NULL)
-        ERROR("t == NULL\n", -1, "");
+        ERROR("t == NULL\n", -1);
 
     if (cmp == NULL)
-        ERROR("cmp == NULL\n", -1, "");
+        ERROR("cmp == NULL\n", -1);
 
     if (num_elements == 0)
-        ERROR("Empty array\n", -1, "");
+        ERROR("Empty array\n", -1);
 
      _t = (BYTE *)t;
 

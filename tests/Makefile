@@ -1,7 +1,27 @@
 export
 
+MAX_MEMCHECK_LINE_LENGTH = 16
+
 define print_test_make
 	$(if $(Q), @echo "[MAKE TEST]   $(1)")
+endef
+
+# Mem check info
+define print_memcheck
+	$(if $(Q), @echo -n "[MEMTEST]    $$(1)"; printf "%*s" $$(shell echo "$(MAX_MEMCHECK_LINE_LENGTH) - $$(shell echo -n $$(1) | $(WC) -m)" | $(BC)) "")
+endef
+
+define passed_memcheck
+    echo "\033[0;32m[PASSED]\033[0m"
+endef
+
+define failed_memcheck
+    echo "\033[1;31m[FAILED]\033[0m"
+endef
+
+# Mem usage
+define print_memusage
+	$(if $(Q), @echo "[MEMUSAGE]   $$(1)")
 endef
 
 TEST_SRC := $(TEST_DIR)/src

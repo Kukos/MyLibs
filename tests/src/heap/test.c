@@ -35,7 +35,7 @@ void my_struct_destroy(void *s)
     FREE(ms);
 }
 
-int cmp_my_struct(void *a, void *b)
+int cmp_my_struct(const void *a, const void *b)
 {
     MyStruct *s1 = *(MyStruct **)a;
     MyStruct *s2 = *(MyStruct **)b;
@@ -49,7 +49,7 @@ int cmp_my_struct(void *a, void *b)
     return 0;
 }
 
-int cmp_heap_entry(void *a, void *b)
+int cmp_heap_entry(const void *a, const void *b)
 {
     Heap_entry *e1 = *(Heap_entry **)a;
     Heap_entry *e2 = *(Heap_entry **)b;

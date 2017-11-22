@@ -83,7 +83,7 @@ void stack_destroy_with_entries(Stack *stack, void (*destructor)(void *data));
     %0 iff success
 	%Non-zero value iff failure
 */
-int stack_push(Stack *stack, void *val);
+int stack_push(Stack *stack, const void *val);
 
 /*
     pop value from stack
@@ -110,7 +110,7 @@ int stack_pop(Stack *stack, void *val);
 	%Non-zero value iff failure
 */
 
-int stack_get_top(Stack *stack, void *val);
+int stack_get_top(const Stack *stack, void *val);
 
 /*
     PARAMS
@@ -120,7 +120,7 @@ int stack_get_top(Stack *stack, void *val);
     %TRUE iff stack is empty
     %FALSE iff is not empty of failure
 */
-bool stack_is_empty(Stack *stack);
+bool stack_is_empty(const Stack *stack);
 
 /*
     Convert stack to array
@@ -134,7 +134,7 @@ bool stack_is_empty(Stack *stack);
 	%0 if success
 	%Non-zero value iff failure
 */
-int stack_to_array(Stack *stack, void *array, size_t *size);
+int stack_to_array(const Stack *stack, void *array, size_t *size);
 
 /*
     Get Array
@@ -146,7 +146,7 @@ int stack_to_array(Stack *stack, void *array, size_t *size);
     %NULL iff failure
     %Pointer to array iff success
 */
-void *stack_get_array(Stack *stack);
+void *stack_get_array(const Stack *stack);
 
 /*
     Get number of entries in stack
@@ -158,7 +158,7 @@ void *stack_get_array(Stack *stack);
     %-1 iff failure
     %Num of entries iff success
 */
-ssize_t stack_get_num_entries(Stack *stack);
+ssize_t stack_get_num_entries(const Stack *stack);
 
 /*
     Get size of
@@ -170,6 +170,6 @@ ssize_t stack_get_num_entries(Stack *stack);
     %-1 iff failure
     %sizeof iff success
 */
-int stack_get_data_size(Stack *stack);
+int stack_get_data_size(const Stack *stack);
 
 #endif
