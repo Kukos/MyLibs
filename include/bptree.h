@@ -44,7 +44,7 @@ typedef struct BPTree
     size_t          ____num_entries;
     size_t          ____size_of;
 
-    int (*____cmp)(void *a, void *b);
+    int (*____cmp)(const void *a, const void *b);
     void (*____destructor)(void *data);
 }BPTree;
 
@@ -72,7 +72,7 @@ IT_FUNC(BPTree, bptree)
     NULL iff failure
     Pointer to Tree iff success
 */
-Tree *tree_bptree_create(int fanout, int size_of, int (*cmp)(void *a, void *b));
+Tree *tree_bptree_create(int fanout, int size_of, int (*cmp)(const void *a, const void *b));
 
 /*
     Create BPTree
@@ -86,7 +86,7 @@ Tree *tree_bptree_create(int fanout, int size_of, int (*cmp)(void *a, void *b));
     NULL iff failure
     Pointer to bptree iff success
 */
-BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b));
+BPTree* bptree_create(int fanout, int size_of, int (*cmp)(const void *a, const void *b));
 
 #define BPTREE_CREATE(PTR, FAN, TYPE, CMP) \
     do { \
@@ -130,7 +130,7 @@ void bptree_destroy_with_entries(BPTree *tree, void (*destructor)(void *data));
     0 iff success
     Non-zero value iff failure
 */
-int bptree_insert(BPTree *tree, void *data);
+int bptree_insert(BPTree *tree, const void *data);
 
 /*
     Getter of min value ( using cmp ) in tree
@@ -143,7 +143,7 @@ int bptree_insert(BPTree *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int bptree_min(BPTree *tree, void *data);
+int bptree_min(const BPTree *tree, void *data);
 
 /*
     Getter of max value ( using cmp ) in tree
@@ -156,7 +156,7 @@ int bptree_min(BPTree *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int bptree_max(BPTree *tree, void *data);
+int bptree_max(const BPTree *tree, void *data);
 
 /*
     Search for data with key equals key @data_key ( using cmp )
@@ -170,7 +170,7 @@ int bptree_max(BPTree *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int bptree_search(BPTree *tree, void *data_key, void *data_out);
+int bptree_search(const BPTree *tree, const void *data_key, void *data_out);
 
  /*
  	Check existing of key in tree
@@ -183,7 +183,7 @@ int bptree_search(BPTree *tree, void *data_key, void *data_out);
  	false iff key doesn't exist in tree
  	true iff key exists in tree
  */
-bool bptree_key_exist(BPTree *tree, void *data_key);
+bool bptree_key_exist(const BPTree *tree, const void *data_key);
 
 /*
     Delete data with key equals @data_key ( using cmp )
@@ -196,7 +196,7 @@ bool bptree_key_exist(BPTree *tree, void *data_key);
     0 iff success
     Non-zero value iff failure
 */
-int bptree_delete(BPTree *tree, void *data_key);
+int bptree_delete(BPTree *tree, const void *data_key);
 
 /*
     Convert bptree to sorted array
@@ -210,7 +210,7 @@ int bptree_delete(BPTree *tree, void *data_key);
     0 iff success
     Non-zero value iff failure
 */
-int bptree_to_array(BPTree *tree, void *array, size_t *size);
+int bptree_to_array(const BPTree *tree, void *array, size_t *size);
 
 /*
     Get Num entries of BPTree
@@ -222,7 +222,7 @@ int bptree_to_array(BPTree *tree, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-ssize_t bptree_get_num_entries(BPTree *tree);
+ssize_t bptree_get_num_entries(const BPTree *tree);
 
 /*
     Get Size of BPTree data
@@ -234,7 +234,7 @@ ssize_t bptree_get_num_entries(BPTree *tree);
     -1 iff failure
     Size of data
 */
-int bptree_get_data_size(BPTree *tree);
+int bptree_get_data_size(const BPTree *tree);
 
 /*
     Get Tree Hight
@@ -246,7 +246,7 @@ int bptree_get_data_size(BPTree *tree);
     -1 iff failure
     Hight iff success
 */
-int bptree_get_hight(BPTree *tree);
+int bptree_get_hight(const BPTree *tree);
 
 /*
     Create tree with bulkload algorithm
@@ -261,6 +261,6 @@ int bptree_get_hight(BPTree *tree);
     0 iff success
     Non-zero value iff
 */
-int *bptree_bulkload(BPTree *tree, void *keys, size_t n, double load_factor);
+int bptree_bulkload(BPTree *tree, void *keys, size_t n, double load_factor);
 
 #endif

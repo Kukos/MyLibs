@@ -31,10 +31,10 @@ void my_struct_destroy(void *s)
     FREE(ms);
 }
 
-int cmp_my_struct(void *a, void *b)
+int cmp_my_struct(const void *a, const void *b)
 {
-    MyStruct *s1 = *(MyStruct **)a;
-    MyStruct *s2 = *(MyStruct **)b;
+    const MyStruct *s1 = *(MyStruct **)a;
+    const MyStruct *s2 = *(MyStruct **)b;
 
     if (s1->key < s2->key)
         return -1;

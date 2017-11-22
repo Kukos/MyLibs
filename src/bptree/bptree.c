@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <generic.h>
 #include <search.h>
+#include <sort.h>
 
 /*
     Create B+ Tree Node
@@ -19,7 +20,7 @@
     NULL iff failure
     Pointer to new node
 */
-static BPTree_node *bptree_node_create(size_t size_of, int fanout, BPTree_node *parent, bool leaf);
+static BPTree_node *bptree_node_create(size_t size_of, int fanout, const BPTree_node *parent, bool leaf);
 
 /*
     Destroy node (without entries)
@@ -55,7 +56,7 @@ static void bptree_node_destroy_with_entries(BPTree_node *node, size_t size_of, 
     true iff tree is empty
     false iff tree is not empty
 */
-static bool bptree_is_empty(BPTree *tree);
+static bool bptree_is_empty(const BPTree *tree);
 
 /*
     Get first leaf of BPTree
@@ -67,7 +68,7 @@ static bool bptree_is_empty(BPTree *tree);
     NULL iff failure
     Pointer to first leaf
 */
-static BPTree_node *bptree_get_first_leaf(BPTree *tree);
+static BPTree_node *bptree_get_first_leaf(const BPTree *tree);
 
 /*
     Get last leaf of BPTree
@@ -79,7 +80,7 @@ static BPTree_node *bptree_get_first_leaf(BPTree *tree);
     NULL iff failure
     Pointer to first leaf
 */
-static BPTree_node *bptree_get_last_leaf(BPTree *tree);
+static BPTree_node *bptree_get_last_leaf(const BPTree *tree);
 
 /*
     Find node that contains this key
@@ -92,7 +93,7 @@ static BPTree_node *bptree_get_last_leaf(BPTree *tree);
     NULL iff failure
     Pointer to node iff success
 */
-static BPTree_node *bptree_find_node_with_key(BPTree *tree, void *key);
+static BPTree_node *bptree_find_node_with_key(const BPTree *tree, const void *key);
 
 /*
     Perform Binary Search and find Node with @key
@@ -107,7 +108,7 @@ static BPTree_node *bptree_find_node_with_key(BPTree *tree, void *key);
     NULL iff failure
     Pointer to node iff success
 */
-static BPTree_node *bptree_node_get_node_ptr_with_key(BPTree_node *node, size_t size_of, int (*cmp)(void *a, void *b), void *key);
+static BPTree_node *bptree_node_get_node_ptr_with_key(const BPTree_node *node, size_t size_of, int (*cmp)(const void *a, const void *b), const void *key);
 
 /*
      Check if node is full
@@ -120,7 +121,7 @@ static BPTree_node *bptree_node_get_node_ptr_with_key(BPTree_node *node, size_t 
      false iff node is not full
      true iff node is full
 */
-static bool bptree_node_is_full(BPTree *tree, BPTree_node *node);
+static bool bptree_node_is_full(const BPTree *tree, const BPTree_node *node);
 
 /*
     Insert key & ptr related to this key to node
@@ -135,7 +136,7 @@ static bool bptree_node_is_full(BPTree *tree, BPTree_node *node);
     Non-zero value iff failure
     0 iff success
 */
-static int  bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_node *ptr, void *key);
+static int  bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, const BPTree_node *ptr, const void *key);
 
 /*
     Set all parents of node children to node
@@ -146,7 +147,7 @@ static int  bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree
     RETURN
     This is a void function
 */
-static void bptree_node_set_parent_to_all(BPTree_node *node);
+static void bptree_node_set_parent_to_all(const BPTree_node *node);
 
 /*
     Split full node
@@ -186,7 +187,7 @@ static void bptree_destroy_helper(BPTree_node *node, size_t size_of, void (*dest
     RETURN
     Index in @node where is lower bound
 */
-static size_t bptree_lower_bound(BPTree_node *node, size_t size_of, void *key, int (*cmp)(void *a, void *b));
+static size_t bptree_lower_bound(const BPTree_node *node, size_t size_of, const void *key, int (*cmp)(const void *a, const void *b));
 
 /*
     Do nothing
@@ -195,21 +196,34 @@ static size_t bptree_lower_bound(BPTree_node *node, size_t size_of, void *key, i
 */
 ___unused___ static int bptree_balance(BPTree *tree);
 
+/*
+    Update first key in path from node to root
+
+    PARAMS
+    @IN tree - pointer to BPTree
+    @IN node - pointer to start node
+    @IN key - new key
+
+    RETURN
+    This is a void function
+*/
+static void bptree_node_update_first_key(BPTree *tree, BPTree_node *node, const void *key);
+
 static int bptree_balance(BPTree *tree)
 {
-    TRACE("");
-    LOG("BPTree is self balanced, balance no needed\n", "");
+    TRACE();
+    LOG("BPTree is self balanced, balance no needed\n");
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (bptree_is_empty(tree))
-        ERROR("Tree is empty\n", 1, "");
+        ERROR("Tree is empty\n", 1);
 
     return 0;
 }
 
-static size_t bptree_lower_bound(BPTree_node *node, size_t size_of, void *key, int (*cmp)(void *a, void *b))
+static size_t bptree_lower_bound(const BPTree_node *node, size_t size_of, const void *key, int (*cmp)(const void *a, const void *b))
 {
     ssize_t offset_left;
     ssize_t offset_right;
@@ -217,7 +231,7 @@ static size_t bptree_lower_bound(BPTree_node *node, size_t size_of, void *key, i
 
     BYTE *_t;
 
-    TRACE("");
+    TRACE();
 
     offset_left = 0;
     offset_right = ((ssize_t)node->____keys_c) * (ssize_t)size_of;
@@ -239,25 +253,25 @@ static size_t bptree_lower_bound(BPTree_node *node, size_t size_of, void *key, i
 }
 
 
-static BPTree_node *bptree_node_create(size_t size_of, int fanout, BPTree_node *parent, bool leaf)
+static BPTree_node *bptree_node_create(size_t size_of, int fanout, const BPTree_node *parent, bool leaf)
 {
     BPTree_node *node;
 
-    TRACE("");
+    TRACE();
 
     assert(size_of > 1);
     assert(fanout >= 2);
 
     node = (BPTree_node *)malloc(sizeof(BPTree_node));
     if (node == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     /* fanout -> keys, 1 -> place for insert before splitting (tree is more optimized if we insert before splitting) */
     node->____keys = calloc((size_t)(fanout + 1), size_of);
     if (node->____keys == NULL)
     {
         FREE(node);
-        ERROR("calloc error\n", NULL, "");
+        ERROR("calloc error\n", NULL);
     }
 
     /* fanout + 1 -> ptrs, 1 -> place for insert before splitting (tree is more optimized if we insert before splitting) */
@@ -267,11 +281,11 @@ static BPTree_node *bptree_node_create(size_t size_of, int fanout, BPTree_node *
         FREE(node);
         FREE(node->____keys);
 
-        ERROR("calloc error\n", NULL, "");
+        ERROR("calloc error\n", NULL);
     }
 
     node->____keys_c = 0;
-    node->____parent = parent;
+    node->____parent = (BPTree_node *)parent;
     node->____is_leaf = leaf;
 
     KLIST_INIT(&node->____list);
@@ -281,7 +295,7 @@ static BPTree_node *bptree_node_create(size_t size_of, int fanout, BPTree_node *
 
 static void bptree_node_destroy(BPTree_node *node)
 {
-    TRACE("");
+    TRACE();
 
     if (node == NULL)
         return;
@@ -297,7 +311,7 @@ static void bptree_node_destroy_with_entries(BPTree_node *node, size_t size_of, 
     size_t i;
     BYTE *t;
 
-    TRACE("");
+    TRACE();
 
     if (node == NULL)
         return;
@@ -315,82 +329,82 @@ static void bptree_node_destroy_with_entries(BPTree_node *node, size_t size_of, 
     bptree_node_destroy(node);
 }
 
-static bool bptree_is_empty(BPTree *tree)
+static bool bptree_is_empty(const BPTree *tree)
 {
-    TRACE("");
+    TRACE();
 
     return tree->____num_entries == 0;
 }
 
-static bool bptree_node_is_full(BPTree *tree, BPTree_node *node)
+static bool bptree_node_is_full(const BPTree *tree, const BPTree_node *node)
 {
-    TRACE("");
+    TRACE();
 
     return node->____keys_c == ((size_t)tree->____fanout + 1);
 }
 
-static BPTree_node *bptree_get_first_leaf(BPTree *tree)
+static BPTree_node *bptree_get_first_leaf(const BPTree *tree)
 {
     KList *list;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", NULL, "");
+        ERROR("tree == NULL\n", NULL);
 
     list = klist_get_head(&tree->____leaves);
     if (list == NULL)
-        ERROR("Tree is empty\n", NULL, "");
+        ERROR("Tree is empty\n", NULL);
 
     return klist_entry(list, BPTree_node, ____list);
 }
 
-static BPTree_node *bptree_get_last_leaf(BPTree *tree)
+static BPTree_node *bptree_get_last_leaf(const BPTree *tree)
 {
     KList *list;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", NULL, "");
+        ERROR("tree == NULL\n", NULL);
 
     list = klist_get_tail(&tree->____leaves);
     if (list == NULL)
-        ERROR("Tree is empty\n", NULL, "");
+        ERROR("Tree is empty\n", NULL);
 
     return klist_entry(list, BPTree_node, ____list);
 }
 
-static BPTree_node *bptree_node_get_node_ptr_with_key(BPTree_node *node, size_t size_of, int (*cmp)(void *a, void *b), void *key)
+static BPTree_node *bptree_node_get_node_ptr_with_key(const BPTree_node *node, size_t size_of, int (*cmp)(const void *a, const void *b), const void *key)
 {
     size_t i;
 
-    TRACE("");
+    TRACE();
 
     if (node == NULL)
-        ERROR("node == NULL\n", NULL, "");
+        ERROR("node == NULL\n", NULL);
 
     if (cmp == NULL)
-        ERROR("cmp == NULL\n", NULL, "");
+        ERROR("cmp == NULL\n", NULL);
 
     if (key == NULL)
-        ERROR("key == NULL\n", NULL, "");
+        ERROR("key == NULL\n", NULL);
 
     i = bptree_lower_bound(node, size_of, key, cmp);
     return node->____ptrs[i];
 }
 
-static BPTree_node *bptree_find_node_with_key(BPTree *tree, void *key)
+static BPTree_node *bptree_find_node_with_key(const BPTree *tree, const void *key)
 {
     BPTree_node *ptr;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", NULL, "");
+        ERROR("tree == NULL\n", NULL);
 
     if (key == NULL)
-        ERROR("key == NULL\n", NULL, "");
+        ERROR("key == NULL\n", NULL);
 
     ptr = tree->____root;
     while (!ptr->____is_leaf)
@@ -399,15 +413,15 @@ static BPTree_node *bptree_find_node_with_key(BPTree *tree, void *key)
     return ptr;
 }
 
-static void bptree_node_set_parent_to_all(BPTree_node *node)
+static void bptree_node_set_parent_to_all(const BPTree_node *node)
 {
     size_t i;
 
-    TRACE("");
+    TRACE();
 
     for (i = 0; i <= node->____keys_c; ++i)
         if (node->____ptrs[i] != NULL)
-            node->____ptrs[i]->____parent = node;
+            node->____ptrs[i]->____parent = (BPTree_node *)node;
 }
 
 static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node)
@@ -417,14 +431,14 @@ static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node)
 
     size_t entries_to_move;
 
-    TRACE("");
+    TRACE();
 
     /* create parent iff needed */
     if (node->____parent == NULL)
     {
         parent = bptree_node_create(tree->____size_of, tree->____fanout, NULL, false);
         if (parent == NULL)
-            ERROR("bptree_node_create error\n", NULL, "");
+            ERROR("bptree_node_create error\n", NULL);
 
         node->____parent = parent;
         node->____parent->____ptrs[0] = node;
@@ -436,7 +450,7 @@ static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node)
     /* create new node */
     new_node = bptree_node_create(tree->____size_of, tree->____fanout, node->____parent, node->____is_leaf);
     if (new_node == NULL)
-        ERROR("bptree_node_create error\n", NULL, "");
+        ERROR("bptree_node_create error\n", NULL);
 
     if (node->____is_leaf)
         klist_insert_after(&node->____list, &new_node->____list);
@@ -453,7 +467,7 @@ static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node)
 
     /* insert ptr to new_node to parent */
     if (bptree_node_insert_into_node(tree, new_node->____parent, new_node, new_node->____keys))
-        ERROR("bptree_node_insert_into_node error\n", NULL, "");
+        ERROR("bptree_node_insert_into_node error\n", NULL);
 
     /* ptr copied to new node, so fix parent pointer */
     bptree_node_set_parent_to_all(new_node);
@@ -461,11 +475,11 @@ static BPTree_node *bptree_split_node(BPTree *tree, BPTree_node *node)
     return new_node;
 }
 
-static void bptree_node_update_first_key(BPTree *tree, BPTree_node *node, void *key)
+static void bptree_node_update_first_key(BPTree *tree, BPTree_node *node, const void *key)
 {
     BPTree_node *ptr;
 
-    TRACE("");
+    TRACE();
 
     ptr = node->____parent;
     while (ptr != NULL && tree->____cmp(key, ptr->____keys) == 0)
@@ -477,12 +491,12 @@ static void bptree_node_update_first_key(BPTree *tree, BPTree_node *node, void *
     }
 }
 
-static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_node *ptr, void *key)
+static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, const BPTree_node *ptr, const void *key)
 {
     BPTree_node *new_node;
     size_t i;
 
-    TRACE("");
+    TRACE();
 
     i = bptree_lower_bound(node, tree->____size_of, key, tree->____cmp);
 
@@ -499,7 +513,7 @@ static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_
     __ASSIGN__(((BYTE *)node->____keys)[i * tree->____size_of], *(BYTE *)key, tree->____size_of);
 
     /* insert ptr */
-    node->____ptrs[i + 1] = ptr;
+    node->____ptrs[i + 1] = (BPTree_node *)ptr;
 
     ++node->____keys_c;
 
@@ -512,7 +526,7 @@ static int bptree_node_insert_into_node(BPTree *tree, BPTree_node *node, BPTree_
         /* node is full now, so split node */
         new_node = bptree_split_node(tree, node);
         if (new_node == NULL)
-            ERROR("bptree_split_node error\n", 1, "");
+            ERROR("bptree_split_node error\n", 1);
     }
 
     return 0;
@@ -522,7 +536,7 @@ static void bptree_destroy_helper(BPTree_node *node, size_t size_of, void (*dest
 {
     size_t i;
 
-    TRACE("");
+    TRACE();
 
     if (node == NULL)
         return;
@@ -537,24 +551,24 @@ static void bptree_destroy_helper(BPTree_node *node, size_t size_of, void (*dest
         bptree_node_destroy(node);
 }
 
-BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
+BPTree* bptree_create(int fanout, int size_of, int (*cmp)(const void *a, const void *b))
 {
     BPTree *tree;
 
-    TRACE("");
+    TRACE();
 
     if (fanout < 2)
-        ERROR("fanout < 2\n", NULL, "");
+        ERROR("fanout < 2\n", NULL);
 
     if (size_of < 1)
-        ERROR("size_of < 1\n", NULL, "");
+        ERROR("size_of < 1\n", NULL);
 
     if (cmp == NULL)
-        ERROR("cmp == NULL\n", NULL, "");
+        ERROR("cmp == NULL\n", NULL);
 
     tree = (BPTree *)malloc(sizeof(BPTree));
     if (tree == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     KLIST_MASTER_INIT(&tree->____leaves);
 
@@ -568,25 +582,25 @@ BPTree* bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
     return tree;
 }
 
-int bptree_insert(BPTree *tree, void *data)
+int bptree_insert(BPTree *tree, const void *data)
 {
     BPTree_node *new_node;
     BPTree_node *node;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (data == NULL)
-        ERROR("data == NULL\n", 1, "");
+        ERROR("data == NULL\n", 1);
 
     /* case if empty */
     if (bptree_is_empty(tree))
     {
         new_node = bptree_node_create(tree->____size_of, tree->____fanout, NULL, true);
         if (new_node == NULL)
-            ERROR("bptree_node_create error\n", 1, "");
+            ERROR("bptree_node_create error\n", 1);
 
         bptree_node_insert_into_node(tree, new_node, NULL, data);
         klist_insert_first(&tree->____leaves, &new_node->____list);
@@ -608,25 +622,25 @@ int bptree_insert(BPTree *tree, void *data)
     return 0;
 }
 
-int bptree_delete(BPTree *tree, void *data_key)
+int bptree_delete(BPTree *tree, const void *data_key)
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (data_key == NULL)
-        ERROR("data_key == NULL\n", 1, "");
+        ERROR("data_key == NULL\n", 1);
 
     if (bptree_is_empty(tree))
-        ERROR("Tree is empty, nothing to delete\n", 1, "");
+        ERROR("Tree is empty, nothing to delete\n", 1);
 
     return 0;
 }
 
 void bptree_destroy(BPTree *tree)
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
         return;
@@ -639,7 +653,7 @@ void bptree_destroy(BPTree *tree)
 
 void bptree_destroy_with_entries(BPTree *tree, void (*destructor)(void *data))
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
         return;
@@ -650,20 +664,20 @@ void bptree_destroy_with_entries(BPTree *tree, void (*destructor)(void *data))
     FREE(tree);
 }
 
-int bptree_min(BPTree *tree, void *data)
+int bptree_min(const BPTree *tree, void *data)
 {
     BPTree_node *node;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (data == NULL)
-        ERROR("data == NULL\n", 1, "");
+        ERROR("data == NULL\n", 1);
 
     if (bptree_is_empty(tree))
-        ERROR("BPTree is empty\n", 1, "");
+        ERROR("BPTree is empty\n", 1);
 
     node = bptree_get_first_leaf(tree);
 
@@ -672,20 +686,20 @@ int bptree_min(BPTree *tree, void *data)
     return 0;
 }
 
-int bptree_max(BPTree *tree, void *data)
+int bptree_max(const BPTree *tree, void *data)
 {
     BPTree_node *node;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (data == NULL)
-        ERROR("data == NULL\n", 1, "");
+        ERROR("data == NULL\n", 1);
 
     if (bptree_is_empty(tree))
-        ERROR("BPTree is empty\n", 1, "");
+        ERROR("BPTree is empty\n", 1);
 
     node = bptree_get_last_leaf(tree);
 
@@ -694,21 +708,21 @@ int bptree_max(BPTree *tree, void *data)
     return 0;
 }
 
-int bptree_search(BPTree *tree, void *data_key, void *data_out)
+int bptree_search(const BPTree *tree, const void *data_key, void *data_out)
 {
     BPTree_node *node;
     ssize_t index;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (data_key == NULL)
-        ERROR("data_key == NULL\n", 1, "");
+        ERROR("data_key == NULL\n", 1);
 
     if (bptree_is_empty(tree))
-        ERROR("BPTree is empty\n", 1, "");
+        ERROR("BPTree is empty\n", 1);
 
     node = bptree_find_node_with_key(tree, data_key);
     if (node == NULL)
@@ -723,21 +737,21 @@ int bptree_search(BPTree *tree, void *data_key, void *data_out)
     return 0;
 }
 
-bool bptree_key_exist(BPTree *tree, void *data_key)
+bool bptree_key_exist(const BPTree *tree, const void *data_key)
 {
     BPTree_node *node;
     ssize_t index;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", false, "");
+        ERROR("tree == NULL\n", false);
 
     if (data_key == NULL)
-        ERROR("data_key == NULL\n", false, "");
+        ERROR("data_key == NULL\n", false);
 
     if (bptree_is_empty(tree))
-        ERROR("BPTree is empty\n", false, "");
+        ERROR("BPTree is empty\n", false);
 
     node = bptree_find_node_with_key(tree, data_key);
     if (node == NULL)
@@ -747,7 +761,7 @@ bool bptree_key_exist(BPTree *tree, void *data_key)
     return index == -1 ? false : true;
 }
 
-int bptree_to_array(BPTree *tree, void *array, size_t *size)
+int bptree_to_array(const BPTree *tree, void *array, size_t *size)
 {
     void *t;
     BYTE *_t;
@@ -757,20 +771,20 @@ int bptree_to_array(BPTree *tree, void *array, size_t *size)
     size_t i;
     size_t offset = 0;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (array == NULL)
-        ERROR("array == NULL\n", 1, "");
+        ERROR("array == NULL\n", 1);
 
     if (bptree_is_empty(tree))
-        ERROR("Tree is empty\n", 1, "");
+        ERROR("Tree is empty\n", 1);
 
     t = malloc(tree->____size_of * tree->____num_entries);
     if (t == NULL)
-        ERROR("malloc error\n", 1, "");
+        ERROR("malloc error\n", 1);
 
     _t = (BYTE *)t;
 
@@ -794,9 +808,9 @@ int bptree_to_array(BPTree *tree, void *array, size_t *size)
     return 0;
 }
 
-ssize_t bptree_get_num_entries(BPTree *tree)
+ssize_t bptree_get_num_entries(const BPTree *tree)
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
         return -1;
@@ -804,9 +818,9 @@ ssize_t bptree_get_num_entries(BPTree *tree)
     return (ssize_t)tree->____num_entries;
 }
 
-int bptree_get_data_size(BPTree *tree)
+int bptree_get_data_size(const BPTree *tree)
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
         return -1;
@@ -815,9 +829,9 @@ int bptree_get_data_size(BPTree *tree)
     return (int)tree->____size_of;
 }
 
-int bptree_get_hight(BPTree *tree)
+int bptree_get_hight(const BPTree *tree)
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
         return -1;
@@ -826,35 +840,36 @@ int bptree_get_hight(BPTree *tree)
     return tree->____hight;
 }
 
-int *bptree_bulkload(BPTree *tree, void *keys, size_t n, int load_factor)
+int bptree_bulkload(BPTree *tree, void *keys, size_t n, double _load_factor)
 {
-    void *array;
+    void *array = NULL;
     void *temp_array;
     size_t size;
+    int load_factor = (int)(_load_factor * 100.0);
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (keys == NULL)
-        ERROR("keys == NULL\n", 1, "");
+        ERROR("keys == NULL\n", 1);
 
     if (load_factor > 100 || load_factor < 50)
-        ERROR("Incorrect load factor\n", 1, "");
+        ERROR("Incorrect load factor\n", 1);
 
     /* tree is not empty, so copy array and insert to again with keys */
     if (!bptree_is_empty(tree))
     {
-        array = bptree_to_array(tree, (void *)temp, &size);
+        bptree_to_array(tree, (void *)&array, &size);
         if (array == NULL)
-            ERROR("bptree to array error\n", 1, "");
+            ERROR("bptree to array error\n", 1);
 
         temp_array = malloc(tree->____size_of * (size + n));
         if (temp_array == NULL)
         {
             FREE(array);
-            ERROR("malloc error\n", 1, "");
+            ERROR("malloc error\n", 1);
         }
 
         (void)memcpy(temp_array, array, size * tree->____size_of);
@@ -864,28 +879,30 @@ int *bptree_bulkload(BPTree *tree, void *keys, size_t n, int load_factor)
         keys = temp_array;
         n += size;
 
-        (void)sort(keys, n, tree->____cmp, tree->____size_of);
+        (void)sort(keys, n, tree->____cmp, (int)tree->____size_of);
     }
+
+    return 0;
 }
 
-BPTree_iterator *bptree_iterator_create(BPTree *tree, iti_mode_t mode)
+BPTree_iterator *bptree_iterator_create(const BPTree *tree, iti_mode_t mode)
 {
     BPTree_iterator *iterator;
 
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", NULL, "");
+        ERROR("tree == NULL\n", NULL);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect node\n", NULL, "");
+        ERROR("Incorrect node\n", NULL);
 
     if (bptree_is_empty(tree))
         return NULL;
 
     iterator = (BPTree_iterator *)malloc(sizeof(BPTree_iterator));
     if (iterator == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     if (mode == ITI_BEGIN)
     {
@@ -905,25 +922,25 @@ BPTree_iterator *bptree_iterator_create(BPTree *tree, iti_mode_t mode)
     return iterator;
 }
 
-int bptree_iterator_init(BPTree *tree, BPTree_iterator *iterator, iti_mode_t mode)
+int bptree_iterator_init(const BPTree *tree, BPTree_iterator *iterator, iti_mode_t mode)
 {
-    TRACE("");
+    TRACE();
 
     if (tree == NULL)
-        ERROR("tree == NULL\n", 1, "");
+        ERROR("tree == NULL\n", 1);
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect node\n", 1, "");
+        ERROR("Incorrect node\n", 1);
 
     if (bptree_is_empty(tree))
         return 1;
 
     iterator = (BPTree_iterator *)malloc(sizeof(BPTree_iterator));
     if (iterator == NULL)
-        ERROR("malloc error\n", 1, "");
+        ERROR("malloc error\n", 1);
 
     if (mode == ITI_BEGIN)
     {
@@ -945,7 +962,7 @@ int bptree_iterator_init(BPTree *tree, BPTree_iterator *iterator, iti_mode_t mod
 
 void bptree_iterator_destroy(BPTree_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
         return;
@@ -955,10 +972,10 @@ void bptree_iterator_destroy(BPTree_iterator *iterator)
 
 int bptree_iterator_next(BPTree_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (iterator->____first_time)
         iterator->____first_time = false;
@@ -977,10 +994,10 @@ int bptree_iterator_next(BPTree_iterator *iterator)
 
 int bptree_iterator_prev(BPTree_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (iterator->____first_time)
         iterator->____first_time = false;
@@ -997,65 +1014,65 @@ int bptree_iterator_prev(BPTree_iterator *iterator)
     return 0;
 }
 
-int bptree_iterator_get_data(BPTree_iterator *iterator, void *val)
+int bptree_iterator_get_data(const BPTree_iterator *iterator, void *val)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (val == NULL)
-        ERROR("val == NULL\n", 1, "");
+        ERROR("val == NULL\n", 1);
 
     __ASSIGN__(*(BYTE *)val, ((BYTE *)iterator->____node->____keys)[iterator->____index * iterator->____size_of], iterator->____size_of);
 
     return 0;
 }
 
-int bptree_iterator_get_node(BPTree_iterator *iterator, void *node)
+int bptree_iterator_get_node(const BPTree_iterator *iterator, void *node)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1, "");
+        ERROR("iterator == NULL\n", 1);
 
     if (node == NULL)
-        ERROR("node == NULL\n", 1, "");
+        ERROR("node == NULL\n", 1);
 
     *(void **)node = iterator->____node;
 
     return 0;
 }
 
-bool bptree_iterator_end(BPTree_iterator *iterator)
+bool bptree_iterator_end(const BPTree_iterator *iterator)
 {
-    TRACE("");
+    TRACE();
 
     if (iterator == NULL)
-        ERROR("iterator == NULL\n", true, "");
+        ERROR("iterator == NULL\n", true);
 
     return !iterator->____first_time && iterator->____node == iterator->____end_node;
 }
 
 TREE_WRAPPERS_CREATE(BPTree, bptree)
 
-Tree *tree_bptree_create(int fanout, int size_of, int (*cmp)(void* a,void *b))
+Tree *tree_bptree_create(int fanout, int size_of, int (*cmp)(const void *a, const void *b))
 {
     Tree *tree;
 
-    TRACE("");
+    TRACE();
 
     /* create Tree */
     tree = (Tree *)malloc(sizeof(Tree));
     if (tree == NULL)
-        ERROR("malloc error\n", NULL, "");
+        ERROR("malloc error\n", NULL);
 
     /* create bptree */
     tree->____tree = (void *)bptree_create(fanout, size_of, cmp);
     if (tree->____tree == NULL)
     {
         FREE(tree);
-        ERROR("bptree_create error\n", NULL, "");
+        ERROR("bptree_create error\n", NULL);
     }
 
     /* fill hooks */
