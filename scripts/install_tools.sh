@@ -16,7 +16,7 @@ source $DIR/log.sh
 C_PACKAGES=("gcc" "make")
 
 # MISC TOOLS
-TOOLS=("valgrind" "sed" "gawk", "wc", "bc")
+TOOLS=("valgrind" "sed" "gawk" "bc")
 
 installed=0
 
