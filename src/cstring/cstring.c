@@ -423,8 +423,8 @@ ssize_t kmp(const char *text, const char *pattern, bool first)
             end = i - pattern_len + 1;
             if (first)
                 break;
-
-        	matches = states[matches];
+            else /* else needed beacuse newest compiler has warn here */
+        	    matches = states[matches];
 		}
     }
 
