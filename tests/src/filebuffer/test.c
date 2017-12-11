@@ -205,7 +205,7 @@ test_f test_create_from_fd(void)
     File_buffer *fb;
 
     /* create file */
-    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __FUNCTION__) == -1);
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
     T_ERROR(creat(path1, 0644) == -1);
 
     /* open file */
@@ -216,7 +216,7 @@ test_f test_create_from_fd(void)
     T_ERROR(write_to_file(fd1, file_size, 0));
 
     /* create file */
-    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __FUNCTION__) == -1);
+    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __func__) == -1);
     T_ERROR(creat(path2, 0644) == -1);
 
     /* open file */
@@ -260,7 +260,7 @@ test_f test_create_from_path(void)
     const size_t file_size = BIT(20) * 5;
 
     /* create file */
-    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __FUNCTION__) == -1);
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
     T_ERROR(creat(path1, 0644) == -1);
 
     /* open file */
@@ -271,7 +271,7 @@ test_f test_create_from_path(void)
     T_ERROR(write_to_file(fd1, file_size, 0));
 
     /* create file */
-    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __FUNCTION__) == -1);
+    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __func__) == -1);
     T_ERROR(creat(path2, 0644) == -1);
 
     /* open file */
@@ -315,7 +315,7 @@ test_f test_read_file(void)
     File_buffer *fb;
 
     /* create file */
-    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __FUNCTION__) == -1);
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
     T_ERROR(creat(path1, 0644) == -1);
 
     /* open file */
@@ -343,7 +343,7 @@ test_f test_read_file(void)
     T_EXPECT(file_buffer_get_size(fb), file_size);
 
     /* create file */
-    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __FUNCTION__) == -1);
+    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __func__) == -1);
     T_ERROR(creat(path2, 0644) == -1);
 
     /* open file */
@@ -380,7 +380,7 @@ test_f test_write_to_file(void)
     File_buffer *fb;
 
     /* create file */
-    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __FUNCTION__) == -1);
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
     T_ERROR(creat(path1, 0644) == -1);
 
     /* open file */
@@ -430,7 +430,7 @@ test_f test_read_write(void)
     File_buffer *fb;
 
     /* create file */
-    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __FUNCTION__) == -1);
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
     T_ERROR(creat(path1, 0644) == -1);
 
     /* open file */
@@ -442,7 +442,7 @@ test_f test_read_write(void)
     T_ERROR(lseek(fd1, 0, SEEK_SET) == -1);
 
     /* create file */
-    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __FUNCTION__) == -1);
+    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __func__) == -1);
     T_ERROR(creat(path2, 0644) == -1);
 
     /* open file */
@@ -499,7 +499,7 @@ test_f test_work_on_big_file(void)
     File_buffer *fb;
 
     /* create file */
-    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __FUNCTION__) == -1);
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
     T_ERROR(creat(path1, 0644) == -1);
 
     /* open file */
@@ -511,7 +511,7 @@ test_f test_work_on_big_file(void)
     T_ERROR(lseek(fd1, 0, SEEK_SET) == -1);
 
     /* create file */
-    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __FUNCTION__) == -1);
+    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __func__) == -1);
     T_ERROR(creat(path2, 0644) == -1);
 
     /* open file */
