@@ -901,7 +901,7 @@ int avl_insert(Avl *tree, const void *data)
 			ERROR("avl_node_create error\n", 1);
 
         /* new node is the right son */
-        if (tree->____cmp(new_node->____data, parent->____data) == 1)
+        if (tree->____cmp(new_node->____data, parent->____data) > 0)
             parent->____right_son = new_node;
         else /* new_node is the left_node */
             parent->____left_son = new_node;
