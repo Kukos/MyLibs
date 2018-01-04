@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <compiler.h>
+#include <stdlib.h>
 
 /*
 	Modes to debug:
@@ -42,6 +43,7 @@ ___inline___ long ______log_strlen______(const char *str)
 }
 
 #define LOG_MAX_FUNC_SPACE 40
+#define FATAL_EXIT_CODE 1
 
 #define __TRACE__   "[TRACE]\tFUNC: %s\n", __func__
 #define __ERROR__   "[ERROR]\tFILE: %s\n\tFUNC: %s%*.sLINE: %d\n", __FILE__, __func__, \
@@ -68,6 +70,15 @@ ___inline___ long ______log_strlen______(const char *str)
         __error__("\t" msg "%s", ##__VA_ARGS__); \
         \
         return errno; \
+    } while (0)
+
+#define FATAL(...) __FATAL(__VA_ARGS__, "")
+#define __FATAL(msg, ...) \
+    do { \
+        __error__(__ERROR__); \
+        __error__("\t" msg "%s", ##__VA_ARGS__); \
+        \
+        exit(FATAL_EXIT_CODE); \
     } while (0)
 
 #define NO_LOG_TO_FILE  0
