@@ -87,83 +87,87 @@ S_ASSERT := $(D_ASSERT)/assert.c
 # S_X -> srcs of libX
 D_SORT := $(SDIR)/sort
 I_SORT := $(IDIR)/sort.h $(F_LIB) $(I_LOG) $(I_ASSERT)
-S_SORT := $(D_SORT)/*.c $(S_LOG) $(S_ASSERT)
+S_SORT := $(wildcard $(D_SORT)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_SEARCH := $(SDIR)/search
 I_SEARCH := $(IDIR)/search.h $(F_LIB) $(I_LOG) $(I_ASSERT)
-S_SEARCH := $(D_SEARCH)/*.c $(S_LOG) $(S_ASSERT)
+S_SEARCH := $(wildcard $(D_SEARCH)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_DARRAY := $(SDIR)/darray
 I_DARRAY := $(IDIR)/darray.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_SORT) $(I_SEARCH)
-S_DARRAY := $(D_DARRAY)/*.c $(S_LOG) $(S_ASSERT) $(S_SORT) $(S_SEARCH)
+S_DARRAY := $(wildcard $(D_DARRAY)/*.c) $(S_LOG) $(S_ASSERT) $(S_SORT) $(S_SEARCH)
 
 D_ARRAYLIST := $(SDIR)/arraylist
 I_ARRAYLIST := $(IDIR)/arraylist.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(F_ULIST)
-S_ARRAYLIST := $(D_ARRAYLIST)/*.c $(S_LOG) $(S_ASSERT)
+S_ARRAYLIST := $(wildcard $(D_ARRAYLIST)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_KLIST := $(SDIR)/klist
 I_KLIST := $(IDIR)/klist.h $(F_LIB) $(I_LOG) $(I_ASSERT)
-S_KLIST := $(D_KLIST)/*.c $(S_LOG) $(S_ASSERT)
+S_KLIST := $(wildcard $(D_KLIST)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_LIST := $(SDIR)/list
 I_LIST := $(IDIR)/list.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(F_SLIST)
-S_LIST := $(D_LIST)/*.c $(S_LOG) $(S_ASSERT)
+S_LIST := $(wildcard $(D_LIST)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_LIST2D := $(SDIR)/list2d
 I_LIST2D := $(IDIR)/list2d.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(F_SLIST)
-S_LIST2D := $(D_LIST2D)/*.c $(S_LOG) $(S_ASSERT)
+S_LIST2D := $(wildcard $(D_LIST2D)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_BST := $(SDIR)/bst
 I_BST := $(IDIR)/bst.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(F_TREE)
-S_BST := $(D_BST)/*.c $(S_LOG) $(S_ASSERT)
+S_BST := $(wildcard $(D_BST)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_RBT := $(SDIR)/rbt
 I_RBT := $(IDIR)/rbt.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(F_TREE)
-S_RBT := $(D_RBT)/*.c $(S_LOG) $(S_ASSERT)
+S_RBT := $(wildcard $(D_RBT)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_AVL := $(SDIR)/avl
 I_AVL := $(IDIR)/avl.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(F_TREE)
-S_AVL := $(D_AVL)/*.c $(S_LOG) $(S_ASSERT)
+S_AVL := $(wildcard $(D_AVL)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_TRIE := $(SDIR)/trie
 I_TRIE := $(IDIR)/trie.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_DARRAY)
-S_TRIE := $(D_TRIE)/*.c $(S_LOG) $(S_ASSERT) $(S_DARRAY)
+S_TRIE := $(wildcard $(D_TRIE)/*.c) $(S_LOG) $(S_ASSERT) $(S_DARRAY)
 
 D_CSTRING := $(SDIR)/cstring
 I_CSTRING := $(IDIR)/cstring.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_DARRAY)
-S_CSTRING := $(D_CSTRING)/*.c $(S_LOG) $(S_ASSERT) $(S_DARRAY)
+S_CSTRING := $(wildcard $(D_CSTRING)/*.c) $(S_LOG) $(S_ASSERT) $(S_DARRAY)
 
 D_FIFO := $(SDIR)/fifo
 I_FIFO := $(IDIR)/fifo.h $(F_LIB) $(I_LOG) $(I_ASSERT)
-S_FIFO := $(D_FIFO)/*.c $(S_LOG) $(S_ASSERT)
+S_FIFO := $(wildcard $(D_FIFO)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_FILEBUFFER := $(SDIR)/filebuffer
 I_FILEBUFFER := $(IDIR)/filebuffer.h $(F_LIB) $(I_LOG) $(I_ASSERT)
-S_FILEBUFFER := $(D_FILEBUFFER)/*.c $(S_LOG) $(S_ASSERT)
+S_FILEBUFFER := $(wildcard $(D_FILEBUFFER)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_GETCH := $(SDIR)/getch
 I_GETCH := $(IDIR)/getch.h $(F_LIB) $(I_LOG) $(I_ASSERT)
-S_GETCH := $(D_GETCH)/*.c $(S_LOG) $(S_ASSERT)
+S_GETCH := $(wildcard $(D_GETCH)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_HASH := $(SDIR)/hash
 I_HASH := $(IDIR)/hash.h $(F_LIB) $(I_LOG)
-S_HASH := $(D_HASH)/*.c $(S_LOG)
+S_HASH := $(wildcard $(D_HASH)/*.c) $(S_LOG)
 
 D_HEAP := $(SDIR)/heap
 I_HEAP := $(IDIR)/heap.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_DARRAY)
-S_HEAP := $(D_HEAP)/*.c $(S_LOG) $(S_ASSERT) $(S_DARRAY)
+S_HEAP := $(wildcard $(D_HEAP)/*.c) $(S_LOG) $(S_ASSERT) $(S_DARRAY)
 
 D_RINGBUFFER := $(SDIR)/ringbuffer
 I_RINGBUFFER := $(IDIR)/ringbuffer.h $(F_LIB) $(I_LOG) $(I_ASSERT)
-S_RINGBUFFER := $(D_RINGBUFFER)/*.c $(S_LOG) $(S_ASSERT)
+S_RINGBUFFER := $(wildcard $(D_RINGBUFFER)/*.c) $(S_LOG) $(S_ASSERT)
 
 D_STACK := $(SDIR)/stack
 I_STACK := $(IDIR)/stack.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_DARRAY)
-S_STACK := $(D_STACK)/*.c $(S_LOG) $(S_ASSERT) $(S_DARRAY)
+S_STACK := $(wildcard $(D_STACK)/*.c) $(S_LOG) $(S_ASSERT) $(S_DARRAY)
 
 D_UFSET := $(SDIR)/ufset
 I_UFSET := $(IDIR)/ufset.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_DARRAY)
-S_UFSET := $(D_UFSET)/*.c $(S_LOG) $(S_ASSERT) $(S_DARRAY)
+S_UFSET := $(wildcard $(D_UFSET)/*.c) $(S_LOG) $(S_ASSERT) $(S_DARRAY)
+
+D_CRC := $(SDIR)/crc
+I_CRC := $(IDIR)/crc.h $(F_LIB) $(I_LOG)
+S_CRC := $(wildcard $(D_CRC)/*.c) $(S_LOG)
 
 # Needed to testting
 TEST_COMMON_INC := $(F_TEST) $(I_COMPILER) $(I_COMMON) $(I_SORT) $(I_SEARCH)
@@ -217,7 +221,7 @@ define print_bin
 	$(if $(Q), @echo "[BIN]         $$(1)")
 endef
 
-all: prepare arraylist avl bst cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset final
+all: prepare arraylist avl bst crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
@@ -232,6 +236,10 @@ avl: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 bst: prepare
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
+crc: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
@@ -304,7 +312,7 @@ ufset: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 
-final: prepare arraylist avl bst cstring darray fifo filebuffer getch heap klist list list2d rbt ringbuffer search sort stack trie ufset
+final: prepare arraylist avl bst crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
 	$(call print_info,Finalizing)
 	$(Q)$(CP) $(IDIR)/common.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/compiler.h $(O_HEADERS) && \
@@ -328,6 +336,7 @@ clean:
 	$(Q)$(MAKE) -f $(D_ARRAYLIST)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_AVL)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_BST)/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(D_CRC)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_CSTRING)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_DARRAY)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_FIFO)/Makefile clean --no-print-directory && \
