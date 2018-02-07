@@ -106,5 +106,5 @@ int main(void)
 {
     TEST_INIT("SEARCH");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

@@ -258,5 +258,5 @@ int main(void)
 {
     TEST_INIT("UFSET")
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

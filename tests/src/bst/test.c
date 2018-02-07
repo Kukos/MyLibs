@@ -1222,5 +1222,5 @@ int main(void)
 {
     TEST_INIT("BST");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

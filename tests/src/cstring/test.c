@@ -1702,5 +1702,5 @@ int main(void)
 {
     TEST_INIT("CSTRING");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

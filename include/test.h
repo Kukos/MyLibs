@@ -135,7 +135,7 @@ test_t ________ret;
 /*
     Use this macro at the end of your tests to get tests summary
 */
-#define TEST_SUMMARY \
+#define TEST_SUMMARY() \
     do { \
         if (________failed_counter) \
         { \

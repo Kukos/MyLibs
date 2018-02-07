@@ -1282,5 +1282,5 @@ int main(void)
 {
     TEST_INIT("ARRAYLIST");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

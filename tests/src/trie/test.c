@@ -407,5 +407,5 @@ int main(void)
 {
     TEST_INIT("TRIE");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

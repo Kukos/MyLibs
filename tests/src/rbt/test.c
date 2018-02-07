@@ -1119,5 +1119,5 @@ int main(void)
 {
     TEST_INIT("RBT");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

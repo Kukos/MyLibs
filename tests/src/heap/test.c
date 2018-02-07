@@ -492,5 +492,5 @@ int main(void)
 {
     TEST_INIT("HEAP");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

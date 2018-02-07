@@ -516,5 +516,5 @@ int main(void)
 {
     TEST_INIT("KLIST");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

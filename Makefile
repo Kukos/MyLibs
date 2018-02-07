@@ -145,6 +145,10 @@ D_GETCH := $(SDIR)/getch
 I_GETCH := $(IDIR)/getch.h $(F_LIB) $(I_LOG) $(I_ASSERT)
 S_GETCH := $(D_GETCH)/*.c $(S_LOG) $(S_ASSERT)
 
+D_HASH := $(SDIR)/hash
+I_HASH := $(IDIR)/hash.h $(F_LIB) $(I_LOG)
+S_HASH := $(D_HASH)/*.c $(S_LOG)
+
 D_HEAP := $(SDIR)/heap
 I_HEAP := $(IDIR)/heap.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_DARRAY)
 S_HEAP := $(D_HEAP)/*.c $(S_LOG) $(S_ASSERT) $(S_DARRAY)
@@ -213,7 +217,7 @@ define print_bin
 	$(if $(Q), @echo "[BIN]         $$(1)")
 endef
 
-all: prepare arraylist avl bst cstring darray fifo filebuffer getch heap klist list list2d rbt ringbuffer search sort stack trie ufset final
+all: prepare arraylist avl bst cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
@@ -248,6 +252,10 @@ filebuffer: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 getch: prepare
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
+hash: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
@@ -325,6 +333,7 @@ clean:
 	$(MAKE) -f $(D_FIFO)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_FILEBUFFER)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_GETCH)/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(D_HASH)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_HEAP)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_KLIST)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_LIST)/Makefile clean --no-print-directory && \

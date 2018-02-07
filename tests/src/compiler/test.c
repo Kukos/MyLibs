@@ -329,5 +329,5 @@ int main(void)
 {
     TEST_INIT("COMPILER");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

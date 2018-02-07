@@ -437,5 +437,5 @@ int main(void)
 {
     TEST_INIT("COMMON");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

@@ -480,5 +480,5 @@ int main(void)
 {
     TEST_INIT("FIFO");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

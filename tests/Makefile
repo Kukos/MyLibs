@@ -32,7 +32,7 @@ VALGRIND_MEMCHECK_FLAGS := --leak-check=full
 VALGRIND_MEMUSAGE_FLAGS := --tool=massif --stacks=yes
 PASS_STRING := All heap blocks were freed -- no leaks are possible
 
-all: arraylist avl bst common compiler cstring darray fifo filebuffer heap klist list list2d rbt ringbuffer search sort stack trie ufset
+all: arraylist avl bst common compiler cstring darray fifo filebuffer hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
 
 arraylist:
 	$(call print_test_make,$@)
@@ -67,6 +67,10 @@ fifo:
 	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
 
 filebuffer:
+	$(call print_test_make,$@)
+	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
+
+hash:
 	$(call print_test_make,$@)
 	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
 
@@ -124,6 +128,7 @@ run:
 	$(MAKE) -f $(TEST_SRC)/darray/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/fifo/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/filebuffer/Makefile run --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/hash/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/heap/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/klist/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/list/Makefile run --no-print-directory && \
@@ -146,6 +151,7 @@ clean:
 	$(MAKE) -f $(TEST_SRC)/darray/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/fifo/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/filebuffer/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/hash/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/heap/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/klist/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/list/Makefile clean --no-print-directory && \
@@ -168,6 +174,7 @@ memcheck:
 	$(MAKE) -f $(TEST_SRC)/darray/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/fifo/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/filebuffer/Makefile memcheck --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/hash/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/heap/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/klist/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/list/Makefile memcheck --no-print-directory && \
@@ -190,6 +197,7 @@ memusage:
 	$(MAKE) -f $(TEST_SRC)/darray/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/fifo/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/filebuffer/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/hash/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/heap/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/klist/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/list/Makefile memusage --no-print-directory && \

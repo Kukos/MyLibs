@@ -567,5 +567,5 @@ int main(void)
 {
     TEST_INIT("FILEBUFFER");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

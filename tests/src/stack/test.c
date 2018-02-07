@@ -596,5 +596,5 @@ int main(void)
 {
     TEST_INIT("STACK")
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

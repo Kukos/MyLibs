@@ -426,5 +426,5 @@ int main(void)
 {
     TEST_INIT("RING BUFFER");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

@@ -911,5 +911,5 @@ int main(void)
 {
     TEST_INIT("LIST2D");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

@@ -1999,5 +1999,5 @@ int main(void)
 {
     TEST_INIT("DARRAY");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

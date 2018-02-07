@@ -804,5 +804,5 @@ int main(void)
 {
     TEST_INIT("LIST");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }

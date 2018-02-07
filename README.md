@@ -59,6 +59,8 @@ GPL 3.0
 
     getch - get character without enter (like conio.h on windows)
 
+    hash - set of non-crypto hash funtions
+
     heap - min and max heap on dynamic array
 
     klist - kernel list in user space

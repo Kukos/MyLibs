@@ -1120,5 +1120,5 @@ int main(void)
 {
     TEST_INIT("AVL");
     test();
-    TEST_SUMMARY;
+    TEST_SUMMARY();
 }
