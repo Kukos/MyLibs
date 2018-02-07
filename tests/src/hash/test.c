@@ -13,7 +13,7 @@ test_f test_general(uint32_t (*hash_f)(const void *data, size_t size))
 {
     char c1 = 'K';
     char c2 = c1;
-    
+
     int i1 = 123456;
     int i2 = i1;
 
