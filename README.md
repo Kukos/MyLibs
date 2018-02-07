@@ -49,6 +49,8 @@ GPL 3.0
 
     bst - normal binary sorted tree
 
+    crc - crc 8/16/32/64
+
     cstring - string container (like std :: string)
 
     darray - dynamic array (like std :: vector)
