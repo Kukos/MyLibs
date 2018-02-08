@@ -33,6 +33,7 @@ typedef struct Arraylist
 
     Arraylist_node      *____head;
     Arraylist_node      *____tail;
+    void                (*____destroy)(void *data);
 
 }Arraylist;
 
@@ -54,10 +55,11 @@ IT_FUNC(Arraylist, arraylist)
     PARAMS
 	@OUT PTR - pointer to alist
     @IN TYPE - type of element of list
+    @IN FUNC - destroyer
 */
-#define LIST_CREATE(PTR, TYPE) \
+#define LIST_CREATE(PTR, TYPE, FUNC) \
     do { \
-        PTR = arraylist_create(sizeof(TYPE)); \
+        PTR = arraylist_create(sizeof(TYPE), FUNC); \
     } while (0)
 
 /*
@@ -65,24 +67,26 @@ IT_FUNC(Arraylist, arraylist)
 
     PARAMS
     @IN size_of - size of element in list
+    @IN destroy - your data destructor or NULL
 
     RETURN:
     NULL if failure
     Pointer if success
 */
-UList *ulist_arraylist_create(int size_of);
+UList *ulist_arraylist_create(int size_of, void (*destroy)(void *data));
 
 /*
     Create alist
 
     PARAMS
     @IN size_of - size of element in list
+    @IN destroy - your data destructor or NULL
 
     RETURN:
     NULL if failure
     Pointer if success
 */
-Arraylist *arraylist_create(int size_of);
+Arraylist *arraylist_create(int size_of, void (*destroy)(void *data));
 
 /*
     Destroy alist
@@ -103,13 +107,11 @@ void arraylist_destroy(Arraylist *alist);
 
     PARAMS
     @IN alist - pointer to arraylist
-    @IN desturctor -  your object destructor
 
     RETURN:
     This is a void function
 */
-void arraylist_destroy_with_entries(Arraylist *alist,
-        void (*destructor)(void *data));
+void arraylist_destroy_with_entries(Arraylist *alist);
 
 /*
     Insert Data at the begining of the alist
@@ -189,6 +191,43 @@ int arraylist_delete_last(Arraylist *alist);
 */
 int arraylist_delete_pos(Arraylist *alist, size_t pos);
 
+/*
+    Delete first data od alist with data
+
+    PARAMS
+    @IN alist - pointer to 
+
+    RETURN:
+    0 iff success
+    Non-zero value of failure
+*/
+int arraylist_delete_first_with_entry(Arraylist *alist);
+
+/*
+    Delete last data od alist with data
+
+    PARAMS
+    @IN alist - pointer to alist
+
+    RETURN:
+    0 iff success
+    Non-zero value of failure
+*/
+int arraylist_delete_last_with_entry(Arraylist *alist);
+
+
+/*
+    Delete data on @pos with data
+
+    PARAMS
+    @IN alist - pointer to alist
+    @IN pos - pos from we delete data
+
+    RETURN:
+    0 iff success
+    Non-zero value of failure
+*/
+int arraylist_delete_pos_with_entry(Arraylist *alist, size_t pos);
 
 /*
     Get data from node at @pos

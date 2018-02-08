@@ -49,13 +49,16 @@ typedef struct UList
 
     /* private functions */
     void        (*____destroy)(void *list);
-    void        (*____destroy_with_entries)(void *list, void (*destructor)(void *data));
+    void        (*____destroy_with_entries)(void *list);
     int         (*____insert_first)(void *list, const void *data);
     int         (*____insert_last)(void *list, const void *data);
     int         (*____insert_pos)(void *list, size_t pos, const void *data);
     int         (*____delete_first)(void *list);
     int         (*____delete_last)(void *list);
     int         (*____delete_pos)(void *list, size_t pos);
+    int         (*____delete_first_with_entry)(void *list);
+    int         (*____delete_last_with_entry)(void *list);
+    int         (*____delete_pos_with_entry)(void *list, size_t pos);
     int         (*____get_pos)(const void *list, size_t pos, void *data);
     void*       (*____merge)(const void * ___restrict___ list1, const void * ___restrict___ list2);
     int         (*____to_array)(const void *list, void *array, size_t *size);
@@ -105,13 +108,16 @@ ___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_
 #define ULIST_WRAPPERS_CREATE(type, prefix) \
     ULIST_ITERATOR_WRAPPERS_CREATE(concat(type, _iterator), concat(prefix, _iterator)) \
     static ___unused___ void ____destroy(void *list); \
-    static ___unused___ void ____destroy_with_entries(void *list, void (*destructor)(void *data)); \
+    static ___unused___ void ____destroy_with_entries(void *list); \
     static ___unused___ int ____insert_first(void *list, const void *data); \
     static ___unused___ int ____insert_last(void *list, const void *data); \
     static ___unused___ int ____insert_pos(void *list, size_t pos, const void *data); \
     static ___unused___ int ____delete_first(void *list); \
     static ___unused___ int ____delete_last(void *list); \
     static ___unused___ int ____delete_pos(void *list, size_t pos); \
+    static ___unused___ int ____delete_first_with_entry(void *list); \
+    static ___unused___ int ____delete_last_with_entry(void *list); \
+    static ___unused___ int ____delete_pos_with_entry(void *list, size_t pos); \
     static ___unused___ int ____get_pos(const void *list, size_t pos, void *data); \
     static ___unused___ void *____merge(const void * ___restrict___ list1, const void * ___restrict___ list2); \
     static ___unused___ int ____to_array(const void *list, void *array, size_t *size); \
@@ -122,9 +128,9 @@ ___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_
         concat(prefix, _destroy)((type *)list); \
     } \
     \
-    static ___unused___ void ____destroy_with_entries(void *list, void (*destructor)(void *data)) \
+    static ___unused___ void ____destroy_with_entries(void *list) \
     { \
-        concat(prefix, _destroy_with_entries)((type *)list, destructor); \
+        concat(prefix, _destroy_with_entries)((type *)list); \
     } \
     \
     static ___unused___ int ____insert_first(void *list, const void *data) \
@@ -148,6 +154,20 @@ ___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_
     } \
     \
     static ___unused___ int ____delete_last(void *list) \
+    { \
+        return concat(prefix, _delete_last)((type *)list); \
+    } \
+    \
+    static ___unused___ int ____delete_pos_with_entry(void *list, size_t pos) \
+    { \
+        return concat(prefix, _delete_pos)((type *)list, pos); \
+    } \
+    static ___unused___ int ____delete_first_with_entry(void *list) \
+    { \
+        return concat(prefix, _delete_first)((type *)list); \
+    } \
+    \
+    static ___unused___ int ____delete_last_with_entry(void *list) \
     { \
         return concat(prefix, _delete_last)((type *)list); \
     } \
@@ -185,27 +205,30 @@ ___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_
 
 #define ULIST_WRAPPERS_ASSIGN(list) \
     do { \
-        (list)->____destroy               = ____destroy; \
-        (list)->____destroy_with_entries  = ____destroy_with_entries; \
-        (list)->____insert_first          = ____insert_first; \
-        (list)->____insert_last           = ____insert_last; \
-        (list)->____insert_pos            = ____insert_pos; \
-        (list)->____delete_first          = ____delete_first; \
-        (list)->____delete_last           = ____delete_last; \
-        (list)->____delete_pos            = ____delete_pos; \
-        (list)->____get_pos               = ____get_pos; \
-        (list)->____merge                 = ____merge; \
-        (list)->____to_array              = ____to_array; \
-        (list)->____get_data_size         = ____get_data_size; \
-        (list)->____get_num_entries       = ____get_num_entries; \
-        (list)->____it_create             = ____it_create; \
-        (list)->____it_init               = ____it_init; \
-        (list)->____it_destroy            = ____it_destroy; \
-        (list)->____it_next               = ____it_next; \
-        (list)->____it_prev               = ____it_prev; \
-        (list)->____it_get_data           = ____it_get_data; \
-        (list)->____it_get_node           = ____it_get_node; \
-        (list)->____it_end                = ____it_end; \
+        (list)->____destroy                 = ____destroy; \
+        (list)->____destroy_with_entries    = ____destroy_with_entries; \
+        (list)->____insert_first            = ____insert_first; \
+        (list)->____insert_last             = ____insert_last; \
+        (list)->____insert_pos              = ____insert_pos; \
+        (list)->____delete_first            = ____delete_first; \
+        (list)->____delete_last             = ____delete_last; \
+        (list)->____delete_pos              = ____delete_pos; \
+        (list)->____delete_first_with_entry = ____delete_first_with_entry; \
+        (list)->____delete_last_with_entry  = ____delete_last_with_entry; \
+        (list)->____delete_pos_with_entry   = ____delete_pos_with_entry; \
+        (list)->____get_pos                 = ____get_pos; \
+        (list)->____merge                   = ____merge; \
+        (list)->____to_array                = ____to_array; \
+        (list)->____get_data_size           = ____get_data_size; \
+        (list)->____get_num_entries         = ____get_num_entries; \
+        (list)->____it_create               = ____it_create; \
+        (list)->____it_init                 = ____it_init; \
+        (list)->____it_destroy              = ____it_destroy; \
+        (list)->____it_next                 = ____it_next; \
+        (list)->____it_prev                 = ____it_prev; \
+        (list)->____it_get_data             = ____it_get_data; \
+        (list)->____it_get_node             = ____it_get_node; \
+        (list)->____it_end                  = ____it_end; \
     } while (0);
 
 /*
@@ -260,7 +283,7 @@ ___inline___ void ulist_destroy(UList *list);
     This is a void function
 
 */
-___inline___ void ulist_destroy_with_entries(UList *list, void (*destructor)(void *data));
+___inline___ void ulist_destroy_with_entries(UList *list);
 
 /*
     Insert data at the begining of list (this is useful for stack)
@@ -341,6 +364,43 @@ ___inline___ int ulist_delete_last(UList *list);
 ___inline___ int ulist_delete_pos(UList *list, size_t pos);
 
 /*
+    Delete first data with data
+
+    PARAMS
+    @IN list - pointer to UList
+
+    RETURN
+    0 - iff success
+    Non-zero iff failure
+*/
+___inline___ int ulist_delete_first_with_entry(UList *list);
+
+/*
+    Delete last data with data
+
+    PARAMS
+    @IN list - pointer to UList
+
+    RETURN
+    0 - iff success
+    Non-zero iff failure
+*/
+___inline___ int ulist_delete_last_with_entry(UList *list);
+
+/*
+    Delete data from posision @pos with data
+
+    PARAMS
+    @IN list - pointer to UList
+    @IN pos - posision from we delete data(first is 0 )
+
+    RETURN
+    0 - iff success
+    Non-zero iff failure
+*/
+___inline___ int ulist_delete_pos_with_entry(UList *list, size_t pos);
+
+/*
     Get data from node at @pos
 
     PARAMS
@@ -410,26 +470,29 @@ ___inline___ bool ulist_the_same_type(const UList * ___restrict___ list1, const 
     if (list1 == NULL || list2 == NULL)
         return false;
 
-    return !(list1->____destroy                 != list2->____destroy               ||
-             list1->____destroy_with_entries    != list2->____destroy_with_entries  ||
-             list1->____insert_first            != list2->____insert_first          ||
-             list1->____insert_last             != list2->____insert_last           ||
-             list1->____insert_pos              != list2->____insert_pos            ||
-             list1->____delete_first            != list2->____delete_first          ||
-             list1->____delete_last             != list2->____delete_last           ||
-             list1->____delete_pos              != list2->____delete_pos            ||
-             list1->____get_pos                 != list2->____get_pos               ||
-             list1->____merge                   != list2->____merge                 ||
-             list1->____to_array                != list2->____to_array              ||
-             list1->____get_data_size           != list2->____get_data_size         ||
-             list1->____get_num_entries         != list2->____get_num_entries       ||
-             list1->____it_create               != list2->____it_create             ||
-             list1->____it_init                 != list2->____it_init               ||
-             list1->____it_destroy              != list2->____it_destroy            ||
-             list1->____it_next                 != list2->____it_next               ||
-             list1->____it_prev                 != list2->____it_prev               ||
-             list1->____it_get_data             != list2->____it_get_data           ||
-             list1->____it_get_node             != list2->____it_get_node           ||
+    return !(list1->____destroy                 != list2->____destroy                   ||
+             list1->____destroy_with_entries    != list2->____destroy_with_entries      ||
+             list1->____insert_first            != list2->____insert_first              ||
+             list1->____insert_last             != list2->____insert_last               ||
+             list1->____insert_pos              != list2->____insert_pos                ||
+             list1->____delete_first            != list2->____delete_first              ||
+             list1->____delete_last             != list2->____delete_last               ||
+             list1->____delete_pos              != list2->____delete_pos                ||
+             list1->____delete_first_with_entry != list2->____delete_first_with_entry   ||
+             list1->____delete_last_with_entry  != list2->____delete_last_with_entry    ||
+             list1->____delete_pos_with_entry   != list2->____delete_pos_with_entry     ||
+             list1->____get_pos                 != list2->____get_pos                   ||
+             list1->____merge                   != list2->____merge                     ||
+             list1->____to_array                != list2->____to_array                  ||
+             list1->____get_data_size           != list2->____get_data_size             ||
+             list1->____get_num_entries         != list2->____get_num_entries           ||
+             list1->____it_create               != list2->____it_create                 ||
+             list1->____it_init                 != list2->____it_init                   ||
+             list1->____it_destroy              != list2->____it_destroy                ||
+             list1->____it_next                 != list2->____it_next                   ||
+             list1->____it_prev                 != list2->____it_prev                   ||
+             list1->____it_get_data             != list2->____it_get_data               ||
+             list1->____it_get_node             != list2->____it_get_node               ||
              list1->____it_end                  != list2->____it_end
              );
 }
@@ -451,12 +514,12 @@ ___inline___ void ulist_destroy(UList *list)
     FREE(list);
 }
 
-___inline___ void ulist_destroy_with_entries(UList *list, void (*destructor)(void *data))
+___inline___ void ulist_destroy_with_entries(UList *list)
 {
     if (list == NULL)
         return;
 
-    list->____destroy_with_entries(ulist_get_list(list), destructor);
+    list->____destroy_with_entries(ulist_get_list(list));
     FREE(list);
 }
 
@@ -508,6 +571,30 @@ ___inline___ int ulist_delete_pos(UList *list, size_t pos)
     return list->____delete_pos(ulist_get_list(list), pos);
 }
 
+___inline___ int ulist_delete_first_with_entry(UList *list)
+{
+    if (list == NULL)
+        return 1;
+
+    return list->____delete_first_with_entry(ulist_get_list(list));
+}
+
+___inline___ int ulist_delete_last_with_entry(UList *list)
+{
+    if (list == NULL)
+        return 1;
+
+    return list->____delete_last_with_entry(ulist_get_list(list));
+}
+
+___inline___ int ulist_delete_pos_with_entry(UList *list, size_t pos)
+{
+    if (list == NULL)
+        return 1;
+
+    return list->____delete_pos_with_entry(ulist_get_list(list), pos);
+}
+
 ___inline___ int ulist_get_pos(const UList *list, size_t pos, void *data)
 {
     if (list == NULL)
@@ -541,28 +628,31 @@ ___inline___ UList *ulist_merge(const UList * ___restrict___ list1, const  UList
     }
 
     /* fill hooks */
-    list3->____destroy              = list1->____destroy;
-    list3->____destroy_with_entries = list1->____destroy_with_entries;
-    list3->____insert_first         = list1->____insert_first;
-    list3->____insert_last          = list1->____insert_last;
-    list3->____insert_pos           = list1->____insert_pos;
-    list3->____delete_first         = list1->____delete_first;
-    list3->____delete_last          = list1->____delete_last;
-    list3->____delete_pos           = list1->____delete_pos;
-    list3->____get_pos              = list1->____get_pos;
-    list3->____merge                = list1->____merge;
-    list3->____to_array             = list1->____to_array;
-    list3->____get_data_size        = list1->____get_data_size;
-    list3->____get_num_entries      = list1->____get_num_entries;
+    list3->____destroy                  = list1->____destroy;
+    list3->____destroy_with_entries     = list1->____destroy_with_entries;
+    list3->____insert_first             = list1->____insert_first;
+    list3->____insert_last              = list1->____insert_last;
+    list3->____insert_pos               = list1->____insert_pos;
+    list3->____delete_first             = list1->____delete_first;
+    list3->____delete_last              = list1->____delete_last;
+    list3->____delete_pos               = list1->____delete_pos;
+    list3->____delete_first_with_entry  = list1->____delete_first_with_entry;
+    list3->____delete_last_with_entry   = list1->____delete_last_with_entry;
+    list3->____delete_pos_with_entry    = list1->____delete_pos_with_entry;
+    list3->____get_pos                  = list1->____get_pos;
+    list3->____merge                    = list1->____merge;
+    list3->____to_array                 = list1->____to_array;
+    list3->____get_data_size            = list1->____get_data_size;
+    list3->____get_num_entries          = list1->____get_num_entries;
 
-    list3->____it_create            = list1->____it_create;
-    list3->____it_init              = list1->____it_init;
-    list3->____it_destroy           = list1->____it_destroy;
-    list3->____it_next              = list1->____it_next;
-    list3->____it_prev              = list1->____it_prev;
-    list3->____it_get_data          = list1->____it_get_data;
-    list3->____it_get_node          = list1->____it_get_node;
-    list3->____it_end               = list1->____it_end;
+    list3->____it_create                = list1->____it_create;
+    list3->____it_init                  = list1->____it_init;
+    list3->____it_destroy               = list1->____it_destroy;
+    list3->____it_next                  = list1->____it_next;
+    list3->____it_prev                  = list1->____it_prev;
+    list3->____it_get_data              = list1->____it_get_data;
+    list3->____it_get_node              = list1->____it_get_node;
+    list3->____it_end                   = list1->____it_end;
 
     return list3;
 }

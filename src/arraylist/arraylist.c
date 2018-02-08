@@ -27,12 +27,52 @@ ___inline___ static Arraylist_node *arraylist_node_create( const Arraylist_node 
     Destory node
 
     PARAMS
-    @IN node -ptr on list_node
+    @IN node - ptr on list_node
 
     RETURN:
     This is void function
 */
 ___inline___ static void arraylist_node_destroy(Arraylist_node *node);
+
+/*
+    Delete first entry from arraylist
+
+    PARAMS
+    @IN alist - pointer to arraylist
+    @IN destroy - destroy entry during deleting ?
+
+    RETURN
+    0 iff success
+    Non-zero value iff vailure
+*/
+static int __arraylist_delete_first(Arraylist *alist, bool destroy);
+
+/*
+    Delete last entry from arraylist
+
+    PARAMS
+    @IN alist - pointer to arraylist
+    @IN destroy - destroy entry during deleting ?
+
+    RETURN
+    0 iff success
+    Non-zero value iff vailure
+*/
+static int __arraylist_delete_last(Arraylist *alist, bool destroy);
+
+/*
+    Delete first entry from arraylist
+
+    PARAMS
+    @IN alist - pointer to arraylist
+    @IN pos - entry pos in alist
+    @IN destroy - destroy entry during deleting ?
+
+    RETURN
+    0 iff success
+    Non-zero value iff vailure
+*/
+static int __arraylist_delete_pos(Arraylist *alist, size_t pos, bool destroy);
 
 ___inline___ static Arraylist_node *arraylist_node_create(  const Arraylist_node  *prev,
                                                             const Arraylist_node  *next,
@@ -76,7 +116,137 @@ ___inline___ static void arraylist_node_destroy(Arraylist_node *node)
     FREE(node);
 }
 
-Arraylist *arraylist_create(int size_of)
+static int __arraylist_delete_first(Arraylist *alist, bool destroy)
+{
+    Arraylist_node *node;
+
+    TRACE();
+
+    if (alist == NULL)
+        ERROR("alist == NULL\n", 1);
+
+    if (alist->____head == NULL)
+        ERROR("List is empty, nothing to delete\n", 1);
+
+    if (alist->____length == 1)
+    {
+        if (destroy && alist->____destroy)
+            alist->____destroy(alist->____head->____data);
+
+        arraylist_node_destroy(alist->____head);
+        alist->____head = NULL;
+        alist->____tail = NULL;
+    }
+    else
+    {
+        node = alist->____head;
+
+        alist->____head = alist->____head->____next;
+        alist->____head->____prev = NULL;
+
+        if (destroy && alist->____destroy)
+            alist->____destroy(node->____data);
+
+        arraylist_node_destroy(node);
+    }
+
+    --alist->____length;
+
+    return 0;
+}
+
+static int __arraylist_delete_last(Arraylist *alist, bool destroy)
+{
+    Arraylist_node *node;
+
+    TRACE();
+
+    if (alist == NULL)
+        ERROR("alist == NULL\n", 1);
+
+    if (alist->____head == NULL)
+        ERROR("List is empty, nothing to delete\n", 1);
+
+    if (alist->____length == 1)
+    {
+        if (destroy && alist->____destroy != NULL)
+            alist->____destroy(alist->____head->____data);
+
+        arraylist_node_destroy(alist->____head);
+        alist->____head = NULL;
+        alist->____tail = NULL;
+    }
+    else
+    {
+        node = alist->____tail;
+
+        alist->____tail = alist->____tail->____prev;
+        alist->____tail->____next = NULL;
+
+        if (destroy && alist->____destroy != NULL)
+            alist->____destroy(node->____data);
+
+        arraylist_node_destroy(node);
+    }
+
+    --alist->____length;
+
+    return 0;
+}
+
+
+static int __arraylist_delete_pos(Arraylist *alist, size_t pos, bool destroy)
+{
+    Arraylist_node *ptr;
+    size_t i;
+
+    TRACE();
+
+    if (alist == NULL)
+        ERROR("alist == NULL\n", 1);
+
+    if (pos >= alist->____length)
+        ERROR("pos >= len\n", 1);
+
+    /* at the begining */
+    if (pos == 0)
+        return __arraylist_delete_first(alist, destroy);
+
+    /* at the end */
+    if (pos == alist->____length - 1)
+        return __arraylist_delete_last(alist, destroy);
+
+    /* go from begin */
+    if (pos < (alist->____length >> 1))
+    {
+        ptr = alist->____head;
+        for (i = 0; i < pos; ++i)
+            ptr = ptr->____next;
+
+    }
+    /* go from end */
+    else
+    {
+        pos = alist->____length - pos - 1;
+        ptr = alist->____tail;
+        for (i = 0; i < pos; ++i)
+            ptr = ptr->____prev;
+    }
+
+    ptr->____prev->____next = ptr->____next;
+    ptr->____next->____prev = ptr->____prev;
+
+    if (destroy && alist->____destroy != NULL)
+        alist->____destroy(ptr->____data);
+
+    arraylist_node_destroy(ptr);
+
+    --alist->____length;
+
+    return 0;
+}
+
+Arraylist *arraylist_create(int size_of, void (*destroy)(void *data))
 {
     Arraylist *alist;
 
@@ -94,6 +264,7 @@ Arraylist *arraylist_create(int size_of)
     alist->____length = 0;
     alist->____head = NULL;
     alist->____tail = NULL;
+    alist->____destroy = destroy;
 
     return alist;
 }
@@ -123,8 +294,7 @@ void arraylist_destroy(Arraylist *alist)
     return;
 }
 
-void arraylist_destroy_with_entries(Arraylist *alist,
-        void (*destructor)(void *data))
+void arraylist_destroy_with_entries(Arraylist *alist)
 {
     Arraylist_node *ptr;
     Arraylist_node *next;
@@ -139,7 +309,9 @@ void arraylist_destroy_with_entries(Arraylist *alist,
     while (ptr != NULL)
     {
         next = ptr->____next;
-        destructor(ptr->____data);
+        if (alist->____destroy != NULL)
+            alist->____destroy(ptr->____data);
+        
         arraylist_node_destroy(ptr);
 
         ptr = next;
@@ -263,117 +435,35 @@ int arraylist_insert_pos(Arraylist *alist, size_t pos, const void *data)
     return 0;
 }
 
+
 int arraylist_delete_first(Arraylist *alist)
 {
-    Arraylist_node *node;
+    return __arraylist_delete_first(alist, false);
+}
 
-    TRACE();
-
-    if (alist == NULL)
-        ERROR("alist == NULL\n", 1);
-
-    if (alist->____head == NULL)
-        ERROR("List is empty, nothing to delete\n", 1);
-
-    if (alist->____length == 1)
-    {
-        arraylist_node_destroy(alist->____head);
-        alist->____head = NULL;
-        alist->____tail = NULL;
-    }
-    else
-    {
-        node = alist->____head;
-
-        alist->____head = alist->____head->____next;
-        alist->____head->____prev = NULL;
-        arraylist_node_destroy(node);
-    }
-
-    --alist->____length;
-
-    return 0;
+int arraylist_delete_first_with_entry(Arraylist *alist)
+{
+    return __arraylist_delete_first(alist, true);
 }
 
 int arraylist_delete_last(Arraylist *alist)
 {
-    Arraylist_node *node;
+    return __arraylist_delete_last(alist, false);
+}
 
-    TRACE();
-
-    if (alist == NULL)
-        ERROR("alist == NULL\n", 1);
-
-    if (alist->____head == NULL)
-        ERROR("List is empty, nothing to delete\n", 1);
-
-    if (alist->____length == 1)
-    {
-        arraylist_node_destroy(alist->____head);
-        alist->____head = NULL;
-        alist->____tail = NULL;
-    }
-    else
-    {
-        node = alist->____tail;
-
-        alist->____tail = alist->____tail->____prev;
-        alist->____tail->____next = NULL;
-
-        arraylist_node_destroy(node);
-    }
-
-    --alist->____length;
-
-    return 0;
+int arraylist_delete_last_with_entry(Arraylist *alist)
+{
+    return __arraylist_delete_last(alist, true);
 }
 
 int arraylist_delete_pos(Arraylist *alist, size_t pos)
 {
-    Arraylist_node *ptr;
-    size_t i;
+    return __arraylist_delete_pos(alist, pos, false);
+}
 
-    TRACE();
-
-    if (alist == NULL)
-        ERROR("alist == NULL\n", 1);
-
-    if (pos >= alist->____length)
-        ERROR("pos >= len\n", 1);
-
-    /* at the begining */
-    if (pos == 0)
-        return arraylist_delete_first(alist);
-
-    /* at the end */
-    if (pos == alist->____length - 1)
-        return arraylist_delete_last(alist);
-
-    /* go from begin */
-    if (pos < (alist->____length >> 1))
-    {
-        ptr = alist->____head;
-        for (i = 0; i < pos; ++i)
-            ptr = ptr->____next;
-
-    }
-    /* go from end */
-    else
-    {
-        pos = alist->____length - pos - 1;
-        ptr = alist->____tail;
-        for (i = 0; i < pos; ++i)
-            ptr = ptr->____prev;
-    }
-
-    ptr->____prev->____next = ptr->____next;
-    ptr->____next->____prev = ptr->____prev;
-
-    arraylist_node_destroy(ptr);
-
-    --alist->____length;
-
-    return 0;
+int arraylist_delete_pos_with_entry(Arraylist *alist, size_t pos)
+{
+    return __arraylist_delete_pos(alist, pos, true);
 }
 
 int arraylist_get_pos(const Arraylist *alist, size_t pos, void *data)
@@ -423,7 +513,7 @@ Arraylist *arraylist_merge(const Arraylist  * ___restrict___ alist1, const Array
     if (alist1 == NULL || alist2 == NULL)
         ERROR("alist1 == NULL || alist2 == NULL\n", NULL);
 
-    result = arraylist_create((int)alist1->____size_of);
+    result = arraylist_create((int)alist1->____size_of, alist1->____destroy);
     if (result == NULL)
         ERROR("arraylist_create error\n", NULL);
 
@@ -635,7 +725,7 @@ bool arraylist_iterator_end(const Arraylist_iterator *iterator)
 
 ULIST_WRAPPERS_CREATE(Arraylist, arraylist)
 
-UList *ulist_arraylist_create(int size_of)
+UList *ulist_arraylist_create(int size_of, void (*destroy)(void *entry))
 {
     UList *list;
 
@@ -647,7 +737,7 @@ UList *ulist_arraylist_create(int size_of)
         ERROR("malloc error\n", NULL);
 
     /* create arraylist */
-    list->____list = (void *)arraylist_create(size_of);
+    list->____list = (void *)arraylist_create(size_of, destroy);
     if (list->____list == NULL)
     {
         FREE(list);
