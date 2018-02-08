@@ -169,6 +169,10 @@ D_CRC := $(SDIR)/crc
 I_CRC := $(IDIR)/crc.h $(F_LIB) $(I_LOG)
 S_CRC := $(wildcard $(D_CRC)/*.c) $(S_LOG)
 
+D_BITSET := $(SDIR)/bitset
+I_BITSET := $(IDIR)/bitset.h $(F_LIB) $(I_LOG)
+S_BITSET := $(wildcard $(D_BITSET)/*.c) $(S_LOG)
+
 # Needed to testting
 TEST_COMMON_INC := $(F_TEST) $(I_COMPILER) $(I_COMMON) $(I_SORT) $(I_SEARCH)
 TEST_COMMON_SRC := $(S_COMPILER) $(S_COMMON) $(S_SORT) $(S_SEARCH)
@@ -221,7 +225,7 @@ define print_bin
 	$(if $(Q), @echo "[BIN]         $$(1)")
 endef
 
-all: prepare arraylist avl bst crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset final
+all: prepare arraylist avl bitset bst crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
@@ -232,6 +236,10 @@ arraylist: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 avl: prepare
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
+bitset: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
@@ -312,7 +320,7 @@ ufset: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 
-final: prepare arraylist avl bst crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
+final: prepare arraylist avl bitset bst crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
 	$(call print_info,Finalizing)
 	$(Q)$(CP) $(IDIR)/common.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/compiler.h $(O_HEADERS) && \
@@ -335,6 +343,7 @@ clean:
 	$(call print_info,Cleaning)
 	$(Q)$(MAKE) -f $(D_ARRAYLIST)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_AVL)/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(D_BITSET)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_BST)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_CRC)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_CSTRING)/Makefile clean --no-print-directory && \

@@ -32,13 +32,17 @@ VALGRIND_MEMCHECK_FLAGS := --leak-check=full
 VALGRIND_MEMUSAGE_FLAGS := --tool=massif --stacks=yes
 PASS_STRING := All heap blocks were freed -- no leaks are possible
 
-all: arraylist avl bst common compiler crc cstring darray fifo filebuffer hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
+all: arraylist avl bitset bst common compiler crc cstring darray fifo filebuffer hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
 
 arraylist:
 	$(call print_test_make,$@)
 	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
 
 avl:
+	$(call print_test_make,$@)
+	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
+
+bitset:
 	$(call print_test_make,$@)
 	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
 
@@ -125,6 +129,7 @@ ufset:
 run:
 	$(Q)$(MAKE) -f $(TEST_SRC)/arraylist/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/avl/Makefile run --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/bitset/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bst/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/common/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/compiler/Makefile run --no-print-directory && \
@@ -149,6 +154,7 @@ run:
 clean:
 	$(Q)$(MAKE) -f $(TEST_SRC)/arraylist/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/avl/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/bitset/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bst/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/common/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/compiler/Makefile clean --no-print-directory && \
@@ -173,6 +179,7 @@ clean:
 memcheck:
 	$(Q)$(MAKE) -f $(TEST_SRC)/arraylist/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/avl/Makefile memcheck --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/bitset/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bst/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/common/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/compiler/Makefile memcheck --no-print-directory && \
@@ -197,6 +204,7 @@ memcheck:
 memusage:
 	$(Q)$(MAKE) -f $(TEST_SRC)/arraylist/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/avl/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/bitset/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bst/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/common/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/compiler/Makefile memusage --no-print-directory && \

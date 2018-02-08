@@ -47,6 +47,8 @@ GPL 3.0
 
     avl - self balanced tree avl
 
+    bitset - array of bits
+
     bst - normal binary sorted tree
 
     crc - crc 8/16/32/64
