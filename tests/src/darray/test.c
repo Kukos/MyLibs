@@ -38,21 +38,21 @@ test_f test_create(void)
 
     /********** INIT_SIZE = init_size **********/
     /***** SORTED *****/
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
     T_EXPECT(darray_get_num_entries(da[counter]), 0);
     ++counter;
 
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
     T_EXPECT(darray_get_num_entries(da[counter]), 0);
     ++counter;
 
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -60,21 +60,21 @@ test_f test_create(void)
     ++counter;
 
     /***** UNSORTED *****/
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
     T_EXPECT(darray_get_num_entries(da[counter]), 0);
     ++counter;
 
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
     T_EXPECT(darray_get_num_entries(da[counter]), 0);
     ++counter;
 
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -83,21 +83,21 @@ test_f test_create(void)
 
     /********* INIT_SIZE = 0 **********/
     /***** SORTED *****/
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
     T_EXPECT(darray_get_num_entries(da[counter]), 0);
     ++counter;
 
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
     T_EXPECT(darray_get_num_entries(da[counter]), 0);
     ++counter;
 
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -105,21 +105,21 @@ test_f test_create(void)
     ++counter;
 
     /***** UNSORTED *****/
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
     T_EXPECT(darray_get_num_entries(da[counter]), 0);
     ++counter;
 
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
     T_EXPECT(darray_get_num_entries(da[counter]), 0);
     ++counter;
 
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -152,7 +152,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -170,7 +170,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -188,7 +188,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -206,7 +206,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -223,7 +223,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -240,7 +240,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -258,7 +258,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -277,7 +277,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -296,7 +296,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -316,7 +316,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -335,7 +335,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -354,7 +354,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -389,7 +389,7 @@ test_f test_insert_pos(void)
 
     int i;
 
-    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -400,7 +400,7 @@ test_f test_insert_pos(void)
 
     darray_destroy(da);
 
-    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -437,7 +437,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -469,7 +469,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -501,7 +501,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -533,7 +533,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -564,7 +564,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -595,7 +595,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -627,7 +627,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -660,7 +660,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -693,7 +693,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -727,7 +727,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -760,7 +760,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -793,7 +793,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -852,7 +852,7 @@ test_f test_delete_pos(void)
     int i;
 
     /* unsorted */
-    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -872,7 +872,7 @@ test_f test_delete_pos(void)
     darray_destroy(da);
 
     /* sorted */
-    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -913,7 +913,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -959,7 +959,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -1005,7 +1005,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_UNSORTED, init_size, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -1051,7 +1051,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -1096,7 +1096,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -1141,7 +1141,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_UNSORTED, 0, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -1187,7 +1187,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -1234,7 +1234,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -1281,7 +1281,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_SORTED, init_size, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -1329,7 +1329,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(char), cmp_char);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(char), cmp_char, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(char));
@@ -1376,7 +1376,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(int));
@@ -1423,7 +1423,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(double), cmp_double);
+    da[counter] = darray_create(DARRAY_SORTED, 0, sizeof(double), cmp_double, NULL);
     T_ERROR(da[counter] == NULL);
     T_EXPECT(darray_get_type(da[counter]), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da[counter]), sizeof(double));
@@ -1491,7 +1491,7 @@ test_f test_sort(void)
     for (i = 0; i < array_size; ++i)
             t[i] = rand();
 
-    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -1528,7 +1528,7 @@ test_f test_search_first(void)
 
     size_t array_size = ARRAY_SIZE(t);
 
-    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -1552,7 +1552,7 @@ test_f test_search_first(void)
 
     darray_destroy(da);
 
-    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -1592,7 +1592,7 @@ test_f test_search_last(void)
 
     size_t array_size = ARRAY_SIZE(t);
 
-    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -1616,7 +1616,7 @@ test_f test_search_last(void)
 
     darray_destroy(da);
 
-    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -1655,7 +1655,7 @@ test_f test_min(void)
 
     size_t array_size = ARRAY_SIZE(t);
 
-    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -1675,7 +1675,7 @@ test_f test_min(void)
 
     darray_destroy(da);
 
-    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -1710,7 +1710,7 @@ test_f test_max(void)
 
     size_t array_size = ARRAY_SIZE(t);
 
-    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -1730,7 +1730,7 @@ test_f test_max(void)
 
     darray_destroy(da);
 
-    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_SORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -1764,7 +1764,7 @@ test_f test_for_each(void)
 
     size_t array_size = ARRAY_SIZE(t);
 
-    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -1846,7 +1846,7 @@ test_f test_empty_for_each(void)
 
     size_t array_size = ARRAY_SIZE(t);
 
-    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(int));
@@ -1916,7 +1916,7 @@ test_f test_destroy_with_entries(void)
     int i;
     size_t size = BIT(10);
 
-    da = darray_create(DARRAY_UNSORTED, 0, sizeof(MyStruct *), NULL);
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(MyStruct *), NULL, my_struct_destroy);
     T_ERROR(da == NULL);
     T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
     T_EXPECT(darray_get_data_size(da), sizeof(MyStruct *));
@@ -1930,7 +1930,59 @@ test_f test_destroy_with_entries(void)
         T_EXPECT(darray_insert(da, (void *)&s), 0);
     }
 
-    darray_destroy_with_entries(da, my_struct_destroy);
+    darray_destroy_with_entries(da);
+}
+
+test_f test_delete_with_entries(void)
+{
+    MyStruct *s;
+    Darray *da;
+
+    int i;
+    size_t size = BIT(10);
+
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(MyStruct *), NULL, my_struct_destroy);
+    T_ERROR(da == NULL);
+    T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
+    T_EXPECT(darray_get_data_size(da), sizeof(MyStruct *));
+    T_EXPECT(darray_get_num_entries(da), 0);
+
+    for (i = 0; i < size; ++i)
+    {
+        s = (MyStruct *)malloc(sizeof(MyStruct));
+        T_ERROR(s == NULL);
+
+        T_EXPECT(darray_insert(da, (void *)&s), 0);
+    }
+    T_EXPECT(darray_delete_with_entry(da), 0);
+    T_EXPECT(darray_delete_pos_with_entry(da, size >> 1), 0);
+
+    darray_destroy_with_entries(da);
+}
+
+test_f test_delete_with_entries_without_destructor(void)
+{
+    Darray *da;
+    int value;
+
+    int i;
+    size_t size = BIT(10);
+
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), NULL, NULL);
+    T_ERROR(da == NULL);
+    T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
+    T_EXPECT(darray_get_data_size(da), sizeof(int));
+    T_EXPECT(darray_get_num_entries(da), 0);
+
+    for (i = 0; i < size; ++i)
+    {
+        value = i + 1;
+        T_EXPECT(darray_insert(da, (void *)&value), 0);
+    }
+    T_EXPECT(darray_delete_with_entry(da), 0);
+    T_EXPECT(darray_delete_pos_with_entry(da, size >> 1), 0);
+
+    darray_destroy_with_entries(da);
 }
 
 test_f test_empty(void)
@@ -1939,7 +1991,7 @@ test_f test_empty(void)
     int in;
     int out;
 
-    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), NULL);
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), NULL, NULL);
     T_ERROR(da == NULL);
 
     T_EXPECT(darray_get_type(da), DARRAY_UNSORTED);
@@ -1948,6 +2000,8 @@ test_f test_empty(void)
 
     T_CHECK(darray_delete(da) != 0);
     T_CHECK(darray_delete_pos(da, 3) != 0);
+    T_CHECK(darray_delete_with_entry(da) != 0);
+    T_CHECK(darray_delete_pos_with_entry(da, 3) != 0);
     T_EXPECT(darray_search_first(da, (void *)&in, (void *)&out), (ssize_t)-1);
     T_EXPECT(darray_search_last(da, (void *)&in, (void *)&out), (ssize_t)-1);
     T_CHECK(darray_sort(da) != 0);
@@ -1957,7 +2011,7 @@ test_f test_empty(void)
 
     darray_destroy(da);
 
-    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    da = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
 
     T_EXPECT(darray_get_type(da), DARRAY_SORTED);
@@ -1966,6 +2020,8 @@ test_f test_empty(void)
 
     T_CHECK(darray_delete(da) != 0);
     T_CHECK(darray_delete_pos(da, 3) != 0);
+    T_CHECK(darray_delete_with_entry(da) != 0);
+    T_CHECK(darray_delete_pos_with_entry(da, 3) != 0);
     T_EXPECT(darray_search_first(da, (void *)&in, (void *)&out), (ssize_t)-1);
     T_EXPECT(darray_search_last(da, (void *)&in, (void *)&out), (ssize_t)-1);
     T_CHECK(darray_sort(da) != 0);
@@ -1991,6 +2047,8 @@ void test(void)
     TEST(test_max());
     TEST(test_for_each());
     TEST(test_destroy_with_entries());
+    TEST(test_delete_with_entries());
+    TEST(test_delete_with_entries_without_destructor());
     TEST(test_empty());
     TEST(test_empty_for_each());
 }

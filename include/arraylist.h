@@ -65,6 +65,10 @@ IT_FUNC(Arraylist, arraylist)
 /*
     Create alist as UList
 
+    destructor by void * pass addr i.e in list we have MyStruct *,
+    so your destructor data = (void *)&ms
+
+
     PARAMS
     @IN size_of - size of element in list
     @IN destroy - your data destructor or NULL
@@ -101,9 +105,6 @@ void arraylist_destroy(Arraylist *alist);
 
 /*
     Destroy arraylist with all entries ( call destructor for each entries )
-
-    destructor by void * pass addr i.e in list we have MyStruct *,
-    so your destructor data = (void *)&ms
 
     PARAMS
     @IN alist - pointer to arraylist
@@ -192,7 +193,7 @@ int arraylist_delete_last(Arraylist *alist);
 int arraylist_delete_pos(Arraylist *alist, size_t pos);
 
 /*
-    Delete first data od alist with data
+    Delete first data from alist and call destructor
 
     PARAMS
     @IN alist - pointer to 
@@ -204,7 +205,7 @@ int arraylist_delete_pos(Arraylist *alist, size_t pos);
 int arraylist_delete_first_with_entry(Arraylist *alist);
 
 /*
-    Delete last data od alist with data
+    Delete last data from alist and call destructor
 
     PARAMS
     @IN alist - pointer to alist
@@ -217,7 +218,7 @@ int arraylist_delete_last_with_entry(Arraylist *alist);
 
 
 /*
-    Delete data on @pos with data
+    Delete data on @pos from alist and call destructor
 
     PARAMS
     @IN alist - pointer to alist

@@ -14,7 +14,7 @@ UFSMaster *ufs_master_create(void)
     if (master == NULL)
         ERROR("malloc error\n", NULL);
 
-     master->____set = darray_create(DARRAY_UNSORTED, 0, sizeof(UFset *), NULL);
+     master->____set = darray_create(DARRAY_UNSORTED, 0, sizeof(UFset *), NULL, NULL);
      if (master->____set == NULL)
      {
          FREE(master);

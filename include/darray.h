@@ -30,6 +30,7 @@ typedef struct Darray
     size_t  ____num_entries;    /* num of entries in array */
     size_t  ____init_size;      /* minimum size using on init ( num of entries ) */
 
+    void (*____destroy)(void *entry);
     int (*____cmp)(const void *a, const void *b); /* pointer to compare function */
     DARRAY_TYPE ____type;        /* type of array ( sorted or unsorted ) */
 
@@ -59,14 +60,18 @@ IT_FUNC(Darray, darray)
     @IN DARRAY_TYPE - type of array ( sorted or unsorted )
     @IN SIZE - begining size, if 0 array will be create with default size
     @IN CMP - compare function, if TYPE == DARRAY_SORTED cmp is needed, else you can put NULL ( functions needed cmp wont work )
+    @IN DESTROY - pointer to your data destructor or NULL
 */
-#define DARRAY_CREATE(PTR, TYPE, ARRAYTYPE, SIZE, CMP) \
+#define DARRAY_CREATE(PTR, TYPE, ARRAYTYPE, SIZE, CMP, DESTROY) \
     do { \
-        PTR = darray_create(ARRAYTYPE, SIZE, sizeof(TYPE), CMP); \
+        PTR = darray_create(ARRAYTYPE, SIZE, sizeof(TYPE), CMP, DESTROY); \
     } while (0)
 
 /*
     Create new instance of dynamic array
+
+    destructor by void * pass addr i.e in array we have MyStruct *,
+    so your destructor data = (void *)&ms
 
     PARAMS
     @IN type - type of array ( sorted or unsorted )
@@ -74,13 +79,15 @@ IT_FUNC(Darray, darray)
     @IN size_of - size of element
     @IN cmp - compare function, if TYPE == DARRAY_SORTED cmp is needed,
         else you can put NULL ( functions needed cmp wont work )
+    @IN destroy - pointer to your data destructor or NULL
 
     RETURN:
     %NULL iff failure
     %Pointer to Darray iff success
 */
 Darray *darray_create(DARRAY_TYPE type, size_t size, int size_of,
-                int (*cmp)(const void *a, const void *b));
+                int (*cmp)(const void *a, const void *b),
+                void (*destroy)(void *entry));
 
 /*
     Deallocate darray
@@ -96,9 +103,6 @@ void darray_destroy(Darray *darray);
 /*
     Destroy Darray with all entries ( call destructor for each entries )
 
-    destructor by void * pass addr i.e in array we have MyStruct *,
-    so your destructor data = (void *)&ms
-
     PARAMS
     @IN darray - pointer darray
     @IN desturctor -  your object destructor
@@ -106,7 +110,7 @@ void darray_destroy(Darray *darray);
     RETURN:
     This is a void function
 */
-void darray_destroy_with_entries(Darray *darray, void (*destructor)(void *data));
+void darray_destroy_with_entries(Darray *darray);
 
 /*
     Insert an entry at the end of array or insert to the sorted array
@@ -148,6 +152,19 @@ int darray_insert_pos(Darray *darray, const void *entry, size_t pos);
 int darray_delete(Darray *darray);
 
 /*
+    Delete the last entry from array
+    and call destructor
+
+    PARAMS
+    @IN darray - pointer to Darray
+
+    RETURN:
+   	%0 iff success
+    %Non-zero value iff failure
+*/
+int darray_delete_with_entry(Darray *darray);
+
+/*
     Delete an entry on position pos from array
 
     PARAMS
@@ -159,6 +176,20 @@ int darray_delete(Darray *darray);
     %Non-zero value iff failure
 */
 int darray_delete_pos(Darray *darray, size_t pos);
+
+/*
+    Delete an entry on position pos from array
+    and call destructor
+
+    PARAMS
+    @IN darray - pointer to Darray
+    @IN pos - position of deleted entry
+
+    RETURN:
+    %0 iff success
+    %Non-zero value iff failure
+*/
+int darray_delete_pos_with_entry(Darray *darray, size_t pos);
 
 /*
     Search for val in array

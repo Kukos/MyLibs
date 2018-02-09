@@ -19,7 +19,7 @@ Stack *stack_create(int size_of)
         ERROR("malloc error\n", NULL);
 
     /* Stack is a unsorted dynamic array */
-    s->____darray = darray_create(DARRAY_UNSORTED, 0, size_of, NULL);
+    s->____darray = darray_create(DARRAY_UNSORTED, 0, size_of, NULL, NULL);
     if (s->____darray == NULL)
     {
         FREE(s);
@@ -47,7 +47,8 @@ void stack_destroy_with_entries(Stack *stack, void (*destructor)(void *data))
     if (stack == NULL)
         return;
 
-    darray_destroy_with_entries(stack->____darray, destructor);
+    (void)destructor;
+    darray_destroy_with_entries(stack->____darray);
 
     FREE(stack);
 }

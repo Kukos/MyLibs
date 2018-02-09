@@ -262,7 +262,7 @@ static Trie_node *trie_min_node(const Trie_node *node, char **word)
     assert(node != NULL);
     assert(word != NULL);
 
-    letters = darray_create(DARRAY_UNSORTED, 0, sizeof(char), NULL);
+    letters = darray_create(DARRAY_UNSORTED, 0, sizeof(char), NULL, NULL);
     if (letters == NULL)
         ERROR("darray error\n", NULL);
 
@@ -356,7 +356,7 @@ static Trie_node *trie_max_node(const Trie_node *node, char **word)
     assert(node != NULL);
     assert(word != NULL);
 
-    letters = darray_create(DARRAY_UNSORTED, 0, sizeof(char), NULL);
+    letters = darray_create(DARRAY_UNSORTED, 0, sizeof(char), NULL, NULL);
     if (letters == NULL)
         ERROR("darray_create error\n", NULL);
 
@@ -582,7 +582,7 @@ Trie *trie_create(void)
         ERROR("malloc error\n", NULL);
     }
 
-    trie->____hight_array = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int);
+    trie->____hight_array = darray_create(DARRAY_SORTED, 0, sizeof(int), cmp_int, NULL);
     if (trie->____hight_array == NULL)
         ERROR("darray create error\n", NULL);
 

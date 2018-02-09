@@ -420,7 +420,7 @@ Heap* heap_create(heap_type type, int size_of, int ary,
     heap->____size_of   = size_of;
     heap->____type      = type;
     heap->____ary       = ary;
-    heap->____darray    = darray_create(DARRAY_UNSORTED, 0, sizeof(Heap_entry *), cmp);
+    heap->____darray    = darray_create(DARRAY_UNSORTED, 0, sizeof(Heap_entry *), cmp, heap_entry_destructor);
 
     if (heap->____darray == NULL)
         ERROR("darray_create error\n", NULL);
@@ -435,7 +435,7 @@ void heap_destroy(Heap *heap)
     if (heap == NULL)
         return;
 
-    darray_destroy_with_entries(heap->____darray, heap_entry_destructor);
+    darray_destroy_with_entries(heap->____darray);
     FREE(heap);
 }
 
@@ -454,7 +454,7 @@ void heap_destroy_with_entries(Heap *heap, void (*destructor)(void *data))
     for_each_data(heap->____darray, Darray, entry)
         destructor(entry->____data);
 
-    darray_destroy_with_entries(heap->____darray, heap_entry_destructor);
+    darray_destroy_with_entries(heap->____darray);
     FREE(heap);
 }
 

@@ -1977,7 +1977,7 @@ String **string_split_c(const String *string, char c, size_t *size)
     if (string_is_empty(string))
         ERROR("string is empty\n", NULL);
 
-    darray = darray_create(DARRAY_UNSORTED, 0, sizeof(String *), NULL);
+    darray = darray_create(DARRAY_UNSORTED, 0, sizeof(String *), NULL, NULL);
     if (darray == NULL)
         ERROR("darray == NULL\n", NULL);
 
@@ -2051,7 +2051,7 @@ String **string_split_str(const String *string, const char *str, size_t *size)
     if (len == 0)
         ERROR("len == 0\n", NULL);
 
-    darray = darray_create(DARRAY_UNSORTED, 0, sizeof(String *), NULL);
+    darray = darray_create(DARRAY_UNSORTED, 0, sizeof(String *), NULL, NULL);
     if (darray == NULL)
         ERROR("darray == NULL\n", NULL);
 

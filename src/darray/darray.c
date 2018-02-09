@@ -92,6 +92,16 @@ ___inline___ static ssize_t upper_bound(const Darray *darray, const void *val);
 */
 static int _darray_insert_pos(Darray *darray, const void *entry, size_t pos, bool check);
 
+/*
+    Delete entry from array
+
+    PARAMS
+    @IN darray - pointer to Darray
+    @IN pos - pos from delete entry
+    @INdestroy - destroy during deleting ?
+*/
+static int __darray_delete_pos(Darray *darray, size_t pos, bool destroy);
+
 ___inline___ static ssize_t darray_unsorted_search_first(const Darray *darray,
                                                     const void *val_in, void *val_out)
 {
@@ -281,8 +291,50 @@ static int _darray_insert_pos(Darray *darray, const void *entry, size_t pos, boo
     return 0;
 }
 
+static int __darray_delete_pos(Darray *darray, size_t pos, bool destroy)
+{
+    BYTE *_t;
+
+    TRACE();
+
+    if (darray == NULL)
+        ERROR("darray == NULL\n", 1);
+
+    if (pos >= darray->____num_entries)
+        ERROR("pos >= num_entries\n", 1);
+
+	if (darray->____num_entries == 0)
+		ERROR("Nothing to delete\n", 1);
+
+    _t = (BYTE *)darray->____array;
+    if (destroy && darray->____destroy != NULL)
+        darray->____destroy(_t + (pos * darray->____size_of));
+
+    if ((memmove( (void *)(_t + (pos * darray->____size_of)),
+                  (void *)(_t + ((pos + 1) * darray->____size_of)),
+                  (darray->____num_entries - pos - 1) * darray->____size_of )) == NULL)
+        ERROR("memmove error\n", 1);
+
+    --darray->____num_entries;
+
+    /* resize array */
+    if ((double)darray->____num_entries <= ((double)darray->____size * 0.4)
+    && ((darray->____size >> 1) >= darray->____init_size))
+    {
+        darray->____size >>= 1;
+
+        darray->____array = realloc(darray->____array, darray->____size * (darray->____size_of));
+        if (darray->____array == NULL)
+            ERROR("realloc error\n",1);
+    }
+
+    return 0;
+}
+
+
 Darray *darray_create(DARRAY_TYPE type, size_t size, int size_of,
-        int (*cmp)(const void *a, const void *b))
+        int (*cmp)(const void *a, const void *b),
+        void (*destroy)(void *entry))
 {
     Darray *da;
 
@@ -310,6 +362,7 @@ Darray *darray_create(DARRAY_TYPE type, size_t size, int size_of,
     da->____size_of = (size_t)size_of;
     da->____type = type;
     da->____cmp = cmp;
+    da->____destroy = destroy;
 
     da->____array = malloc(da->____size * da->____size_of);
 
@@ -335,20 +388,21 @@ void darray_destroy(Darray *darray)
     FREE(darray);
 }
 
-void darray_destroy_with_entries(Darray *darray, void (*destructor)(void *data))
+void darray_destroy_with_entries(Darray *darray)
 {
     TRACE();
 
     size_t i;
     BYTE *t;
 
-    if (darray == NULL || destructor == NULL)
+    if (darray == NULL)
         return;
 
     t = (BYTE *)darray->____array;
 
     for (i = 0; i < darray->____num_entries; ++i)
-       destructor((void *)(t + (i * darray->____size_of)));
+        if (darray->____destroy != NULL)
+            darray->____destroy((void *)(t + (i * darray->____size_of)));
 
 
     FREE(darray->____array);
@@ -408,7 +462,20 @@ int darray_delete(Darray *darray)
     if (darray == NULL)
         ERROR("darray == NULL\n", 1);
 
-    if (darray_delete_pos(darray, darray->____num_entries - 1))
+    if (__darray_delete_pos(darray, darray->____num_entries - 1, false))
+        ERROR("darray_delete_pos error\n",1);
+
+    return 0;
+}
+
+int darray_delete_with_entry(Darray *darray)
+{
+    TRACE();
+
+    if (darray == NULL)
+        ERROR("darray == NULL\n", 1);
+
+    if (__darray_delete_pos(darray, darray->____num_entries - 1, true))
         ERROR("darray_delete_pos error\n",1);
 
     return 0;
@@ -416,38 +483,26 @@ int darray_delete(Darray *darray)
 
 int darray_delete_pos(Darray *darray, size_t pos)
 {
-    BYTE *_t;
-
     TRACE();
 
     if (darray == NULL)
         ERROR("darray == NULL\n", 1);
 
-    if (pos >= darray->____num_entries)
-        ERROR("pos >= num_entries\n", 1);
+    if (__darray_delete_pos(darray, pos, false))
+        ERROR("darray_delete_pos error\n",1);
 
-	if (darray->____num_entries == 0)
-		ERROR("Nothing to delete\n", 1);
+    return 0;
+}
 
-    _t = (BYTE *)darray->____array;
+int darray_delete_pos_with_entry(Darray *darray, size_t pos)
+{
+    TRACE();
 
-    if ((memmove( (void *)(_t + (pos * darray->____size_of)),
-                  (void *)(_t + ((pos + 1) * darray->____size_of)),
-                  (darray->____num_entries - pos - 1) * darray->____size_of )) == NULL)
-        ERROR("memmove error\n", 1);
+    if (darray == NULL)
+        ERROR("darray == NULL\n", 1);
 
-    --darray->____num_entries;
-
-    /* resize array */
-    if ((double)darray->____num_entries <= ((double)darray->____size * 0.4)
-    && ((darray->____size >> 1) >= darray->____init_size))
-    {
-        darray->____size >>= 1;
-
-        darray->____array = realloc(darray->____array, darray->____size * (darray->____size_of));
-        if (darray->____array == NULL)
-            ERROR("realloc error\n",1);
-    }
+    if (__darray_delete_pos(darray, pos, true))
+        ERROR("darray_delete_pos error\n",1);
 
     return 0;
 }
