@@ -28,10 +28,11 @@ typedef struct Stack
     PARAMS
     @OUT PTR - pointer to stack
     @IN TYPE - type
+    @IN DESTROY - your data destructor or NULL
 */
-#define STACK_CREATE(PTR, TYPE) \
+#define STACK_CREATE(PTR, TYPE, DESTROY) \
     do { \
-        PTR = stack_create(sizeof(TYPE)); \
+        PTR = stack_create(sizeof(TYPE), DESTROY); \
     } while (0);
 
 /*
@@ -39,12 +40,17 @@ typedef struct Stack
 
     PARAMS
     @IN size_of - size of element of stack
+    @IN destroy - your data destructor or NULL
+
+    destructor by void * pass addr i.e in array we have MyStruct *,
+    so your destructor data = (void *)&ms
+
 
     RETURN:
     %NULL iff failure
     %Pointer iff success
 */
-Stack *stack_create(int size_of);
+Stack *stack_create(int size_of, void (*destroy)(void *entry));
 
 /*
     Destroy stack
@@ -60,17 +66,13 @@ void stack_destroy(Stack *stack);
 /*
     Destroy Stack with all entries ( call destructor for each entries )
 
-    destructor by void * pass addr i.e in array we have MyStruct *,
-    so your destructor data = (void *)&ms
-
     PARAMS
     @IN stack - pointer Stack
-    @IN desturctor -  your object destructor
 
     RETURN:
     This is a void function
 */
-void stack_destroy_with_entries(Stack *stack, void (*destructor)(void *data));
+void stack_destroy_with_entries(Stack *stack);
 
 /*
     Push value on stack

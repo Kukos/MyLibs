@@ -99,8 +99,24 @@ static int _darray_insert_pos(Darray *darray, const void *entry, size_t pos, boo
     @IN darray - pointer to Darray
     @IN pos - pos from delete entry
     @INdestroy - destroy during deleting ?
+
+    RETURN:
+    %0 iff success
+    %Non-zero value iff failure
 */
 static int __darray_delete_pos(Darray *darray, size_t pos, bool destroy);
+
+/*
+    Destroy whole darray
+
+    PARAMS
+    @IN darray - pointer to darray
+    @IN destroy - call destructor ?
+
+    RETURN:
+    This is a void function
+*/
+static void __darray_destroy_with_entries(Darray *darray, bool destroy);
 
 ___inline___ static ssize_t darray_unsorted_search_first(const Darray *darray,
                                                     const void *val_in, void *val_out)
@@ -331,6 +347,26 @@ static int __darray_delete_pos(Darray *darray, size_t pos, bool destroy)
     return 0;
 }
 
+static void __darray_destroy_with_entries(Darray *darray, bool destroy)
+{
+    TRACE();
+
+    size_t i;
+    BYTE *t;
+
+    if (darray == NULL)
+        return;
+
+    t = (BYTE *)darray->____array;
+
+    if (destroy && darray->____destroy != NULL)
+        for (i = 0; i < darray->____num_entries; ++i)
+            darray->____destroy((void *)(t + (i * darray->____size_of)));
+
+
+    FREE(darray->____array);
+    FREE(darray);
+}
 
 Darray *darray_create(DARRAY_TYPE type, size_t size, int size_of,
         int (*cmp)(const void *a, const void *b),
@@ -381,34 +417,15 @@ void darray_destroy(Darray *darray)
 {
     TRACE();
 
-    if (darray == NULL)
-        return;
-
-    FREE(darray->____array);
-    FREE(darray);
+    __darray_destroy_with_entries(darray, false);
 }
 
 void darray_destroy_with_entries(Darray *darray)
 {
     TRACE();
 
-    size_t i;
-    BYTE *t;
-
-    if (darray == NULL)
-        return;
-
-    t = (BYTE *)darray->____array;
-
-    for (i = 0; i < darray->____num_entries; ++i)
-        if (darray->____destroy != NULL)
-            darray->____destroy((void *)(t + (i * darray->____size_of)));
-
-
-    FREE(darray->____array);
-    FREE(darray);
+    __darray_destroy_with_entries(darray, true);
 }
-
 
 int darray_insert(Darray *darray, const void *entry)
 {

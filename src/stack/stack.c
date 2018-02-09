@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <common.h>
 
-Stack *stack_create(int size_of)
+Stack *stack_create(int size_of, void (*destroy)(void *entry))
 {
     Stack *s;
 
@@ -19,7 +19,7 @@ Stack *stack_create(int size_of)
         ERROR("malloc error\n", NULL);
 
     /* Stack is a unsorted dynamic array */
-    s->____darray = darray_create(DARRAY_UNSORTED, 0, size_of, NULL, NULL);
+    s->____darray = darray_create(DARRAY_UNSORTED, 0, size_of, NULL, destroy);
     if (s->____darray == NULL)
     {
         FREE(s);
@@ -40,14 +40,13 @@ void stack_destroy(Stack *stack)
     FREE(stack);
 }
 
-void stack_destroy_with_entries(Stack *stack, void (*destructor)(void *data))
+void stack_destroy_with_entries(Stack *stack)
 {
     TRACE();
 
     if (stack == NULL)
         return;
 
-    (void)destructor;
     darray_destroy_with_entries(stack->____darray);
 
     FREE(stack);

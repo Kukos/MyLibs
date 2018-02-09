@@ -105,7 +105,6 @@ void darray_destroy(Darray *darray);
 
     PARAMS
     @IN darray - pointer darray
-    @IN desturctor -  your object destructor
 
     RETURN:
     This is a void function

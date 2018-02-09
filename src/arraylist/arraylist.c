@@ -74,6 +74,18 @@ static int __arraylist_delete_last(Arraylist *alist, bool destroy);
 */
 static int __arraylist_delete_pos(Arraylist *alist, size_t pos, bool destroy);
 
+/*
+    Destroy whole ArrayList
+
+    PARAMS
+    @IN alist - pointer to arraylist
+    @IN destroy - call destructor ?
+
+    RETURN
+    This is a void function
+*/
+static void __arraylist_destroy_with_entries(Arraylist *alist, bool destroy);
+
 ___inline___ static Arraylist_node *arraylist_node_create(  const Arraylist_node  *prev,
                                                             const Arraylist_node  *next,
                                                             const void            *data,
@@ -246,6 +258,34 @@ static int __arraylist_delete_pos(Arraylist *alist, size_t pos, bool destroy)
     return 0;
 }
 
+static void __arraylist_destroy_with_entries(Arraylist *alist, bool destroy)
+{
+    Arraylist_node *ptr;
+    Arraylist_node *next;
+
+    TRACE();
+
+    if (alist == NULL)
+        return;
+
+    ptr = alist->____head;
+
+    while (ptr != NULL)
+    {
+        next = ptr->____next;
+        if (destroy && alist->____destroy != NULL)
+            alist->____destroy(ptr->____data);
+        
+        arraylist_node_destroy(ptr);
+
+        ptr = next;
+    }
+
+    FREE(alist);
+
+    return;
+}
+
 Arraylist *arraylist_create(int size_of, void (*destroy)(void *data))
 {
     Arraylist *alist;
@@ -271,55 +311,16 @@ Arraylist *arraylist_create(int size_of, void (*destroy)(void *data))
 
 void arraylist_destroy(Arraylist *alist)
 {
-    Arraylist_node *ptr;
-    Arraylist_node *next;
-
     TRACE();
 
-    if (alist == NULL)
-        return;
-
-    ptr = alist->____head;
-
-    while (ptr != NULL)
-    {
-        next = ptr->____next;
-        arraylist_node_destroy(ptr);
-
-        ptr = next;
-    }
-
-    FREE(alist);
-
-    return;
+    __arraylist_destroy_with_entries(alist, false);
 }
 
 void arraylist_destroy_with_entries(Arraylist *alist)
 {
-    Arraylist_node *ptr;
-    Arraylist_node *next;
-
     TRACE();
 
-    if (alist == NULL)
-        return;
-
-    ptr = alist->____head;
-
-    while (ptr != NULL)
-    {
-        next = ptr->____next;
-        if (alist->____destroy != NULL)
-            alist->____destroy(ptr->____data);
-        
-        arraylist_node_destroy(ptr);
-
-        ptr = next;
-    }
-
-    FREE(alist);
-
-    return;
+    __arraylist_destroy_with_entries(alist, true);
 }
 
 int arraylist_insert_first(Arraylist *alist, const void *data)
