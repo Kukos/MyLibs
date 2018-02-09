@@ -22,6 +22,8 @@ typedef struct Fifo
     size_t      ____tail;       /* tail posiion in array */
     size_t      ____size;       /* size of allocated array */
     size_t      ____size_of;    /* size of element in array */
+
+    void        (*____destroy)(void *entry); /* data destructor */
 }Fifo;
 
 /*
@@ -30,23 +32,29 @@ typedef struct Fifo
     PARAMS
     @OUT PTR - pointer to fifo
     @IN TYPE - type of fifo
+    @IN DESTROY - your data destructor
 */
-#define FIFO_CREATE(PTR, TYPE) \
+#define FIFO_CREATE(PTR, TYPE, DESTROY) \
     do { \
-        PTR = fifo_create(sizeof(TYPE)); \
+        PTR = fifo_create(sizeof(TYPE), DESTROY); \
     } while (0)
 
 /*
     Create fifo
 
+    destructor by void * pass addr i.e in array we have MyStruct *,
+    so your destructor data = (void *)&ms
+
+
     PARAMS
     @IN size_of - size of element
+    @IN destroy - your data destructor
 
     RETURN:
     %NULL iff failure
     %Pointer to fifo iff success
 */
-Fifo *fifo_create(int size_of);
+Fifo *fifo_create(int size_of, void (*destroy)(void *entry));
 
 /*
     Destroy fifo
@@ -62,8 +70,6 @@ void fifo_destroy(Fifo *fifo);
 /*
     Destroy Fifo with all entries ( call destructor for each entries )
 
-    destructor by void * pass addr i.e in array we have MyStruct *,
-    so your destructor data = (void *)&ms
 
     PARAMS
     @IN fifo - pointer Fifo
@@ -72,7 +78,7 @@ void fifo_destroy(Fifo *fifo);
     RETURN:
     This is a void function
 */
-void fifo_destroy_with_entries(Fifo *fifo, void (*destructor)(void *data));
+void fifo_destroy_with_entries(Fifo *fifo);
 
 /*
     Insert val into queue

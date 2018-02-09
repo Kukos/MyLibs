@@ -8,7 +8,7 @@
 
 #define INIT_SIZE (size_t)1024
 
-Fifo *fifo_create(int size_of)
+Fifo *fifo_create(int size_of, void (*destroy)(void *entry))
 {
     Fifo *fifo;
 
@@ -33,6 +33,7 @@ Fifo *fifo_create(int size_of)
     fifo->____tail = 0;
     fifo->____size_of = (size_t)size_of;
     fifo->____size = INIT_SIZE;
+    fifo->____destroy = destroy;
 
     return fifo;
 }
@@ -48,30 +49,38 @@ void fifo_destroy(Fifo *fifo)
     FREE(fifo);
 }
 
-void fifo_destroy_with_entries(Fifo *fifo, void (*destructor)(void *data))
+void fifo_destroy_with_entries(Fifo *fifo)
 {
     TRACE();
 
     size_t i;
     BYTE *t;
 
-    if (fifo == NULL || destructor == NULL)
+    if (fifo == NULL)
         return;
+
+    if (fifo->____destroy == NULL)
+    {
+        FREE(fifo->____array);
+        FREE(fifo);
+
+        return;
+    }
 
     t = (BYTE *)fifo->____array;
 
     if (fifo->____head < fifo->____tail)
     {
         for (i = fifo->____head; i < fifo->____tail; ++i)
-             destructor((void *)(t + (i * fifo->____size_of)));
+             fifo->____destroy((void *)(t + (i * fifo->____size_of)));
     }
     else
     {
         for (i = fifo->____tail; i < fifo->____size; ++i)
-             destructor((void *)(t + (i * fifo->____size_of)));
+             fifo->____destroy((void *)(t + (i * fifo->____size_of)));
 
         for (i = 0; i < fifo->____head; ++i)
-             destructor((void *)(t + (i * fifo->____size_of)));
+             fifo->____destroy((void *)(t + (i * fifo->____size_of)));
     }
 
     FREE(fifo->____array);

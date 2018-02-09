@@ -26,21 +26,21 @@ test_f test_create(void)
 {
     Fifo *q;
 
-    q = fifo_create(sizeof(int));
+    q = fifo_create(sizeof(int), NULL);
     T_ERROR(q == NULL);
     T_EXPECT(fifo_get_num_entries(q), 0);
     T_EXPECT(fifo_get_data_size(q), sizeof(int));
 
     fifo_destroy(q);
 
-    q = fifo_create(sizeof(char));
+    q = fifo_create(sizeof(char), NULL);
     T_ERROR(q == NULL);
     T_EXPECT(fifo_get_num_entries(q), 0);
     T_EXPECT(fifo_get_data_size(q), sizeof(char));
 
     fifo_destroy(q);
 
-    q = fifo_create(sizeof(double));
+    q = fifo_create(sizeof(double), NULL);
     T_ERROR(q == NULL);
     T_EXPECT(fifo_get_num_entries(q), 0);
     T_EXPECT(fifo_get_data_size(q), sizeof(double));
@@ -69,7 +69,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    q[counter] = fifo_create(sizeof(char));
+    q[counter] = fifo_create(sizeof(char), NULL);
     T_ERROR(q[counter] == NULL);
     T_EXPECT(fifo_get_num_entries(q[counter]), 0);
     T_EXPECT(fifo_get_data_size(q[counter]), sizeof(char));
@@ -86,7 +86,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    q[counter] = fifo_create(sizeof(int));
+    q[counter] = fifo_create(sizeof(int), NULL);
     T_ERROR(q[counter] == NULL);
     T_EXPECT(fifo_get_num_entries(q[counter]), 0);
     T_EXPECT(fifo_get_data_size(q[counter]), sizeof(int));
@@ -103,7 +103,7 @@ test_f test_insert(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    q[counter] = fifo_create(sizeof(double));
+    q[counter] = fifo_create(sizeof(double), NULL);
     T_ERROR(q[counter] == NULL);
     T_EXPECT(fifo_get_num_entries(q[counter]), 0);
     T_EXPECT(fifo_get_data_size(q[counter]), sizeof(double));
@@ -147,7 +147,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    q[counter] = fifo_create(sizeof(char));
+    q[counter] = fifo_create(sizeof(char), NULL);
     T_ERROR(q[counter] == NULL);
     T_EXPECT(fifo_get_num_entries(q[counter]), 0);
     T_EXPECT(fifo_get_data_size(q[counter]), sizeof(char));
@@ -179,7 +179,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    q[counter] = fifo_create(sizeof(int));
+    q[counter] = fifo_create(sizeof(int), NULL);
     T_ERROR(q[counter] == NULL);
     T_EXPECT(fifo_get_num_entries(q[counter]), 0);
     T_EXPECT(fifo_get_data_size(q[counter]), sizeof(int));
@@ -210,7 +210,7 @@ test_f test_delete(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    q[counter] = fifo_create(sizeof(double));
+    q[counter] = fifo_create(sizeof(double), NULL);
     T_ERROR(q[counter] == NULL);
     T_EXPECT(fifo_get_num_entries(q[counter]), 0);
     T_EXPECT(fifo_get_data_size(q[counter]), sizeof(double));
@@ -264,7 +264,7 @@ test_f test_insert_delete(void)
     for (i = 0; i < array_size; ++i)
         t[i] = rand();
 
-    q = fifo_create(sizeof(int));
+    q = fifo_create(sizeof(int), NULL);
     T_ERROR(q == NULL);
     T_EXPECT(fifo_get_num_entries(q), 0);
     T_EXPECT(fifo_get_data_size(q), sizeof(int));
@@ -354,7 +354,7 @@ test_f test_convert_to_array(void)
     for (i = 0; i < array_size; ++i)
         t1[i] = rand();
 
-    q[counter] = fifo_create(sizeof(char));
+    q[counter] = fifo_create(sizeof(char), NULL);
     T_ERROR(q[counter] == NULL);
     T_EXPECT(fifo_get_num_entries(q[counter]), 0);
     T_EXPECT(fifo_get_data_size(q[counter]), sizeof(char));
@@ -375,7 +375,7 @@ test_f test_convert_to_array(void)
     for (i = 0; i < array_size; ++i)
         t2[i] = rand();
 
-    q[counter] = fifo_create(sizeof(int));
+    q[counter] = fifo_create(sizeof(int), NULL);
     T_ERROR(q[counter] == NULL);
     T_EXPECT(fifo_get_num_entries(q[counter]), 0);
     T_EXPECT(fifo_get_data_size(q[counter]), sizeof(int));
@@ -395,7 +395,7 @@ test_f test_convert_to_array(void)
     for (i = 0; i < array_size; ++i)
         t3[i] = rand();
 
-    q[counter] = fifo_create(sizeof(double));
+    q[counter] = fifo_create(sizeof(double), NULL);
     T_ERROR(q[counter] == NULL);
     T_EXPECT(fifo_get_num_entries(q[counter]), 0);
     T_EXPECT(fifo_get_data_size(q[counter]), sizeof(double));
@@ -429,7 +429,7 @@ test_f test_destroy_with_entries(void)
     int i;
     size_t size = BIT(10);
 
-    q = fifo_create(sizeof(MyStruct *));
+    q = fifo_create(sizeof(MyStruct *), my_struct_destroy);
     T_ERROR(q == NULL);
     T_EXPECT(fifo_get_num_entries(q), 0);
     T_EXPECT(fifo_get_data_size(q), sizeof(MyStruct *));
@@ -442,7 +442,29 @@ test_f test_destroy_with_entries(void)
         T_EXPECT(fifo_enqueue(q, (void *)&s), 0);
     }
 
-    fifo_destroy_with_entries(q, my_struct_destroy);
+    fifo_destroy_with_entries(q);
+}
+
+test_f test_delete_with_entries_without_destructor(void)
+{
+    int value;
+    Fifo *q;
+
+    int i;
+    size_t size = BIT(10);
+
+    q = fifo_create(sizeof(int), NULL);
+    T_ERROR(q == NULL);
+    T_EXPECT(fifo_get_num_entries(q), 0);
+    T_EXPECT(fifo_get_data_size(q), sizeof(int));
+
+    for (i = 0; i < size; ++i)
+    {
+        value = i + 1;
+        T_EXPECT(fifo_enqueue(q, (void *)&value), 0);
+    }
+
+    fifo_destroy_with_entries(q);
 }
 
 test_f test_empty(void)
@@ -452,7 +474,7 @@ test_f test_empty(void)
     size_t size;
     int val;
 
-    q = fifo_create(sizeof(int));
+    q = fifo_create(sizeof(int), NULL);
     T_ERROR(q == NULL);
 
     T_EXPECT(fifo_get_num_entries(q), 0);
@@ -473,6 +495,7 @@ void test(void)
     TEST(test_insert_delete());
     TEST(test_convert_to_array());
     TEST(test_destroy_with_entries());
+    TEST(test_delete_with_entries_without_destructor());
     TEST(test_empty());
 }
 
