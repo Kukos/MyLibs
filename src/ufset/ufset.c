@@ -42,23 +42,23 @@ void ufs_master_destroy(UFSMaster *master)
     FREE(master);
 }
 
-void ufs_master_destroy_with_entries(UFSMaster *master, void (*destructor)(void *data))
+void ufs_master_destroy_with_entries(UFSMaster *master)
 {
     UFset *node;
 
     TRACE();
 
-    if (master == NULL || destructor == NULL)
+    if (master == NULL)
         return;
 
     for_each_data(master->____set, Darray, node)
-        ufset_destroy_with_entries(node, destructor);
+        ufset_destroy_with_entries(node);
 
     darray_destroy(master->____set);
     FREE(master);
 }
 
-UFSentry *ufs_entry_create(const void *data, int size_of)
+UFSentry *ufs_entry_create(const void *data, int size_of, void (*destroy)(void *entry))
 {
     UFSentry *entry;
 
@@ -72,6 +72,7 @@ UFSentry *ufs_entry_create(const void *data, int size_of)
         ERROR("malloc error\n", NULL);
 
     entry->____ufs_ptr = NULL;
+    entry->____destroy = destroy;
 
     entry->____data = malloc((size_t)size_of);
     if (entry->____data == NULL)
@@ -96,14 +97,16 @@ void ufs_entry_destroy(UFSentry *entry)
     FREE(entry);
 }
 
-void ufs_entry_destroy_with_data(UFSentry *entry, void (*destructor)(void *data))
+void ufs_entry_destroy_with_data(UFSentry *entry)
 {
     TRACE();
 
-    if (entry == NULL || destructor == NULL)
+    if (entry == NULL)
         return;
 
-    destructor(entry->____data);
+    if (entry->____destroy != NULL)
+        entry->____destroy(entry->____data);
+
     ufs_entry_destroy(entry);
 }
 
@@ -149,14 +152,14 @@ void ufset_destroy(UFset *set)
     FREE(set);
 }
 
-void ufset_destroy_with_entries(UFset *set, void (*destructor)(void *data))
+void ufset_destroy_with_entries(UFset *set)
 {
     TRACE();
 
-    if (set == NULL || destructor == NULL)
+    if (set == NULL)
         return;
 
-    ufs_entry_destroy_with_data(set->____entry, destructor);
+    ufs_entry_destroy_with_data(set->____entry);
     FREE(set);
 }
 

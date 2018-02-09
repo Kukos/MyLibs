@@ -28,6 +28,7 @@ typedef struct UFSentry
 {
     void            *____data;
     struct UFset    *____ufs_ptr;
+    void            (*____destroy)(void *entry); 
 
 }UFSentry;
 
@@ -68,12 +69,11 @@ void ufs_master_destroy(UFSMaster *master);
 
     PARAMS
     @IN master - pointer to UFSMaster
-    @IN destructor - entry data destructor
 
     RETURN
     This is a void function
 */
-void ufs_master_destroy_with_entries(UFSMaster *master, void (*destructor)(void *data));
+void ufs_master_destroy_with_entries(UFSMaster *master);
 
 /*
 	Create UFS Entry
@@ -81,12 +81,13 @@ void ufs_master_destroy_with_entries(UFSMaster *master, void (*destructor)(void 
 	PARAMS
 	@IN data - addr to data
 	@IN size_of - size of data
+    @IN destriy - your data destructor or NULL
 
 	RETURN:
 	%NULL iff failure
 	%Pointer to UFS Entry iff success
 */
-UFSentry *ufs_entry_create(const void *data, int size_of);
+UFSentry *ufs_entry_create(const void *data, int size_of, void (*destroy)(void *entry));
 
 /*
 	Deallocate mem
@@ -104,12 +105,11 @@ void ufs_entry_destroy(UFSentry *entry);
 
 	PARAMS
     @IN entry - pointer to ufs entry
-    @IN destructor - data destructor
 
 	RETURN:
 	This is a void function
 */
-void ufs_entry_destroy_with_data(UFSentry *entry, void (*destructor)(void *data));
+void ufs_entry_destroy_with_data(UFSentry *entry);
 /*
     Create new UF Set with UFS Entry
 
@@ -139,12 +139,11 @@ void ufset_destroy(UFset *set);
 
     PARAMS
     @IN set - pointer to set
-    @IN destructor - entry data destructor
 
     RETURN
     This is a void function
 */
-void ufset_destroy_with_entries(UFset *set, void (*destructor)(void *data));
+void ufset_destroy_with_entries(UFset *set);
 /*
     Merge two independent set in one set
 

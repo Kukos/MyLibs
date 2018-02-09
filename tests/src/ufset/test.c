@@ -38,7 +38,7 @@ test_f test_create(void)
     T_EXPECT(ufs_master_get_hight(master), 0);
     T_EXPECT(ufs_master_get_num_entries(master), 0);
 
-    entry = ufs_entry_create((void *)&val, sizeof(int));
+    entry = ufs_entry_create((void *)&val, sizeof(int), NULL);
     T_ERROR(entry == NULL);
 
     set = ufset_create(entry, master);
@@ -70,7 +70,7 @@ test_f test_create_set(void)
 
     for (i = 0; i < size; ++i)
     {
-        entry = ufs_entry_create((void *)&val, sizeof(int));
+        entry = ufs_entry_create((void *)&val, sizeof(int), NULL);
         T_ERROR(entry == NULL);
 
         set = ufset_create(entry, master);
@@ -104,7 +104,7 @@ test_f test_destroy_with_entries(void)
     for (i = 0; i < size; ++i)
     {
         val = my_struct_create();
-        entry = ufs_entry_create((void *)&val, sizeof(MyStruct *));
+        entry = ufs_entry_create((void *)&val, sizeof(MyStruct *), my_struct_destroy);
         T_ERROR(entry == NULL);
 
         set = ufset_create(entry, master);
@@ -116,7 +116,40 @@ test_f test_destroy_with_entries(void)
         T_EXPECT(ufs_master_get_num_entries(master), i + 1);
     }
 
-    ufs_master_destroy_with_entries(master, my_struct_destroy);
+    ufs_master_destroy_with_entries(master);
+}
+
+test_f test_delete_with_entries_without_destructor(void)
+{
+    UFSMaster *master;
+    UFset *set;
+    UFSentry *entry;
+
+    int val;
+    int i;
+    int size = BIT(10);
+
+    master = ufs_master_create();
+    T_ERROR(master == NULL);
+    T_EXPECT(ufs_master_get_hight(master), 0);
+    T_EXPECT(ufs_master_get_num_entries(master), 0);
+
+    for (i = 0; i < size; ++i)
+    {
+        val = i + 1;
+        entry = ufs_entry_create((void *)&val, sizeof(int), NULL);
+        T_ERROR(entry == NULL);
+
+        set = ufset_create(entry, master);
+        T_ERROR(set == NULL);
+        T_EXPECT(ufset_get_hight(set), 1);
+        T_EXPECT(ufset_get_num_entries(set), 1);
+
+        T_EXPECT(ufs_master_get_hight(master), 1);
+        T_EXPECT(ufs_master_get_num_entries(master), i + 1);
+    }
+
+    ufs_master_destroy_with_entries(master);
 }
 
 test_f test_union(void)
@@ -136,7 +169,7 @@ test_f test_union(void)
 
     for (i = 0; i < N; ++i)
     {
-        entry[i] = ufs_entry_create((void *)&val, sizeof(int));
+        entry[i] = ufs_entry_create((void *)&val, sizeof(int), NULL);
         T_ERROR(entry[i] == NULL);
 
         set[i] = ufset_create(entry[i], master);
@@ -186,7 +219,7 @@ test_f test_find(void)
 
     for (i = 0; i < N; ++i)
     {
-        entry[i] = ufs_entry_create((void *)&val, sizeof(int));
+        entry[i] = ufs_entry_create((void *)&val, sizeof(int), NULL);
         T_ERROR(entry[i] == NULL);
 
         set[i] = ufset_create(entry[i], master);
@@ -250,6 +283,7 @@ void test(void)
     TEST(test_create());
     TEST(test_create_set());
     TEST(test_destroy_with_entries());
+    TEST(test_delete_with_entries_without_destructor());
     TEST(test_union());
     TEST(test_find());
 }
