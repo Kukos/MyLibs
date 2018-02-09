@@ -36,6 +36,7 @@ typedef struct Heap
 {
     Darray      *____darray;                     /* dynamic array for heap */
     int         (*____cmp)(const void *a, const void *b);   /* compare function */
+    void        (*____destroy)(void *entry); /* data destructor */
 
     int         ____size_of;                    /* size of data */
     int         ____ary;                        /* heap ary */
@@ -73,6 +74,18 @@ Heap_entry *heap_entry_create(const void *data, int size_of);
 void heap_entry_destroy(Heap_entry *entry);
 
 /*
+    Destroy heap entry
+
+    PARAMS
+    @IN entry - heap entry
+    @IN destructor - data destructor
+
+    RETURN:
+    This is a void function
+*/
+void heap_entry_destroy_with_data(Heap_entry *entry, void (*destructor)(void *entry));
+
+/*
     Get pos in Heap
 
     PARAMS
@@ -104,17 +117,19 @@ void *heap_entry_get_data(const Heap_entry *entry);
     @IN size_of - size_of entry
     @IN ary - heap ary >= 2
     @IN cmp - compare function
+    @IN destroy - data destructor or NULL
 
     RETURN:
     %NULL iff failure
     %pointer iff success
 */
 Heap *heap_create(heap_type type, int size_of, int ary,
-     int (*cmp)(const void *a, const void *b));
+     int (*cmp)(const void *a, const void *b),
+     void (*destroy)(void *entry));
 
-#define HEAP_CREATE(HEAP, HTYPE, DTYPE, ARY, CMP) \
+#define HEAP_CREATE(HEAP, HTYPE, DTYPE, ARY, CMP, DESTROY) \
     do { \
-        HEAP = heap_create(HTYPE, sizeof(DTYPE), ARY, CMP); \
+        HEAP = heap_create(HTYPE, sizeof(DTYPE), ARY, CMP, DESTROY); \
     } while (0);
 
 /*
@@ -133,12 +148,11 @@ void heap_destroy(Heap *heap);
 
     PARAMS
     @IN heap - pointer to heap
-    @IN destructor - your object destructor
 
     RETURN:
     This is a void function
 */
-void heap_destroy_with_entries(Heap *heap, void (*destructor)(void *data));
+void heap_destroy_with_entries(Heap *heap);
 /*
     Build heap from array
 
@@ -197,11 +211,7 @@ Heap_entry *heap_get_top(const Heap *heap);
 
 /*
     Change the key value, create before new entry with changed,
-    in heap we deallocate only ptr to data, so free your old entry
-    to avoid memory leak
-
-    if heap is minheap only decreace key can be perform
-    if heap is maxheap only increace key can be perform
+    Old entry will be destroy
 
 
     PARAMS

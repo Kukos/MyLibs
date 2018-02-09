@@ -319,6 +319,8 @@ ___inline___ static int __heap_change_key(Heap *heap, size_t index, const void *
     assert(index < (size_t)darray_get_num_entries(heap->____darray));
 
     array = (Heap_entry **)darray_get_array(heap->____darray);
+    if (heap->____destroy != NULL)
+        heap->____destroy(array[index]->____data);
 
     __ASSIGN__(*(BYTE *)array[index]->____data, *(BYTE *)new_data, heap->____size_of);
 
@@ -374,6 +376,20 @@ void heap_entry_destroy(Heap_entry *entry)
     FREE(entry);
 }
 
+void heap_entry_destroy_with_data(Heap_entry *entry, void (*destructor)(void *entry))
+{
+    TRACE();
+
+    if (entry == NULL)
+        return;
+
+    if (destructor)
+        destructor(entry->____data);
+
+    FREE(entry->____data);
+    FREE(entry);
+}
+
 ssize_t heap_entry_get_pos(const Heap_entry *entry)
 {
     TRACE();
@@ -394,7 +410,8 @@ void *heap_entry_get_data(const Heap_entry *entry)
     return entry->____data;
 }
 Heap* heap_create(heap_type type, int size_of, int ary,
-     int (*cmp)(const void *a, const void *b))
+     int (*cmp)(const void *a, const void *b),
+     void (*destroy)(void *entry))
 {
     Heap *heap;
 
@@ -420,6 +437,7 @@ Heap* heap_create(heap_type type, int size_of, int ary,
     heap->____size_of   = size_of;
     heap->____type      = type;
     heap->____ary       = ary;
+    heap->____destroy   = destroy;
     heap->____darray    = darray_create(DARRAY_UNSORTED, 0, sizeof(Heap_entry *), cmp, heap_entry_destructor);
 
     if (heap->____darray == NULL)
@@ -439,7 +457,7 @@ void heap_destroy(Heap *heap)
     FREE(heap);
 }
 
-void heap_destroy_with_entries(Heap *heap, void (*destructor)(void *data))
+void heap_destroy_with_entries(Heap *heap)
 {
     Heap_entry *entry;
 
@@ -448,11 +466,9 @@ void heap_destroy_with_entries(Heap *heap, void (*destructor)(void *data))
     if (heap == NULL)
         return;
 
-    if (destructor == NULL)
-        return;
-
-    for_each_data(heap->____darray, Darray, entry)
-        destructor(entry->____data);
+    if (heap->____destroy != NULL)
+        for_each_data(heap->____darray, Darray, entry)
+            heap->____destroy(entry->____data);
 
     darray_destroy_with_entries(heap->____darray);
     FREE(heap);
