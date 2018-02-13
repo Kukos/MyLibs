@@ -63,28 +63,28 @@ test_f test_create(void)
 {
     Bst *tree;
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
     T_EXPECT(bst_get_hight(tree), 0);
     bst_destroy(tree);
 
-    tree = bst_create(sizeof(char), cmp_char);
+    tree = bst_create(sizeof(char), cmp_char, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(char));
     T_EXPECT(bst_get_num_entries(tree), 0);
     T_EXPECT(bst_get_hight(tree), 0);
     bst_destroy(tree);
 
-    tree = bst_create(sizeof(double), cmp_double);
+    tree = bst_create(sizeof(double), cmp_double, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(double));
     T_EXPECT(bst_get_num_entries(tree), 0);
     T_EXPECT(bst_get_hight(tree), 0);
     bst_destroy(tree);
 
-    tree = bst_create(sizeof(MyStruct *), cmp_my_struct);
+    tree = bst_create(sizeof(MyStruct *), cmp_my_struct, my_struct_destroy);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(MyStruct *));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -115,7 +115,7 @@ test_f test_insert(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -160,7 +160,7 @@ test_f test_destroy_with_entries(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = bst_create(sizeof(MyStruct *), cmp_my_struct);
+    tree = bst_create(sizeof(MyStruct *), cmp_my_struct, my_struct_destroy);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(MyStruct *));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -176,7 +176,7 @@ test_f test_destroy_with_entries(void)
     T_EXPECT(correct_hight(bst_get_hight(tree), bst_get_num_entries(tree)), true);
 
     FREE(t);
-    bst_destroy_with_entries(tree, my_struct_destroy);
+    bst_destroy_with_entries(tree);
 }
 
 test_f test_insert_the_same(void)
@@ -202,7 +202,7 @@ test_f test_insert_the_same(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -258,7 +258,7 @@ test_f test_min_max(void)
     t[0] = min;
     t[1] = max;
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -312,7 +312,7 @@ test_f test_search(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -372,7 +372,7 @@ test_f test_key_exist(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -427,7 +427,7 @@ test_f test_delete(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -465,6 +465,155 @@ test_f test_delete(void)
     bst_destroy(tree);
 }
 
+test_f test_delete_with_entry(void)
+{
+    Bst *tree;
+    int *t;
+    size_t size = BIT(10);
+    size_t i;
+    size_t j;
+    size_t r;
+
+    MyStruct **rt;
+    int *keys;
+    size_t rsize;
+
+    MyStruct *ms;
+    MyStruct fake;
+    MyStruct *fake_ptr = &fake;
+
+    t = (int *)malloc(sizeof(int) * size);
+    T_ERROR(t == NULL);
+
+    for (i = 0; i < size; ++i)
+        t[i] = i + 1;
+
+    for (i = 0; i < size; ++i)
+    {
+        r = rand() % (size - i);
+        SWAP(t[r], t[size - i - 1]);
+    }
+
+    tree = bst_create(sizeof(MyStruct *), cmp_my_struct, my_struct_destroy);
+    T_ERROR(tree == NULL);
+    T_EXPECT(bst_get_data_size(tree), sizeof(MyStruct *));
+    T_EXPECT(bst_get_num_entries(tree), 0);
+
+    for (i = 0; i < size; ++i)
+    {
+        ms = my_struct_create(t[i]);
+        T_EXPECT(bst_insert(tree, (void *)&ms), 0);
+    }
+
+    sort((void *)t, size, cmp_int, sizeof(int));
+
+    T_EXPECT(bst_to_array(tree, (void *)&rt, &rsize), 0);
+    T_ASSERT(size, rsize);
+
+    keys = (int *)malloc(sizeof(int) * rsize);
+    T_ERROR(keys == NULL);
+    for (j = 0; j < rsize; ++j)
+        keys[j] = rt[j]->key;
+
+    T_EXPECT(array_equal_int(t, keys, size), true);
+
+    T_EXPECT(bst_get_data_size(tree), sizeof(MyStruct *));
+    T_EXPECT(bst_get_num_entries(tree), size);
+    T_EXPECT(correct_hight(bst_get_hight(tree), bst_get_num_entries(tree)), true);
+
+    FREE(rt);
+    FREE(keys);
+
+    for (i = 0; i < size >> 2; ++i)
+    {
+        fake_ptr ->key = t[i];
+        T_EXPECT(bst_delete_with_entry(tree, (void *)&fake_ptr), 0);
+
+        fake_ptr->key = t[i + (size >> 1) + (size >> 2)];
+        T_EXPECT(bst_delete_with_entry(tree, (void *)&fake_ptr), 0);
+    }
+
+    T_EXPECT(bst_get_data_size(tree), sizeof(MyStruct *));
+    T_EXPECT(bst_get_num_entries(tree), size >> 1);
+
+    T_EXPECT(bst_to_array(tree, (void *)&rt, &rsize), 0);
+    T_ASSERT(size >> 1, rsize);
+
+    keys = (int *)malloc(sizeof(int) * rsize);
+    T_ERROR(keys == NULL);
+    for (j = 0; j < rsize; ++j)
+        keys[j] = rt[j]->key;
+
+    T_EXPECT(array_equal_int(t + (size >> 2), keys, size >> 1), true);
+
+    FREE(rt);
+    FREE(keys);
+    FREE(t);
+
+    bst_destroy_with_entries(tree);
+}
+
+test_f test_delete_with_entry_wo_destr(void)
+{
+    Bst *tree;
+    int *t;
+    size_t size = BIT(10);
+    size_t i;
+    size_t r;
+
+    int *rt;
+    size_t rsize;
+
+    t = (int *)malloc(sizeof(int) * size);
+    T_ERROR(t == NULL);
+
+    for (i = 0; i < size; ++i)
+        t[i] = i + 1;
+
+    for (i = 0; i < size; ++i)
+    {
+        r = rand() % (size - i);
+        SWAP(t[r], t[size - i - 1]);
+    }
+
+    tree = bst_create(sizeof(int), cmp_int, NULL);
+    T_ERROR(tree == NULL);
+    T_EXPECT(bst_get_data_size(tree), sizeof(int));
+    T_EXPECT(bst_get_num_entries(tree), 0);
+
+    for (i = 0; i < size; ++i)
+        T_EXPECT(bst_insert(tree, (void *)&t[i]), 0);
+
+    sort((void *)t, size, cmp_int, sizeof(int));
+
+    T_EXPECT(bst_to_array(tree, (void *)&rt, &rsize), 0);
+    T_ASSERT(size, rsize);
+    T_EXPECT(array_equal_int(t, rt, size), true);
+
+    T_EXPECT(bst_get_data_size(tree), sizeof(int));
+    T_EXPECT(bst_get_num_entries(tree), size);
+    T_EXPECT(correct_hight(bst_get_hight(tree), bst_get_num_entries(tree)), true);
+
+    FREE(rt);
+
+    for (i = 0; i < size >> 2; ++i)
+    {
+        T_EXPECT(bst_delete_with_entry(tree, (void *)&t[i]), 0);
+        T_EXPECT(bst_delete_with_entry(tree, (void *)&t[i + (size >> 1) + (size >> 2)]), 0);
+    }
+
+    T_EXPECT(bst_get_data_size(tree), sizeof(int));
+    T_EXPECT(bst_get_num_entries(tree), size >> 1);
+
+    T_EXPECT(bst_to_array(tree, (void *)&rt, &rsize), 0);
+    T_ASSERT(size >> 1, rsize);
+    T_EXPECT(array_equal_int(t + (size >> 2), rt, size >> 1), true);
+
+    FREE(rt);
+    FREE(t);
+    bst_destroy_with_entries(tree);
+}
+
 test_f test_delete_the_same(void)
 {
     Bst *tree;
@@ -488,7 +637,7 @@ test_f test_delete_the_same(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -555,7 +704,7 @@ test_f test_insert_delete(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -633,7 +782,7 @@ test_f test_balance(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -681,7 +830,7 @@ test_f test_balance_line(void)
     for (i = 0; i < size; ++i)
         t[i] = i + 1;
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -718,7 +867,7 @@ test_f test_empty(void)
     int *t;
     size_t size;
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
 
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
@@ -727,6 +876,7 @@ test_f test_empty(void)
     T_CHECK(bst_min(tree, (void *)&dummy) != 0);
     T_CHECK(bst_max(tree, (void *)&dummy) != 0);
     T_CHECK(bst_delete(tree, (void *)&dummy) != 0);
+    T_CHECK(bst_delete_with_entry(tree, (void *)&dummy) != 0);
     T_EXPECT(bst_key_exist(tree, (void *)&dummy), false);
     T_CHECK(bst_search(tree, (void *)&dummy, (void *)&dummy) != 0);
     T_CHECK(bst_to_array(tree, (void *)&t, &size) != 0);
@@ -762,7 +912,7 @@ test_f test_for_each(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -847,7 +997,7 @@ test_f test_empty_for_each(void)
     int val;
     Bst_node *node;
 
-    tree = bst_create(sizeof(int), cmp_int);
+    tree = bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(bst_get_data_size(tree), sizeof(int));
     T_EXPECT(bst_get_num_entries(tree), 0);
@@ -939,7 +1089,7 @@ test_f test_tree_framework(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = tree_bst_create(sizeof(int), cmp_int);
+    tree = tree_bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(tree_get_data_size(tree), sizeof(int));
     T_EXPECT(tree_get_num_entries(tree), 0);
@@ -986,7 +1136,7 @@ test_f test_tree_framework(void)
     FREE(rt);
     tree_destroy(tree);
 
-    tree = tree_bst_create(sizeof(MyStruct *), cmp_my_struct);
+    tree = tree_bst_create(sizeof(MyStruct *), cmp_my_struct, my_struct_destroy);
     T_ERROR(tree == NULL);
     T_EXPECT(tree_get_data_size(tree), sizeof(MyStruct *));
     T_EXPECT(tree_get_num_entries(tree), 0);
@@ -997,7 +1147,7 @@ test_f test_tree_framework(void)
         T_EXPECT(tree_insert(tree, (void *)&s), 0);
     }
 
-    tree_destroy_with_entries(tree, my_struct_destroy);
+    tree_destroy_with_entries(tree);
 }
 
 test_f test_tree_empty(void)
@@ -1007,7 +1157,7 @@ test_f test_tree_empty(void)
     int *t;
     size_t size;
 
-    tree = tree_bst_create(sizeof(int), cmp_int);
+    tree = tree_bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
 
     T_EXPECT(tree_get_data_size(tree), sizeof(int));
@@ -1016,6 +1166,7 @@ test_f test_tree_empty(void)
     T_CHECK(tree_min(tree, (void *)&dummy) != 0);
     T_CHECK(tree_max(tree, (void *)&dummy) != 0);
     T_CHECK(tree_delete(tree, (void *)&dummy) != 0);
+    T_CHECK(tree_delete_with_entry(tree, (void *)&dummy) != 0);
     T_EXPECT(tree_key_exist(tree, (void *)&dummy), false);
     T_CHECK(tree_search(tree, (void *)&dummy, (void *)&dummy) != 0);
     T_CHECK(tree_to_array(tree, (void *)&t, &size) != 0);
@@ -1050,7 +1201,7 @@ test_f test_tree_for_each(void)
         SWAP(t[r], t[size - i - 1]);
     }
 
-    tree = tree_bst_create(sizeof(int), cmp_int);
+    tree = tree_bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(tree_get_data_size(tree), sizeof(int));
     T_EXPECT(tree_get_num_entries(tree), 0);
@@ -1135,7 +1286,7 @@ test_f test_tree_empty_for_each(void)
     int val;
     Bst_node *node;
 
-    tree = tree_bst_create(sizeof(int), cmp_int);
+    tree = tree_bst_create(sizeof(int), cmp_int, NULL);
     T_ERROR(tree == NULL);
     T_EXPECT(tree_get_data_size(tree), sizeof(int));
     T_EXPECT(tree_get_num_entries(tree), 0);
@@ -1205,6 +1356,8 @@ void test(void)
     TEST(test_key_exist());
     TEST(test_search());
     TEST(test_delete());
+    TEST(test_delete_with_entry());
+    TEST(test_delete_with_entry_wo_destr());
     TEST(test_delete_the_same());
     TEST(test_insert_delete());
     TEST(test_balance());

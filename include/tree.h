@@ -48,9 +48,10 @@ typedef struct Tree
 
     /* private functions */
     void        (*____destroy)(void *tree);
-    void        (*____destroy_with_entries)(void *tree, void (*destructor)(void *data));
+    void        (*____destroy_with_entries)(void *tree);
     int         (*____insert)(void *tree, const void *data);
     int         (*____delete)(void *tree, const void *data);
+    int         (*____delete_with_entry)(void *tree, const void *data);
     int         (*____min)(const void *tree, void *data);
     int         (*____max)(const void *tree, void *data);
     int         (*____search)(const void *tree, const void *data_in, void *data_out);
@@ -104,9 +105,10 @@ ___inline___ int tree_iterator_init(const Tree *tree, Tree_iterator *it, iti_mod
 #define TREE_WRAPPERS_CREATE(type, prefix) \
     TREE_ITERATOR_WRAPPERS_CREATE(concat(type, _iterator), concat(prefix, _iterator)) \
     static ___unused___ void ____destroy(void *tree); \
-    static ___unused___ void ____destroy_with_entries(void *tree, void (*destructor)(void *data)); \
+    static ___unused___ void ____destroy_with_entries(void *tree); \
     static ___unused___ int ____insert(void *tree, const void *data); \
     static ___unused___ int ____delete(void *tree, const void *data); \
+    static ___unused___ int ____delete_with_entry(void *tree, const void *data); \
     static ___unused___ int ____min(const void *tree, void *data); \
     static ___unused___ int ____max(const void *tree, void *data); \
     static ___unused___ int ____search(const void *tree, const void *data_in, void *data_out); \
@@ -121,9 +123,9 @@ ___inline___ int tree_iterator_init(const Tree *tree, Tree_iterator *it, iti_mod
         concat(prefix, _destroy)((type *)tree); \
     } \
     \
-    static ___unused___ void ____destroy_with_entries(void *tree, void (*destructor)(void *data)) \
+    static ___unused___ void ____destroy_with_entries(void *tree) \
     { \
-        concat(prefix, _destroy_with_entries)((type *)tree, destructor); \
+        concat(prefix, _destroy_with_entries)((type *)tree); \
     } \
     \
     static ___unused___ int ____insert(void *tree, const void *data) \
@@ -134,6 +136,11 @@ ___inline___ int tree_iterator_init(const Tree *tree, Tree_iterator *it, iti_mod
     static ___unused___ int ____delete(void *tree, const void *data) \
     { \
         return concat(prefix, _delete)((type *)tree, data); \
+    } \
+    \
+    static ___unused___ int ____delete_with_entry(void *tree, const void *data) \
+    { \
+        return concat(prefix, _delete_with_entry)((type *)tree, data); \
     } \
     \
     static ___unused___ int ____min(const void *tree, void *data) \
@@ -186,6 +193,7 @@ ___inline___ int tree_iterator_init(const Tree *tree, Tree_iterator *it, iti_mod
         (tree)->____destroy_with_entries  = ____destroy_with_entries; \
         (tree)->____insert                = ____insert; \
         (tree)->____delete                = ____delete; \
+        (tree)->____delete_with_entry     = ____delete_with_entry; \
         (tree)->____min                   = ____min; \
         (tree)->____max                   = ____max; \
         (tree)->____search                = ____search; \
@@ -232,12 +240,11 @@ ___inline___ void tree_destroy(Tree *tree);
 
     PARAMS
     @IN tree - pointer to Tree
-    @IN destructor - destructor
 
     RETURN:
     This is a void function
 */
-___inline___ void tree_destroy_with_entries(Tree *tree, void (*destructor)(void *data));
+___inline___ void tree_destroy_with_entries(Tree *tree);
 
 /*
     Insert new data to Tree
@@ -264,6 +271,20 @@ ___inline___ int tree_insert(Tree *tree, const void *data);
     Non-zero value iff failed
 */
 ___inline___ int tree_delete(Tree *tree, const void *data);
+
+
+/*
+    Delete data from Tree and call destructor
+
+    PARAMS
+    @IN tree - pointer to Tree
+    @IN data - address of data
+
+    RETURN:
+    0 iff success
+    Non-zero value iff failed
+*/
+___inline___ int tree_delete_with_entry(Tree *tree, const void *data);
 
 /*
     Get data with min key
@@ -398,12 +419,12 @@ ___inline___ void tree_destroy(Tree *tree)
     FREE(tree);
 }
 
-___inline___ void tree_destroy_with_entries(Tree *tree, void (*destructor)(void *data))
+___inline___ void tree_destroy_with_entries(Tree *tree)
 {
     if (tree == NULL)
         return;
 
-    tree->____destroy_with_entries(tree_get_tree(tree), destructor);
+    tree->____destroy_with_entries(tree_get_tree(tree));
     FREE(tree);
 }
 
@@ -422,6 +443,14 @@ ___inline___ int tree_delete(Tree *tree, const void *data)
         return 1;
 
     return tree->____delete(tree_get_tree(tree), data);
+}
+
+___inline___ int tree_delete_with_entry(Tree *tree, const void *data)
+{
+    if (tree == NULL || data == NULL)
+        return 1;
+
+    return tree->____delete_with_entry(tree_get_tree(tree), data);
 }
 
 ___inline___ int tree_min(const Tree *tree, void *data)

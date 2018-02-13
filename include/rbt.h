@@ -45,6 +45,7 @@ typedef struct Rbt
     size_t      ____size_of;
 
     int (*____cmp)(const void *a, const void *b);
+    void (*____destroy)(void *entry);
 }Rbt;
 
 IT_FUNC(Rbt, rbt)
@@ -52,32 +53,40 @@ IT_FUNC(Rbt, rbt)
 /*
     Create RBT as TREE
 
+    destructor by void * pass addr i.e in list we have MyStruct *,
+    so your destructor data = (void *)&ms
+
     PARAMS
     @IN size_of - size_of data in tree
     @IN cmp - cmp function
+    @IN destroy - your data destructor
 
     RETURN:
     NULL iff failure
     Pointer to RBT iff success
 */
-Tree *tree_rbt_create(int size_of, int (*cmp)(const void* a, const void *b));
+Tree *tree_rbt_create(int size_of, int (*cmp)(const void* a, const void *b), void (*destroy)(void *entry));
 
 /*
     Create RBT
 
+    destructor by void * pass addr i.e in list we have MyStruct *,
+    so your destructor data = (void *)&ms
+
     PARAMS
     @IN size_of - size_of data in tree
     @IN cmp - cmp function
+    @IN destroy - your data destructor
 
     RETURN:
     NULL iff failure
     Pointer to RBT iff success
 */
-Rbt* rbt_create(int size_of,int (*cmp)(const void *a, const void *b));
+Rbt* rbt_create(int size_of,int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
-#define RBT_CREATE(PTR, TYPE, CMP) \
+#define RBT_CREATE(PTR, TYPE, CMP, DESTROY) \
     do { \
-        PTR = rbt_create(sizeof(TYPE), CMP); \
+        PTR = rbt_create(sizeof(TYPE), CMP, DESTROY); \
     } while (0)
 
 /*
@@ -94,17 +103,13 @@ void rbt_destroy(Rbt *tree);
 /*
     Destroy RBT with all entries ( call destructor for each entries )
 
-    destructor by void * pass addr i.e in list we have MyStruct *,
-    so your destructor data = (void *)&ms
-
     PARAMS
     @IN tree - pointer to RBT
-    @IN destructor -  your object destructor
 
     RETURN:
     This is a void function
 */
-void rbt_destroy_with_entries(Rbt *tree, void (*destructor)(void *data));
+void rbt_destroy_with_entries(Rbt *tree);
 
 /*
     Insert data to RBT IFF data with key ( using cmp ) is not in tree
@@ -184,6 +189,20 @@ int rbt_max(const Rbt *tree, void *data);
     Non-zero value iff failure
 */
 int rbt_delete(Rbt *tree, const void *data_key);
+
+/*
+    Delete data with key equals @data_key ( using cmp )
+    and call destructor
+
+    PARAMS
+    @IN tree - pointer to tree
+    @IN data_key = addr of data with key to delete
+
+    RETURN:
+    0 iff success
+    Non-zero value iff failure
+*/
+int rbt_delete_with_entry(Rbt *tree, const void *data_key);
 
 /*
     Convert rbt to sorted array

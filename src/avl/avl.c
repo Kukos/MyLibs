@@ -193,6 +193,32 @@ static int avl_balance(Avl *tree);
 */
 static int __avl_rek_get_hight(const Avl_node *node);
 
+/*
+    Destroy whole AVL tree
+
+    PARAMS
+    @IN tree - ptr to Tree
+    @IN destroy - call destructor ?
+
+    RETURN
+    This is a void function
+*/
+static void __avl_destroy(Avl *tree, bool destroy);
+
+/*
+    Delete entry equal to key @data_key
+
+    PARAMS
+    @IN tree - pointer to Avl
+    @IN data_key - fake data with real key
+    @IN destroy - call destructor ?
+
+    RETURN
+    0 iff success
+    Non-zero value iff failure
+*/
+static int __avl_delete(Avl *tree, const void *data_key, bool destroy);
+
 static int avl_balance(Avl *tree)
 {
     TRACE();
@@ -769,32 +795,7 @@ static int __avl_rek_get_hight(const Avl_node *node)
     return MAX(left, right) + 1;
 }
 
-Avl *avl_create(int size_of, int (*cmp)(const void *a, const void *b))
-{
-    Avl *tree;
-
-    if (size_of < 1)
-        ERROR("size_of < 1\n", NULL);
-
-    if (cmp == NULL)
-        ERROR("cmp == NULL\n", NULL);
-
-    TRACE();
-
-    tree = (Avl *)malloc(sizeof(Avl));
-    if (tree == NULL)
-        ERROR("malloc error\n", NULL);
-
-    tree->____root = NULL;
-    tree->____size_of = (size_t)size_of;
-    tree->____cmp = cmp;
-
-    tree->____nodes = 0;
-
-    return tree;
-}
-
-void avl_destroy(Avl *tree)
+static void __avl_destroy(Avl *tree, bool destroy)
 {
     Avl_node *node;
     Avl_node *temp;
@@ -803,6 +804,7 @@ void avl_destroy(Avl *tree)
 
     if (tree == NULL)
         return;
+
 
     if (tree->____root == NULL)
     {
@@ -816,106 +818,17 @@ void avl_destroy(Avl *tree)
     {
         temp = node;
         node = avl_successor(node);
+
+        if (destroy && tree->____destroy != NULL)
+            tree->____destroy(temp->____data);
+
         avl_node_destroy(temp);
     }
 
     FREE(tree);
 }
 
-void avl_destroy_with_entries(Avl *tree, void (*destructor)(void *data))
-{
-    Avl_node *node;
-    Avl_node *temp;
-
-    TRACE();
-
-    if (tree == NULL)
-        return;
-
-    if (destructor == NULL)
-        return;
-
-    if (tree->____root == NULL)
-    {
-        FREE(tree);
-        return;
-    }
-
-    /* destroy tree using inorder */
-    node = avl_min_node(tree->____root);
-    while(node != NULL)
-    {
-        temp = node;
-        node = avl_successor(node);
-        destructor(temp->____data);
-        avl_node_destroy(temp);
-    }
-
-    FREE(tree);
-}
-
-int avl_insert(Avl *tree, const void *data)
-{
-    Avl_node *node;
-    Avl_node *parent;
-    Avl_node *new_node;
-
-    TRACE();
-
-    if (tree == NULL)
-        ERROR("tree == NULL\n", 1);
-
-    if (data == NULL)
-        ERROR("data == NULL\n", 1);
-
-    /* special case - empty tree */
-    if (tree->____root == NULL)
-    {
-        node = avl_node_create(data, (int)tree->____size_of, NULL);
-		if (node == NULL)
-			ERROR("avl_node_create error\n", 1);
-
-        tree->____root = node;
-    }
-    else
-    {
-         parent = NULL;
-         node = tree->____root;
-
-        /* find correct place to insert */
-        while (node != NULL)
-        {
-            parent = node;
-            if (tree->____cmp(node->____data, data) == 0) /* data exists in tree */
-            {
-                return 1;
-            }
-            else if (tree->____cmp(node->____data, data) > 0)
-                node = node->____left_son;
-            else
-                node = node->____right_son;
-        }
-
-        new_node = avl_node_create(data, (int)tree->____size_of, parent);
-		if (new_node == NULL)
-			ERROR("avl_node_create error\n", 1);
-
-        /* new node is the right son */
-        if (tree->____cmp(new_node->____data, parent->____data) > 0)
-            parent->____right_son = new_node;
-        else /* new_node is the left_node */
-            parent->____left_son = new_node;
-
-        if (avl_insert_fixup(tree, new_node))
-            ERROR("avl_insert_fixup error\n", 1);
-    }
-
-    ++tree->____nodes;
-
-    return 0;
-}
-
-int avl_delete(Avl *tree, const void *data_key)
+static int __avl_delete(Avl *tree, const void *data_key, bool destroy)
 {
     Avl_node *node;
     Avl_node *temp;
@@ -1039,9 +952,128 @@ int avl_delete(Avl *tree, const void *data_key)
 
     --tree->____nodes;
 
+    if (destroy && tree->____destroy != NULL)
+        tree->____destroy(node->____data);
+
     avl_node_destroy(node);
 
     return 0;
+}
+
+
+Avl *avl_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
+{
+    Avl *tree;
+
+    if (size_of < 1)
+        ERROR("size_of < 1\n", NULL);
+
+    if (cmp == NULL)
+        ERROR("cmp == NULL\n", NULL);
+
+    TRACE();
+
+    tree = (Avl *)malloc(sizeof(Avl));
+    if (tree == NULL)
+        ERROR("malloc error\n", NULL);
+
+    tree->____root = NULL;
+    tree->____size_of = (size_t)size_of;
+    tree->____cmp = cmp;
+    tree->____destroy = destroy;
+
+    tree->____nodes = 0;
+
+    return tree;
+}
+
+void avl_destroy(Avl *tree)
+{
+    TRACE();
+
+    __avl_destroy(tree, false);
+}
+
+void avl_destroy_with_entries(Avl *tree)
+{
+    TRACE();
+
+    __avl_destroy(tree, true);
+}
+
+int avl_insert(Avl *tree, const void *data)
+{
+    Avl_node *node;
+    Avl_node *parent;
+    Avl_node *new_node;
+
+    TRACE();
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1);
+
+    if (data == NULL)
+        ERROR("data == NULL\n", 1);
+
+    /* special case - empty tree */
+    if (tree->____root == NULL)
+    {
+        node = avl_node_create(data, (int)tree->____size_of, NULL);
+		if (node == NULL)
+			ERROR("avl_node_create error\n", 1);
+
+        tree->____root = node;
+    }
+    else
+    {
+         parent = NULL;
+         node = tree->____root;
+
+        /* find correct place to insert */
+        while (node != NULL)
+        {
+            parent = node;
+            if (tree->____cmp(node->____data, data) == 0) /* data exists in tree */
+            {
+                return 1;
+            }
+            else if (tree->____cmp(node->____data, data) > 0)
+                node = node->____left_son;
+            else
+                node = node->____right_son;
+        }
+
+        new_node = avl_node_create(data, (int)tree->____size_of, parent);
+		if (new_node == NULL)
+			ERROR("avl_node_create error\n", 1);
+
+        /* new node is the right son */
+        if (tree->____cmp(new_node->____data, parent->____data) > 0)
+            parent->____right_son = new_node;
+        else /* new_node is the left_node */
+            parent->____left_son = new_node;
+
+        if (avl_insert_fixup(tree, new_node))
+            ERROR("avl_insert_fixup error\n", 1);
+    }
+
+    ++tree->____nodes;
+
+    return 0;
+}
+
+int avl_delete(Avl *tree, const void *data_key)
+{
+    TRACE();
+
+    return __avl_delete(tree, data_key, false);
+}
+
+int avl_delete_with_entry(Avl *tree, const void *data_key)
+{
+    TRACE();
+
+    return __avl_delete(tree, data_key, true);
 }
 
 int avl_min(const Avl *tree, void *data)
@@ -1350,7 +1382,7 @@ bool avl_iterator_end(const Avl_iterator *iterator)
 
 TREE_WRAPPERS_CREATE(Avl, avl)
 
-Tree *tree_avl_create(int size_of, int (*cmp)(const void *a, const void *b))
+Tree *tree_avl_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
 {
     Tree *tree;
 
@@ -1362,7 +1394,7 @@ Tree *tree_avl_create(int size_of, int (*cmp)(const void *a, const void *b))
         ERROR("malloc error\n", NULL);
 
     /* create avl */
-    tree->____tree = (void *)avl_create(size_of, cmp);
+    tree->____tree = (void *)avl_create(size_of, cmp, destroy);
     if (tree->____tree == NULL)
     {
         FREE(tree);

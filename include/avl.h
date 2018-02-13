@@ -45,6 +45,7 @@ typedef struct Avl
     size_t      ____size_of;
 
     int (*____cmp)(const void *a, const void *b);
+    void (*____destroy)(void *entry);
 }Avl;
 
 IT_FUNC(Avl, avl)
@@ -52,32 +53,40 @@ IT_FUNC(Avl, avl)
 /*
     Create AVL as TREE
 
+    destructor by void * pass addr i.e in list we have MyStruct *,
+    so your destructor data = (void *)&ms
+
     PARAMS
     @IN size_of - size_of data in tree
     @IN cmp - cmp function
+    @IN destroy - your data destructor
 
     RETURN:
     NULL iff failure
     Pointer to Tree iff success
 */
-Tree *tree_avl_create(int size_of, int (*cmp)(const void *a, const void *b));
+Tree *tree_avl_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
 /*
     Create AVL
 
+    destructor by void * pass addr i.e in list we have MyStruct *,
+    so your destructor data = (void *)&ms
+
     PARAMS
     @IN size_of - size_of data in tree
     @IN cmp - cmp function
+    @IN destroy - your data destructor
 
     RETURN:
     NULL iff failure
     Pointer to Avl iff success
 */
-Avl *avl_create(int size_of, int (*cmp)(const void *a, const void *b));
+Avl *avl_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
-#define AVL_CREATE(PTR,TYPE,CMP) \
+#define AVL_CREATE(PTR,TYPE,CMP, DESTROY) \
     do { \
-        PTR = avl_create(sizeof(TYPE), CMP); \
+        PTR = avl_create(sizeof(TYPE), CMP, DESTROY); \
     } while (0)
 
 /*
@@ -94,17 +103,13 @@ void avl_destroy(Avl *tree);
 /*
     Destroy AVL with all entries ( call destructor for each entries )
 
-    destructor by void * pass addr i.e in list we have MyStruct *,
-    so your destructor data = (void *)&ms
-
     PARAMS
     @IN tree - pointer to AVL
-    @IN destructor -  your object destructor
 
     RETURN:
     This is a void function
 */
-void avl_destroy_with_entries(Avl *tree, void (*destructor)(void *data));
+void avl_destroy_with_entries(Avl *tree);
 
 /*
     Insert data to AVL IFF data with key ( using cmp ) is not in tree
@@ -184,6 +189,20 @@ int avl_max(const Avl *tree, void *data);
     Non-zero value iff failure
 */
 int avl_delete(Avl *tree, const void *data_key);
+
+/*
+    Delete data with key equals @data_key ( using cmp )
+    and call destructor
+
+    PARAMS
+    @IN tree - pointer to tree
+    @IN data_key = addr of data with key to delete
+
+    RETURN:
+    0 iff success
+    Non-zero value iff failure
+*/
+int avl_delete_with_entry(Avl *tree, const void *data_key);
 
 /*
     Convert bst to sorted array

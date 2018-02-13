@@ -182,6 +182,32 @@ static int rbt_balance(Rbt *tree);
 */
 static int __rbt_rek_get_hight(const Rbt_node *node);
 
+/*
+    Destroy whole RBT
+
+    PARAMS
+    @IN tree - ptr to Rbt
+    @IN destroy - call destructor ?
+
+    RETURN
+    This is a void function
+*/
+static void __rbt_destroy(Rbt *tree, bool destroy);
+
+/*
+    Delete entry with key equal to @data_key
+
+    PARAMS
+    @IN tree - ptr to Rbt
+    @IN data_key - fake data with real key
+    @IN destroy - call destructor ?
+
+    RETURN
+    0 iff success
+    Non-zero value iff failure
+*/
+static int __rbt_delete(Rbt *tree, const void *data_key, bool destroy);
+
 ___inline___ static Rbt_node *rbt_node_create(const void *data, int size_of, const Rbt_node *parent)
 {
     Rbt_node *node;
@@ -590,32 +616,7 @@ static int __rbt_rek_get_hight(const Rbt_node *node)
     return MAX(left, right) + 1;
 }
 
-Rbt* rbt_create(int size_of, int (*cmp)(const void *a, const void *b))
-{
-    Rbt *tree;
-
-    TRACE();
-
-    if (size_of < 1)
-        ERROR("size_of < 1\n", NULL);
-
-    if (cmp == NULL)
-        ERROR("cmp == NULL\n", NULL);
-
-    tree = (Rbt *)malloc(sizeof(Rbt));
-    if (tree == NULL)
-        ERROR("malloc error\n", NULL);
-
-    tree->____root = sentinel;
-    tree->____size_of = (size_t)size_of;
-    tree->____cmp = cmp;
-
-    tree->____nodes = 0;
-
-    return tree;
-}
-
-void rbt_destroy(Rbt *tree)
+static void __rbt_destroy(Rbt *tree, bool destroy)
 {
     Rbt_node *node;
     Rbt_node *temp;
@@ -637,107 +638,17 @@ void rbt_destroy(Rbt *tree)
     {
         temp = node;
         node = rbt_successor(node);
+
+        if (destroy && tree->____destroy)
+            tree->____destroy(temp->____data);
+        
         rbt_node_destroy(temp);
     }
 
     FREE(tree);
 }
 
-void rbt_destroy_with_entries(Rbt *tree, void (*destructor)(void *data))
-{
-    Rbt_node *node;
-    Rbt_node *temp;
-
-    TRACE();
-
-    if (tree == NULL)
-        return;
-
-    if (destructor == NULL)
-        return;
-
-    if (tree->____root == NULL || tree->____root == sentinel)
-    {
-        FREE(tree);
-        return;
-    }
-
-    /* destroy tree using inorder */
-    node = rbt_min_node(tree->____root);
-    while (node != sentinel && node != NULL)
-    {
-        temp = node;
-        node = rbt_successor(node);
-        destructor(temp->____data);
-        rbt_node_destroy(temp);
-    }
-
-    FREE(tree);
-}
-
-int rbt_insert(Rbt *tree, const void *data)
-{
-    Rbt_node *node;
-    Rbt_node *parent;
-    Rbt_node *new_node;
-
-    TRACE();
-
-    if (tree == NULL)
-        ERROR("tree == NULL\n", 1);
-
-    if (data == NULL)
-        ERROR("data == NULL\n", 1);
-
-    /* special case - empty tree */
-    if (tree->____root == sentinel)
-    {
-        node = rbt_node_create(data, (int)tree->____size_of, sentinel);
-		if (node == NULL)
-			ERROR("rbt_node_create\n", 1);
-
-        /* root is always black */
-        node->____color = RBT_BLACK;
-        tree->____root = node;
-    }
-    else
-    {
-         parent = sentinel;
-         node = tree->____root;
-
-        /* find correct place to insert */
-        while (node != sentinel)
-        {
-            parent = node;
-            if (tree->____cmp(node->____data, data) == 0) /* data exists in tree */
-            {
-                return 1;
-            }
-            else if (tree->____cmp(node->____data, data) > 0)
-                node = node->____left_son;
-            else
-                node = node->____right_son;
-        }
-
-        new_node = rbt_node_create(data, (int)tree->____size_of, parent);
-		if (new_node == NULL)
-			ERROR("rbt_node_create\n", 1);
-
-        /* new node is the right son */
-        if (tree->____cmp(new_node->____data, parent->____data) > 0)
-            parent->____right_son = new_node;
-        else /* new_node is the left_node */
-            parent->____left_son = new_node;
-
-        if (rbt_insert_fixup(tree, new_node))
-            ERROR("rbt_insert_fixup error\n", 1);
-    }
-
-    ++tree->____nodes;
-    return 0;
-}
-
-int rbt_delete(Rbt *tree, const void *data_key)
+static int __rbt_delete(Rbt *tree, const void *data_key, bool destroy)
 {
     Rbt_node *node;
     Rbt_node *temp;
@@ -865,9 +776,128 @@ int rbt_delete(Rbt *tree, const void *data_key)
         if (rbt_delete_fixup(tree,temp))
             ERROR("rbt_delete_fixup error\n", 1);
 
+    if (destroy && tree->____destroy != NULL)
+        tree->____destroy(node->____data);
+        
     rbt_node_destroy(node);
 
     return 0;
+}
+
+Rbt* rbt_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
+{
+    Rbt *tree;
+
+    TRACE();
+
+    if (size_of < 1)
+        ERROR("size_of < 1\n", NULL);
+
+    if (cmp == NULL)
+        ERROR("cmp == NULL\n", NULL);
+
+    tree = (Rbt *)malloc(sizeof(Rbt));
+    if (tree == NULL)
+        ERROR("malloc error\n", NULL);
+
+    tree->____root = sentinel;
+    tree->____size_of = (size_t)size_of;
+    tree->____cmp = cmp;
+    tree->____destroy = destroy;
+
+    tree->____nodes = 0;
+
+    return tree;
+}
+
+void rbt_destroy(Rbt *tree)
+{
+    TRACE();
+
+    __rbt_destroy(tree, false);
+}
+
+void rbt_destroy_with_entries(Rbt *tree)
+{
+    TRACE();
+
+    __rbt_destroy(tree, true);
+}
+
+int rbt_insert(Rbt *tree, const void *data)
+{
+    Rbt_node *node;
+    Rbt_node *parent;
+    Rbt_node *new_node;
+
+    TRACE();
+
+    if (tree == NULL)
+        ERROR("tree == NULL\n", 1);
+
+    if (data == NULL)
+        ERROR("data == NULL\n", 1);
+
+    /* special case - empty tree */
+    if (tree->____root == sentinel)
+    {
+        node = rbt_node_create(data, (int)tree->____size_of, sentinel);
+		if (node == NULL)
+			ERROR("rbt_node_create\n", 1);
+
+        /* root is always black */
+        node->____color = RBT_BLACK;
+        tree->____root = node;
+    }
+    else
+    {
+         parent = sentinel;
+         node = tree->____root;
+
+        /* find correct place to insert */
+        while (node != sentinel)
+        {
+            parent = node;
+            if (tree->____cmp(node->____data, data) == 0) /* data exists in tree */
+            {
+                return 1;
+            }
+            else if (tree->____cmp(node->____data, data) > 0)
+                node = node->____left_son;
+            else
+                node = node->____right_son;
+        }
+
+        new_node = rbt_node_create(data, (int)tree->____size_of, parent);
+		if (new_node == NULL)
+			ERROR("rbt_node_create\n", 1);
+
+        /* new node is the right son */
+        if (tree->____cmp(new_node->____data, parent->____data) > 0)
+            parent->____right_son = new_node;
+        else /* new_node is the left_node */
+            parent->____left_son = new_node;
+
+        if (rbt_insert_fixup(tree, new_node))
+            ERROR("rbt_insert_fixup error\n", 1);
+    }
+
+    ++tree->____nodes;
+    return 0;
+}
+
+int rbt_delete(Rbt *tree, const void *data_key)
+{
+    TRACE();
+
+    return __rbt_delete(tree, data_key, false);
+}
+
+int rbt_delete_with_entry(Rbt *tree, const void *data_key)
+{
+    TRACE();
+
+    return __rbt_delete(tree, data_key, true);
 }
 
 int rbt_min(const Rbt *tree, void *data)
@@ -1191,7 +1221,7 @@ bool rbt_iterator_end(const Rbt_iterator *iterator)
 
 TREE_WRAPPERS_CREATE(Rbt, rbt)
 
-Tree *tree_rbt_create(int size_of, int (*cmp)(const void *a, const void *b))
+Tree *tree_rbt_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
 {
     Tree *tree;
 
@@ -1203,7 +1233,7 @@ Tree *tree_rbt_create(int size_of, int (*cmp)(const void *a, const void *b))
         ERROR("malloc error\n", NULL);
 
     /* create rbt */
-    tree->____tree = (void *)rbt_create(size_of, cmp);
+    tree->____tree = (void *)rbt_create(size_of, cmp, destroy);
     if (tree->____tree == NULL)
     {
         FREE(tree);

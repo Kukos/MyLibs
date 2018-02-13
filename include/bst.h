@@ -42,6 +42,7 @@ typedef struct Bst
     size_t      ____size_of;
 
     int (*____cmp)(const void* a, const void *b);
+    void (*____destroy)(void *entry);
 }Bst;
 
 IT_FUNC(Bst, bst)
@@ -49,15 +50,19 @@ IT_FUNC(Bst, bst)
 /*
     Create Bst as TREE
 
+    destructor by void * pass addr i.e in list we have MyStruct *,
+    so your destructor data = (void *)&ms
+
     PARAMS
     @IN size_of - size_of data in tree
     @IN cmp - cmp function
+    @IN destroy - your data destructor or NULL
 
     RETURN:
     NULL iff failure
     Pointer to Tree iff success
 */
-Tree *tree_bst_create(int size_of, int (*cmp)(const void *a, const void *b));
+Tree *tree_bst_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
 /*
     Create BST
@@ -65,16 +70,17 @@ Tree *tree_bst_create(int size_of, int (*cmp)(const void *a, const void *b));
     PARAMS
     @IN size_of - size_of data in tree
     @IN cmp - cmp function
+    @IN destroy - your data destructor or NULL
 
     RETURN:
     NULL iff failure
     Pointer to bst iff success
 */
-Bst* bst_create(int size_of, int (*cmp)(const void *a, const void *b));
+Bst* bst_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
-#define BST_CREATE(PTR, TYPE, CMP) \
+#define BST_CREATE(PTR, TYPE, CMP, DESTROY) \
     do { \
-        PTR = bst_create(sizeof(TYPE), CMP); \
+        PTR = bst_create(sizeof(TYPE), CMP, DESTROY); \
     } while (0);
 
 /*
@@ -91,17 +97,13 @@ void bst_destroy(Bst *tree);
 /*
     Destroy BST with all entries ( call destructor for each entries )
 
-    destructor by void * pass addr i.e in list we have MyStruct *,
-    so your destructor data = (void *)&ms
-
     PARAMS
     @IN tree - pointer to BST
-    @IN destructor -  your object destructor
 
     RETURN:
     This is a void function
 */
-void bst_destroy_with_entries(Bst *tree, void (*destructor)(void *data));
+void bst_destroy_with_entries(Bst *tree);
 
 /*
     Insert data to BST IFF data with key ( using cmp ) is not in tree
@@ -181,6 +183,20 @@ int bst_max(const Bst *tree, void *data);
     Non-zero value iff failure
 */
 int bst_delete(Bst *tree, const void *data_key);
+
+/*
+    Delete data with key equals @data_key ( using cmp )
+    and call destructor
+
+    PARAMS
+    @IN tree - pointer to tree
+    @IN data_key = addr of data with key to delete
+
+    RETURN:
+    0 iff success
+    Non-zero value iff failure
+*/
+int bst_delete_with_entry(Bst *tree, const void *data_key);
 
 /*
     Balance tree using DSW algorithm

@@ -35,3 +35,4 @@
 .vscode/
 
 obj/
+*memusage.txt
