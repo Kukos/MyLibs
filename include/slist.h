@@ -49,10 +49,12 @@ typedef struct SList
 
    /* private functions */
     void        (*____destroy)(void *list);
-    void        (*____destroy_with_entries)(void *list, void (*destructor)(void *data));
+    void        (*____destroy_with_entries)(void *list);
     int         (*____insert)(void *list, const void *data);
     int         (*____delete)(void *list, const void *data);
+    int         (*____delete_with_entry)(void *list, const void *data);    
     int         (*____delete_all)(void *list, const void *data);
+    int         (*____delete_all_with_entry)(void *list, const void *data);
     int         (*____search)(const void *list, const void *in, void *out);
     void*       (*____merge)(const void * ___restrict___ list1, const void * ___restrict___ list2);
     int         (*____to_array)(const void *list, void *array, size_t *size);
@@ -102,10 +104,12 @@ ___inline___ int slist_iterator_init(const SList *list, SList_iterator *it, iti_
 #define SLIST_WRAPPERS_CREATE(type, prefix) \
     SLIST_ITERATOR_WRAPPERS_CREATE(concat(type, _iterator), concat(prefix, _iterator)) \
     static ___unused___ void ____destroy(void *list); \
-    static ___unused___ void ____destroy_with_entries(void *list, void (*destructor)(void *data)); \
+    static ___unused___ void ____destroy_with_entries(void *list); \
     static ___unused___ int ____insert(void *list, const void *data); \
     static ___unused___ int ____delete(void *list, const void *data); \
+    static ___unused___ int ____delete_with_entry(void *list, const void *data); \
     static ___unused___ int ____delete_all(void *list, const void *data); \
+    static ___unused___ int ____delete_all_with_entry(void *list, const void *data); \
     static ___unused___ int ____search(const void *list, const void *in, void *out); \
     static ___unused___ void *____merge(const void * ___restrict___ list1, const void * ___restrict___ list2); \
     static ___unused___ int ____to_array(const void *list, void *array, size_t *size); \
@@ -116,9 +120,9 @@ ___inline___ int slist_iterator_init(const SList *list, SList_iterator *it, iti_
         concat(prefix, _destroy)((type *)list); \
     } \
     \
-    static ___unused___ void ____destroy_with_entries(void *list, void (*destructor)(void *data)) \
+    static ___unused___ void ____destroy_with_entries(void *list) \
     { \
-        concat(prefix, _destroy_with_entries)((type *)list, destructor); \
+        concat(prefix, _destroy_with_entries)((type *)list); \
     } \
     \
     static ___unused___ int ____insert(void *list, const void *data) \
@@ -131,9 +135,19 @@ ___inline___ int slist_iterator_init(const SList *list, SList_iterator *it, iti_
         return concat(prefix, _delete)((type *)list, data); \
     } \
     \
+    static ___unused___ int ____delete_with_entry(void *list, const void *data) \
+    { \
+        return concat(prefix, _delete_with_entry)((type *)list, data); \
+    } \
+    \
     static ___unused___ int ____delete_all(void *list, const void *data) \
     { \
         return concat(prefix, _delete_all)((type *)list, data); \
+    } \
+    \
+    static ___unused___ int ____delete_all_with_entry(void *list, const void *data) \
+    { \
+        return concat(prefix, _delete_all_with_entry)((type *)list, data); \
     } \
     \
     static ___unused___ int ____search(const void *list, const void *in, void *out) \
@@ -168,7 +182,9 @@ ___inline___ int slist_iterator_init(const SList *list, SList_iterator *it, iti_
         (list)->____destroy_with_entries  = ____destroy_with_entries; \
         (list)->____insert                = ____insert; \
         (list)->____delete                = ____delete; \
+        (list)->____delete_with_entry     = ____delete_with_entry; \
         (list)->____delete_all            = ____delete_all; \
+        (list)->____delete_all_with_entry = ____delete_all_with_entry; \
         (list)->____search                = ____search; \
         (list)->____merge                 = ____merge; \
         (list)->____to_array              = ____to_array; \
@@ -223,20 +239,16 @@ ___inline___ void *slist_get_list(const SList *list);
 ___inline___ void slist_destroy(SList *list);
 
 /*
-    Destroy slist with all entries ( call destructor for each entries )
-
-    destructor by void * pass addr i.e in list we have MyStruct *,
-    so your destructor data = (void *)&ms
+    Destroy slist with all entries
 
     PARAMS
     @IN list - pointer to SList
-    @IN destructor - pointer to destructor function
 
     RETURN
     This is a void function
 
 */
-___inline___ void slist_destroy_with_entries(SList *list, void (*destructor)(void *data));
+___inline___ void slist_destroy_with_entries(SList *list);
 
 /*
     Insert data
@@ -265,6 +277,20 @@ ___inline___ int slist_insert(SList *list, const void *data);
 ___inline___ int slist_delete(SList *list, const void *data);
 
 /*
+    Delete the first data which cmp(list->data, data) == 0
+    and call destructor
+
+    PARAMS
+    @IN list - pointer to SList
+    @IN data -  data
+
+    RETURN:
+	0 iff success
+	Non-zero value iff failure (i.e data doesn't exist in list )
+*/
+___inline___ int slist_delete_with_entry(SList *list, const void *data);
+
+/*
     Delete all entries which cmp(list->data, data) == 0
 
     PARAMS
@@ -276,6 +302,20 @@ ___inline___ int slist_delete(SList *list, const void *data);
     Number of delete entries iff success
 */
 ___inline___ int slist_delete_all(SList *list, const void *data);
+
+/*
+    Delete all entries which cmp(list->data, data) == 0
+    and call destructor
+
+    PARAMS
+    @IN list - pointer to SList
+    @IN data - data
+
+    RETURN:
+    -1 iff failure (i.e data doesn't exist in list )
+    Number of delete entries iff success
+*/
+___inline___ int slist_delete_all_with_entry(SList *list, const void *data);
 
 /*
     Search for data which cmp(list->data, in) == 0,
@@ -366,11 +406,13 @@ ___inline___ bool slist_the_same_type(const SList * ___restrict___ list1, const 
              list1->____destroy_with_entries    != list2->____destroy_with_entries  ||
              list1->____insert                  != list2->____insert                ||
              list1->____delete                  != list2->____delete                ||
+             list1->____delete_with_entry       != list2->____delete_with_entry     ||
              list1->____delete_all              != list2->____delete_all            ||
+             list1->____delete_all_with_entry   != list2->____delete_all_with_entry ||
              list1->____search                  != list2->____search                ||
              list1->____merge                   != list2->____merge                 ||
              list1->____to_array                != list2->____to_array              ||
-             list1->____get_data_size           != list2->____get_data_size           ||
+             list1->____get_data_size           != list2->____get_data_size         ||
              list1->____get_num_entries         != list2->____get_num_entries       ||
              list1->____it_create               != list2->____it_create             ||
              list1->____it_init                 != list2->____it_init               ||
@@ -400,12 +442,12 @@ ___inline___ void slist_destroy(SList *list)
     FREE(list);
 }
 
-___inline___ void slist_destroy_with_entries(SList *list, void (*destructor)(void *data))
+___inline___ void slist_destroy_with_entries(SList *list)
 {
     if (list == NULL)
         return;
 
-    list->____destroy_with_entries(slist_get_list(list), destructor);
+    list->____destroy_with_entries(slist_get_list(list));
     FREE(list);
 }
 
@@ -425,12 +467,29 @@ ___inline___ int slist_delete(SList *list, const void *data)
     return list->____delete(slist_get_list(list), data);
 }
 
+
+___inline___ int slist_delete_with_entry(SList *list, const void *data)
+{
+    if (list == NULL)
+        return 1;
+
+    return list->____delete_with_entry(slist_get_list(list), data);
+}
+
 ___inline___ int slist_delete_all(SList *list, const void *data)
 {
     if (list == NULL)
         return 1;
 
     return list->____delete_all(slist_get_list(list), data);
+}
+
+___inline___ int slist_delete_all_with_entry(SList *list, const void *data)
+{
+    if (list == NULL)
+        return 1;
+
+    return list->____delete_all_with_entry(slist_get_list(list), data);
 }
 
 ___inline___ int slist_search(const SList *list, const void *in, void *out)
@@ -466,25 +525,27 @@ ___inline___ SList *slist_merge(const SList * ___restrict___ list1, const SList 
     }
 
     /* fill hooks */
-    list3->____destroy              = list1->____destroy;
-    list3->____destroy_with_entries = list1->____destroy_with_entries;
-    list3->____insert               = list1->____insert;
-    list3->____delete               = list1->____delete;
-    list3->____delete_all           = list1->____delete_all;
-    list3->____search               = list1->____search;
-    list3->____merge                = list1->____merge;
-    list3->____to_array             = list1->____to_array;
-    list3->____get_data_size        = list1->____get_data_size;
-    list3->____get_num_entries      = list1->____get_num_entries;
+    list3->____destroy               = list1->____destroy;
+    list3->____destroy_with_entries  = list1->____destroy_with_entries;
+    list3->____insert                = list1->____insert;
+    list3->____delete                = list1->____delete;
+    list3->____delete_with_entry     = list1->____delete_with_entry;
+    list3->____delete_all            = list1->____delete_all;
+    list3->____delete_all_with_entry = list1->____delete_all_with_entry;
+    list3->____search                = list1->____search;
+    list3->____merge                 = list1->____merge;
+    list3->____to_array              = list1->____to_array;
+    list3->____get_data_size         = list1->____get_data_size;
+    list3->____get_num_entries       = list1->____get_num_entries;
 
-    list3->____it_create            = list1->____it_create;
-    list3->____it_init              = list1->____it_init;
-    list3->____it_destroy           = list1->____it_destroy;
-    list3->____it_next              = list1->____it_next;
-    list3->____it_prev              = list1->____it_prev;
-    list3->____it_get_data          = list1->____it_get_data;
-    list3->____it_get_node          = list1->____it_get_node;
-    list3->____it_end               = list1->____it_end;
+    list3->____it_create             = list1->____it_create;
+    list3->____it_init               = list1->____it_init;
+    list3->____it_destroy            = list1->____it_destroy;
+    list3->____it_next               = list1->____it_next;
+    list3->____it_prev               = list1->____it_prev;
+    list3->____it_get_data           = list1->____it_get_data;
+    list3->____it_get_node           = list1->____it_get_node;
+    list3->____it_end                = list1->____it_end;
 
     return list3;
 }

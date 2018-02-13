@@ -58,6 +58,7 @@ typedef struct List2D
 
     int (*____cmp)(const void *a, const void *b);
     int (*____diff)(const void *a, const void *b);
+    void (*____destroy)(void *entry);
 
 }List2D;
 
@@ -80,10 +81,11 @@ IT_FUNC(List2D, list2d)
     @IN TYPE - type of element of list
     @IN CMP - compare function
     @IN DIFF - diff function
+    @IN DESTROY - your data destructor
 */
-#define LIST2D_CREATE(PTR, TYPE, CMP, DIFF) \
+#define LIST2D_CREATE(PTR, TYPE, CMP, DIFF, DESTROY) \
     do { \
-        PTR = list2d_create(sizeof(TYPE), CMP, DIFF); \
+        PTR = list2d_create(sizeof(TYPE), CMP, DIFF, DESTROY); \
     } while (0)
 
 /*
@@ -93,13 +95,14 @@ IT_FUNC(List2D, list2d)
     @IN size_of - size of element in list
     @IN cmp - compare function
     @IN diff - diff function
+    @IN destroy - your data destructor
 
     RETURN:
     NULL iff failure
     Pointer iff success
 */
 SList *slist_list2d_create(int size_of, int (*cmp)(const void *a, const void *b),
-    int (*diff)(const void *a, const void *b));
+    int (*diff)(const void *a, const void *b), void (*destroy)(void *entry));
 
 /*
     Create list
@@ -108,13 +111,15 @@ SList *slist_list2d_create(int size_of, int (*cmp)(const void *a, const void *b)
     @IN size_of - size of element in list
     @IN cmp - compare function
     @IN diff - diff function
+    @IN destroy - your data destructor
+    
 
     RETURN:
     NULL iff failure
     Pointer iff success
 */
 List2D *list2d_create(int size_of, int (*cmp)(const void *a, const void *b),
-    int (*diff)(const void *a, const void *b));
+    int (*diff)(const void *a, const void *b), void (*destroy)(void *entry));
 
 /*
     Destroy list
@@ -132,12 +137,11 @@ void list2d_destroy(List2D *list);
 
     PARAMS
     @IN list - pointer to list
-    @IN desturctor -  your object destructor
 
     RETURN:
     This is a void function
 */
-void list2d_destroy_with_entries(List2D *list, void (*destructor)(void *data));
+void list2d_destroy_with_entries(List2D *list);
 
 /*
     Insert an element to sorted list
@@ -166,6 +170,20 @@ int list2d_insert(List2D *list, const void *entry);
 int list2d_delete(List2D *list, const void *entry);
 
 /*
+    Delete the first entry which cmp(list->entry,entry) == 0
+    and call data destructor
+
+    PARAMS
+    @IN list - pointer to list
+    @IN entry -  entry
+
+    RETURN:
+	0 iff success
+	Non-zero value iff failure ( i.e entry doesn't exist in list )
+*/
+int list2d_delete_with_entry(List2D *list, const void *entry);
+
+/*
     Delete all entries which cmp(list->entry,entry) == 0
 
     PARAMS
@@ -177,6 +195,21 @@ int list2d_delete(List2D *list, const void *entry);
     Number of delete entries iff success
 */
 int list2d_delete_all(List2D *list, const void *entry);
+
+
+/*
+    Delete all entries which cmp(list->entry,entry) == 0
+    and call destructor
+
+    PARAMS
+    @IN list - pointer to list
+    @IN entry - entry
+
+    RETURN:
+    -1 iff failure ( i.e entry doesn't exist in list )
+    Number of delete entries iff success
+*/
+int list2d_delete_all_with_entry(List2D *list, const void *entry);
 
 /*
     Allocate new list and merge list1 & list2 to the new list

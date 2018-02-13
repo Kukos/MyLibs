@@ -31,6 +31,7 @@ typedef struct List
     List_node       *____tail;      /* needed for insert guardian */
 
     int (*____cmp)(const void* a, const void *b);
+    void (*____destroy)(void *entry);
 
 }List;
 
@@ -53,10 +54,11 @@ IT_FUNC(List, list)
 	@OUT PTR - pointer to list
     @IN TYPE - type of element of list
     @IN CMP - compare function
+    @IN DESTROY - your data destructor
 */
-#define LIST_CREATE(PTR, TYPE, CMP) \
+#define LIST_CREATE(PTR, TYPE, CMP, DESTROY) \
     do { \
-        PTR = list_create(sizeof(TYPE), CMP); \
+        PTR = list_create(sizeof(TYPE), CMP, DESTROY); \
     } while (0)
 
 /*
@@ -65,12 +67,13 @@ IT_FUNC(List, list)
     PARAMS
     @IN size_of - size of element in list
     @IN cmp - compare function
+    @IN destroy - your data destructor
 
     RETURN:
     NULL if failure
     Pointer if success
 */
-SList *slist_list_create(int size_of, int (*cmp)(const void *a, const void *b));
+SList *slist_list_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
 
 /*
@@ -79,12 +82,13 @@ SList *slist_list_create(int size_of, int (*cmp)(const void *a, const void *b));
     PARAMS
     @IN size_of - size of element in list
     @IN cmp - compare function
+    @IN destroy - your data destructor
 
     RETURN:
     NULL iff failure
     Pointer iff success
 */
-List *list_create(int size_of, int (*cmp)(const void *a, const void *b));
+List *list_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
 /*
     Destroy list
@@ -107,7 +111,7 @@ void list_destroy(List *list);
     RETURN:
     This is a void function
 */
-void list_destroy_with_entries(List *list, void (*destructor)(void *data));
+void list_destroy_with_entries(List *list);
 
 /*
     Insert an element  to sorted list
@@ -136,6 +140,20 @@ int list_insert(List *list, const void *entry);
 int list_delete(List *list, const void *entry);
 
 /*
+    Delete the first entry which cmp(list->entry, entry) == 
+    and call destructor
+
+    PARAMS
+    @IN list - pointer to list
+    @IN entry -  entry
+
+    RETURN:
+	0 iff success
+	Non-zero value iff failure (i.e entry doesn't exist in list )
+*/
+int list_delete_with_entry(List *list, const void *entry);
+
+/*
     Delete all entries which cmp(list->entry,entry) == 0
 
     PARAMS
@@ -147,6 +165,21 @@ int list_delete(List *list, const void *entry);
     Number of delete entries iff success
 */
 int list_delete_all(List *list, const void *entry);
+
+
+/*
+    Delete all entries which cmp(list->entry,entry) == 0
+    and call destructor
+
+    PARAMS
+    @IN list - pointer to list
+    @IN entry - entry
+
+    RETURN:
+    -1 iff failure (i.e entry doesn't exist in list )
+    Number of delete entries iff success
+*/
+int list_delete_all_with_entry(List *list, const void *entry);
 
 /*
     Allocate new list and merge list1 & list2 to the new list

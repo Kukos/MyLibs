@@ -158,23 +158,23 @@ ___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_
         return concat(prefix, _delete_last)((type *)list); \
     } \
     \
-    static ___unused___ int ____delete_pos_with_entry(void *list, size_t pos) \
+    static ___unused___ int ____delete_pos(void *list, size_t pos) \
     { \
         return concat(prefix, _delete_pos)((type *)list, pos); \
     } \
     static ___unused___ int ____delete_first_with_entry(void *list) \
     { \
-        return concat(prefix, _delete_first)((type *)list); \
+        return concat(prefix, _delete_first_with_entry)((type *)list); \
     } \
     \
     static ___unused___ int ____delete_last_with_entry(void *list) \
     { \
-        return concat(prefix, _delete_last)((type *)list); \
+        return concat(prefix, _delete_last_with_entry)((type *)list); \
     } \
     \
-    static ___unused___ int ____delete_pos(void *list, size_t pos) \
+    static ___unused___ int ____delete_pos_with_entry(void *list, size_t pos) \
     { \
-        return concat(prefix, _delete_pos)((type *)list, pos); \
+        return concat(prefix, _delete_pos_with_entry)((type *)list, pos); \
     } \
     \
     static ___unused___ int ____get_pos(const void *list, size_t pos, void *data) \
@@ -270,14 +270,10 @@ ___inline___ void *ulist_get_list(const UList *list);
 ___inline___ void ulist_destroy(UList *list);
 
 /*
-     Destroy ulist with all entries ( call destructor for each entries )
-
-    destructor by void * pass addr i.e in list we have MyStruct *,
-    so your destructor data = (void *)&ms
+    Destroy ulist with all entries ( call destructor for each entries )
 
     PARAMS
     @IN list - pointer to UList
-    @IN destructor - pointer to destructor function
 
     RETURN
     This is a void function
