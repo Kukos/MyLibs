@@ -43,6 +43,13 @@
 /* use this macro to assert types of variables */
 #define type_var_check(v1, v2) type_check(typeof(v1), typeof(v2))
 
+#define __unused(x) (void)(x)
+
+#define unused_param(x)  __unused(x)
+#define unused_retval(x) __unused(x)
+#define unused_value(x)  __unused(x)
+#define unused(x)        __unused(x)
+
 /* BUILTIN FUNC */
 
 /* get index of least bit ( from left ) or -1 iff X == 0  */
