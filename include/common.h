@@ -33,6 +33,41 @@
 #define SET_FLAG(n, flag)   ((n) |= (flag))
 #define CLEAR_FLAG(n, flag) ((n) &= ~(flag))
 
+#define REVERSE_BITS(x) \
+    __extension__ \
+    ({ \
+        const typeof(x) ____fake = (x); \
+        uint64_t        ____x = (uint64_t)____fake; \
+        const uint64_t  ____mask1 = 0x5555555555555555ULL; \
+        const uint64_t  ____mask2 = 0x3333333333333333ULL; \
+        const uint64_t  ____mask3 = 0x0F0F0F0F0F0F0F0FULL; \
+        const uint64_t  ____mask4 = 0x00FF00FF00FF00FFULL; \
+        const uint64_t  ____mask5 = 0x0000FFFF0000FFFFULL; \
+        const uint64_t  ____mask6 = 0x00000000FFFFFFFFULL; \
+        const size_t    ____size = sizeof(____fake) << 3; \
+        const uint64_t  ____guard = (sizeof(____fake) == sizeof(uint64_t) ? ((uint64_t)-1) : (BIT(____size) - 1)); \
+        \
+        switch(____size) \
+        { \
+            case 64: \
+                ____x = ((____x >> 32) & (____mask6 & ____guard)) | ((____x & (____mask6 & ____guard)) << 32); \
+            case 32: \
+                ____x = ((____x >> 16) & (____mask5 & ____guard)) | ((____x & (____mask5 & ____guard)) << 16); \
+            case 16: \
+                ____x = ((____x >>  8) & (____mask4 & ____guard)) | ((____x & (____mask4 & ____guard)) <<  8); \
+            case 8: \
+            { \
+                ____x = ((____x >>  4) & (____mask3 & ____guard)) | ((____x & (____mask3 & ____guard)) <<  4); \
+                ____x = ((____x >>  2) & (____mask2 & ____guard)) | ((____x & (____mask2 & ____guard)) <<  2); \
+                ____x = ((____x >>  1) & (____mask1 & ____guard)) | ((____x & (____mask1 & ____guard)) <<  1); \
+                break; \
+            } \
+            default: \
+                break; \
+        } \
+        (typeof(x))____x; \
+    })
+
 /* swap a with b IFF types are the same */
 #define SWAP(a ,b) \
     do{ \

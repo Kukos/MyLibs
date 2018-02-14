@@ -53,6 +53,69 @@ test_f test_bits_operations(void)
     T_ASSERT(a, 0x1001);
 }
 
+test_f test_bits_reverse(void)
+{
+    uint8_t a;
+    uint16_t b;
+    uint32_t c;
+    uint64_t d;
+
+    uint8_t ta;
+    uint16_t tb;
+    uint32_t tc;
+    uint64_t td;
+
+    a = 0;
+    b = 0;
+    c = 0;
+    d = 0;
+
+    ta = a;
+    tb = b;
+    tc = c;
+    td = d;
+
+    T_ASSERT(REVERSE_BITS(ta), a);
+    T_ASSERT(REVERSE_BITS(tb), b);
+    T_ASSERT(REVERSE_BITS(tc), c);
+    T_ASSERT(REVERSE_BITS(td), d);
+
+    a = -1;
+    b = -1;
+    c = -1;
+    d = -1;
+
+    ta = a;
+    tb = b;
+    tc = c;
+    td = d;
+
+    T_ASSERT(REVERSE_BITS(ta), a);
+    T_ASSERT(REVERSE_BITS(tb), b);
+    T_ASSERT(REVERSE_BITS(tc), c);
+    T_ASSERT(REVERSE_BITS(td), d);
+
+    a = __extension__ 0b01100110;
+    b = __extension__ 0b0111000100111101;
+    c = __extension__ 0b10101011110011001101001001001001;
+    d = __extension__ 0b1011111110101011100110011001100111100101010110010100010101010101;
+
+    ta = a;
+    tb = b;
+    tc = c;
+    td = d;
+
+    a = __extension__ 0b01100110;
+    b = __extension__ 0b1011110010001110;
+    c = __extension__ 0b10010010010010110011001111010101;
+    d = __extension__ 0b1010101010100010100110101010011110011001100110011101010111111101;
+
+    T_ASSERT(REVERSE_BITS(ta), a);
+    T_ASSERT(REVERSE_BITS(tb), b);
+    T_ASSERT(REVERSE_BITS(tc), c);
+    T_ASSERT(REVERSE_BITS(td), d);
+}
+
 test_f test_macro_swap(void)
 {
     int a = 5;
@@ -420,6 +483,7 @@ test_f test_array_reverse_macro(void)
 void test(void)
 {
     TEST(test_bits_operations());
+    TEST(test_bits_reverse());
     TEST(test_macro_swap());
     TEST(test_min());
     TEST(test_max());
