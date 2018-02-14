@@ -22,11 +22,11 @@
     RETURN
     THIS is a void function
 */
-static ___inline___ void print_func_trace(char *str);
+static ___inline___ void print_func_trace(const char *str);
 
-static ___inline___ void print_func_trace(char *str)
+static ___inline___ void print_func_trace(const char *str)
 {
-    const char *spaces = "                                                                         ";
+    const char * const spaces = "                                                                         ";
     char *name;
     char *off;
     char *addr;
@@ -34,32 +34,32 @@ static ___inline___ void print_func_trace(char *str)
     char *end_off;
     char *end_addr;
 
-    char *empty = (char *)"";
-    char *empty_name = (char *)"()";
+    const char * const empty = "";
+    const char * const empty_name = "()";
 
-    name = strchr((const char *)str, '(');
+    name = strchr(str, '(');
     if (name == NULL || *(name + 1) == ')')
-        name = empty_name;
+        name = (char *)empty_name;
     else
         ++name;
 
-    off =  strchr((const char *)str, '+');
+    off = strchr(str, '+');
     if (off == NULL)
-        off = empty;
+        off = (char *)empty;
     else
         ++off;
 
-    addr = strchr((const char *)str, '[');
+    addr = strchr(str, '[');
     if (addr == NULL)
-        addr = empty;
+        addr = (char *)empty;
     else
         ++addr;
 
-    end_addr = strchr((const char *)str, ']');
+    end_addr = strchr(str, ']');
     if (end_addr != NULL)
         *end_addr = '\0';
 
-    end_off = strchr((const char *)str, ')');
+    end_off = strchr(str, ')');
     if (end_off != NULL)
         *end_off = '\0';
 
