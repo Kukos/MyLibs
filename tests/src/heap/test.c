@@ -321,7 +321,7 @@ test_f test_destroy_with_entries(heap_type type, int ary)
     heap_destroy_with_entries(heap);
 }
 
-test_f test_delete_with_entries_without_destructor(heap_type type, int ary)
+test_f test_delete_with_entries_wo_destr(heap_type type, int ary)
 {
     Heap *heap;
     Heap_entry **array;
@@ -519,10 +519,10 @@ void test(void)
     TEST(test_destroy_with_entries(HEAP_MAX, 2));
     TEST(test_destroy_with_entries(HEAP_MAX, 7));
 
-    TEST(test_delete_with_entries_without_destructor(HEAP_MIN, 2));
-    TEST(test_delete_with_entries_without_destructor(HEAP_MIN, 7));
-    TEST(test_delete_with_entries_without_destructor(HEAP_MAX, 2));
-    TEST(test_delete_with_entries_without_destructor(HEAP_MAX, 7));
+    TEST(test_delete_with_entries_wo_destr(HEAP_MIN, 2));
+    TEST(test_delete_with_entries_wo_destr(HEAP_MIN, 7));
+    TEST(test_delete_with_entries_wo_destr(HEAP_MAX, 2));
+    TEST(test_delete_with_entries_wo_destr(HEAP_MAX, 7));
 
     TEST(test_change_key(HEAP_MIN, 2));
     TEST(test_change_key(HEAP_MIN, 7));
