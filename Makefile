@@ -173,6 +173,10 @@ D_BITSET := $(SDIR)/bitset
 I_BITSET := $(IDIR)/bitset.h $(F_LIB) $(I_LOG)
 S_BITSET := $(wildcard $(D_BITSET)/*.c) $(S_LOG)
 
+D_HISTOGRAM := $(SDIR)/histogram
+I_HISTOGRAM := $(IDIR)/histogram.h $(F_LIB) $(I_LOG)
+S_HISTOGRAM := $(wildcard $(D_HISTOGRAM)/*.c) $(S_LOG)
+
 # Needed to testting
 TEST_COMMON_INC := $(F_TEST) $(I_COMPILER) $(I_COMMON) $(I_SORT) $(I_SEARCH)
 TEST_COMMON_SRC := $(S_COMPILER) $(S_COMMON) $(S_SORT) $(S_SEARCH)
@@ -225,7 +229,7 @@ define print_bin
 	$(if $(Q), @echo "[BIN]         $$(1)")
 endef
 
-all: prepare arraylist avl bitset bst crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset final
+all: prepare arraylist avl bitset bst crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d rbt ringbuffer search sort stack trie ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
@@ -276,6 +280,10 @@ hash: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 heap: prepare
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
+histogram: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
@@ -353,6 +361,7 @@ clean:
 	$(MAKE) -f $(D_GETCH)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_HASH)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_HEAP)/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(D_HISTOGRAM)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_KLIST)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_LIST)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_LIST2D)/Makefile clean --no-print-directory && \
