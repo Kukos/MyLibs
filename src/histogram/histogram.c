@@ -572,7 +572,7 @@ static ___inline___ int64_t get_y_axis_value_for_c(const int64_t *values, size_t
         range = max;
 
     val = (range + ((int64_t)height - 1)) / (int64_t)height;
-    if (max - (val * (int64_t)(height - 1)) < 0 && min > 0)
+    if (max - (val * (int64_t)(height - 1)) < 0 && min >= 0)
         --val;
 
     LOG("Height = %zu, MIN = %" PRId64 " MAX = %" PRId64 " value for Y Axis char = %" PRId64 "\n", height, min, max, val);
