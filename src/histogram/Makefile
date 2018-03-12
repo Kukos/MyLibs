@@ -2,8 +2,8 @@ NAME := histogram
 THIS_DIR := $(SDIR)/$(NAME)
 TARGET := lib$(NAME)
 
-_SRC := $(S_BITSET)
-_INC := $(I_BITSET)
+_SRC := $(S_HISTOGRAM)
+_INC := $(I_HISTOGRAM)
 _OBJ := $(_SRC:%.c=%.o)
 
 %.o: %.c $(_INC)

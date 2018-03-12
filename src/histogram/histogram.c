@@ -8,6 +8,7 @@
 #include <math.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <string.h>
 
 #define TITLE_STR "TITLE: "
 #define X_AXIS_STR "X AXIS: "
