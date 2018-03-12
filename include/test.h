@@ -53,14 +53,14 @@ ___inline___ long ______test_strlen______(const char *str)
 typedef unsigned long ____test_counter_t;
 
 /* PRIVATE counters for testing, needed in summary */
-____test_counter_t ________passed_counter;
-____test_counter_t ________failed_counter;
+static ____test_counter_t ________passed_counter;
+static ____test_counter_t ________failed_counter;
 
 #define __TEST_MAX_STRING_LENGTH__ 46
 
 /* to fill gap with ' ' */
-const char *________spaces = "                                              ";
-const char *________chars = "===============================================";
+static const char *________spaces = "                                              ";
+static const char *________chars = "===============================================";
 
 /* use this type for internal test variables */
 typedef unsigned long long test_t;
@@ -68,7 +68,7 @@ typedef unsigned long long test_t;
 /* use this type for test function type */
 typedef void test_f;
 
-test_t ________ret;
+static test_t ________ret;
 
 #define PASSED 0
 #define FAILED 1
