@@ -43,7 +43,7 @@ uint32_t hash_js(const void *data, size_t size);
 /* This hash algorithm is based on work by Peter J. Weinberger of AT&T Bell Labs. Tweaked for 32-bit processors */
 uint32_t hash_elf(const void *data, size_t size);
 
-/* This is the algorithm of choice which is used in the open source SDBM project */
+/* This is the algorithm used in the open source SDBM project */
 uint32_t hash_sdbm(const void *data, size_t size);
 
 /* An algorithm produced by Professor Daniel J. Bernstein */
@@ -55,7 +55,7 @@ uint32_t hash_dek(const void *data, size_t size);
 /* An algorithm created by Glenn Fowler, Landon Curt Noll, and Kiem-Phong Vo */
 uint32_t hash_fnv(const void *data, size_t size);
 
-/* An algorithm produced by me Arash Partow */
+/* An algorithm produced by Arash Partow */
 uint32_t hash_ap(const void *data, size_t size);
 
 /* created by Austin Appleby The name comes from two basic operations, multiply (MU) and rotate (R), used in its inner loop */
