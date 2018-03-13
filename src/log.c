@@ -9,7 +9,7 @@
 
 static ___unused___ FILE *logfd = NULL;
 static ___unused___ FILE *logfile = NULL;
-static ___unused___ const char *logdir = "./logs";
+static ___unused___ const char * const logdir = "./logs";
 
 #define LOGBUF_SIZE	128
 
@@ -98,7 +98,8 @@ int log_init(const FILE *fd, int to_file)
 	char buf[LOGBUF_SIZE];
 	size_t len;
 
-	if (fd != stderr || fd != stdout)
+	logfd = fd; /* NULL is ok, log only to file */
+	if (fd != NULL && (fd != stderr || fd != stdout))
 		logfd = stderr;
 
 	if (to_file == LOG_TO_FILE)
@@ -112,7 +113,7 @@ int log_init(const FILE *fd, int to_file)
 			}
 
 		len = strlen(logdir);
-		if (memcpy((void*)buf, (void*)logdir, len) == NULL)
+		if (memcpy((void *)buf, (void *)logdir, len) == NULL)
 		{
 			perror("memcpy error\n");
 			return 1;
