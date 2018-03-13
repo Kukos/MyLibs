@@ -67,6 +67,8 @@ GPL 3.0
 
     heap - min and max heap on dynamic array
 
+    histogram - draw self-resizing histogram on stdout
+
     klist - kernel list in user space
 
     list - normal linked list
