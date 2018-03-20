@@ -1,6 +1,7 @@
 #include <hash.h>
 #include <log.h>
 #include <generic.h>
+#include <common.h>
 
 uint32_t hash_jenkins_one_at_time(const void *data, size_t size)
 {
@@ -175,11 +176,12 @@ uint32_t hash_ap(const void *data, size_t size)
     if (data == NULL || size == 0)
         return 0;
 
-    size >>= 1;
     for(i = 0; i < size; ++i)
     {
-        hash ^= ~((hash << 11) + (key[i] ^ (hash >> 5)));
-        hash ^= (hash <<  7) ^ key[i] * (hash >> 3); 
+	if (ODD(i))
+            hash ^= ~((hash << 11) + (key[i] ^ (hash >> 5)));
+	else
+            hash ^= (hash <<  7) ^ key[i] * (hash >> 3); 
     }
 
     return hash;
@@ -188,11 +190,11 @@ uint32_t hash_ap(const void *data, size_t size)
 uint32_t hash_murmur(const void *data, size_t size)
 {
     /* consts */
-	const uint32_t const_m = 0x5bd1e995;
-	const uint32_t const_r = 24;
+    const uint32_t const_m = 0x5bd1e995;
+    const uint32_t const_r = 24;
     const uint32_t const_a = 0x35111741;
 
-	uint32_t hash = const_a ^ (uint32_t)size;
+    uint32_t hash = const_a ^ (uint32_t)size;
     size_t i = 0;
     const size_t rem_by_4 = size & 0x3;
     const BYTE *key = (const BYTE *)data;
@@ -206,22 +208,22 @@ uint32_t hash_murmur(const void *data, size_t size)
     /* 4 bytes at 1 time */
     size >>= 2;
     for (i = 0; i < size; i += 4)
-	{
+    {
         acc = *(uint32_t *)&key[i];
-	    acc *= const_m; 
-		acc ^= acc >> const_r; 
-		acc *= const_m; 
+	acc *= const_m; 
+        acc ^= acc >> const_r; 
+	acc *= const_m; 
 		
-		hash *= const_m; 
-		hash ^= acc;
-	}
+	hash *= const_m; 
+	hash ^= acc;
+    }
 	
     key = &key[i];
 
     /* the last part */
-	switch (rem_by_4)
-	{
-	    case 3:
+    switch (rem_by_4)
+    {
+        case 3:
         {
             hash ^= (uint32_t)key[2] << 16;
         } 
@@ -232,7 +234,7 @@ uint32_t hash_murmur(const void *data, size_t size)
 	    case 1:
         {
             hash ^= key[0];
-	        hash *= const_m;
+	    hash *= const_m;
         }
         case 0:
         {
@@ -242,14 +244,14 @@ uint32_t hash_murmur(const void *data, size_t size)
         {
             break;
         }
-	};
+    };
 
     /* final step */
-	hash ^= hash >> 13;
-	hash *= const_m;
-	hash ^= hash >> 15;
+    hash ^= hash >> 13;
+    hash *= const_m;
+    hash ^= hash >> 15;
 
-	return hash;
+    return hash;
 }
 
 uint32_t hash_super_fast_hash(const void *data, size_t size)
