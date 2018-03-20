@@ -600,6 +600,9 @@ static void draw_single_column( int64_t *values,
     else
         *val -= vc;
 
+    if (*val == 0 && min >= 0)
+        *val = 1;
+
     if ((size_t)*line == (height - 1) && min < 0)
     {
         LOG("The last line and min < 0\n");
