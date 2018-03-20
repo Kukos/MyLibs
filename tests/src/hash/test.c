@@ -32,22 +32,27 @@ test_f test_general(uint32_t (*hash_f)(const void *data, size_t size))
     hash1 = hash_f((const void *)&c1, sizeof(c1));
     hash2 = hash_f((const void *)&c2, sizeof(c2));
     T_ASSERT(hash1, hash2);
+    T_CHECK(hash1 != 0);
 
     hash1 = hash_f((const void *)&i1, sizeof(i1));
     hash2 = hash_f((const void *)&i2, sizeof(i2));
     T_ASSERT(hash1, hash2);
+    T_CHECK(hash1 != 0);
 
     hash1 = hash_f((const void *)&d1, sizeof(d1));
     hash2 = hash_f((const void *)&d2, sizeof(d2));
     T_ASSERT(hash1, hash2);
+    T_CHECK(hash1 != 0);
 
     hash1 = hash_f((const void *)&str1, sizeof(str1));
     hash2 = hash_f((const void *)&str2, sizeof(str2));
     T_ASSERT(hash1, hash2);
+    T_CHECK(hash1 != 0);
 
     hash1 = hash_f((const void *)&ms1, sizeof(ms1));
     hash2 = hash_f((const void *)&ms2, sizeof(ms2));
     T_ASSERT(hash1, hash2);
+    T_CHECK(hash1 != 0);
 }
 
 test_f test_hash_jenkins_one_at_time(void)

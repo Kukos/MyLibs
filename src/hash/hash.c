@@ -32,7 +32,7 @@ uint32_t hash_rs(const void *data, size_t size)
     /* consts */
     uint32_t const_a = 63689;
     uint32_t const_b = 378551;
-    uint32_t hash = 0;
+    uint32_t hash = 1;
     size_t i;
     const BYTE *key = (const BYTE *)data;
 
