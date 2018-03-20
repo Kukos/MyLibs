@@ -98,16 +98,9 @@ ___inline___ static Arraylist_node *arraylist_node_create(  const Arraylist_node
     assert(data != NULL);
     assert(size_of >= 1);
 
-    node = (Arraylist_node *)malloc(sizeof(Arraylist_node));
+    node = (Arraylist_node *)malloc(sizeof(Arraylist_node) + (size_t)size_of);
     if (node == NULL)
         ERROR("malloc error\n", NULL);
-
-    node->____data = malloc((size_t)size_of);
-    if (node->____data == NULL)
-	{
-		FREE(node);
-        ERROR("malloc error\n", NULL);
-	}
 
     node->____next = (Arraylist_node *)next;
     node->____prev = (Arraylist_node *)prev;
@@ -124,7 +117,6 @@ ___inline___ static void arraylist_node_destroy(Arraylist_node *node)
     if (node == NULL)
         return;
 
-    FREE(node->____data);
     FREE(node);
 }
 
@@ -143,7 +135,7 @@ static int __arraylist_delete_first(Arraylist *alist, bool destroy)
     if (alist->____length == 1)
     {
         if (destroy && alist->____destroy)
-            alist->____destroy(alist->____head->____data);
+            alist->____destroy((void *)alist->____head->____data);
 
         arraylist_node_destroy(alist->____head);
         alist->____head = NULL;
@@ -157,7 +149,7 @@ static int __arraylist_delete_first(Arraylist *alist, bool destroy)
         alist->____head->____prev = NULL;
 
         if (destroy && alist->____destroy)
-            alist->____destroy(node->____data);
+            alist->____destroy((void *)node->____data);
 
         arraylist_node_destroy(node);
     }
@@ -182,7 +174,7 @@ static int __arraylist_delete_last(Arraylist *alist, bool destroy)
     if (alist->____length == 1)
     {
         if (destroy && alist->____destroy != NULL)
-            alist->____destroy(alist->____head->____data);
+            alist->____destroy((void *)alist->____head->____data);
 
         arraylist_node_destroy(alist->____head);
         alist->____head = NULL;
@@ -196,7 +188,7 @@ static int __arraylist_delete_last(Arraylist *alist, bool destroy)
         alist->____tail->____next = NULL;
 
         if (destroy && alist->____destroy != NULL)
-            alist->____destroy(node->____data);
+            alist->____destroy((void *)node->____data);
 
         arraylist_node_destroy(node);
     }
@@ -274,7 +266,7 @@ static void __arraylist_destroy_with_entries(Arraylist *alist, bool destroy)
     {
         next = ptr->____next;
         if (destroy && alist->____destroy != NULL)
-            alist->____destroy(ptr->____data);
+            alist->____destroy((void *)ptr->____data);
         
         arraylist_node_destroy(ptr);
 

@@ -87,16 +87,9 @@ ___inline___ static List2D_node *list2d_node_create(    const List2D_node     *p
     assert(data != NULL);
     assert(size_of >= 1);
 
-    node = (List2D_node *)malloc(sizeof(List2D_node));
+    node = (List2D_node *)malloc(sizeof(List2D_node) + (size_t)size_of);
     if (node == NULL)
         ERROR("malloc error\n", NULL);
-
-    node->____data = malloc((size_t)size_of);
-    if (node->____data == NULL)
-    {
-        FREE(node);
-        ERROR("malloc error\n", NULL);
-    }
 
     node->____next = (List2D_node *)next;
     node->____prev = (List2D_node *)prev;
@@ -113,7 +106,6 @@ ___inline___ static void list2d_node_destroy(List2D_node *node)
     if (node == NULL)
         return;
 
-    FREE(node->____data);
     FREE(node);
 }
 
@@ -142,14 +134,14 @@ static void __list2d_destroy(List2D *list, bool destroy)
         next = ptr->____next;
 
         if (destroy && list->____destroy != NULL)
-            list->____destroy(ptr->____data);
+            list->____destroy((void *)ptr->____data);
 
         list2d_node_destroy(ptr);
         ptr = next;
     }
 
     if (destroy && list->____destroy != NULL)
-        list->____destroy(end->____data);
+        list->____destroy((void *)end->____data);
     
     list2d_node_destroy(end);
     FREE(list);
@@ -216,7 +208,7 @@ static int __list2d_delete(List2D *list, const void *entry, bool destroy)
         ptr->____next->____prev = ptr->____prev;
 
         if (destroy && list->____destroy != NULL)
-            list->____destroy(ptr->____data);
+            list->____destroy((void *)ptr->____data);
 
         list2d_node_destroy(ptr);
     }
@@ -291,7 +283,7 @@ static int __list2d_delete_all(List2D *list, const void *entry, bool destroy)
                 ptr->____next->____prev = ptr->____prev;
 
                 if (destroy && list->____destroy != NULL)
-                    list->____destroy(ptr->____data);
+                    list->____destroy((void *)ptr->____data);
 
                 list2d_node_destroy(ptr);
 
@@ -339,7 +331,7 @@ static int __list2d_delete_all(List2D *list, const void *entry, bool destroy)
                 ptr->____next->____prev = ptr->____prev;
 
                 if (destroy && list->____destroy != NULL)
-                    list->____destroy(ptr->____data);
+                    list->____destroy((void *)ptr->____data);
                 
                 list2d_node_destroy(ptr);
 

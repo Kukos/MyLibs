@@ -19,17 +19,17 @@
 #include <iterators.h>
 #include <sys/types.h>
 #include <tree.h>
+#include <generic.h>
 
 typedef char rbt_color_t;
 
 typedef struct Rbt_node
 {
-    void            *____data;
-    struct Rbt_node *____left_son;
-    struct Rbt_node *____right_son;
-    struct Rbt_node *____parent;
-    rbt_color_t     ____color;
-
+    struct Rbt_node     *____left_son;
+    struct Rbt_node     *____right_son;
+    struct Rbt_node     *____parent;
+    rbt_color_t         ____color;
+    __extension__ BYTE  ____data[]; /* placeholder for data */
 }Rbt_node;
 
 typedef struct Rbt_iterator

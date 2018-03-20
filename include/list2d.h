@@ -39,12 +39,13 @@
 #include <iterators.h>
 #include <stdbool.h>
 #include <stddef.h> /* size_t */
+#include <generic.h>
 
 typedef struct List2D_node
 {
     struct List2D_node      *____prev;
     struct List2D_node      *____next;
-    void                    *____data;
+    __extension__ BYTE      ____data[]; /* placeholder for data */
 
 }List2D_node;
 

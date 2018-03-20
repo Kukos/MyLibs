@@ -67,19 +67,12 @@ UFSentry *ufs_entry_create(const void *data, int size_of, void (*destroy)(void *
     if (data == NULL || size_of < 1)
         ERROR("data == NULL || size_of < 1\n", NULL);
 
-    entry = (UFSentry *)malloc(sizeof(UFSentry));
+    entry = (UFSentry *)malloc(sizeof(UFSentry) + (size_t)size_of);
     if(entry == NULL)
         ERROR("malloc error\n", NULL);
 
     entry->____ufs_ptr = NULL;
     entry->____destroy = destroy;
-
-    entry->____data = malloc((size_t)size_of);
-    if (entry->____data == NULL)
-    {
-        FREE(entry);
-        ERROR("malloc error\n", NULL);
-    }
 
     __ASSIGN__(*(BYTE *)entry->____data, *(BYTE *)data, size_of);
 
@@ -93,7 +86,6 @@ void ufs_entry_destroy(UFSentry *entry)
     if (entry == NULL)
         return;
 
-    FREE(entry->____data);
     FREE(entry);
 }
 
@@ -105,7 +97,7 @@ void ufs_entry_destroy_with_data(UFSentry *entry)
         return;
 
     if (entry->____destroy != NULL)
-        entry->____destroy(entry->____data);
+        entry->____destroy((void *)entry->____data);
 
     ufs_entry_destroy(entry);
 }

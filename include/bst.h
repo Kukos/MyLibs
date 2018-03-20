@@ -19,13 +19,14 @@
 #include <stddef.h>
 #include <sys/types.h>
 #include <tree.h>
+#include <generic.h>
 
 typedef struct Bst_node
 {
-    void                *____data;
     struct Bst_node     *____left_son;
     struct Bst_node     *____right_son;
     struct Bst_node     *____parent;
+    __extension__ BYTE  ____data[]; /* placeholder for data */
 
 }Bst_node;
 

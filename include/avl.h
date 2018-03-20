@@ -20,16 +20,17 @@
 #include <iterators.h>
 #include <sys/types.h>
 #include <tree.h>
+#include <generic.h>
 
 typedef struct Avl_node
 {
-    void            *____data;
     struct Avl_node *____left_son;
     struct Avl_node *____right_son;
     struct Avl_node *____parent;
 
     uint8_t         ____bf; /* balanced factor */
 
+    __extension__ BYTE ____data[]; /* placeholder for data */
 }Avl_node;
 
 typedef struct Avl_iterator

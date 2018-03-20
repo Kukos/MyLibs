@@ -15,13 +15,14 @@
 #include <iterators.h>
 #include <stddef.h> /* size_t */
 #include <sys/types.h>
+#include <generic.h>
 
 typedef struct Arraylist_node
 {
     struct Arraylist_node *____next;
     struct Arraylist_node *____prev;
-    void *____data;
-    size_t ____size_of;
+    size_t                ____size_of;
+    __extension__ BYTE    ____data[]; /* placeholder for data */
 
 }Arraylist_node;
 

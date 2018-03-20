@@ -164,16 +164,9 @@ static ___inline___ Bst_node *bst_node_create(const void *data, int size_of, con
     assert(data != NULL);
     assert(size_of >= 1);
 
-    node = (Bst_node *)malloc(sizeof(Bst_node));
+    node = (Bst_node *)malloc(sizeof(Bst_node) + (size_t)size_of);
     if (node == NULL)
         ERROR("malloc error\n", NULL);
-
-    node->____data = malloc((size_t)size_of);
-    if (node->____data == NULL)
-	{
-		FREE(node);
-        ERROR("malloc error\n", NULL);
-	}
 
     __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
 
@@ -191,7 +184,6 @@ static ___inline___ void bst_node_destroy(Bst_node *node)
     if (node == NULL)
         return;
 
-    FREE(node->____data);
     FREE(node);
 }
 
@@ -424,7 +416,7 @@ static void __bst_destroy(Bst *tree, bool destroy)
         node = bst_successor(node);
 
         if (destroy && tree->____destroy != NULL)
-            tree->____destroy(temp->____data);
+            tree->____destroy((void *)temp->____data);
 
         bst_node_destroy(temp);
     }
@@ -533,7 +525,7 @@ static int __bst_delete(Bst *tree, const void *data_key, bool destroy)
     --tree->____nodes;
 
     if (destroy && tree->____destroy != NULL)
-        tree->____destroy(node->____data);
+        tree->____destroy((void *)node->____data);
         
     bst_node_destroy(node);
 

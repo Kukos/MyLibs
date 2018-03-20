@@ -17,6 +17,7 @@
 */
 
 #include <darray.h>
+#include <generic.h>
 
 typedef struct UFSMaster
 {
@@ -26,9 +27,9 @@ typedef struct UFSMaster
 
 typedef struct UFSentry
 {
-    void            *____data;
-    struct UFset    *____ufs_ptr;
-    void            (*____destroy)(void *entry); 
+    struct UFset        *____ufs_ptr;
+    void                (*____destroy)(void *entry);
+    __extension__ BYTE  ____data[]; /* placeholder for data */
 
 }UFSentry;
 

@@ -11,18 +11,21 @@
 #define RBT_RED     1
 
 #define SENTINEL_BUFFER_SIZE    16  /* provide allignment */
-#define SENTINEL_VALUE          -1
+#define SENTINEL_VALUE          (BYTE)-1
 #define SENTINEL_COLOR          RBT_BLACK
 
-/* sentinel for all RBTs */
-static ___unused___ char ____sentinel_buffer[SENTINEL_BUFFER_SIZE] = { SENTINEL_VALUE };
+#define PASTE_2(x)  x, x
+#define PASTE_4(x)  PASTE_2(x), PASTE_2(x)
+#define PASTE_8(x)  PASTE_4(x), PASTE_4(x)
+#define PASTE_16(x) PASTE_8(x), PASTE_8(x)
 
-static ___unused___ Rbt_node ____sentinel =
+ __extension__ static ___unused___ Rbt_node ____sentinel =
 {
-    .____data       = (void *)&____sentinel_buffer,
     .____left_son   = (Rbt_node *)&____sentinel,
     .____right_son  = (Rbt_node *)&____sentinel,
-    .____parent     = (Rbt_node *)&____sentinel
+    .____parent     = (Rbt_node *)&____sentinel,
+    .____color      = RBT_BLACK,
+    .____data       = {PASTE_16(SENTINEL_VALUE)}
 };
 
 static Rbt_node *sentinel = &____sentinel;
@@ -217,16 +220,9 @@ ___inline___ static Rbt_node *rbt_node_create(const void *data, int size_of, con
     assert(data != NULL);
     assert(size_of >= 1);
 
-    node = (Rbt_node *)malloc(sizeof(Rbt_node));
+    node = (Rbt_node *)malloc(sizeof(Rbt_node) + (size_t)size_of);
     if (node == NULL)
         ERROR("malloc error\n", NULL);
-
-    node->____data = malloc((size_t)size_of);
-    if (node->____data == NULL)
-	{
-		FREE(node);
-        ERROR("malloc error\n", NULL);
-	}
 
     __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
 
@@ -246,7 +242,6 @@ ___inline___ static void rbt_node_destroy(Rbt_node *node)
     if (node == NULL)
         return;
 
-    FREE(node->____data);
     FREE(node);
 }
 
@@ -640,7 +635,7 @@ static void __rbt_destroy(Rbt *tree, bool destroy)
         node = rbt_successor(node);
 
         if (destroy && tree->____destroy)
-            tree->____destroy(temp->____data);
+            tree->____destroy((void *)temp->____data);
         
         rbt_node_destroy(temp);
     }
@@ -777,7 +772,7 @@ static int __rbt_delete(Rbt *tree, const void *data_key, bool destroy)
             ERROR("rbt_delete_fixup error\n", 1);
 
     if (destroy && tree->____destroy != NULL)
-        tree->____destroy(node->____data);
+        tree->____destroy((void *)node->____data);
         
     rbt_node_destroy(node);
 

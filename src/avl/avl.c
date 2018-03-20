@@ -242,16 +242,9 @@ ___inline___ static Avl_node *avl_node_create(const void *data, int size_of, con
     assert(data != NULL);
     assert(size_of >= 1);
 
-    node = (Avl_node *)malloc(sizeof(Avl_node));
+    node = (Avl_node *)malloc(sizeof(Avl_node) + (size_t)size_of);
     if (node == NULL)
         ERROR("malloc error\n", NULL);
-
-    node->____data = malloc((size_t)size_of);
-    if (node->____data == NULL)
-	{
-		FREE(node);
-        ERROR("malloc error\n", NULL);
-	}
 
     __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
 
@@ -271,7 +264,6 @@ ___inline___ static void avl_node_destroy(Avl_node *node)
     if (node == NULL)
         return;
 
-    FREE(node->____data);
     FREE(node);
 }
 
@@ -820,7 +812,7 @@ static void __avl_destroy(Avl *tree, bool destroy)
         node = avl_successor(node);
 
         if (destroy && tree->____destroy != NULL)
-            tree->____destroy(temp->____data);
+            tree->____destroy((void *)temp->____data);
 
         avl_node_destroy(temp);
     }
@@ -953,7 +945,7 @@ static int __avl_delete(Avl *tree, const void *data_key, bool destroy)
     --tree->____nodes;
 
     if (destroy && tree->____destroy != NULL)
-        tree->____destroy(node->____data);
+        tree->____destroy((void *)node->____data);
 
     avl_node_destroy(node);
 

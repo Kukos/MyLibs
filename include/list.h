@@ -14,11 +14,12 @@
 #include <iterators.h>
 #include <stddef.h> /* size_t */
 #include <sys/types.h>
+#include <generic.h>
 
 typedef struct List_node
 {
     struct List_node    *____next;
-    void                *____data;
+    __extension__ BYTE  ____data[]; /* placeholder for data */
 
 }List_node;
 

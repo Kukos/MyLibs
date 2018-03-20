@@ -83,16 +83,9 @@ ___inline___ static List_node *list_node_create(const List_node *next, const voi
     assert(data != NULL);
     assert(size_of >= 1);
 
-    node = (List_node *)malloc(sizeof(List_node));
+    node = (List_node *)malloc(sizeof(List_node) + (size_t)size_of);
     if (node == NULL)
         ERROR("malloc error\n", NULL);
-
-    node->____data = malloc((size_t)size_of);
-    if (node->____data == NULL)
-	{
-		FREE(node);
-        ERROR("malloc error\n", NULL);
-	}
 
     node->____next = (List_node *)next;
     __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
@@ -107,7 +100,6 @@ static void list_node_destroy(List_node *node)
     if (node == NULL)
         return;
 
-    FREE(node->____data);
     FREE(node);
 }
 
@@ -126,7 +118,7 @@ static void __list_destroy(List *list, bool destroy)
     {
         next = ptr->____next;
         if (destroy && list->____destroy != NULL)
-            list->____destroy(ptr->____data);
+            list->____destroy((void *)ptr->____data);
         
         list_node_destroy(ptr);
 
@@ -179,7 +171,7 @@ static int __list_delete(List *list, const void *entry, bool destroy)
             ptr = list->____head->____next;
 
             if (destroy && list->____destroy != NULL)
-                list->____destroy(list->____head->____data);
+                list->____destroy((void *)list->____head->____data);
 
             list_node_destroy(list->____head);
             list->____head = ptr;
@@ -195,7 +187,7 @@ static int __list_delete(List *list, const void *entry, bool destroy)
                 list->____tail = prev;
 
             if (destroy && list->____destroy != NULL)
-                list->____destroy(ptr->____data);
+                list->____destroy((void *)ptr->____data);
 
             list_node_destroy(ptr);
         }
@@ -261,7 +253,7 @@ static int __list_delete_all(List *list, const void *entry, bool destroy)
                 ptr = list->____head->____next;
 
                 if (destroy && list->____destroy != NULL)
-                    list->____destroy(list->____head->____data);
+                    list->____destroy((void *)list->____head->____data);
 
                 list_node_destroy(list->____head);
                 list->____head = ptr;
@@ -282,7 +274,7 @@ static int __list_delete_all(List *list, const void *entry, bool destroy)
                     list->____tail = prev;
 
                 if (destroy && list->____destroy != NULL)
-                    list->____destroy(ptr->____data);
+                    list->____destroy((void *)ptr->____data);
 
                 list_node_destroy(ptr);
 
