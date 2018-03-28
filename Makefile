@@ -332,6 +332,7 @@ final: prepare arraylist avl bitset bst crc cstring darray fifo filebuffer getch
 	$(call print_info,Finalizing)
 	$(Q)$(CP) $(IDIR)/common.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/compiler.h $(O_HEADERS) && \
+	$(CP) $(IDIR)/bits.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/terminal_colors.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/assert.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/log.h $(O_HEADERS) && \
