@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <compiler.h>
 #include <stdlib.h>
+#include <assert.h>
 
 /*
 	Modes to debug:
@@ -77,6 +78,7 @@ ___inline___ long ______log_strlen______(const char *str)
     do { \
         __error__(__ERROR__); \
         __error__("\t" msg "%s", ##__VA_ARGS__); \
+        stack_trace(); \
         \
         exit(FATAL_EXIT_CODE); \
     } while (0)
