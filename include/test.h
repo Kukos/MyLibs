@@ -56,11 +56,11 @@ typedef unsigned long ____test_counter_t;
 static ____test_counter_t ________passed_counter;
 static ____test_counter_t ________failed_counter;
 
-#define __TEST_MAX_STRING_LENGTH__ 46
+#define __TEST_MAX_STRING_LENGTH__ 60
 
 /* to fill gap with ' ' */
-static const char *________spaces = "                                              ";
-static const char *________chars = "===============================================";
+static const char *________spaces = "                                                                                                                                              ";
+static const char *________chars = "===============================================================================================================================================";
 
 /* use this type for internal test variables */
 typedef unsigned long long test_t;
