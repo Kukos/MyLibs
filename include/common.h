@@ -14,6 +14,7 @@
 #include <terminal_colors.h>
 #include <stdlib.h> /* free */
 #include <bits.h>
+#include <template_array.h>
 
 /* swap a with b IFF types are the same */
 #define SWAP(a ,b) \
@@ -118,39 +119,6 @@
 #define LOG2_int(n)             ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_int(n) - 1)
 #define LOG2_long(n)            ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_long(n) - 1)
 #define LOG2_longlong(n)        ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_longlong(n) - 1)
-
-/*
-    Macro create static function for cmp whole array (type must by simple type)
-*/
-#define ARRAY_EQUAL(type) \
-    static ___unused___ bool concat(array_equal_, type)(const type *t1, const type *t2, size_t size) \
-    { \
-        size_t i; \
-        \
-        if (t1 == NULL || t2 == NULL) \
-            return false; \
-        \
-        for (i = 0; i < size; ++i) \
-            if (t1[i] != t2[i]) \
-                return false; \
-        \
-        return true; \
-    }
-
-/*
-    Macro create static function for reversing whole array (type must by simple type)
-*/
-#define ARRAY_REVERSE(type) \
-    static ___unused___ void concat(array_reverse_, type)(type *t, size_t size) \
-    { \
-        size_t i; \
-        \
-        if (t == NULL) \
-            return; \
-        \
-        for (i = 0; i < (size >> 1); ++i) \
-            SWAP(t[i], t[size - i - 1]); \
-    }
 
 /*
     Macro create static function for cmp 2 vars (type must by simple type)

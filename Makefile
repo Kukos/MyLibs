@@ -334,6 +334,7 @@ final: prepare arraylist avl bitset bst crc cstring darray fifo filebuffer getch
 	$(CP) $(IDIR)/compiler.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/bits.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/terminal_colors.h $(O_HEADERS) && \
+	$(CP) $(IDIR)/template_array.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/assert.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/log.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/iterators.h $(O_HEADERS) && \

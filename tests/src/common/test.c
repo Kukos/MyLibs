@@ -480,6 +480,306 @@ test_f test_array_reverse_macro(void)
     T_EXPECT(array_equal_double(e, f, ARRAY_SIZE(e)), true);
 }
 
+test_f test_array_foreach(void)
+{
+    int t1[] = {1, 2, 3, 4, 5};
+    double t2[] = {0.1, 0.2, 0.3, 0.4, 0.5};
+    char t3[] = "Kukos";
+
+    int *ptr1;
+    int data1;
+
+    double *ptr2;
+    double data2;
+
+    char *ptr3;
+    char data3;
+
+    int i;
+
+    i = 0;
+    for_each_array(t1, ARRAY_SIZE(t1), ptr1, data1)
+    {
+        T_ASSERT(t1[i], data1);
+        T_ASSERT(t1[i], *ptr1);
+        T_ASSERT(t1 + i, ptr1);
+
+       ++i;
+    }
+
+    i = 0;
+    for_each_array(t2, ARRAY_SIZE(t2), ptr2, data2)
+    {
+        T_ASSERT(t2[i], data2);
+        T_ASSERT(t2[i], *ptr2);
+        T_ASSERT(t2 + i, ptr2);
+
+       ++i;
+    }
+
+    i = 0;
+    for_each_array(t3, ARRAY_SIZE(t3), ptr3, data3)
+    {
+        T_ASSERT(t3[i], data3);
+        T_ASSERT(t3[i], *ptr3);
+        T_ASSERT(t3 + i, ptr3);
+
+       ++i;
+    }
+
+    i = ARRAY_SIZE(t1) - 1;
+    for_each_prev_array(t1, ARRAY_SIZE(t1), ptr1, data1)
+    {
+        T_ASSERT(t1[i], data1);
+        T_ASSERT(t1[i], *ptr1);
+        T_ASSERT(t1 + i, ptr1);
+
+       --i;
+    }
+
+    i = ARRAY_SIZE(t2) - 1;
+    for_each_prev_array(t2, ARRAY_SIZE(t2), ptr2, data2)
+    {
+        T_ASSERT(t2[i], data2);
+        T_ASSERT(t2[i], *ptr2);
+        T_ASSERT(t2 + i, ptr2);
+
+       --i;
+    }
+
+    i = ARRAY_SIZE(t3) - 1;
+    for_each_prev_array(t3, ARRAY_SIZE(t3), ptr3, data3)
+    {
+        T_ASSERT(t3[i], data3);
+        T_ASSERT(t3[i], *ptr3);
+        T_ASSERT(t3 + i, ptr3);
+
+       --i;
+    }
+
+    i = 0;
+    for_each_data_array(t1, ARRAY_SIZE(t1), data1)
+    {
+        T_ASSERT(t1[i], data1);
+       ++i;
+    }
+
+    i = 0;
+    for_each_data_array(t2, ARRAY_SIZE(t2), data2)
+    {
+        T_ASSERT(t2[i], data2);
+       ++i;
+    }
+
+    i = 0;
+    for_each_data_array(t3, ARRAY_SIZE(t3), data3)
+    {
+        T_ASSERT(t3[i], data3);
+       ++i;
+    }
+
+    i = ARRAY_SIZE(t1) - 1;
+    for_each_data_prev_array(t1, ARRAY_SIZE(t1), data1)
+    {
+        T_ASSERT(t1[i], data1);
+       --i;
+    }
+
+    i = ARRAY_SIZE(t2) - 1;
+    for_each_data_prev_array(t2, ARRAY_SIZE(t2), data2)
+    {
+        T_ASSERT(t2[i], data2);
+       --i;
+    }
+
+    i = ARRAY_SIZE(t3) - 1;
+    for_each_data_prev_array(t3, ARRAY_SIZE(t3), data3)
+    {
+        T_ASSERT(t3[i], data3);
+       --i;
+    }
+
+
+    i = 0;
+    for_each_ptr_array(t1, ARRAY_SIZE(t1), ptr1)
+    {
+        T_ASSERT(t1[i], *ptr1);
+        T_ASSERT(t1 + i, ptr1);
+
+       ++i;
+    }
+
+    i = 0;
+    for_each_ptr_array(t2, ARRAY_SIZE(t2), ptr2)
+    {
+        T_ASSERT(t2[i], *ptr2);
+        T_ASSERT(t2 + i, ptr2);
+
+       ++i;
+    }
+
+    i = 0;
+    for_each_ptr_array(t3, ARRAY_SIZE(t3), ptr3)
+    {
+        T_ASSERT(t3[i], *ptr3);
+        T_ASSERT(t3 + i, ptr3);
+
+       ++i;
+    }
+
+    i = ARRAY_SIZE(t1) - 1;
+    for_each_ptr_prev_array(t1, ARRAY_SIZE(t1), ptr1)
+    {
+        T_ASSERT(t1[i], *ptr1);
+        T_ASSERT(t1 + i, ptr1);
+
+       --i;
+    }
+
+    i = ARRAY_SIZE(t2) - 1;
+    for_each_ptr_prev_array(t2, ARRAY_SIZE(t2), ptr2)
+    {
+        T_ASSERT(t2[i], *ptr2);
+        T_ASSERT(t2 + i, ptr2);
+
+       --i;
+    }
+
+    i = ARRAY_SIZE(t3) - 1;
+    for_each_ptr_prev_array(t3, ARRAY_SIZE(t3), ptr3)
+    {
+        T_ASSERT(t3[i], *ptr3);
+        T_ASSERT(t3 + i, ptr3);
+
+       --i;
+    }
+}
+
+ARRAY_MIN(char)
+ARRAY_MIN(int)
+ARRAY_MIN(double)
+
+test_f test_array_min_macro(void)
+{
+    int t1[] = {0, 8, 23 ,4 ,1, 5, 7, -6};
+    double t2[] = {9.99, 4.44, 3.33, 2.22, 7.77, 8.88, 6.66};
+    char t3[] = "Kukos";
+
+    int min1;
+    double min2;
+    char min3;
+
+    T_EXPECT(array_min_int(t1, ARRAY_SIZE(t1), &min1), 7);
+    T_ASSERT(min1, t1[7]);
+
+    T_EXPECT(array_min_double(t2, ARRAY_SIZE(t2), &min2), 3);
+    T_ASSERT(min2, t2[3]);
+
+    T_EXPECT(array_min_char(t3, ARRAY_SIZE(t3) - 1, &min3), 0);
+    T_ASSERT(min3, t3[0]);
+}
+
+ARRAY_MAX(char)
+ARRAY_MAX(int)
+ARRAY_MAX(double)
+
+test_f test_array_max_macro(void)
+{
+    int t1[] = {0, 8, 23 ,4 ,1, 5, 7, -6};
+    double t2[] = {9.99, 4.44, 3.33, 2.22, 7.77, 8.88, 6.66};
+    char t3[] = "Kukos";
+
+    int max1;
+    double max2;
+    char max3;
+
+    T_EXPECT(array_max_int(t1, ARRAY_SIZE(t1), &max1), 2);
+    T_ASSERT(max1, t1[2]);
+
+    T_EXPECT(array_max_double(t2, ARRAY_SIZE(t2), &max2), 0);
+    T_ASSERT(max2, t2[0]);
+
+    T_EXPECT(array_max_char(t3, ARRAY_SIZE(t3) - 1, &max3), 1);
+    T_ASSERT(max3, t3[1]);
+}
+
+ARRAY_SUM(int)
+ARRAY_SUM(double)
+
+test_f test_array_sum_macro(void)
+{
+    int t1[] = {0, 8, 23 ,4 ,1, 5, 7, -6};
+    double t2[] = {9.99, 4.44, 3.33, 2.22, 7.77, 8.88, 6.66};
+
+    T_EXPECT(array_sum_int(t1, ARRAY_SIZE(t1)), 42);
+    T_CHECK(array_sum_double(t2, ARRAY_SIZE(t2)) < 43.3);
+    T_CHECK(array_sum_double(t2, ARRAY_SIZE(t2)) > 43.2);
+}
+
+ARRAY_PRODUCT(int)
+ARRAY_PRODUCT(double)
+
+test_f test_array_product_macro(void)
+{
+    int t1[] = {1, 8, 23 ,4 ,1, 5, 7, 6};
+    double t2[] = {9.99, 4.44, 3.33, 2.22, 7.77, 8.88, 6.66};
+
+    T_EXPECT(array_product_int(t1, ARRAY_SIZE(t1)), 154560);
+    T_CHECK(array_product_double(t2, ARRAY_SIZE(t2)) < 150679.4);
+    T_CHECK(array_product_double(t2, ARRAY_SIZE(t2)) > 150679.3);
+}
+
+ARRAY_IS_SORTED(int)
+ARRAY_IS_SORTED(double)
+ARRAY_IS_SORTED(char)
+
+test_f test_array_is_sorted_macro(void)
+{
+    int t1[] = {1, 2, 3};
+    int t2[] = {2, 3, 1};
+
+    double t3[] = {1.1, 2.2, 3.3};
+    double t4[] = {2.2, 3.3, 1.1};
+
+    char t5[] = "abc";
+    char t6[] = "bca";
+
+    T_EXPECT(array_is_sorted_int(t1, ARRAY_SIZE(t1)), true);
+    T_EXPECT(array_is_sorted_int(t2, ARRAY_SIZE(t2)), false);
+
+    T_EXPECT(array_is_sorted_double(t3, ARRAY_SIZE(t3)), true);
+    T_EXPECT(array_is_sorted_double(t4, ARRAY_SIZE(t4)), false);
+
+    T_EXPECT(array_is_sorted_char(t5, ARRAY_SIZE(t5) - 1), true);
+    T_EXPECT(array_is_sorted_char(t6, ARRAY_SIZE(t6) - 1), false);
+}
+
+ARRAY_IS_REVERSE_SORTED(int)
+ARRAY_IS_REVERSE_SORTED(double)
+ARRAY_IS_REVERSE_SORTED(char)
+
+test_f test_array_is_rev_sorted_macro(void)
+{
+    int t1[] = {3, 2, 1};
+    int t2[] = {2, 3, 1};
+
+    double t3[] = {3.3, 2.2, 1.1};
+    double t4[] = {2.2, 3.3, 1.1};
+
+    char t5[] = "cba";
+    char t6[] = "bca";
+
+    T_EXPECT(array_is_reverse_sorted_int(t1, ARRAY_SIZE(t1)), true);
+    T_EXPECT(array_is_reverse_sorted_int(t2, ARRAY_SIZE(t2)), false);
+
+    T_EXPECT(array_is_reverse_sorted_double(t3, ARRAY_SIZE(t3)), true);
+    T_EXPECT(array_is_reverse_sorted_double(t4, ARRAY_SIZE(t4)), false);
+
+    T_EXPECT(array_is_reverse_sorted_char(t5, ARRAY_SIZE(t5) - 1), true);
+    T_EXPECT(array_is_reverse_sorted_char(t6, ARRAY_SIZE(t6) - 1), false);
+
+}
+
 void test(void)
 {
     TEST(test_bits_operations());
@@ -493,8 +793,15 @@ void test(void)
     TEST(test_hamming_distance());
     TEST(test_log2());
     TEST(test_cmp_macro());
+    TEST(test_array_foreach());
     TEST(test_array_cmp_macro());
     TEST(test_array_reverse_macro());
+    TEST(test_array_min_macro());
+    TEST(test_array_max_macro());
+    TEST(test_array_sum_macro());
+    TEST(test_array_product_macro());
+    TEST(test_array_is_sorted_macro());
+    TEST(test_array_is_rev_sorted_macro());
 }
 
 int main(void)
