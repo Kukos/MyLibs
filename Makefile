@@ -174,8 +174,8 @@ I_BITSET := $(IDIR)/bitset.h $(F_LIB) $(I_LOG)
 S_BITSET := $(wildcard $(D_BITSET)/*.c) $(S_LOG)
 
 D_HISTOGRAM := $(SDIR)/histogram
-I_HISTOGRAM := $(IDIR)/histogram.h $(F_LIB) $(I_LOG)
-S_HISTOGRAM := $(wildcard $(D_HISTOGRAM)/*.c) $(S_LOG)
+I_HISTOGRAM := $(IDIR)/histogram.h $(F_LIB) $(I_LOG) $(I_ASSER)
+S_HISTOGRAM := $(wildcard $(D_HISTOGRAM)/*.c) $(S_LOG) $(S_ASSERT)
 
 # Needed to testting
 TEST_COMMON_INC := $(F_TEST) $(I_COMPILER) $(I_COMMON) $(I_SORT) $(I_SEARCH)
@@ -196,7 +196,7 @@ else
   Q = @
 endif
 
-INSTALL_PATH = 
+INSTALL_PATH =
 
 # Path for install libs
 ifeq ("$(origin P)", "command line")
