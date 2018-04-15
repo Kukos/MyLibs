@@ -56,13 +56,13 @@
 #define least_1(x) \
     __extension__ \
     ({ \
-        unsigned long ________x = (x); \
-        if (sizeof(x) == sizeof(unsigned int)) \
-            ________x = least_1_int((unsigned int)x); \
-        else if (sizeof(x) == sizeof(unsigned long)) \
-            ________x = least_1_long((unsigned long)x); \
-        else if (sizeof(x) == sizeof(unsigned long long)) \
-            ________x = least_1_longlong((unsigned long long)x); \
+        int ________x = (int)(x); \
+        if (sizeof(x) == sizeof(int)) \
+            ________x = least_1_int((int)x); \
+        else if (sizeof(x) == sizeof(long)) \
+            ________x = least_1_long((long)x); \
+        else if (sizeof(x) == sizeof(long long)) \
+            ________x = least_1_longlong((long long)x); \
         ________x; \
     })
 
@@ -74,7 +74,7 @@
 #define leading_0(x) \
     __extension__ \
     ({ \
-        unsigned long ________x = (x); \
+        int ________x = (int)(x); \
         if (sizeof(x) == sizeof(unsigned int)) \
             ________x = leading_0_int((unsigned int)x); \
         else if (sizeof(x) == sizeof(unsigned long)) \
@@ -89,7 +89,7 @@
     ({ \
         typeof(x) ______x = (x); \
         (void)type_check(typeof(______x), unsigned int); \
-        (______x) ? (unsigned long)__builtin_clz(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
+        (______x) ? (int)__builtin_clz(______x) : (int)sizeof(typeof(______x)) << 3; \
     })
 
 #define leading_0_long(x) \
@@ -97,7 +97,7 @@
     ({ \
         typeof(x) ______x = (x); \
         (void)type_check(typeof(______x), unsigned long); \
-        (______x) ? (unsigned long)__builtin_clzl(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
+        (______x) ? (int)__builtin_clzl(______x) : (int)sizeof(typeof(______x)) << 3; \
     })
 
 #define leading_0_longlong(x) \
@@ -105,7 +105,7 @@
     ({ \
         typeof(x) ______x = (x); \
         (void)type_check(typeof(______x), unsigned long long); \
-        (______x) ? (unsigned long)__builtin_clzll(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
+        (______x) ? (int)__builtin_clzll(______x) : (int)sizeof(typeof(______x)) << 3; \
     })
 
 
@@ -113,7 +113,7 @@
 #define trailing_0(x) \
     __extension__ \
     ({ \
-        unsigned long ________x = (x); \
+        int ________x = (int)(x); \
         if (sizeof(x) == sizeof(unsigned int)) \
             ________x = trailing_0_int((unsigned int)x); \
         else if (sizeof(x) == sizeof(unsigned long)) \
@@ -128,7 +128,7 @@
     ({ \
         typeof(x) ______x = (x); \
         (void)type_check(typeof(______x), unsigned int); \
-        (______x) ? (unsigned long)__builtin_ctz(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
+        (______x) ? (int)__builtin_ctz(______x) : (int)sizeof(typeof(______x)) << 3; \
     })
 
 #define trailing_0_long(x) \
@@ -136,7 +136,7 @@
     ({ \
         typeof(x) ______x = (x); \
         (void)type_check(typeof(______x), unsigned long); \
-        (______x) ? (unsigned long)__builtin_ctzl(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
+        (______x) ? (int)__builtin_ctzl(______x) : (int)sizeof(typeof(______x)) << 3; \
     })
 
 #define trailing_0_longlong(x) \
@@ -144,14 +144,14 @@
     ({ \
         typeof(x) ______x = (x); \
         (void)type_check(typeof(______x), unsigned long long); \
-        (______x) ? (unsigned long)__builtin_ctzll(______x) : (unsigned long)sizeof(typeof(______x)) << 3; \
+        (______x) ? (int)__builtin_ctzll(______x) : (int)sizeof(typeof(______x)) << 3; \
     })
 
 /* get number of ones */
 #define number_1(x) \
     __extension__ \
     ({ \
-        unsigned long ________x = (x); \
+        int ________x = (int)(x); \
         if (sizeof(x) == sizeof(unsigned int)) \
             ________x = number_1_int((unsigned int)x); \
         else if (sizeof(x) == sizeof(unsigned long)) \
@@ -166,7 +166,7 @@
     ({ \
         typeof(x) ______x = (x); \
         (void)type_check(typeof(______x), unsigned int); \
-        (______x) ? (unsigned long)__builtin_popcount(______x) : 0; \
+        (______x) ? (int)__builtin_popcount(______x) : 0; \
     })
 
 #define number_1_long(x) \
@@ -174,7 +174,7 @@
     ({ \
         typeof(x) ______x = (x); \
         (void)type_check(typeof(______x), unsigned long); \
-        (______x) ? (unsigned long)__builtin_popcountl(______x) : 0; \
+        (______x) ? (int)__builtin_popcountl(______x) : 0; \
     })
 
 #define number_1_longlong(x) \
@@ -182,14 +182,14 @@
     ({ \
         typeof(x) ______x = (x); \
         (void)type_check(typeof(______x), unsigned long long); \
-        (______x) ? (unsigned long)__builtin_popcountll(______x) : 0; \
+        (______x) ? (int)__builtin_popcountll(______x) : 0; \
     })
 
 /* get parity number of 1 ( number of 1 % 2) */
 #define parity_1(x) \
     __extension__ \
     ({ \
-        unsigned long ________x = (x); \
+        int ________x = (int)(x); \
         if (sizeof(x) == sizeof(unsigned int)) \
             ________x = parity_1_int((unsigned int)x); \
         else if (sizeof(x) == sizeof(unsigned long)) \
