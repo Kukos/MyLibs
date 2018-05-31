@@ -119,7 +119,7 @@ static void __list_destroy(List *list, bool destroy)
         next = ptr->____next;
         if (destroy && list->____destroy != NULL)
             list->____destroy((void *)ptr->____data);
-        
+
         list_node_destroy(ptr);
 
         ptr = next;
@@ -203,6 +203,12 @@ static int __list_delete(List *list, const void *entry, bool destroy)
 
     list->____tail->____next = NULL;
     --list->____length;
+
+    if (list->____length == 0)
+    {
+        list->____tail = NULL;
+        list->____head = NULL;
+    }
 
     return 0;
 }
@@ -296,6 +302,13 @@ static int __list_delete_all(List *list, const void *entry, bool destroy)
     list->____tail->____next = NULL;
 
     list->____length -= deleted;
+
+    if (list->____length == 0)
+    {
+        list->____tail = NULL;
+        list->____head = NULL;
+    }
+
 
     return (int)deleted;
 }

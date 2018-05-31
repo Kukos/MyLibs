@@ -142,7 +142,7 @@ static void __list2d_destroy(List2D *list, bool destroy)
 
     if (destroy && list->____destroy != NULL)
         list->____destroy((void *)end->____data);
-    
+
     list2d_node_destroy(end);
     FREE(list);
 }
@@ -224,9 +224,13 @@ static int __list2d_delete(List2D *list, const void *entry, bool destroy)
     }
 
     --list->____length;
-
-    list->____head->____prev = guard->____prev;
-    guard->____prev->____next = list->____head;
+    if (list->____length == 0)
+        list->____head = NULL;
+    else
+    {
+        list->____head->____prev = guard->____prev;
+        guard->____prev->____next = list->____head;
+    }
 
     list2d_node_destroy(guard);
 
@@ -332,7 +336,7 @@ static int __list2d_delete_all(List2D *list, const void *entry, bool destroy)
 
                 if (destroy && list->____destroy != NULL)
                     list->____destroy((void *)ptr->____data);
-                
+
                 list2d_node_destroy(ptr);
 
                 ptr = temp;
@@ -353,8 +357,13 @@ static int __list2d_delete_all(List2D *list, const void *entry, bool destroy)
 
     list->____length -= (size_t)deleted;
 
-    list->____head->____prev = guard->____prev;
-    guard->____prev->____next = list->____head;
+    if (list->____length == 0)
+        list->____head = NULL;
+    else
+    {
+        list->____head->____prev = guard->____prev;
+        guard->____prev->____next = list->____head;
+    }
 
     list2d_node_destroy(guard);
 

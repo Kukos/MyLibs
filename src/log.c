@@ -98,7 +98,7 @@ int log_init(const FILE *fd, int to_file)
 	char buf[LOGBUF_SIZE];
 	size_t len;
 
-	logfd = fd; /* NULL is ok, log only to file */
+	logfd = (FILE *)fd; /* NULL is ok, log only to file */
 	if (fd != NULL && (fd != stderr || fd != stdout))
 		logfd = stderr;
 
