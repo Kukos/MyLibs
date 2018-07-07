@@ -18,6 +18,7 @@
 #include <stddef.h> /* size_t */
 #include <sys/types.h> /* ssize_t */
 #include <fcntl.h>
+#include <stdbool.h>
 
 /*
 	Buffer use mmap so you can pass those flags as protect_flag
@@ -39,6 +40,7 @@ typedef struct File_buffer
 	size_t			____mapped_size; /* mapped size including padding */
     int 			____fd; /* file descriptor of buffered file */
     int 			____protect_flag;
+    bool            ____has_private_file; /* when fb created by path, file is open by FB */
 
 }File_buffer;
 

@@ -79,6 +79,7 @@ File_buffer *file_buffer_create(int fd, int protect_flag)
 
     fb->____size = (size_t)ft.st_size;
 	fb->____mapped_size = align_size(fb->____size);
+    fb->____has_private_file = false;
 
     if ((fb->____buffer = (char *)mmap(NULL, fb->____mapped_size,
 			 protect_flag, MAP_SHARED, fd, 0)) == MAP_FAILED)
@@ -92,6 +93,7 @@ File_buffer *file_buffer_create(int fd, int protect_flag)
 
 File_buffer *file_buffer_create_from_path(const char *path, int protect_flag, int open_flag)
 {
+    File_buffer *fb;
 	int fd;
 
 	TRACE();
@@ -100,7 +102,12 @@ File_buffer *file_buffer_create_from_path(const char *path, int protect_flag, in
 		ERROR("path == NULL\n", NULL);
 
 	fd = open(path, open_flag, 0644);
-	return file_buffer_create(fd, protect_flag);
+	fb = file_buffer_create(fd, protect_flag);
+    if (fb == NULL)
+        ERROR("file_buffer_create error\n", NULL);
+
+    fb->____has_private_file = true;
+    return fb;
 }
 
 int file_buffer_destroy(File_buffer *fb)
@@ -117,6 +124,9 @@ int file_buffer_destroy(File_buffer *fb)
     /* unmap file */
     if (munmap((void *)fb->____buffer, fb->____mapped_size) == -1)
        	ERROR("munmap error\n", 1);
+
+    if (fb->____has_private_file)
+        close(fb->____fd);
 
     FREE(fb);
 
