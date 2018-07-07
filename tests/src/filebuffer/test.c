@@ -57,12 +57,12 @@ int write_to_file(int fd, size_t bytes, off_t offset)
 
 int file_copy(int fd1, int fd2)
 {
-    struct stat64 st;
+    struct stat st;
 
     size_t file_size;
     size_t bytes;
 
-    char buffer[BUFFER_SIZE];
+    static char buffer[BUFFER_SIZE];
 
     int i;
     int loops;
@@ -76,7 +76,7 @@ int file_copy(int fd1, int fd2)
         return 1;
 
     /* read file size */
-    if (fstat64(fd1, &st) == -1)
+    if (fstat(fd1, &st) == -1)
         return 1;
 
     file_size = (size_t)st.st_size;
@@ -108,14 +108,14 @@ int file_copy(int fd1, int fd2)
 
 int file_cmp(int fd1, int fd2)
 {
-    struct stat64 st;
+    struct stat st;
 
     size_t file1_size;
     size_t file2_size;
     size_t bytes;
 
-    char buffer1[BUFFER_SIZE + 1];
-    char buffer2[BUFFER_SIZE + 1];
+    static char buffer1[BUFFER_SIZE + 1];
+    static char buffer2[BUFFER_SIZE + 1];
 
     int loops;
     int i;
@@ -132,12 +132,12 @@ int file_cmp(int fd1, int fd2)
         return 1;
 
     /* read file size */
-    if (fstat64(fd1, &st) == -1)
+    if (fstat(fd1, &st) == -1)
         return 1;
 
     file1_size = (size_t)st.st_size;
 
-    if (fstat64(fd2, &st) == -1)
+    if (fstat(fd2, &st) == -1)
         return 1;
 
     file2_size = (size_t)st.st_size;
@@ -1004,7 +1004,6 @@ void test(void)
     TEST(test_work_on_big_file_64mode());
     TEST(test_incorrect_type_64mode());
 }
-
 int main(void)
 {
     TEST_INIT("FILEBUFFER");
