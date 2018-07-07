@@ -293,6 +293,7 @@ test_f test_for_each(void)
     char *wexp[] = {"C", "I", "Jest", "Kocha", "Kukos", "Makra", "Masterem"};
     size_t size = ARRAY_SIZE(words);
     size_t i;
+    size_t counter = 0;
     Trie_node *node;
     char *data;
 
@@ -308,34 +309,60 @@ test_f test_for_each(void)
     T_EXPECT(trie_get_num_entries(trie), size);
 
     i = 0;
+    counter = 0;
     for_each(trie, Trie, node, data)
     {
         T_CHECK(node != NULL);
         T_EXPECT(strcmp(wexp[i], data), 0);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = size - 1;
+    counter = 0;
     for_each_prev(trie, Trie, node, data)
     {
         T_CHECK(node != NULL);
         T_EXPECT(strcmp(wexp[i], data), 0);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = 0;
+    counter = 0;
     for_each_data(trie, Trie, data)
+    {
          T_EXPECT(strcmp(wexp[i++], data), 0);
+         ++counter;
+    }
+    T_ASSERT(counter, size);
 
     i = size - 1;
+    counter = 0;
     for_each_data_prev(trie, Trie, data)
+    {
          T_EXPECT(strcmp(wexp[i--], data), 0);
+         ++counter;
+    }
+    T_ASSERT(counter, size);
 
+    counter = 0;
     for_each_node(trie, Trie, node)
+    {
         T_CHECK(node != NULL);
+        ++counter;
+    }
+    T_ASSERT(counter, size);
 
+    counter = 0;
     for_each_node_prev(trie, Trie, node)
+    {
         T_CHECK(node != NULL);
+        ++counter;
+    }
+    T_ASSERT(counter, size);
 
     trie_destroy(trie);
 }
@@ -348,6 +375,7 @@ test_f test_empty_for_each(void)
     size_t i;
     Trie_node *node;
     char *data;
+    size_t counter;
 
     Trie *trie;
 
@@ -356,34 +384,60 @@ test_f test_empty_for_each(void)
     T_EXPECT(trie_get_num_entries(trie), 0);
 
     i = 0;
+    counter = 0;
     for_each(trie, Trie, node, data)
     {
         T_CHECK(node != NULL);
         T_EXPECT(strcmp(wexp[i], data), 0);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = size - 1;
+    counter = 0;
     for_each_prev(trie, Trie, node, data)
     {
         T_CHECK(node != NULL);
         T_EXPECT(strcmp(wexp[i], data), 0);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = 0;
+    counter = 0;
     for_each_data(trie, Trie, data)
+    {
          T_EXPECT(strcmp(wexp[i++], data), 0);
+         ++counter;
+    }
+    T_ASSERT(counter, 0);
 
     i = size - 1;
+    counter = 0;
     for_each_data_prev(trie, Trie, data)
+    {
          T_EXPECT(strcmp(wexp[i--], data), 0);
+         ++counter;
+    }
+    T_ASSERT(counter, 0);
 
+    counter = 0;
     for_each_node(trie, Trie, node)
+    {
         T_CHECK(node != NULL);
+        ++counter;
+    }
+    T_ASSERT(counter, 0);
 
+    counter = 0;
     for_each_node_prev(trie, Trie, node)
+    {
         T_CHECK(node != NULL);
+        ++counter;
+    }
+    T_ASSERT(counter, 0);
 
     trie_destroy(trie);
 }

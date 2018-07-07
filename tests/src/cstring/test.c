@@ -790,53 +790,73 @@ test_f test_for_each(void)
     char *node;
     char data;
     int i;
+    size_t counter;
+    size_t size = strlen(str);
 
     s = string_create_from_str(str);
     T_ERROR(s == NULL);
 
     i = 0;
+    counter = 0;
     for_each(s, String, node, data)
     {
         T_ASSERT(*node, str[i]);
         T_ASSERT(data, str[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = string_get_length(s) - 1;
+    counter = 0;
     for_each_prev(s, String, node, data)
     {
         T_ASSERT(*node, str[i]);
         T_ASSERT(data, str[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = 0;
+    counter = 0;
     for_each_data(s, String, data)
     {
         T_ASSERT(data, str[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = string_get_length(s) - 1;
+    counter = 0;
     for_each_data_prev(s, String, data)
     {
         T_ASSERT(data, str[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = 0;
+    counter = 0;
     for_each_node(s, String, node)
     {
         T_ASSERT(*node, str[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = string_get_length(s) - 1;
+    counter = 0;
     for_each_node_prev(s, String, node)
     {
         T_ASSERT(*node, str[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     string_destroy(s);
 }
@@ -848,53 +868,74 @@ test_f test_empty_for_each(void)
     char *node;
     char data;
     int i;
+    size_t size = 0;
+    size_t counter;
 
     s = string_create_from_str(str);
     T_ERROR(s == NULL);
 
     i = 0;
+    counter = 0;
     for_each(s, String, node, data)
     {
         T_ASSERT(*node, str[i]);
         T_ASSERT(data, str[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = string_get_length(s) - 1;
+    counter = 0;
     for_each_prev(s, String, node, data)
     {
         T_ASSERT(*node, str[i]);
         T_ASSERT(data, str[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = 0;
+    counter = 0;
     for_each_data(s, String, data)
     {
         T_ASSERT(data, str[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = string_get_length(s) - 1;
+    counter = 0;
     for_each_data_prev(s, String, data)
     {
         T_ASSERT(data, str[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = 0;
+    counter = 0;
     for_each_node(s, String, node)
     {
         T_ASSERT(*node, str[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = string_get_length(s) - 1;
+    counter = 0;
     for_each_node_prev(s, String, node)
     {
         T_ASSERT(*node, str[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
+
 
     string_destroy(s);
 }

@@ -1763,6 +1763,7 @@ test_f test_for_each(void)
     int *ptr;
 
     size_t array_size = ARRAY_SIZE(t);
+    size_t counter;
 
     da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), cmp_int, NULL);
     T_ERROR(da == NULL);
@@ -1779,7 +1780,7 @@ test_f test_for_each(void)
 
     i = 0;
     dptr = (int *)darray_get_array(da);
-
+    counter = 0;
     for_each(da, Darray, ptr, val)
     {
         T_ASSERT(val, t[i]);
@@ -1787,11 +1788,13 @@ test_f test_for_each(void)
 
         ++i;
         ++dptr;
+        ++counter;
     }
+    T_ASSERT(counter, array_size);
 
     i = array_size - 1;
     dptr = (int *)darray_get_array(da) + array_size - 1;
-
+    counter = 0;
     for_each_prev(da, Darray, ptr, val)
     {
         T_ASSERT(val, t[i]);
@@ -1799,38 +1802,51 @@ test_f test_for_each(void)
 
         --i;
         --dptr;
+        ++counter;
     }
+    T_ASSERT(counter, array_size);
 
     i = 0;
+    counter = 0;
     for_each_data(da, Darray, val)
     {
         T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, array_size);
 
     i = array_size - 1;
+    counter = 0;
     for_each_data_prev(da, Darray, val)
     {
         T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, array_size);
 
     dptr = (int *)darray_get_array(da);
+    counter = 0;
     for_each_node(da, Darray, ptr)
     {
         T_ASSERT(ptr, dptr);
         ++dptr;
+        ++counter;
     }
+    T_ASSERT(counter, array_size);
 
     dptr = (int *)darray_get_array(da) + array_size - 1;
+    counter = 0;
     for_each_node_prev(da, Darray, ptr)
     {
         T_ASSERT(ptr, dptr);
         --dptr;
+        ++counter;
     }
+    T_ASSERT(counter, array_size);
 
     darray_destroy(da);
-
 }
 
 test_f test_empty_for_each(void)
@@ -1838,11 +1854,11 @@ test_f test_empty_for_each(void)
     Darray *da;
 
     int t[] = {0, 0, 0};
-
     int *dptr;
     int i;
     int val;
     int *ptr;
+    size_t counter;
 
     size_t array_size = ARRAY_SIZE(t);
 
@@ -1854,7 +1870,7 @@ test_f test_empty_for_each(void)
 
     i = 0;
     dptr = (int *)darray_get_array(da);
-
+    counter = 0;
     for_each(da, Darray, ptr, val)
     {
         T_ASSERT(val, t[i]);
@@ -1862,11 +1878,13 @@ test_f test_empty_for_each(void)
 
         ++i;
         ++dptr;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = array_size - 1;
     dptr = (int *)darray_get_array(da) + array_size - 1;
-
+    counter = 0;
     for_each_prev(da, Darray, ptr, val)
     {
         T_ASSERT(val, t[i]);
@@ -1874,38 +1892,51 @@ test_f test_empty_for_each(void)
 
         --i;
         --dptr;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = 0;
+    counter = 0;
     for_each_data(da, Darray, val)
     {
         T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = array_size - 1;
+    counter = 0;
     for_each_data_prev(da, Darray, val)
     {
         T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     dptr = (int *)darray_get_array(da);
+    counter = 0;
     for_each_node(da, Darray, ptr)
     {
         T_ASSERT(ptr, dptr);
         ++dptr;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     dptr = (int *)darray_get_array(da) + array_size - 1;
+    counter = 0;
     for_each_node_prev(da, Darray, ptr)
     {
         T_ASSERT(ptr, dptr);
         --dptr;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     darray_destroy(da);
-
 }
 
 test_f test_destroy_with_entries(void)

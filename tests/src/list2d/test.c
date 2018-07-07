@@ -668,6 +668,7 @@ test_f test_for_each(void)
     size_t size = ARRAY_SIZE(t);
     size_t rsize;
     int i;
+    size_t counter;
 
     int data;
     List2D_node *node;
@@ -686,42 +687,64 @@ test_f test_for_each(void)
     T_EXPECT(array_equal_int(t_exp, rt, size), true);
 
     i = 0;
+    counter = 0;
     for_each(list, List2D, node, data)
     {
         T_ASSERT(data, rt[i]);
         T_CHECK(node != NULL);
 
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = size - 1;
+    counter = 0;
     for_each_prev(list, List2D, node, data)
     {
         T_ASSERT(data, rt[i]);
         T_CHECK(node != NULL);
 
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = 0;
+    counter = 0;
     for_each_data(list, List2D, data)
     {
         T_ASSERT(data, rt[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = size - 1;
+    counter = 0;
     for_each_data_prev(list ,List2D, data)
     {
         T_ASSERT(data, rt[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
+    counter = 0;
     for_each_node(list, List2D, node)
+    {
         T_CHECK(node != NULL);
+        ++counter;
+    }
+    T_ASSERT(counter, size);
 
+    counter = 0;
     for_each_node_prev(list, List2D, node)
+    {
         T_CHECK(node != NULL);
+        ++counter;
+    }
+    T_ASSERT(counter, size);
 
     FREE(rt);
     list2d_destroy(list);
@@ -736,6 +759,7 @@ test_f test_empty_for_each(void)
 
     size_t size = ARRAY_SIZE(t);
     int i;
+    size_t counter;
 
     int data;
     List2D_node *node;
@@ -746,42 +770,65 @@ test_f test_empty_for_each(void)
     T_EXPECT(list2d_get_num_entries(list), 0);
 
     i = 0;
+    counter = 0;
     for_each(list, List2D, node, data)
     {
         T_ASSERT(data, rt[i]);
         T_CHECK(node != NULL);
 
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = size - 1;
+    counter = 0;
     for_each_prev(list, List2D, node, data)
     {
         T_ASSERT(data, rt[i]);
         T_CHECK(node != NULL);
 
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = 0;
+    counter = 0;
     for_each_data(list, List2D, data)
     {
         T_ASSERT(data, rt[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = size - 1;
+    counter = 0;
     for_each_data_prev(list ,List2D, data)
     {
         T_ASSERT(data, rt[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
+    counter = 0;
     for_each_node(list, List2D, node)
+    {
         T_CHECK(node != NULL);
+        ++counter;
+    }
+    T_ASSERT(counter, 0);
 
+    counter = 0;
     for_each_node_prev(list, List2D, node)
+    {
         T_CHECK(node != NULL);
+        ++counter;
+    }
+    T_ASSERT(counter, 0);
+
 
     list2d_destroy(list);
 }
@@ -973,7 +1020,8 @@ test_f test_slist_for_each(void)
 
     int i;
     void *node;
-    int val;
+    int data;
+    size_t counter;
 
     slist = slist_list2d_create(sizeof(int), cmp_int, diff_int, NULL);
     T_ERROR(slist == NULL);
@@ -985,44 +1033,64 @@ test_f test_slist_for_each(void)
 
 
     i = 0;
-    for_each(slist, SList, node, val)
+    counter = 0;
+    for_each(slist, SList, node, data)
     {
+        T_ASSERT(data, t[i]);
         T_CHECK(node != NULL);
-        T_ASSERT(val, t[i]);
+
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = size - 1;
-    for_each_prev(slist, SList, node, val)
+    counter = 0;
+    for_each_prev(slist, SList, node, data)
     {
+        T_ASSERT(data, t[i]);
         T_CHECK(node != NULL);
-        T_ASSERT(val, t[i]);
-        --i;
-    }
 
+        --i;
+        ++counter;
+    }
+    T_ASSERT(counter, size);
+
+    i = 0;
+    counter = 0;
+    for_each_data(slist, SList, data)
+    {
+        T_ASSERT(data, t[i]);
+        ++i;
+        ++counter;
+    }
+    T_ASSERT(counter, size);
+
+    i = size - 1;
+    counter = 0;
+    for_each_data_prev(slist, SList, data)
+    {
+        T_ASSERT(data, t[i]);
+        --i;
+        ++counter;
+    }
+    T_ASSERT(counter, size);
+
+    counter = 0;
     for_each_node(slist, SList, node)
     {
         T_CHECK(node != NULL);
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
+    counter = 0;
     for_each_node_prev(slist, SList, node)
     {
         T_CHECK(node != NULL);
+        ++counter;
     }
-
-    i = 0;
-    for_each_data(slist, SList, val)
-    {
-        T_ASSERT(val, t[i]);
-        ++i;
-    }
-
-    i = size - 1;
-    for_each_data_prev(slist, SList, val)
-    {
-        T_ASSERT(val, t[i]);
-        --i;
-    }
+    T_ASSERT(counter, size);
 
     slist_destroy(slist);
 }
@@ -1036,7 +1104,8 @@ test_f test_slist_empty_for_each(void)
 
     int i;
     void *node;
-    int val;
+    int data;
+    size_t counter;
 
     slist = slist_list2d_create(sizeof(int), cmp_int, diff_int, NULL);
     T_ERROR(slist == NULL);
@@ -1044,44 +1113,64 @@ test_f test_slist_empty_for_each(void)
     T_EXPECT(slist_get_num_entries(slist), 0);
 
     i = 0;
-    for_each(slist, SList, node, val)
+    counter = 0;
+    for_each(slist, SList, node, data)
     {
+        T_ASSERT(data, t[i]);
         T_CHECK(node != NULL);
-        T_ASSERT(val, t[i]);
+
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = size - 1;
-    for_each_prev(slist, SList, node, val)
+    counter = 0;
+    for_each_prev(slist, SList, node, data)
     {
+        T_ASSERT(data, t[i]);
         T_CHECK(node != NULL);
-        T_ASSERT(val, t[i]);
-        --i;
-    }
 
+        --i;
+        ++counter;
+    }
+    T_ASSERT(counter, 0);
+
+    i = 0;
+    counter = 0;
+    for_each_data(slist, SList, data)
+    {
+        T_ASSERT(data, t[i]);
+        ++i;
+        ++counter;
+    }
+    T_ASSERT(counter, 0);
+
+    i = size - 1;
+    counter = 0;
+    for_each_data_prev(slist, SList, data)
+    {
+        T_ASSERT(data, t[i]);
+        --i;
+        ++counter;
+    }
+    T_ASSERT(counter, 0);
+
+    counter = 0;
     for_each_node(slist, SList, node)
     {
         T_CHECK(node != NULL);
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
+    counter = 0;
     for_each_node_prev(slist, SList, node)
     {
         T_CHECK(node != NULL);
+        ++counter;
     }
-
-    i = 0;
-    for_each_data(slist, SList, val)
-    {
-        T_ASSERT(val, t[i]);
-        ++i;
-    }
-
-    i = size - 1;
-    for_each_data_prev(slist, SList, val)
-    {
-        T_ASSERT(val, t[i]);
-        --i;
-    }
+    T_ASSERT(counter, 0);
 
     slist_destroy(slist);
 }

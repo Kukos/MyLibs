@@ -724,6 +724,7 @@ test_f test_for_each(void)
     int val;
     size_t size = ARRAY_SIZE(t);
     size_t rsize;
+    size_t counter = 0;
 
     Arraylist *al;
     Arraylist_node *node;
@@ -744,6 +745,7 @@ test_f test_for_each(void)
     FREE(rt);
 
     i = 0;
+    counter = 0;
     for_each(al, Arraylist, node, val)
     {
         T_CHECK(node != NULL);
@@ -751,9 +753,12 @@ test_f test_for_each(void)
         T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
         T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = size - 1;
+    counter = 0;
     for_each_prev(al, Arraylist, node, val)
     {
         T_CHECK(node != NULL);
@@ -761,39 +766,53 @@ test_f test_for_each(void)
         T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
         T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = 0;
+    counter = 0;
     for_each_node(al, Arraylist, node)
     {
         T_CHECK(node != NULL);
         T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
         T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = size - 1;
+    counter = 0;
     for_each_node_prev(al, Arraylist, node)
     {
         T_CHECK(node != NULL);
         T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
         T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = 0;
+    counter = 0;
     for_each_data(al, Arraylist, val)
     {
         T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = size - 1;
+    counter = 0;
     for_each_data_prev(al, Arraylist, val)
     {
         T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     arraylist_destroy(al);
 }
@@ -805,6 +824,7 @@ test_f test_for_each_empty(void)
     int i;
     int val;
     size_t size = ARRAY_SIZE(t);
+    size_t counter;
 
     Arraylist *al;
     Arraylist_node *node;
@@ -815,6 +835,7 @@ test_f test_for_each_empty(void)
     T_EXPECT(arraylist_get_data_size(al), sizeof(int));
 
     i = 0;
+    counter = 0;
     for_each(al, Arraylist, node, val)
     {
         T_CHECK(node != NULL);
@@ -822,9 +843,12 @@ test_f test_for_each_empty(void)
         T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
         T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = size - 1;
+    counter = 0;
     for_each_prev(al, Arraylist, node, val)
     {
         T_CHECK(node != NULL);
@@ -832,39 +856,53 @@ test_f test_for_each_empty(void)
         T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
         T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = 0;
+    counter = 0;
     for_each_node(al, Arraylist, node)
     {
         T_CHECK(node != NULL);
         T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
         T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = size - 1;
+    counter = 0;
     for_each_node_prev(al, Arraylist, node)
     {
         T_CHECK(node != NULL);
         T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
         T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = 0;
+    counter = 0;
     for_each_data(al, Arraylist, val)
     {
         T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = size - 1;
+    counter = 0;
     for_each_data_prev(al, Arraylist, val)
     {
         T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     arraylist_destroy(al);
 }
@@ -1128,6 +1166,7 @@ test_f test_ulist_for_each(void)
     int i;
     void *node;
     int val;
+    size_t counter;
 
     ulist = ulist_arraylist_create(sizeof(int), NULL);
     T_ERROR(ulist == NULL);
@@ -1140,44 +1179,74 @@ test_f test_ulist_for_each(void)
     T_EXPECT(ulist_get_num_entries(ulist), size);
 
     i = 0;
+    counter = 0;
     for_each(ulist, UList, node, val)
     {
         T_CHECK(node != NULL);
         T_ASSERT(val, t[i]);
+        T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = size - 1;
+    counter = 0;
     for_each_prev(ulist, UList, node, val)
     {
         T_CHECK(node != NULL);
         T_ASSERT(val, t[i]);
+        T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
-
-    for_each_node(ulist, UList, node)
-    {
-        T_CHECK(node != NULL);
-    }
-
-    for_each_node(ulist, UList, node)
-    {
-        T_CHECK(node != NULL);
-    }
+    T_ASSERT(counter, size);
 
     i = 0;
+    counter = 0;
+    for_each_node(ulist, UList, node)
+    {
+        T_CHECK(node != NULL);
+        T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
+        ++i;
+        ++counter;
+    }
+    T_ASSERT(counter, size);
+
+    i = size - 1;
+    counter = 0;
+    for_each_node_prev(ulist, UList, node)
+    {
+        T_CHECK(node != NULL);
+        T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
+        --i;
+        ++counter;
+    }
+    T_ASSERT(counter, size);
+
+    i = 0;
+    counter = 0;
     for_each_data(ulist, UList, val)
     {
         T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     i = size - 1;
+    counter = 0;
     for_each_data_prev(ulist, UList, val)
     {
         T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, size);
 
     ulist_destroy(ulist);
 }
@@ -1191,6 +1260,7 @@ test_f test_ulist_for_each_empty(void)
     int i;
     void *node;
     int val;
+    size_t counter;
 
     ulist = ulist_arraylist_create(sizeof(int), NULL);
     T_ERROR(ulist == NULL);
@@ -1198,44 +1268,74 @@ test_f test_ulist_for_each_empty(void)
     T_EXPECT(ulist_get_num_entries(ulist), 0);
 
     i = 0;
+    counter = 0;
     for_each(ulist, UList, node, val)
     {
         T_CHECK(node != NULL);
         T_ASSERT(val, t[i]);
+        T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = size - 1;
+    counter = 0;
     for_each_prev(ulist, UList, node, val)
     {
         T_CHECK(node != NULL);
         T_ASSERT(val, t[i]);
+        T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
-
-    for_each_node(ulist, UList, node)
-    {
-        T_CHECK(node != NULL);
-    }
-
-    for_each_node(ulist, UList, node)
-    {
-        T_CHECK(node != NULL);
-    }
+    T_ASSERT(counter, 0);
 
     i = 0;
+    counter = 0;
+    for_each_node(ulist, UList, node)
+    {
+        T_CHECK(node != NULL);
+        T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
+        ++i;
+        ++counter;
+    }
+    T_ASSERT(counter, 0);
+
+    i = size - 1;
+    counter = 0;
+    for_each_node_prev(ulist, UList, node)
+    {
+        T_CHECK(node != NULL);
+        T_EXPECT(arraylist_node_get_data(node, (void *)&val), 0);
+        T_ASSERT(val, t[i]);
+        --i;
+        ++counter;
+    }
+    T_ASSERT(counter, 0);
+
+    i = 0;
+    counter = 0;
     for_each_data(ulist, UList, val)
     {
         T_ASSERT(val, t[i]);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     i = size - 1;
+    counter = 0;
     for_each_data_prev(ulist, UList, val)
     {
         T_ASSERT(val, t[i]);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, 0);
 
     ulist_destroy(ulist);
 }

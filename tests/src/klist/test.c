@@ -48,6 +48,7 @@ test_f test_insert(void)
     MyStruct *str;
     KList *ptr;
     int i;
+    size_t counter;
 
     /* INSERT LAST */
     for (i = 0; i < N; ++i)
@@ -57,17 +58,23 @@ test_f test_insert(void)
         T_EXPECT(klist_insert_last(&master, &s[i].list), 0);
     }
 
+    counter = 0;
     klist_for_each(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, i + 1);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
+    counter = 0;
     klist_for_each_prev(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, N - i);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
     /* INSERT FIRST */
     for (i = 0; i < N; ++i)
@@ -77,17 +84,24 @@ test_f test_insert(void)
         T_EXPECT(klist_insert_first(&master2, &s2[i].list), 0);
     }
 
+    counter = 0;
     klist_for_each(ptr, &master2, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, N - i);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
+    counter = 0;
     klist_for_each_prev(ptr, &master2, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, i + 1);
+        ++counter;
     }
+    T_ASSERT(counter, N);
+
 #undef N
 }
 
@@ -115,6 +129,7 @@ test_f test_insert_pos(void)
     KList *ptr;
     int i;
     int j;
+    size_t counter;
 
     for (i = 0; i < N; ++i)
     {
@@ -123,11 +138,14 @@ test_f test_insert_pos(void)
         T_EXPECT(klist_insert_pos(&master, pos[i], &s[i].list), 0);
         T_EXPECT(klist_get_parent(&s[i].list), &master);
 
+        counter = 0;
         klist_for_each(ptr, &master, j)
         {
             str = klist_entry(ptr, typeof(MyStruct), list);
             T_ASSERT(str->a, t[i][j]);
+            ++counter;
         }
+        T_ASSERT(counter, i + 1);
     }
 
 
@@ -163,6 +181,7 @@ test_f test_insert_after_before(void)
     MyStruct *str;
     KList *ptr;
     int i;
+    size_t counter;
 
     /* INSERT LAST */
     for (i = 0; i < M; ++i)
@@ -189,17 +208,23 @@ test_f test_insert_after_before(void)
     INSERT_BEFORE(&(s[i]), lists[6], i + 1);
     ++i;
 
+    counter = 0;
     klist_for_each(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, t[i]);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
+    counter = 0;
     klist_for_each_prev(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, t[N - i - 1]);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
 #undef N
 #undef M
@@ -217,6 +242,7 @@ test_f test_get_pos(void)
     MyStruct *str;
     KList *ptr;
     int i;
+    size_t counter = 0;
 
     /* INSERT LAST */
     for (i = 0; i < N; ++i)
@@ -226,20 +252,25 @@ test_f test_get_pos(void)
         T_EXPECT(klist_insert_last(&master, &s[i].list), 0);
     }
 
+    counter = 0;
     klist_for_each(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, i + 1);
         T_EXPECT(klist_get_pos(&master, i), ptr);
-
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
+    counter = 0;
     klist_for_each_prev(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, N - i);
         T_EXPECT(klist_get_pos(&master, N - i - 1), ptr);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
 #undef N
 }
@@ -255,6 +286,7 @@ test_f test_delete(void)
     int i;
     int j;
     int cnt;
+    size_t counter;
 
     /* INSERT LAST */
     for (i = 0; i < N; ++i)
@@ -264,17 +296,23 @@ test_f test_delete(void)
         T_EXPECT(klist_insert_last(&master, &s[i].list), 0);
     }
 
+    counter = 0;
     klist_for_each(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, i + 1);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
+    counter = 0;
     klist_for_each_prev(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, N - i);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
     /* DELETE LAST */
     for (j = 0; j < N; ++j)
@@ -282,17 +320,23 @@ test_f test_delete(void)
         T_EXPECT(klist_delete_last(&master), 0);
         for (i = 0; i < N - j; ++i)
         {
+            counter = 0;
             klist_for_each(ptr, &master, cnt)
             {
                 str = klist_entry(ptr, typeof(MyStruct), list);
                 T_ASSERT(str->a, cnt + 1);
+                ++counter;
             }
+            T_ASSERT(counter, N - j - 1);
 
+            counter = 0;
             klist_for_each_prev(ptr, &master, cnt)
             {
                 str = klist_entry(ptr, typeof(MyStruct), list);
                 T_ASSERT(str->a, N - cnt - j - 1);
+                ++counter;
             }
+            T_ASSERT(counter, N - j - 1);
         }
     }
 
@@ -308,17 +352,23 @@ test_f test_delete(void)
         T_EXPECT(klist_insert_last(&master, &s[i].list), 0);
     }
 
+    counter = 0;
     klist_for_each(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, i + 1);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
+    counter = 0;
     klist_for_each_prev(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, N - i);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
     /* DELETE FIRST */
     for (j = 0; j < N; ++j)
@@ -326,17 +376,23 @@ test_f test_delete(void)
         T_EXPECT(klist_delete_first(&master), 0);
         for (i = 0; i < N - j; ++i)
         {
+            counter = 0;
             klist_for_each(ptr, &master, cnt)
             {
                 str = klist_entry(ptr, typeof(MyStruct), list);
                 T_ASSERT(str->a, cnt + 2 + j);
+                ++counter;
             }
+            T_ASSERT(counter, N - j - 1);
 
+            counter = 0;
             klist_for_each_prev(ptr, &master, cnt)
             {
                 str = klist_entry(ptr, typeof(MyStruct), list);
                 T_ASSERT(str->a, N - cnt);
+                ++counter;
             }
+            T_ASSERT(counter, N - j - 1);
         }
     }
 
@@ -370,6 +426,7 @@ test_f test_delete_pos(void)
     KList *ptr;
     int i;
     int j;
+    size_t counter;
 
     /* INSERT LAST */
     for (i = 0; i < N; ++i)
@@ -379,33 +436,45 @@ test_f test_delete_pos(void)
         T_EXPECT(klist_insert_last(&master, &s[i].list), 0);
     }
 
+    counter = 0;
     klist_for_each(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, i + 1);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
+    counter = 0;
     klist_for_each_prev(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, N - i);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
     for (i = 0; i < N; ++i)
     {
         T_EXPECT(klist_delete_pos(&master, pos[i]), 0);
 
+        counter = 0;
         klist_for_each(ptr, &master, j)
         {
             str = klist_entry(ptr, typeof(MyStruct), list);
             T_ASSERT(str->a, t[i][j]);
+            ++counter;
         }
+        T_ASSERT(counter, N - i - 1);
 
+        counter = 0;
         klist_for_each_prev(ptr, &master, j)
         {
             str = klist_entry(ptr, typeof(MyStruct), list);
             T_ASSERT(str->a, t[i][N - j - 2 - i]);
+            ++counter;
         }
+        T_ASSERT(counter, N - i - 1);
     }
 
     T_EXPECT(klist_get_head(&master), NULL);
@@ -439,6 +508,7 @@ test_f test_delete_node(void)
     KList *ptr;
     int i;
     int j;
+    size_t counter;
 
     /* INSERT LAST */
     for (i = 0; i < N; ++i)
@@ -449,33 +519,45 @@ test_f test_delete_node(void)
         lists[i] = &s[i].list;
     }
 
+    counter = 0;
     klist_for_each(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, i + 1);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
+    counter = 0;
     klist_for_each_prev(ptr, &master, i)
     {
         str = klist_entry(ptr, typeof(MyStruct), list);
         T_ASSERT(str->a, N - i);
+        ++counter;
     }
+    T_ASSERT(counter, N);
 
     for (i = 0; i < N; ++i)
     {
         T_EXPECT(klist_delete_node(lists[pos[i]]), 0);
 
+        counter = 0;
         klist_for_each(ptr, &master, j)
         {
             str = klist_entry(ptr, typeof(MyStruct), list);
             T_ASSERT(str->a, t[i][j]);
+            ++counter;
         }
+        T_ASSERT(counter, N - i - 1);
 
+        counter = 0;
         klist_for_each_prev(ptr, &master, j)
         {
             str = klist_entry(ptr, typeof(MyStruct), list);
             T_ASSERT(str->a, t[i][N - j - 2 - i]);
+            ++counter;
         }
+        T_ASSERT(counter, N - i - 1);
     }
 
     T_EXPECT(klist_get_head(&master), NULL);
