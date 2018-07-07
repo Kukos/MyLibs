@@ -14,7 +14,8 @@
 #include <stdint.h>
 
 /* use thic macro to convert to string  */
-#define tostring(s)	#s
+#define ____tostring____(s) #s
+#define tostring(s) ____tostring____(s)
 
 /* CONCAT use this macro to concat words in one string */
 #define ____concat____(x, y) x ## y

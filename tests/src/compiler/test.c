@@ -8,17 +8,16 @@
 
 test_f test_to_string(void)
 {
-#define KUKOS
-#define C_MASTER
+#define C_MASTER KUKOS
 
     char str1[] = {"KUKOS"};
     char str2[] = {"C_MASTER"};
 
+    T_EXPECT(strcmp(tostring(C_MASTER), str1), 0);
+
+#undef C_MASTER
     T_EXPECT(strcmp(tostring(KUKOS), str1), 0);
     T_EXPECT(strcmp(tostring(C_MASTER), str2), 0);
-
-#undef KUKOS
-#undef C_MASTER
 }
 
 typedef struct MyStruct2
