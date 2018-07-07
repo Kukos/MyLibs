@@ -24,7 +24,7 @@ uint32_t hash_jenkins_one_at_time(const void *data, size_t size)
     hash += hash << 3;
     hash ^= hash >> 11;
     hash += hash << 15;
-  
+
     return hash;
 }
 
@@ -47,6 +47,10 @@ uint32_t hash_rs(const void *data, size_t size)
         hash *= const_a + key[i];
         const_a *= const_b;
     }
+
+    /* sometimes a + key = max uint32 + 1, so then return 1 instead of 0 */
+    if (hash == 0)
+        hash = 1;
 
     return hash;
 }
@@ -100,7 +104,7 @@ uint32_t hash_sdbm(const void *data, size_t size)
     const BYTE *key = (const BYTE *)data;
 
     TRACE();
-    
+
     if (data == NULL || size == 0)
         return 0;
 
@@ -140,7 +144,7 @@ uint32_t hash_dek(const void *data, size_t size)
 
     for(i = 0; i < size; ++i)
         hash = ((hash << 5) ^ (hash >> 27)) ^ key[i];
-   
+
     return hash;
 }
 
@@ -181,7 +185,7 @@ uint32_t hash_ap(const void *data, size_t size)
 	if (ODD(i))
             hash ^= ~((hash << 11) + (key[i] ^ (hash >> 5)));
 	else
-            hash ^= (hash <<  7) ^ key[i] * (hash >> 3); 
+            hash ^= (hash <<  7) ^ key[i] * (hash >> 3);
     }
 
     return hash;
@@ -210,14 +214,14 @@ uint32_t hash_murmur(const void *data, size_t size)
     for (i = 0; i < size; i += 4)
     {
         acc = *(uint32_t *)&key[i];
-	acc *= const_m; 
-        acc ^= acc >> const_r; 
-	acc *= const_m; 
-		
-	hash *= const_m; 
+	acc *= const_m;
+        acc ^= acc >> const_r;
+	acc *= const_m;
+
+	hash *= const_m;
 	hash ^= acc;
     }
-	
+
     key = &key[i];
 
     /* the last part */
@@ -226,8 +230,8 @@ uint32_t hash_murmur(const void *data, size_t size)
         case 3:
         {
             hash ^= (uint32_t)key[2] << 16;
-        } 
-	    case 2: 
+        }
+	    case 2:
         {
             hash ^= (uint32_t)key[1] << 8;
         }
@@ -295,7 +299,7 @@ uint32_t hash_super_fast_hash(const void *data, size_t size)
             hash += hash >> 11;
             break;
         }
-        case 2: 
+        case 2:
         {
             hash += *(uint16_t *)key;
             hash ^= hash << 11;
@@ -400,7 +404,7 @@ uint32_t hash_xxhash(const void *data, size_t size)
 
     /* last part */
     key = (const BYTE *)&acc_array[i];
-    for (i = 0; i < rem_by_4; ++i)    
+    for (i = 0; i < rem_by_4; ++i)
     {
         hash += key[i] * prime5;
         hash = rotl(hash, 11) * prime1;
