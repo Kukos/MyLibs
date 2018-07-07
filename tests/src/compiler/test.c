@@ -20,6 +20,51 @@ test_f test_to_string(void)
     T_EXPECT(strcmp(tostring(C_MASTER), str2), 0);
 }
 
+test_f test_concat(void)
+{
+    char str1[] = {"KUKOS"};
+    char str2[] = {"C_MASTER"};
+
+#define PART1 KU
+#define PART2 KOS
+
+
+#define C_MAS C_
+#define TER MASTER
+#define PART21 C_MAS
+#define PART22 TER
+
+    T_EXPECT(strcmp(tostring(concat(KUK, OS)), str1), 0);
+    T_EXPECT(strcmp(tostring(concat(C_, MASTER)), str2), 0);
+
+    T_EXPECT(strcmp(tostring(concat(PART1, PART2)), str1), 0);
+    T_EXPECT(strcmp(tostring(concat(PART21, PART22)), str2), 0);
+
+#undef PART1
+#undef PART2
+#undef PART21
+#undef PART22
+#undef C_
+#undef MASTER
+}
+
+test_f test_unique_var_name(void)
+{
+
+#define check_unique_var_name(name) \
+    int name = 0; \
+    unused(name);
+
+    check_unique_var_name(unique_var_name(var));
+    check_unique_var_name(unique_var_name(var));
+    check_unique_var_name(unique_var_name(var1));
+    check_unique_var_name(unique_var_name(var1));
+    check_unique_var_name(unique_var_name(var));
+    check_unique_var_name(unique_var_name(var1));
+
+#undef check_unique_var_name
+}
+
 typedef struct MyStruct2
 {
     char a;
@@ -312,6 +357,8 @@ test_f test_atomic(void)
 void test(void)
 {
     TEST(test_to_string());
+    TEST(test_concat());
+    TEST(test_unique_var_name());
     TEST(test_container_of());
     TEST(test_init_variable());
     TEST(test_least_one());

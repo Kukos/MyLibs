@@ -21,6 +21,8 @@
 #define ____concat____(x, y) x ## y
 #define concat(x, y) ____concat____(x, y)
 
+#define unique_var_name(name) concat(concat(UNIQUE_VAR_, name), __COUNTER__)
+
 /* set if () { } at the begining of pipeline */
 #define likely(x) __builtin_expect(!!(x), 1)
 
