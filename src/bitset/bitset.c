@@ -12,7 +12,7 @@
 
 #define BITSET_SIZE(bits) (INT_DIV_CEIL(bits, sizeof(DWORD) << 3))
 #define BITSET_WORD(bit) ((bit) / BITSET_SHIFT)
-#define BITSET_REAL_POS(bit) ((bit) & BITSET_MASK) 
+#define BITSET_REAL_POS(bit) ((bit) & BITSET_MASK)
 
 Bitset *bitset_create(size_t size)
 {
@@ -157,7 +157,7 @@ Bitset_iterator *bitset_iterator_create(const Bitset *bitset, iti_mode_t mode)
     }
 	else
     {
-		iterator->____index = (ssize_t)bitset->____size - 1;
+		iterator->____index = (ssize_t)(BITSET_SIZE(bitset->____size) - 1);
         iterator->____bit = (sizeof(DWORD) << 3) - 1;
     }
 
@@ -197,7 +197,7 @@ int bitset_iterator_init(const Bitset *bitset, Bitset_iterator *iterator, iti_mo
     }
 	else
     {
-		iterator->____index = (ssize_t)bitset->____size - 1;
+		iterator->____index = (ssize_t)(BITSET_SIZE(bitset->____size) - 1);
         iterator->____bit = (sizeof(DWORD) << 3) - 1;
     }
 

@@ -8,7 +8,7 @@ test_f test_create(void)
     size_t i;
     Bitset *set = bitset_create(bits);
     T_ERROR(set == NULL);
-    
+
     T_CHECK(bitset_get_set(set, NULL) != NULL);
     T_EXPECT(bitset_get_size(set), bits);
 
@@ -30,7 +30,7 @@ test_f test_set_get_bit(void)
 
     for (i = 0; i < ARRAY_SIZE(bit); ++i)
         bitset_set_bit(set, bit[i]);
-   
+
 
     for (i = 0; i < bits; ++i)
     {
@@ -60,7 +60,7 @@ test_f test_clear_bit(void)
 
     for (i = 0; i < ARRAY_SIZE(bit); ++i)
         bitset_clear_bit(set, bit[i]);
-   
+
 
     for (i = 0; i < bits; ++i)
     {
@@ -87,7 +87,7 @@ test_f test_flip_bit(void)
 
     for (i = 0; i < ARRAY_SIZE(bit); ++i)
         bitset_set_bit(set, bit[i]);
-   
+
     for (i = 0; i < bits; ++i)
         bitset_flip_bit(set, i);
 
@@ -117,7 +117,7 @@ test_f test_set_bit_value(void)
 
     for (i = 0; i < ARRAY_SIZE(bit); ++i)
         bitset_set_bit_value(set, bit[i], 1);
-   
+
     for (i = 0; i < ARRAY_SIZE(bit); ++i)
         bitset_set_bit_value(set, bit[i], 1);
 
@@ -146,6 +146,8 @@ test_f test_foreach(void)
     const int bit[] = {1, 10, 100, 150, 1000};
     size_t i;
     size_t j;
+    size_t counter;
+
     BYTE value;
     BYTE value2;
     DWORD word;
@@ -154,8 +156,9 @@ test_f test_foreach(void)
 
     for (i = 0; i < ARRAY_SIZE(bit); ++i)
         bitset_set_bit(set, bit[i]);
-   
+
     i = 0;
+    counter = 0;
     for_each(set, Bitset, word, value)
     {
         value2 = 0;
@@ -165,9 +168,12 @@ test_f test_foreach(void)
 
         T_ASSERT(value, value2);
         ++i;
+        ++counter;
     }
+    T_ASSERT(counter, bits);
 
     i = bits - 1;
+    counter = 0;
     for_each_prev(set, Bitset, word, value)
     {
         value2 = 0;
@@ -177,7 +183,9 @@ test_f test_foreach(void)
 
         T_ASSERT(value, value2);
         --i;
+        ++counter;
     }
+    T_ASSERT(counter, bits);
 
     bitset_destroy(set);
 }
