@@ -82,6 +82,18 @@ ssize_t string_get_length(const String *string);
 bool string_is_empty(const String *string);
 
 /*
+    Reverse in place whole string
+
+    PARAMS
+    @IN str - string to reverse
+
+    RETURN
+    0 iff success
+    Non-zero value iff failure
+*/
+int string_reverse(String *str);
+
+/*
     Create string (string representation of variable)
     from variable of primitive type
 

@@ -1556,6 +1556,32 @@ test_f test_split_string(void)
     }
 }
 
+test_f test_reverse(void)
+{
+    const char *s = "Kukos";
+    const char *rs = "sokuK";
+    const char *s2 = "Kukoss";
+    const char *rs2 = "ssokuK";
+
+    String *str;
+
+    str = string_create_from_str(s);
+    T_ERROR(str == NULL);
+
+    T_EXPECT(string_reverse(str), 0);
+    T_EXPECT(strcmp(string_get_str(str), rs), 0);
+
+    string_destroy(str);
+
+    str = string_create_from_str(s2);
+    T_ERROR(str == NULL);
+
+    T_EXPECT(string_reverse(str), 0);
+    T_EXPECT(strcmp(string_get_str(str), rs2), 0);
+
+    string_destroy(str);
+}
+
 test_f test_empty(void)
 {
     String *s;
@@ -1648,6 +1674,7 @@ test_f test_empty(void)
     T_EXPECT(string_split_c(s, c, &size), NULL);
     T_EXPECT(string_split_str(s, str, &size), NULL);
     T_EXPECT(string_split_string(s, s2, &size), NULL);
+    T_EXPECT(string_reverse(s), 0);
 
     string_destroy(s);
     string_destroy(s2);
@@ -1675,6 +1702,7 @@ void test(void)
     TEST(test_append_c());
     TEST(test_append_str());
     TEST(test_append_string());
+    TEST(test_reverse());
     TEST(test_insert_c());
     TEST(test_insert_str());
     TEST(test_insert_string());

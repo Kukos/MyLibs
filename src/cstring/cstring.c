@@ -2120,6 +2120,22 @@ String **string_split_string(const String *string, const String *string2, size_t
     return string_split_str(string, string2->____str, size);
 }
 
+int string_reverse(String *str)
+{
+    size_t i;
+
+    if (str == NULL)
+        ERROR("string == NULL\n", 1);
+
+    if (string_is_empty(str))
+        return 0;
+
+    for (i = 0; i < str->____len / 2; ++i)
+        SWAP(str->____str[i], str->____str[str->____len - i - 1]);
+
+    return 0;
+}
+
 String_iterator *string_iterator_create(const String *s, iti_mode_t mode)
 {
     String_iterator *it;
