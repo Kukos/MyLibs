@@ -57,7 +57,7 @@ int write_to_file(int fd, size_t bytes, off_t offset)
 
 int file_copy(int fd1, int fd2)
 {
-    struct stat st;
+    struct stat64 st;
 
     size_t file_size;
     size_t bytes;
@@ -76,7 +76,7 @@ int file_copy(int fd1, int fd2)
         return 1;
 
     /* read file size */
-    if (fstat(fd1, &st) == -1)
+    if (fstat64(fd1, &st) == -1)
         return 1;
 
     file_size = (size_t)st.st_size;
@@ -108,7 +108,7 @@ int file_copy(int fd1, int fd2)
 
 int file_cmp(int fd1, int fd2)
 {
-    struct stat st;
+    struct stat64 st;
 
     size_t file1_size;
     size_t file2_size;
@@ -132,12 +132,12 @@ int file_cmp(int fd1, int fd2)
         return 1;
 
     /* read file size */
-    if (fstat(fd1, &st) == -1)
+    if (fstat64(fd1, &st) == -1)
         return 1;
 
     file1_size = (size_t)st.st_size;
 
-    if (fstat(fd2, &st) == -1)
+    if (fstat64(fd2, &st) == -1)
         return 1;
 
     file2_size = (size_t)st.st_size;
@@ -553,6 +553,439 @@ test_f test_work_on_big_file(void)
     FREE(path2);
 }
 
+test_f test_create_from_fd_64mode(void)
+{
+    char *path1;
+    char *path2;
+    int fd1;
+    int fd2;
+
+    /* 5 MB */
+    const size_t file_size = BIT(20) * 5;
+
+    File_buffer *fb;
+
+    /* create file */
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
+    T_ERROR(creat64(path1, 0644) == -1);
+
+    /* open file */
+    fd1 = open64(path1, O_RDWR);
+    T_ERROR(fd1 == -1);
+
+    /* write 5MB */
+    T_ERROR(write_to_file(fd1, file_size, 0));
+
+    /* create file */
+    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __func__) == -1);
+    T_ERROR(creat64(path2, 0644) == -1);
+
+    /* open file */
+    fd2 = open64(path2, O_RDWR);
+    T_ERROR(fd2 == -1);
+
+    /* copy file */
+    T_ERROR(file_copy(fd1, fd2));
+
+    /* TEST FILE BUFFER */
+    fb = file_buffer64_create(fd1, PROT_READ | PROT_WRITE);
+    T_ERROR(fb == NULL);
+
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
+
+    file_buffer_destroy(fb);
+
+    T_EXPECT(file_cmp(fd1, fd2), 0);
+
+    close(fd1);
+    close(fd2);
+
+    T_ERROR(remove(path1) == -1);
+    T_ERROR(remove(path2) == -1);
+
+    FREE(path1);
+    FREE(path2);
+}
+
+test_f test_create_from_path_64mode(void)
+{
+    char *path1;
+    char *path2;
+    int fd1;
+    int fd2;
+
+    File_buffer *fb;
+
+    /* 5 MB */
+    const size_t file_size = BIT(20) * 5;
+
+    /* create file */
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
+    T_ERROR(creat64(path1, 0644) == -1);
+
+    /* open file */
+    fd1 = open64(path1, O_RDWR);
+    T_ERROR(fd1 == -1);
+
+    /* write 5MB */
+    T_ERROR(write_to_file(fd1, file_size, 0));
+
+    /* create file */
+    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __func__) == -1);
+    T_ERROR(creat64(path2, 0644) == -1);
+
+    /* open file */
+    fd2 = open64(path2, O_RDWR);
+    T_ERROR(fd2 == -1);
+
+    /* copy file */
+    T_ERROR(file_copy(fd1, fd2));
+
+    /* TEST FILE BUFFER */
+    fb = file_buffer64_create_from_path(path1, PROT_READ | PROT_WRITE, O_RDWR);
+    T_ERROR(fb == NULL);
+
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
+
+    file_buffer_destroy(fb);
+
+    T_EXPECT(file_cmp(fd1, fd2), 0);
+
+    close(fd1);
+    close(fd2);
+
+    T_ERROR(remove(path1) == -1);
+    T_ERROR(remove(path2) == -1);
+
+    FREE(path1);
+    FREE(path2);
+}
+
+test_f test_read_file_64mode(void)
+{
+    char *path1;
+    char *path2;
+    int fd1;
+    int fd2;
+
+    const size_t file_size = BUFFER_SIZE;
+    char buffer[BUFFER_SIZE + 1];
+
+    File_buffer *fb;
+
+    /* create file */
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
+    T_ERROR(creat64(path1, 0644) == -1);
+
+    /* open file */
+    fd1 = open64(path1, O_RDWR);
+    T_ERROR(fd1 == -1);
+
+    /* write to file */
+    T_ERROR(write_to_file(fd1, file_size, 0));
+
+    /* come back to begining */
+    T_ERROR(lseek(fd1, 0, SEEK_SET) == -1);
+
+    /* read from file */
+    T_ERROR(read(fd1, buffer, file_size) == -1);
+    buffer[BUFFER_SIZE] = '\0';
+
+    /* come back to begining */
+    T_ERROR(lseek(fd1, 0, SEEK_SET) == -1);
+
+    /* TEST FILE BUFFER */
+    fb = file_buffer64_create(fd1, PROT_READ | PROT_WRITE);
+    T_ERROR(fb == NULL);
+
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
+
+    /* create file */
+    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __func__) == -1);
+    T_ERROR(creat64(path2, 0644) == -1);
+
+    /* open file */
+    fd2 = open64(path2, O_RDWR);
+    T_ERROR(fd2 == -1);
+
+    /* write to new file */
+    T_ERROR(write(fd2, file_buffer_get_buff(fb), file_buffer_get_size(fb)) == -1);
+
+    /* cmp files */
+    T_EXPECT(file_cmp(fd1, fd2), 0);
+
+    file_buffer_destroy(fb);
+
+    close(fd1);
+    close(fd2);
+
+    T_ERROR(remove(path1) == -1);
+    T_ERROR(remove(path2) == -1);
+
+    FREE(path1);
+    FREE(path2);
+}
+
+test_f test_write_to_file_64mode(void)
+{
+    char *path1;
+    int fd1;
+
+    const char *const data = "Kukos is a C fanboy!";
+    const size_t file_size = 0;
+    char buffer[BUFFER_SIZE];
+
+    File_buffer *fb;
+
+    /* create file */
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
+    T_ERROR(creat64(path1, 0644) == -1);
+
+    /* open file */
+    fd1 = open64(path1, O_RDWR);
+    T_ERROR(fd1 == -1);
+
+    /* TEST FILE BUFFER */
+    fb = file_buffer64_create(fd1, PROT_READ | PROT_WRITE);
+    T_ERROR(fb == NULL);
+
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
+
+    /* add data to file */
+    T_EXPECT(file_buffer64_append(fb, data), 0);
+    T_EXPECT(file_buffer_get_size(fb), strlen(data));
+
+    /* sync data */
+    T_EXPECT(file_buffer_synch(fb), 0);
+
+    /* read synced data */
+    T_ERROR(read(fd1, buffer, strlen(data)) == -1);
+    buffer[strlen(data)] = '\0';
+
+    T_EXPECT(strcmp(data, buffer), 0);
+
+    file_buffer_destroy(fb);
+
+    close(fd1);
+    T_ERROR(remove(path1) == -1);
+
+    FREE(path1);
+}
+
+test_f test_read_write_64mode(void)
+{
+    char *path1;
+    char *path2;
+    int fd1;
+    int fd2;
+
+    const char *const data = "Kukos is a C fanboy!";
+
+    /* 10 MB */
+    const size_t file_size = BIT(20) * 10;
+
+    File_buffer *fb;
+
+    /* create file */
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
+    T_ERROR(creat64(path1, 0644) == -1);
+
+    /* open file */
+    fd1 = open64(path1, O_RDWR);
+    T_ERROR(fd1 == -1);
+
+    /* write 10 MB to file */
+    T_ERROR(write_to_file(fd1, file_size, 0));
+    T_ERROR(lseek(fd1, 0, SEEK_SET) == -1);
+
+    /* create file */
+    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __func__) == -1);
+    T_ERROR(creat64(path2, 0644) == -1);
+
+    /* open file */
+    fd2 = open64(path2, O_RDWR);
+    T_ERROR(fd2 == -1);
+
+    /* copy file */
+    T_ERROR(file_copy(fd1, fd2));
+
+    /* add data to file2 */
+    T_ERROR(lseek(fd2, file_size, SEEK_SET) == -1);
+    T_ERROR(write(fd2, data, strlen(data)) == -1);
+
+    /* TEST FILE BUFFER */
+    fb = file_buffer64_create(fd1, PROT_READ | PROT_WRITE);
+    T_ERROR(fb == NULL);
+
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
+
+    /* add data to file */
+    T_EXPECT(file_buffer64_append(fb, data), 0);
+    T_EXPECT(file_buffer_get_size(fb), strlen(data) + file_size);
+
+    /* sync data */
+    T_EXPECT(file_buffer_synch(fb), 0);
+
+    T_EXPECT(file_cmp(fd1, fd2), 0);
+
+    file_buffer_destroy(fb);
+
+    close(fd1);
+    close(fd2);
+
+    T_ERROR(remove(path1) == -1);
+    T_ERROR(remove(path2) == -1);
+
+    FREE(path1);
+    FREE(path2);
+}
+
+test_f test_work_on_big_file_64mode(void)
+{
+    char *path1;
+    char *path2;
+    int fd1;
+    int fd2;
+
+    const char *const data = "Kukos is a C fanboy!";
+
+    /* 100 MB */
+    const size_t file_size = BIT(20) * 100;
+
+    File_buffer *fb;
+
+    /* create file */
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
+    T_ERROR(creat64(path1, 0644) == -1);
+
+    /* open file */
+    fd1 = open64(path1, O_RDWR);
+    T_ERROR(fd1 == -1);
+
+    /* write 10 MB to file */
+    T_ERROR(write_to_file(fd1, file_size, 0));
+    T_ERROR(lseek(fd1, 0, SEEK_SET) == -1);
+
+    /* create file */
+    T_ERROR(asprintf(&path2, "%s/%s2", test_dir, __func__) == -1);
+    T_ERROR(creat64(path2, 0644) == -1);
+
+    /* open file */
+    fd2 = open64(path2, O_RDWR);
+    T_ERROR(fd2 == -1);
+
+    /* copy file */
+    T_ERROR(file_copy(fd1, fd2));
+
+    /* add data to file2 */
+    T_ERROR(lseek(fd2, file_size, SEEK_SET) == -1);
+    T_ERROR(write(fd2, data, strlen(data)) == -1);
+
+    /* TEST FILE BUFFER */
+    fb = file_buffer64_create(fd1, PROT_READ | PROT_WRITE);
+    T_ERROR(fb == NULL);
+
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
+
+    /* add data to file */
+    T_EXPECT(file_buffer64_append(fb, data), 0);
+    T_EXPECT(file_buffer_get_size(fb), strlen(data) + file_size);
+
+    /* sync data */
+    T_EXPECT(file_buffer_synch(fb), 0);
+
+    T_EXPECT(file_cmp(fd1, fd2), 0);
+
+    file_buffer_destroy(fb);
+
+    close(fd1);
+    close(fd2);
+
+    T_ERROR(remove(path1) == -1);
+    T_ERROR(remove(path2) == -1);
+
+    FREE(path1);
+    FREE(path2);
+}
+
+test_f test_incorrect_type(void)
+{
+    char *path1;
+    int fd1;
+
+    File_buffer *fb;
+
+    /* 5 MB */
+    const size_t file_size = BIT(20) * 5;
+
+    /* create file */
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
+    T_ERROR(creat(path1, 0644) == -1);
+
+    /* open file */
+    fd1 = open(path1, O_RDWR);
+    T_ERROR(fd1 == -1);
+
+    /* write 5MB */
+    T_ERROR(write_to_file(fd1, file_size, 0));
+
+    /* TEST FILE BUFFER */
+    fb = file_buffer_create_from_path(path1, PROT_READ | PROT_WRITE, O_RDWR);
+    T_ERROR(fb == NULL);
+
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
+    T_CHECK(file_buffer64_append(fb, "Kukos") != 0);
+
+    file_buffer_destroy(fb);
+
+    T_ERROR(remove(path1) == -1);
+
+    FREE(path1);
+}
+
+test_f test_incorrect_type_64mode(void)
+{
+    char *path1;
+    int fd1;
+
+    File_buffer *fb;
+
+    /* 5 MB */
+    const size_t file_size = BIT(20) * 5;
+
+    /* create file */
+    T_ERROR(asprintf(&path1, "%s/%s", test_dir, __func__) == -1);
+    T_ERROR(creat64(path1, 0644) == -1);
+
+    /* open file */
+    fd1 = open64(path1, O_RDWR);
+    T_ERROR(fd1 == -1);
+
+    /* write 5MB */
+    T_ERROR(write_to_file(fd1, file_size, 0));
+
+    /* TEST FILE BUFFER */
+    fb = file_buffer64_create_from_path(path1, PROT_READ | PROT_WRITE, O_RDWR);
+    T_ERROR(fb == NULL);
+
+    T_CHECK(file_buffer_get_buff(fb) != NULL);
+    T_EXPECT(file_buffer_get_size(fb), file_size);
+    T_CHECK(file_buffer_append(fb, "Kukos") != 0);
+
+    file_buffer_destroy(fb);
+
+    T_ERROR(remove(path1) == -1);
+
+    FREE(path1);
+}
+
 void test(void)
 {
     TEST(test_create_from_fd());
@@ -561,6 +994,15 @@ void test(void)
     TEST(test_write_to_file());
     TEST(test_read_write());
     TEST(test_work_on_big_file());
+    TEST(test_incorrect_type());
+
+    TEST(test_create_from_fd_64mode());
+    TEST(test_create_from_path_64mode());
+    TEST(test_read_file_64mode());
+    TEST(test_write_to_file_64mode());
+    TEST(test_read_write_64mode());
+    TEST(test_work_on_big_file_64mode());
+    TEST(test_incorrect_type_64mode());
 }
 
 int main(void)

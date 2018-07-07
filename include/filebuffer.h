@@ -31,6 +31,13 @@
 
        PROT_NONE  Pages may not be accessed.
 
+    example:
+        int fd = open("path_to_file", O_RDWR, 0644);
+        File_buffer  *fb = file_buffer_create(fd, PROT_READ | PROT_WRITE);
+
+        or equivalently:
+        File_buffer  *fb = file_buffer_create_from_path("path_to_file", PROT_READ | PROT_WRITE, O_RDWR);
+
 */
 
 typedef struct File_buffer
@@ -41,6 +48,7 @@ typedef struct File_buffer
     int 			____fd; /* file descriptor of buffered file */
     int 			____protect_flag;
     bool            ____has_private_file; /* when fb created by path, file is open by FB */
+    bool            ____mode64; /* mode 64 or not ? */
 
 }File_buffer;
 
@@ -58,6 +66,19 @@ typedef struct File_buffer
 File_buffer *file_buffer_create(int fd, int protect_flag);
 
 /*
+    MAP file to RAM with flag in 64 bits MODE
+
+	PARAMS
+	@IN fd - file descriptor
+	@IN protect_flag - flags
+
+	RETURN:
+	%NULL iff failure
+	%Pointer to File_buffer iff success
+*/
+File_buffer *file_buffer64_create(int fd, int protect_flag);
+
+/*
     MAP file to RAM with flag
 
 	PARAMS
@@ -70,6 +91,20 @@ File_buffer *file_buffer_create(int fd, int protect_flag);
 	%Pointer to File_buffer iff success
 */
 File_buffer *file_buffer_create_from_path(const char *path, int protect_flag, int open_flag);
+
+/*
+    MAP file to RAM with flag in 64 bits MODE
+
+	PARAMS
+	@IN path - path to file
+	@IN protect_flag - flags
+	@IN open_flag - flags to open file
+
+	RETURN:
+	%NULL iff failure
+	%Pointer to File_buffer iff success
+*/
+File_buffer *file_buffer64_create_from_path(const char *path, int protect_flag, int open_flag);
 
 /*
     Detached file and destroy structure
@@ -95,6 +130,19 @@ int file_buffer_destroy(File_buffer *fb);
 	%Non-zero value iff failure
 */
 int file_buffer_append(File_buffer *fb, const char *data);
+
+/*
+    Add to end of mapped file the content data in 64 bits MODE
+
+	PARAMS
+	@IN File_buffer - pointer to file buffer
+	@IN data - data in char format ( expected '/0' at the end )
+
+	RETURN:
+	%0 iff success
+	%Non-zero value iff failure
+*/
+int file_buffer64_append(File_buffer *fb, const char *data);
 
 /*
     Synchronized mapped file with true file on disk
