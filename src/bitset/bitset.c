@@ -108,6 +108,34 @@ void bitset_flip_bit(Bitset *bitset, size_t pos)
     FLIP_BIT(bitset->____set[BITSET_WORD(pos)], BITSET_REAL_POS(pos));
 }
 
+void bitset_reverse_word(Bitset *bitset, size_t pos)
+{
+    TRACE();
+
+    if (bitset == NULL || pos > BITSET_SIZE(bitset->____size))
+       return;
+
+    bitset->____set[pos] = REVERSE_BITS(bitset->____set[pos]);
+}
+
+void bitset_reverse(Bitset *bitset)
+{
+    size_t i;
+    size_t size =  BITSET_SIZE(bitset->____size);
+
+    TRACE();
+
+    if (bitset == NULL)
+        return;
+
+    for (i = 0; i < size / 2; ++i)
+    /* new gcc optimize it and guess that this i s pointer overflow, so to make him happy, do max with 0 */
+        SWAP(bitset->____set[i], bitset->____set[MAX((ssize_t)0, (ssize_t)(size - i - 1))]);
+
+    for (i = 0; i < size; ++i)
+        bitset->____set[i] = REVERSE_BITS(bitset->____set[i]);
+}
+
 ssize_t bitset_get_size(const Bitset *bitset)
 {
     TRACE();
@@ -116,6 +144,16 @@ ssize_t bitset_get_size(const Bitset *bitset)
         ERROR("bitset == NULL\n", -1);
 
     return (ssize_t)bitset->____size;
+}
+
+DWORD bitset_get_word(const Bitset *bitset, size_t pos)
+{
+    TRACE();
+
+    if (bitset == NULL || pos > BITSET_SIZE(bitset->____size))
+        ERROR("bitset == NULL || pos > size\n", (DWORD)-1);
+
+    return bitset->____set[pos];
 }
 
 DWORD *bitset_get_set(const Bitset *bitset, size_t *size)

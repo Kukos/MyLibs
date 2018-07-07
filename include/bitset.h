@@ -70,7 +70,7 @@ int bitset_get_bit(const Bitset *bitset, size_t pos);
 
 /*
     Set bit to 1
-    
+
     PARAMS
     @IN bitset - pointer to bitset
     @IN pos - bit to set
@@ -82,7 +82,7 @@ void bitset_set_bit(Bitset *bitset, size_t pos);
 
 /*
     Clear bit to 0
-    
+
     PARAMS
     @IN bitset - pointer to bitset
     @IN pos - bit to clear
@@ -94,7 +94,7 @@ void bitset_clear_bit(Bitset *bitset, size_t pos);
 
 /*
     Set bit to value @val (0 or 1)
-    
+
     PARAMS
     @IN bitset - pointer to bitset
     @IN pos - bit to set
@@ -107,7 +107,7 @@ void bitset_set_bit_value(Bitset *bitset, size_t pos, int value);
 
 /*
     Flip bit (bit = ~bit)
-    
+
     PARAMS
     @IN bitset - pointer to bitset
     @IN pos - bit to flip
@@ -116,6 +116,42 @@ void bitset_set_bit_value(Bitset *bitset, size_t pos, int value);
     This is a void function
 */
 void bitset_flip_bit(Bitset *bitset, size_t pos);
+
+/*
+    Reverse WORD in bitset
+
+    PARAMS
+    @IN bitset - pointer to bitset
+    @IN pos - word pos
+
+    RETURN
+    This is a void function
+*/
+void bitset_reverse_word(Bitset *bitset, size_t pos);
+
+/*
+    Reverse all bits in set
+
+    PARAMS
+    @IN bitset - pointer to bitset
+
+    RETURN
+    This is a void function
+*/
+void bitset_reverse(Bitset *bitset);
+
+/*
+    Get DWORD from bitset
+
+    PARAMS
+    @IN bitset - pointer to bitset
+    @IN pos - word pos
+
+    RETURN
+    -1 iff failure
+    DWORD value iff success
+*/
+DWORD bitset_get_word(const Bitset *bitset, size_t pos);
 
 /*
     Get number of bits in bitset

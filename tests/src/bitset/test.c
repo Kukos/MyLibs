@@ -104,7 +104,6 @@ test_f test_flip_bit(void)
     bitset_destroy(set);
 }
 
-
 test_f test_set_bit_value(void)
 {
     const size_t bits = BIT(10);
@@ -136,6 +135,87 @@ test_f test_set_bit_value(void)
 
     for (i = 0; i < bits; ++i)
         T_EXPECT(bitset_get_bit(set, i), 0);
+
+    bitset_destroy(set);
+}
+
+test_f test_get_word(void)
+{
+    const size_t bits = 2 * (sizeof(DWORD) << 3);
+    DWORD w1 = 0x12345678;
+    DWORD w2 = 0xabcdefff;
+    DWORD t[] = {w1, w2};
+    size_t i;
+    size_t j;
+
+    Bitset *set = bitset_create(bits);
+    T_ERROR(set == NULL);
+
+    for (i = 0; i < ARRAY_SIZE(t); ++i)
+        for (j = 0; j < sizeof(t[i]) << 3; ++j)
+            bitset_set_bit_value(set, (i * (sizeof(t[i]) << 3)) + j, GET_BIT(t[i], j));
+
+    T_EXPECT(bitset_get_word(set, 0), w1);
+    T_EXPECT(bitset_get_word(set, 1), w2);
+
+    bitset_destroy(set);
+}
+
+test_f test_reverse_word(void)
+{
+    const size_t bits = 2 * (sizeof(DWORD) << 3);
+    DWORD w1 = 0x12345678;
+    DWORD w2 = 0xabcdefff;
+    DWORD t[] = {w1, w2};
+    size_t i;
+    size_t j;
+
+    Bitset *set = bitset_create(bits);
+    T_ERROR(set == NULL);
+
+    for (i = 0; i < ARRAY_SIZE(t); ++i)
+        for (j = 0; j < sizeof(t[i]) << 3; ++j)
+            bitset_set_bit_value(set, (i * (sizeof(t[i]) << 3)) + j, GET_BIT(t[i], j));
+
+    bitset_reverse_word(set, 0);
+    T_EXPECT(bitset_get_word(set, 0), REVERSE_BITS(w1));
+    T_EXPECT(bitset_get_word(set, 1), w2);
+
+    bitset_destroy(set);
+
+    set = bitset_create(bits);
+    T_ERROR(set == NULL);
+
+    for (i = 0; i < ARRAY_SIZE(t); ++i)
+        for (j = 0; j < sizeof(t[i]) << 3; ++j)
+            bitset_set_bit_value(set, (i * (sizeof(t[i]) << 3)) + j, GET_BIT(t[i], j));
+
+    bitset_reverse_word(set, 1);
+    T_EXPECT(bitset_get_word(set, 0), w1);
+    T_EXPECT(bitset_get_word(set, 1), REVERSE_BITS(w2));
+
+    bitset_destroy(set);
+}
+
+test_f test_reverse_bits(void)
+{
+    const size_t bits = 2 * (sizeof(DWORD) << 3);
+    DWORD w1 = 0x12345678;
+    DWORD w2 = 0xabcdefff;
+    DWORD t[] = {w1, w2};
+    size_t i;
+    size_t j;
+
+    Bitset *set = bitset_create(bits);
+    T_ERROR(set == NULL);
+
+    for (i = 0; i < ARRAY_SIZE(t); ++i)
+        for (j = 0; j < sizeof(t[i]) << 3; ++j)
+            bitset_set_bit_value(set, (i * (sizeof(t[i]) << 3)) + j, GET_BIT(t[i], j));
+
+    bitset_reverse(set);
+    T_EXPECT(bitset_get_word(set, 0), REVERSE_BITS(w2));
+    T_EXPECT(bitset_get_word(set, 1), REVERSE_BITS(w1));
 
     bitset_destroy(set);
 }
@@ -198,6 +278,9 @@ void test(void)
     TEST(test_clear_bit());
     TEST(test_flip_bit());
     TEST(test_set_bit_value());
+    TEST(test_reverse_word());
+    TEST(test_reverse_bits());
+    TEST(test_get_word());
     TEST(test_foreach());
 }
 
