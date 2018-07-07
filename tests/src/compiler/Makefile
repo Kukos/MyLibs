@@ -26,7 +26,7 @@ memcheck:
 
 memusage:
 	$(call print_memusage,$(NAME))
-	$(Q)$(VALGRIND) $(VALGRIND_MEMUSAGE_FLAGS) --massif-out-file=$(MEMUSAGE_FILE) $(THIS_DIR)/$(TEST_EXEC_NAME) >/dev/null 2>&1 
+	$(Q)$(VALGRIND) $(VALGRIND_MEMUSAGE_FLAGS) --massif-out-file=$(MEMUSAGE_FILE) $(THIS_DIR)/$(TEST_EXEC_NAME) >/dev/null 2>&1
 
 clean:
 	$(Q)$(RM) $(_OBJ)

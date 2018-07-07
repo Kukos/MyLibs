@@ -83,7 +83,7 @@
                 index = i; \
             } \
         *min = m; \
-        return index; \
+        return (ssize_t)index; \
     } \
 
 /*
@@ -108,7 +108,7 @@
                 index = i; \
             } \
         *max = m; \
-        return index; \
+        return (ssize_t)index; \
     } \
 
 /*

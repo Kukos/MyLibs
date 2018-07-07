@@ -72,11 +72,11 @@
     ({ \
         unsigned long ________x = (x); \
         if (sizeof(x) == sizeof(unsigned int)) \
-            ________x = HAMM_WEIGHT_int((unsigned int)x); \
+            ________x = (unsigned long)HAMM_WEIGHT_int((unsigned int)x); \
         else if (sizeof(x) == sizeof(unsigned long)) \
-            ________x = HAMM_WEIGHT_long((unsigned long)x); \
+            ________x = (unsigned long)HAMM_WEIGHT_long((unsigned long)x); \
         else if (sizeof(x) == sizeof(unsigned long long)) \
-            ________x = HAMM_WEIGHT_longlong((unsigned long long)x); \
+            ________x = (unsigned long)HAMM_WEIGHT_longlong((unsigned long long)x); \
         ________x; \
     })
 
@@ -90,11 +90,11 @@
     ({ \
         unsigned long ________x = (x); \
         if (sizeof(x) == sizeof(unsigned int)) \
-            ________x = HAMM_DIST_int((unsigned int)x, (unsigned int)y); \
+            ________x = (unsigned long)HAMM_DIST_int((unsigned int)x, (unsigned int)y); \
         else if (sizeof(x) == sizeof(unsigned long)) \
-            ________x = HAMM_DIST_long((unsigned long)x, (unsigned long)y); \
+            ________x = (unsigned long)HAMM_DIST_long((unsigned long)x, (unsigned long)y); \
         else if (sizeof(x) == sizeof(unsigned long long)) \
-            ________x = HAMM_DIST_longlong((unsigned long long)x, (unsigned long long)y); \
+            ________x = (unsigned long)HAMM_DIST_longlong((unsigned long long)x, (unsigned long long)y); \
         ________x; \
     })
 

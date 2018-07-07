@@ -13,10 +13,10 @@
 #include <stdint.h>
 
 /* bits operations */
-#define BIT(n)          (1ull << (n))
-#define GET_BIT(n ,k)   (((n) & BIT(k)) >> (k))
-#define SET_BIT(n, k)   ((n) |= BIT(k))
-#define CLEAR_BIT(n, k) ((n) &= ~BIT(k))
+#define BIT(n)          (1ull << ((unsigned long long)n))
+#define GET_BIT(n ,k)   (((n) & (typeof(n))BIT((unsigned long long)k)) >> ((unsigned long long)k))
+#define SET_BIT(n, k)   ((n) |= (typeof(n))BIT((unsigned long long)k))
+#define CLEAR_BIT(n, k) ((n) &= (typeof(n))~BIT((unsigned long long)k))
 
 #define SET_BIT_VALUE(n, k, val) \
     __extension__ \
@@ -30,8 +30,8 @@
 #define FLIP_BIT(n, k) (SET_BIT_VALUE(n, k, !(GET_BIT(n, k))))
 
 #define GET_FLAG(n, flag)   CAST_TO_BOOL((n) & (flag))
-#define SET_FLAG(n, flag)   ((n) |= (flag))
-#define CLEAR_FLAG(n, flag) ((n) &= ~(flag))
+#define SET_FLAG(n, flag)   ((n) |= (typeof(n))(flag))
+#define CLEAR_FLAG(n, flag) ((n) &= (typeof(n))~(flag))
 
 #define REVERSE_BITS(x) \
     __extension__ \

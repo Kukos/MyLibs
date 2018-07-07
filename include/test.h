@@ -22,7 +22,8 @@
 #define __TEST_SUMMARY_TEXT__   " TEST SUMMARY "
 
 /* private simple strlen to avoid including string.h */
-___inline___ long ______test_strlen______(const char *str)
+static ___inline___ long ______test_strlen______(const char *str);
+static ___inline___ long ______test_strlen______(const char *str)
 {
     long len = 0;
     while (*str++ != '\0')
@@ -80,7 +81,7 @@ static test_t ________ret;
     do { \
         ________passed_counter = 0; \
         ________failed_counter = 0; \
-        srand(time(NULL)); \
+        srand((unsigned)time(NULL)); \
         (void)printf( __TEST_COLOR_INFO__ "%.*s %s %.*s\n" COLOR_RESET, \
                 ((int)(__TEST_MAX_STRING_LENGTH__ - \
                     ______test_strlen______(fmt) - 2) >> 1), \
@@ -140,7 +141,7 @@ static test_t ________ret;
         if (________failed_counter) \
         { \
             ____TEST_SUMMARY(__TEST_COLOR_FAILED__, "TESTS FAILED\n"); \
-            return ________failed_counter; \
+            return (int)________failed_counter; \
         } \
         else \
         { \
