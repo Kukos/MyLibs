@@ -1,4 +1,4 @@
-# C Library Set (CLS)
+# C Libraries Set (CLS)
 
 #### Overview
 CLS is a set of basic libraries which can be found in C++, java etc. Unfortunately stdlib in C lang is quite poor, so new library set was created.
@@ -46,6 +46,8 @@ GPL 3.0
     arraylist - unsorted list implemented like normal linked list
 
     avl - self balanced tree avl
+
+    base64 - base 64 coding
 
     bitset - array of bits
 

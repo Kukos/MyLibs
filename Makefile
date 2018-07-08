@@ -177,6 +177,10 @@ D_HISTOGRAM := $(SDIR)/histogram
 I_HISTOGRAM := $(IDIR)/histogram.h $(F_LIB) $(I_LOG) $(I_ASSER)
 S_HISTOGRAM := $(wildcard $(D_HISTOGRAM)/*.c) $(S_LOG) $(S_ASSERT)
 
+D_BASE64 := $(SDIR)/base64
+I_BASE64 := $(IDIR)/base64.h $(F_LIB) $(I_LOG)
+S_BASE64 := $(wildcard $(D_BASE64)/*.c) $(S_LOG)
+
 # Needed to testting
 TEST_COMMON_INC := $(F_TEST) $(I_COMPILER) $(I_COMMON) $(I_SORT) $(I_SEARCH)
 TEST_COMMON_SRC := $(S_COMPILER) $(S_COMMON) $(S_SORT) $(S_SEARCH)
@@ -229,7 +233,7 @@ define print_bin
 	$(if $(Q), @echo "[BIN]         $$(1)")
 endef
 
-all: prepare arraylist avl bitset bst crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d rbt ringbuffer search sort stack trie ufset final
+all: prepare arraylist avl base64 bitset bst crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d rbt ringbuffer search sort stack trie ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
@@ -240,6 +244,10 @@ arraylist: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 avl: prepare
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
+base64: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
@@ -328,7 +336,7 @@ ufset: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 
-final: prepare arraylist avl bitset bst crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
+final: prepare arraylist avl base64 bitset bst crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
 	$(call print_info,Finalizing)
 	$(Q)$(CP) $(IDIR)/common.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/compiler.h $(O_HEADERS) && \
@@ -354,6 +362,7 @@ clean:
 	$(call print_info,Cleaning)
 	$(Q)$(MAKE) -f $(D_ARRAYLIST)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_AVL)/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(D_BASE64)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_BITSET)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_BST)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_CRC)/Makefile clean --no-print-directory && \
