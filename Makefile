@@ -181,6 +181,10 @@ D_BASE64 := $(SDIR)/base64
 I_BASE64 := $(IDIR)/base64.h $(F_LIB) $(I_LOG)
 S_BASE64 := $(wildcard $(D_BASE64)/*.c) $(S_LOG)
 
+D_CCACHE := $(SDIR)/ccache
+I_CCACHE := $(IDIR)/ccache.h $(F_LIB) $(I_LOG) $(I_CSTRING)
+S_CCACHE := $(wildcard $(D_CCACHE)/*.c) $(S_LOG) $(S_CSTRING)
+
 # Needed to testting
 TEST_COMMON_INC := $(F_TEST) $(I_COMPILER) $(I_COMMON) $(I_SORT) $(I_SEARCH)
 TEST_COMMON_SRC := $(S_COMPILER) $(S_COMMON) $(S_SORT) $(S_SEARCH)
@@ -233,7 +237,7 @@ define print_bin
 	$(if $(Q), @echo "[BIN]         $$(1)")
 endef
 
-all: prepare arraylist avl base64 bitset bst crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d rbt ringbuffer search sort stack trie ufset final
+all: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d rbt ringbuffer search sort stack trie ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
@@ -256,6 +260,10 @@ bitset: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 bst: prepare
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
+ccache: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
@@ -336,7 +344,7 @@ ufset: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 
-final: prepare arraylist avl base64 bitset bst crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
+final: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
 	$(call print_info,Finalizing)
 	$(Q)$(CP) $(IDIR)/common.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/compiler.h $(O_HEADERS) && \
@@ -365,6 +373,7 @@ clean:
 	$(MAKE) -f $(D_BASE64)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_BITSET)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_BST)/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(D_CCACHE)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_CRC)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_CSTRING)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_DARRAY)/Makefile clean --no-print-directory && \

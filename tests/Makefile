@@ -32,7 +32,7 @@ VALGRIND_MEMCHECK_FLAGS := --leak-check=full
 VALGRIND_MEMUSAGE_FLAGS := --tool=massif --stacks=yes
 PASS_STRING := All heap blocks were freed -- no leaks are possible
 
-all: arraylist avl base64 bitset bst common compiler crc cstring darray fifo filebuffer hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
+all: arraylist avl base64 bitset bst ccache common compiler crc cstring darray fifo filebuffer hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
 
 arraylist:
 	$(call print_test_make,$@)
@@ -51,6 +51,10 @@ bitset:
 	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
 
 bst:
+	$(call print_test_make,$@)
+	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
+
+ccache:
 	$(call print_test_make,$@)
 	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
 
@@ -136,6 +140,7 @@ run:
 	$(MAKE) -f $(TEST_SRC)/base64/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bitset/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bst/Makefile run --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/ccache/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/common/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/compiler/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/crc/Makefile run --no-print-directory && \
@@ -162,6 +167,7 @@ clean:
 	$(MAKE) -f $(TEST_SRC)/base64/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bitset/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bst/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/ccache/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/common/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/compiler/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/crc/Makefile clean --no-print-directory && \
@@ -188,6 +194,7 @@ memcheck:
 	$(MAKE) -f $(TEST_SRC)/base64/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bitset/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bst/Makefile memcheck --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/ccache/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/common/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/compiler/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/crc/Makefile memcheck --no-print-directory && \
@@ -214,6 +221,7 @@ memusage:
 	$(MAKE) -f $(TEST_SRC)/base64/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bitset/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/bst/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/ccache/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/common/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/compiler/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/crc/Makefile memusage --no-print-directory && \

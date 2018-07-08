@@ -59,6 +59,8 @@ GPL 3.0
 
     darray - dynamic array (like std :: vector)
 
+    ccache - contiguous cache in memory for big data
+
     fifo - dynamic fifo queue (like std :: queue)
 
     filebuffer - buffer for large files (wrapper for mmap)
