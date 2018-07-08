@@ -185,6 +185,10 @@ D_CCACHE := $(SDIR)/ccache
 I_CCACHE := $(IDIR)/ccache.h $(F_LIB) $(I_LOG) $(I_CSTRING)
 S_CCACHE := $(wildcard $(D_CCACHE)/*.c) $(S_LOG) $(S_CSTRING)
 
+D_TCP := $(SDIR)/tcp
+I_TCP := $(IDIR)/tcp.h $(F_LIB) $(I_LOG)
+S_TCP := $(wildcard $(D_TCP)/*.c) $(S_LOG)
+
 # Needed to testting
 TEST_COMMON_INC := $(F_TEST) $(I_COMPILER) $(I_COMMON) $(I_SORT) $(I_SEARCH)
 TEST_COMMON_SRC := $(S_COMPILER) $(S_COMMON) $(S_SORT) $(S_SEARCH)
@@ -237,7 +241,7 @@ define print_bin
 	$(if $(Q), @echo "[BIN]         $$(1)")
 endef
 
-all: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d rbt ringbuffer search sort stack trie ufset final
+all: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d rbt ringbuffer search sort stack tcp trie ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
@@ -335,6 +339,10 @@ stack: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
+tcp: prepare
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
 trie: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
@@ -344,7 +352,7 @@ ufset: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 
-final: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
+final: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack tcp trie ufset
 	$(call print_info,Finalizing)
 	$(Q)$(CP) $(IDIR)/common.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/compiler.h $(O_HEADERS) && \
@@ -391,6 +399,7 @@ clean:
 	$(MAKE) -f $(D_SEARCH)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_SORT)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_STACK)/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(D_TCP)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_TRIE)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_UFSET)/Makefile clean --no-print-directory
 	$(Q)$(MAKE) -f $(TEST_DIR)/Makefile clean --no-print-directory

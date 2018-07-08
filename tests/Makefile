@@ -32,7 +32,7 @@ VALGRIND_MEMCHECK_FLAGS := --leak-check=full
 VALGRIND_MEMUSAGE_FLAGS := --tool=massif --stacks=yes
 PASS_STRING := All heap blocks were freed -- no leaks are possible
 
-all: arraylist avl base64 bitset bst ccache common compiler crc cstring darray fifo filebuffer hash heap klist list list2d rbt ringbuffer search sort stack trie ufset
+all: arraylist avl base64 bitset bst ccache common compiler crc cstring darray fifo filebuffer hash heap klist list list2d rbt ringbuffer search sort stack tcp trie ufset
 
 arraylist:
 	$(call print_test_make,$@)
@@ -126,6 +126,10 @@ stack:
 	$(call print_test_make,$@)
 	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
 
+tcp:
+	$(call print_test_make,$@)
+	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
+
 trie:
 	$(call print_test_make,$@)
 	$(Q)$(MAKE) -f $(TEST_SRC)/$@/Makefile --no-print-directory
@@ -158,6 +162,7 @@ run:
 	$(MAKE) -f $(TEST_SRC)/search/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/sort/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/stack/Makefile run --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/tcp/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/trie/Makefile run --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/ufset/Makefile run --no-print-directory
 
@@ -186,6 +191,7 @@ clean:
 	$(MAKE) -f $(TEST_SRC)/sort/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/stack/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/trie/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/tcp/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/ufset/Makefile clean --no-print-directory
 
 memcheck:
@@ -213,6 +219,7 @@ memcheck:
 	$(MAKE) -f $(TEST_SRC)/sort/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/stack/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/trie/Makefile memcheck --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/tcp/Makefile memcheck --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/ufset/Makefile memcheck --no-print-directory
 
 memusage:
@@ -240,4 +247,5 @@ memusage:
 	$(MAKE) -f $(TEST_SRC)/sort/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/stack/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/trie/Makefile memusage --no-print-directory && \
+	$(MAKE) -f $(TEST_SRC)/tcp/Makefile memusage --no-print-directory && \
 	$(MAKE) -f $(TEST_SRC)/ufset/Makefile memusage --no-print-directory

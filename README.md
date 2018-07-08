@@ -91,6 +91,8 @@ GPL 3.0
 
     stack - stack of dynamic array
 
+    tcp - basic tcp socket functions
+
     trie - special tree for strings
 
     ufset - union find set with master -> slaves feature
