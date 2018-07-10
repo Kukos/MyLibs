@@ -93,6 +93,8 @@ GPL 3.0
 
     tcp - basic tcp socket functions
 
+    tls - basic tls functions
+
     trie - special tree for strings
 
     ufset - union find set with master -> slaves feature
