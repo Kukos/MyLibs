@@ -90,6 +90,8 @@ test_f test_full_connection(void)
         fd = tcp_accept_connection(socket);
         T_CHECK(fd != -1);
 
+        listen(fd, 1);
+
         /* prepare */
         FD_ZERO(&set);
         FD_SET(fd, &set);
@@ -118,6 +120,7 @@ test_f test_full_connection(void)
 
         /* prepare */
         fd = socket;
+        listen(fd, 1);
         FD_ZERO(&set);
         FD_SET(fd, &set);
 
