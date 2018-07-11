@@ -120,7 +120,6 @@ void tls_clenup(void)
     EVP_cleanup();
     ERR_remove_state(0);
     ERR_free_strings();
-    EVP_cleanup();
     ENGINE_cleanup();
     SSL_COMP_free_compression_methods();
 
@@ -158,6 +157,7 @@ SSL *tls_accept(SSL_CTX *ctx, int fd)
     if (SSL_accept(ssl) <= 0)
     {
         ERR_print_errors_fp(stderr);
+        SSL_free(ssl);
         ERROR("cannot accept tls connection from %d fd\n", NULL, fd);
     }
 
@@ -179,6 +179,7 @@ SSL *tls_request_connection(SSL_CTX *ctx, int fd)
     if (SSL_connect(ssl) <= 0)
     {
         ERR_print_errors_fp(stderr);
+        SSL_free(ssl);
         ERROR("SSL_connect error\n", NULL);
     }
 
