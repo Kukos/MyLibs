@@ -5,9 +5,12 @@
 #include <fcntl.h>
 #include <string.h>
 
+#define MIN_PORT  6000
+#define RANGE     2000
+
 test_f test_create_socket(void)
 {
-    const int port = 6666 + rand() % 1000;
+    const int port = MIN_PORT + rand() % RANGE;
     int socket;
 
     socket = tcp_socket_create("localhost", port);
@@ -18,7 +21,7 @@ test_f test_create_socket(void)
 
 test_f test_connection_request(void)
 {
-    const int port = 6666 + rand() % 1000;
+    const int port = MIN_PORT + rand() % RANGE;
     int socket;
     int fd;
     int pid;
@@ -44,7 +47,7 @@ test_f test_connection_request(void)
 
 test_f test_accept_connection(void)
 {
-    const int port = 6666 + rand() % 1000;
+    const int port = MIN_PORT + rand() % RANGE;
     int socket;
     int fd;
     int pid;
@@ -73,7 +76,7 @@ test_f test_full_connection(void)
     char buffer[1024] = {0};
     const char text[] = "Kukos";
     const char text2[] = "C Master";
-    const int port = 6666 + rand() % 1000;
+    const int port = MIN_PORT + rand() % RANGE;
 
     int socket;
     int fd;

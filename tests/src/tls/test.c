@@ -6,6 +6,9 @@
 #include <fcntl.h>
 #include <string.h>
 
+#define MIN_PORT  6000
+#define RANGE     2000
+
 #define key_file ".key.pem"
 #define cert_file ".cert.pem"
 
@@ -110,7 +113,7 @@ test_f test_server_context_with_err(void)
 
 test_f test_connection_request(void)
 {
-    const int port = 6666 + rand() % 1000;
+    const int port = MIN_PORT + rand() % RANGE;
     int socket;
     int fd;
     int pid;
@@ -164,7 +167,7 @@ test_f test_connection_request(void)
 
 test_f test_connection_accept(void)
 {
-    const int port = 6666 + rand() % 1000;
+    const int port = MIN_PORT + rand() % RANGE;
     int socket;
     int fd;
     int pid;
@@ -222,7 +225,7 @@ test_f test_full_connection(void)
     char buffer[1024] = {0};
     const char text[] = "Kukos";
     const char text2[] = "C Master";
-    const int port = 6666 + rand() % 1000;
+    const int port = MIN_PORT + rand() % RANGE;
 
     int socket;
     int fd;
