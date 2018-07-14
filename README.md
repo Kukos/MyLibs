@@ -89,6 +89,8 @@ GPL 3.0
 
     search - implementation of linear and binary search
 
+    selection - selection of positional statistic
+
     sort - implementation of few sort algorithms (very good quicksort implementation better that classic sort in C)
 
     stack - stack of dynamic array

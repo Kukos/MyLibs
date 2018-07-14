@@ -364,9 +364,6 @@ int partition_hoare(void        *t,
         offset_index2 -= _size_of;
     }
 
-    /* insert entries == pivot to correct part of array t */
-    offset_index1 = offset_index2 + _size_of;
-
     __SWAP__(_t[offset_index2], _t[offset_left], _size_of);
 
     *offset_left_index = (size_t)MAX((ssize_t)(offset_index2 - size_of), (ssize_t)0) / (size_t)_size_of;

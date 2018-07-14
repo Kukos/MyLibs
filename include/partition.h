@@ -3,7 +3,8 @@
 
 /*
     Partitioning algorithms + pivot selection heuristic
-    bentley partitioning is used by select and quicksort
+    bentley partitioning is used quicksort
+    hoare partition is used by select_kth
 
     Author: Michal Kukowski
     email: michalkukowski10@gmail.com

@@ -97,6 +97,10 @@ D_SEARCH := $(SDIR)/search
 I_SEARCH := $(IDIR)/search.h $(F_LIB) $(I_LOG) $(I_ASSERT)
 S_SEARCH := $(wildcard $(D_SEARCH)/*.c) $(S_LOG) $(S_ASSERT)
 
+D_SELECTION := $(SDIR)/selection
+I_SELECTION := $(IDIR)/selection.h $(F_LIB) $(I_LOG) $(I_PARTITION) $(I_SORT) $(I_SEARCH)
+S_SELECTION := $(wildcard $(D_SELECTION)/*.c) $(S_LOG) $(S_PARTITION) $(S_SORT) $(S_SEARCH)
+
 D_DARRAY := $(SDIR)/darray
 I_DARRAY := $(IDIR)/darray.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_SORT) $(I_SEARCH)
 S_DARRAY := $(wildcard $(D_DARRAY)/*.c) $(S_LOG) $(S_ASSERT) $(S_SORT) $(S_SEARCH)
@@ -249,7 +253,7 @@ define print_bin
 	$(if $(Q), @echo "[BIN]         $$(1)")
 endef
 
-all: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search sort stack tcp tls trie ufset final
+all: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search selection sort stack tcp tls trie ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
@@ -343,6 +347,10 @@ search: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
+selection: prepare
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
 sort: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
@@ -414,6 +422,7 @@ clean:
 	$(MAKE) -f $(D_RBT)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_RINGBUFFER)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_SEARCH)/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(D_SELECTION)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_SORT)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_STACK)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_TCP)/Makefile clean --no-print-directory && \
