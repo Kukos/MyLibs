@@ -54,14 +54,13 @@
 
 #endif
 
-/* buffer for swapping */
-___unused___ static BYTE __buffer__[MAXWORD];
-
 /* swap A and B with size = S, use SSE if possible */
 #define __SWAP__(A, B, S) \
     do { \
+        (void)type_var_check(A, B); \
         if (&(A) != &(B)) \
         { \
+            BYTE __buffer__[S]; \
             (void)memcpy((void *)__buffer__, (void *)&(A), (size_t)(S)); \
             (void)memcpy((void *)&(A), (void *)&(B), (size_t)(S)); \
             (void)memcpy((void *)&(B), (void *)__buffer__, (size_t)(S)); \
@@ -71,6 +70,7 @@ ___unused___ static BYTE __buffer__[MAXWORD];
 /* A = B, A, B has size S, use SSE if possible */
 #define __ASSIGN__(A, B, S) \
     do { \
+        (void)type_var_check(A, B); \
         if (&(A) != &(B)) \
             (void)memcpy((void *)&(A), (void *)&(B), (size_t)(S)); \
     } while (0)
