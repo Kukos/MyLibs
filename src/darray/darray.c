@@ -589,7 +589,7 @@ ssize_t darray_min(const Darray *darray, const void *val)
 {
     size_t pos;
 
-    BYTE min[MAXWORD];
+    BYTE *min;
     BYTE *_t;
 
     size_t offset_i;
@@ -599,6 +599,8 @@ ssize_t darray_min(const Darray *darray, const void *val)
 
     if (darray == NULL)
         ERROR("darray == NULL\n", -1);
+
+    min = alloc_on_stack(darray->____size_of);
 
     _t = (BYTE *)darray->____array;
     if (darray->____type == DARRAY_SORTED)
@@ -639,7 +641,7 @@ ssize_t darray_max(const Darray *darray, const void *val)
 {
     size_t pos;
 
-    BYTE max[MAXWORD];
+    BYTE *max;
     BYTE *_t;
 
     size_t offset_i;
@@ -650,6 +652,7 @@ ssize_t darray_max(const Darray *darray, const void *val)
     if (darray == NULL)
         ERROR("darray == NULL\n", -1);
 
+    max = alloc_on_stack(darray->____size_of);
     _t = (BYTE *)darray->____array;
     if (darray->____type == DARRAY_SORTED)
     {

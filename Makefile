@@ -85,9 +85,13 @@ S_ASSERT := $(D_ASSERT)/assert.c
 # D_X -> directory for libX
 # I_X -> headers of libX
 # S_X -> srcs of libX
+D_PARTITION := $(SDIR)/partition
+I_PARTITION := $(IDIR)/partition.h $(F_LIB) $(I_LOG) $(I_ASSERT)
+S_PARTITION := $(wildcard $(D_PARTITION)/*.c) $(S_LOG) $(S_ASSERT)
+
 D_SORT := $(SDIR)/sort
-I_SORT := $(IDIR)/sort.h $(F_LIB) $(I_LOG) $(I_ASSERT)
-S_SORT := $(wildcard $(D_SORT)/*.c) $(S_LOG) $(S_ASSERT)
+I_SORT := $(IDIR)/sort.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_PARTITION)
+S_SORT := $(wildcard $(D_SORT)/*.c) $(S_LOG) $(S_ASSERT) $(S_PARTITION)
 
 D_SEARCH := $(SDIR)/search
 I_SEARCH := $(IDIR)/search.h $(F_LIB) $(I_LOG) $(I_ASSERT)
@@ -245,7 +249,7 @@ define print_bin
 	$(if $(Q), @echo "[BIN]         $$(1)")
 endef
 
-all: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d rbt ringbuffer search sort stack tcp tls trie ufset final
+all: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search sort stack tcp tls trie ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
@@ -323,6 +327,10 @@ list2d: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
+partition: prepare
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
 rbt: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
@@ -360,7 +368,7 @@ ufset: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 
-final: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap klist list list2d rbt ringbuffer search sort stack tcp tls trie ufset
+final: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search sort stack tcp tls trie ufset
 	$(call print_info,Finalizing)
 	$(Q)$(CP) $(IDIR)/common.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/compiler.h $(O_HEADERS) && \
@@ -402,6 +410,7 @@ clean:
 	$(MAKE) -f $(D_KLIST)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_LIST)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_LIST2D)/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(D_PARTITION)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_RBT)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_RINGBUFFER)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_SEARCH)/Makefile clean --no-print-directory && \
@@ -425,14 +434,17 @@ memusage:
 	$(Q)$(MAKE) -f $(TEST_DIR)/Makefile --no-print-directory && \
 	$(MAKE) -f $(TEST_DIR)/Makefile memusage --no-print-directory
 
+regression: clean all test memcheck
+
 help:
 	@echo "Main Makefile"
 	@echo -e
 	@echo "Targets:"
-	@echo "    all[D=1]          - build libraries, D =1 --> debug mode"
+	@echo "    all[D=1]          - build libraries, D=1 --> debug mode"
 	@echo "    test              - make static tests"
 	@echo "    install[P = Path] - install libs to path P or default Path"
 	@echo "    memcheck          - make mem check using valgrind for tests"
 	@echo "    memusage          - prepare mem measurements"
+	@echo "    regression        - regression tests use it before commit to master
 	@echo -e
 	@echo "Makefile supports Verbose mode when V=1"

@@ -81,6 +81,8 @@ GPL 3.0
 
     log - simple logger (console / file)
 
+    partition - partitioning algorithms used by select and quicksort
+
     rbt - self balanced red black tree (like std :: map)
 
     ringbuffer - cyclic buffer on fixed array (overwriting oldest data by newest)
@@ -126,7 +128,7 @@ You can type make help to get list of all targets:
 
     Targets:
 
-        all[D=1]          - build libraries, D =1 --> debug mode
+        all[D=1]          - build libraries, D=1 --> debug mode
 
         test              - make static tests
 
@@ -135,6 +137,8 @@ You can type make help to get list of all targets:
         memcheck          - make mem check using valgrind for tests
 
         memusage          - prepare mem measurements
+
+        regression        - regression tests use it before commit to master
 
 
     Makefile supports Verbose mode when V=1
