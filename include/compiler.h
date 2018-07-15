@@ -322,6 +322,9 @@
 #undef static_assert
 #endif
 
+#define ___error___(msg) __attribute__(( error(msg) ));
+#define ___warning___(msg) __attribute__(( warning(msg) ));
+
 #define static_assert(cond) __static_assert(cond, __LINE__)
 #define __static_assert(cond, name) \
     do { \
