@@ -1142,8 +1142,7 @@ int string_remove_c_all(String *string, char c)
 
 
     offset = 0;
-    while (offset < string->____len && !string_is_empty(string) &&
-         ((pos = __string_find_c(string, c, offset, string->____len, true)) != -1))
+    while (offset < string->____len && !string_is_empty(string) && ((pos = __string_find_c(string, c, offset, string->____len, true)) != -1))
     {
         offset = (size_t)pos;
         if (_string_delete_wo_realloc(string, (size_t)pos, 1))
@@ -1217,8 +1216,7 @@ int string_remove_str_all(String *string, const char *str)
     str_len = strlen(str);
 
     offset = 0;
-    while (offset < string->____len && !string_is_empty(string) &&
-         ((pos = __string_find_str(string, str, offset, string->____len, true)) != -1))
+    while (offset < string->____len && !string_is_empty(string) && ((pos = __string_find_str(string, str, offset, string->____len, true)) != -1))
     {
         offset = (size_t)pos;
 
@@ -1338,8 +1336,7 @@ int string_replace_c_by_c_all(String *string, char c1, char c2)
         return 0;
 
     offset = 0;
-    while (offset < string->____len && !string_is_empty(string) &&
-         ((pos = __string_find_c(string, c1, offset, string->____len, true)) != -1))
+    while (offset < string->____len && !string_is_empty(string) && ((pos = __string_find_c(string, c1, offset, string->____len, true)) != -1))
     {
         offset = (size_t)pos + 1;
 
@@ -1450,8 +1447,7 @@ int string_replace_c_by_str_all(String *string, char c1, const char *str)
         return 0;
 
     offset = 0;
-    while (offset < string->____len && !string_is_empty(string) &&
-         ((pos = __string_find_c(string, c1, offset, string->____len, true)) != -1))
+    while (offset < string->____len && !string_is_empty(string) && ((pos = __string_find_c(string, c1, offset, string->____len, true)) != -1))
     {
         if (_string_delete(string, (size_t)pos, 1))
             ERROR("_string_delete error\n", 1);
@@ -1619,8 +1615,7 @@ int string_replace_str_by_c_all(String *string, const char *str1, char c)
         return 0;
 
     offset = 0;
-    while (offset < string->____len && !string_is_empty(string) &&
-         ((pos = __string_find_str(string, str1, offset, string->____len, true)) != -1))
+    while (offset < string->____len && !string_is_empty(string) && ((pos = __string_find_str(string, str1, offset, string->____len, true)) != -1))
     {
         offset = (size_t)pos + 1;
         if (_string_delete(string, (size_t)pos, len))
@@ -1740,8 +1735,7 @@ int string_replace_str_by_str_all(String *string, const char *str1, const char *
         return 0;
 
     offset = 0;
-    while (offset < string->____len && !string_is_empty(string) &&
-        ((pos = __string_find_str(string, str1, offset, string->____len, true)) != -1))
+    while (offset < string->____len && !string_is_empty(string) && ((pos = __string_find_str(string, str1, offset, string->____len, true)) != -1))
     {
         offset = (size_t)pos;
 

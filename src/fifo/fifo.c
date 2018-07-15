@@ -146,9 +146,7 @@ int fifo_enqueue(Fifo *fifo, const void *val)
                 ERROR("memmove error\n", 1);
 
             /* move entries from end array to end of fifo */
-            if (memcpy( (void *)(_t + entries_head * fifo->____size_of),
-                        (void *)(_t + (fifo->____size * fifo->____size_of) - to_move),
-                        to_move) == NULL)
+            if (memcpy((void *)(_t + entries_head * fifo->____size_of), (void *)(_t + (fifo->____size * fifo->____size_of) - to_move), to_move) == NULL)
                 ERROR("memcpy error\n", 1);
 
             fifo->____head = 0;
@@ -214,8 +212,7 @@ int fifo_dequeue(Fifo *fifo, void *val)
     {
         if (fifo->____head < fifo->____tail)
         {
-            if (memmove(_t, (void *)(_t + (fifo->____head * fifo->____size_of)),
-                            entries * fifo->____size_of) == NULL)
+            if (memmove(_t, (void *)(_t + (fifo->____head * fifo->____size_of)), entries * fifo->____size_of) == NULL)
                 ERROR("memmove error\n", 1);
 
             fifo->____tail = entries;
@@ -231,21 +228,17 @@ int fifo_dequeue(Fifo *fifo, void *val)
             if (entries_head < entries_tail)
             {
                 /* move entries to correct place using buffer */
-                if (memcpy((void *)buffer,(void *)(_t + (fifo->____head * fifo->____size_of)),
-                            buffer_entries * fifo->____size_of) == NULL
-                || memmove((void *)(_t + (entries_head * fifo->____size_of)), _t,
-                            entries_tail * fifo->____size_of) == NULL
-                || memcpy(_t, (void *)buffer, buffer_entries * fifo->____size_of) == NULL)
+                if (memcpy((void *)buffer,(void *)(_t + (fifo->____head * fifo->____size_of)), buffer_entries * fifo->____size_of) == NULL ||
+                    memmove((void *)(_t + (entries_head * fifo->____size_of)), _t, entries_tail * fifo->____size_of) == NULL ||
+                    memcpy(_t, (void *)buffer, buffer_entries * fifo->____size_of) == NULL)
                         ERROR("memcpy error\n", 1);
             }
             else
             {
-                if (memcpy((void *)buffer, _t, buffer_entries) == NULL
-                || memmove(_t, (void *)(_t + (fifo->____head * fifo->____size_of)),
-                            entries_head * fifo->____size_of) == NULL
-                || memcpy((void *)(_t + (entries_head * fifo->____size_of)),
-                          (void *)buffer, buffer_entries * fifo->____size_of) == NULL )
-                    ERROR("memcpy error\n", 1);
+                if (memcpy((void *)buffer, _t, buffer_entries) == NULL ||
+                    memmove(_t, (void *)(_t + (fifo->____head * fifo->____size_of)), entries_head * fifo->____size_of) == NULL ||
+                    memcpy((void *)(_t + (entries_head * fifo->____size_of)), (void *)buffer, buffer_entries * fifo->____size_of) == NULL )
+                        ERROR("memcpy error\n", 1);
             }
 
             fifo->____tail = entries_head + entries_tail;
@@ -297,10 +290,9 @@ int fifo_to_array(const Fifo *fifo, void *array, size_t *size)
     else
     {
         bytes_to_move = (fifo->____size - fifo->____head) * fifo->____size_of;
-        if (memcpy(t, (void *)(_t + (fifo->____head * fifo->____size_of)), bytes_to_move) == NULL
-                || memcpy((void *)((BYTE *)t + bytes_to_move), _t,
-                          fifo->____tail * fifo->____size_of) == NULL )
-            ERROR("memcpy error\n", 1);
+        if (memcpy(t, (void *)(_t + (fifo->____head * fifo->____size_of)), bytes_to_move) == NULL ||
+            memcpy((void *)((BYTE *)t + bytes_to_move), _t, fifo->____tail * fifo->____size_of) == NULL )
+                ERROR("memcpy error\n", 1);
     }
 
     if (size != NULL)

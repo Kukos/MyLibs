@@ -326,8 +326,7 @@ static Trie_node *trie_min_node(const Trie_node *node, char **word)
         ERROR("malloc error\n", NULL);
     }
 
-    if(memcpy((void *)(*word + offset), (void *)darray_get_array(letters),
-        (size_t)darray_get_num_entries(letters) * sizeof(char)) == NULL)
+    if(memcpy((void *)(*word + offset), (void *)darray_get_array(letters), (size_t)darray_get_num_entries(letters) * sizeof(char)) == NULL)
     {
         darray_destroy(letters);
         FREE(*word);
@@ -409,8 +408,7 @@ static Trie_node *trie_max_node(const Trie_node *node, char **word)
     else
     {
         offset = strlen(*word);
-        *word = (char *)realloc((void *)*word,
-            (offset + (size_t)darray_get_num_entries(letters)) * sizeof(char));
+        *word = (char *)realloc((void *)*word, (offset + (size_t)darray_get_num_entries(letters)) * sizeof(char));
     }
 
     if (*word == NULL)
@@ -420,8 +418,7 @@ static Trie_node *trie_max_node(const Trie_node *node, char **word)
         ERROR("malloc error\n", NULL);
     }
 
-    if (memcpy((void *)(*word + offset), (void *)darray_get_array(letters),
-        (size_t)darray_get_num_entries(letters) * sizeof(char)) == NULL)
+    if (memcpy((void *)(*word + offset), (void *)darray_get_array(letters), (size_t)darray_get_num_entries(letters) * sizeof(char)) == NULL)
     {
         darray_destroy(letters);
         FREE(*word);

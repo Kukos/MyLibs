@@ -759,8 +759,7 @@ List2D *list2d_merge(const List2D * ___restrict___ list1, const List2D * ___rest
     {
         if (result->____cmp(ptr1->____data, ptr2->____data) < 0)
         {
-            node = list2d_node_create(result->____head->____prev, result->____head,
-                ptr1->____data, result->____size_of);
+            node = list2d_node_create(result->____head->____prev, result->____head, ptr1->____data, result->____size_of);
             result->____head->____prev->____next = node;
             result->____head->____prev = node;
 
@@ -768,8 +767,7 @@ List2D *list2d_merge(const List2D * ___restrict___ list1, const List2D * ___rest
         }
         else
         {
-            node = list2d_node_create(result->____head->____prev, result->____head,
-                ptr2->____data, result->____size_of);
+            node = list2d_node_create(result->____head->____prev, result->____head, ptr2->____data, result->____size_of);
             result->____head->____prev->____next = node;
             result->____head->____prev = node;
 
@@ -779,8 +777,7 @@ List2D *list2d_merge(const List2D * ___restrict___ list1, const List2D * ___rest
 
     while (ptr1 != guard1)
     {
-        node = list2d_node_create(result->____head->____prev, result->____head,
-            ptr1->____data, result->____size_of);
+        node = list2d_node_create(result->____head->____prev, result->____head, ptr1->____data, result->____size_of);
         result->____head->____prev->____next = node;
         result->____head->____prev = node;
 
@@ -789,8 +786,7 @@ List2D *list2d_merge(const List2D * ___restrict___ list1, const List2D * ___rest
 
     while (ptr2 != guard2)
     {
-        node = list2d_node_create(result->____head->____prev, result->____head,
-            ptr2->____data, result->____size_of);
+        node = list2d_node_create(result->____head->____prev, result->____head, ptr2->____data, result->____size_of);
         result->____head->____prev->____next = node;
         result->____head->____prev = node;
 

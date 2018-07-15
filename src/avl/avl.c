@@ -685,7 +685,6 @@ static int avl_insert_fixup(Avl *tree, Avl_node *new_node)
         /* go upper */
         parent = ptr;
         ptr = ptr->____parent;
-
     }
 
     return 0;
@@ -716,8 +715,7 @@ static int avl_delete_fixup(Avl *tree, Avl_node *parent, Avl_node *node)
         else
         {
             /* deleted node from bigger branch, parent is balanced */
-            if ((parent->____bf == LEFT_BIGGER && parent->____left_son == node)
-                || (parent->____bf == RIGHT_BIGGER && parent->____right_son == node))
+            if ((parent->____bf == LEFT_BIGGER && parent->____left_son == node) || (parent->____bf == RIGHT_BIGGER && parent->____right_son == node))
             {
                 parent->____bf = BALANCED;
 

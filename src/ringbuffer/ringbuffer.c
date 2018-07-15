@@ -213,8 +213,7 @@ int ring_buffer_to_array(const Ring_buffer *rb, void *array, size_t *size)
         else
         {
             temp_bytes_to_move = (rb->____max_entries * rb->____data_size) - rb->____head;
-            if (memcpy(t, (void *)(_t + rb->____head), temp_bytes_to_move) == NULL
-                || memcpy((void *)((BYTE *)t + temp_bytes_to_move), _t, rb->____tail) == NULL )
+            if (memcpy(t, (void *)(_t + rb->____head), temp_bytes_to_move) == NULL || memcpy((void *)((BYTE *)t + temp_bytes_to_move), _t, rb->____tail) == NULL )
                 ERROR("memcpy error\n", 1);
         }
     }

@@ -163,8 +163,7 @@ int file_buffer_append(File_buffer *fb, const char *data)
 	/* realloc mapped file in RAM */
 	if (new_aligned_size > fb->____mapped_size)
 	{
-    	if ((fb->____buffer = (char *)mremap((void *)fb->____buffer, fb->____mapped_size,
-	 			new_aligned_size, MREMAP_MAYMOVE)) == MAP_FAILED)
+    	if ((fb->____buffer = (char *)mremap((void *)fb->____buffer, fb->____mapped_size, new_aligned_size, MREMAP_MAYMOVE)) == MAP_FAILED)
      		ERROR("mremap error\n", 1);
 
 		fb->____mapped_size = new_aligned_size;
@@ -243,8 +242,7 @@ File_buffer *file_buffer64_create(int fd, int protect_flag)
     fb->____has_private_file = false;
     fb->____mode64 = true;
 
-    if ((fb->____buffer = (char *)mmap64(NULL, fb->____mapped_size,
-			 protect_flag, MAP_SHARED, fd, 0)) == MAP_FAILED)
+    if ((fb->____buffer = (char *)mmap64(NULL, fb->____mapped_size, protect_flag, MAP_SHARED, fd, 0)) == MAP_FAILED)
 	{
 		FREE(fb);
 		ERROR("mmap error\n", NULL);
@@ -301,8 +299,7 @@ int file_buffer64_append(File_buffer *fb, const char *data)
 	/* realloc mapped file in RAM */
 	if (new_aligned_size > fb->____mapped_size)
 	{
-    	if ((fb->____buffer = (char *)mremap((void *)fb->____buffer, fb->____mapped_size,
-	 			new_aligned_size, MREMAP_MAYMOVE)) == MAP_FAILED)
+    	if ((fb->____buffer = (char *)mremap((void *)fb->____buffer, fb->____mapped_size, new_aligned_size, MREMAP_MAYMOVE)) == MAP_FAILED)
      		ERROR("mremap error\n", 1);
 
 		fb->____mapped_size = new_aligned_size;

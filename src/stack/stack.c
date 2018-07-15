@@ -76,9 +76,7 @@ int stack_pop(Stack *stack, void* val)
 
     _t = (BYTE *)darray_get_array(stack->____darray);
 
-    __ASSIGN__(*(BYTE *)val,
-        _t[(darray_get_num_entries(stack->____darray) - 1) * darray_get_data_size(stack->____darray)],
-        darray_get_data_size(stack->____darray));
+    __ASSIGN__(*(BYTE *)val, _t[(darray_get_num_entries(stack->____darray) - 1) * darray_get_data_size(stack->____darray)], darray_get_data_size(stack->____darray));
 
     return darray_delete(stack->____darray);
 }
@@ -87,8 +85,7 @@ bool stack_is_empty(const Stack *stack)
 {
     TRACE();
 
-    return (stack == NULL || stack->____darray == NULL
-         || darray_get_num_entries(stack->____darray) == 0);
+    return (stack == NULL || stack->____darray == NULL || darray_get_num_entries(stack->____darray) == 0);
 }
 
 int stack_get_top(const Stack *stack, void *val)
@@ -105,9 +102,7 @@ int stack_get_top(const Stack *stack, void *val)
 
     _t = (BYTE *)darray_get_array(stack->____darray);
 
-    __ASSIGN__(*(BYTE *)val,
-        _t[(darray_get_num_entries(stack->____darray) - 1) * darray_get_data_size(stack->____darray)],
-        darray_get_data_size(stack->____darray));
+    __ASSIGN__(*(BYTE *)val, _t[(darray_get_num_entries(stack->____darray) - 1) * darray_get_data_size(stack->____darray)], darray_get_data_size(stack->____darray));
 
     return 0;
 }
@@ -128,8 +123,7 @@ int stack_to_array(const Stack *stack, void *array, size_t *size)
     if (t == NULL)
         ERROR("malloc error\n", 1);
 
-    if (memcpy(t, darray_get_array(stack->____darray),
-    (size_t)darray_get_num_entries(stack->____darray) * (size_t)darray_get_data_size(stack->____darray)) == NULL)
+    if (memcpy(t, darray_get_array(stack->____darray), (size_t)darray_get_num_entries(stack->____darray) * (size_t)darray_get_data_size(stack->____darray)) == NULL)
         ERROR("memcpy error\n", 1);
 
     if (size != NULL)
