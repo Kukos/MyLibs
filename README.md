@@ -43,6 +43,8 @@ GPL 3.0
     ulist.h - abstract class of unsorted lists
 
 ##### Libraries:
+    array - basic functions for simple array (type [])
+
     arraylist - unsorted list implemented like normal linked list
 
     avl - self balanced tree avl

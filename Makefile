@@ -101,6 +101,10 @@ D_SELECTION := $(SDIR)/selection
 I_SELECTION := $(IDIR)/selection.h $(F_LIB) $(I_LOG) $(I_PARTITION) $(I_SORT) $(I_SEARCH)
 S_SELECTION := $(wildcard $(D_SELECTION)/*.c) $(S_LOG) $(S_PARTITION) $(S_SORT) $(S_SEARCH)
 
+D_ARRAY := $(SDIR)/array
+I_ARRAY := $(IDIR)/array.h $(F_LIB) $(I_LOG) $(I_SORT) $(I_SEARCH) $(I_SELECTION)
+S_ARRAY := $(wildcard $(D_ARRAY)/*.c) $(S_LOG) $(S_SORT) $(S_SEARCH) $(S_SELECTION)
+
 D_DARRAY := $(SDIR)/darray
 I_DARRAY := $(IDIR)/darray.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_SORT) $(I_SEARCH)
 S_DARRAY := $(wildcard $(D_DARRAY)/*.c) $(S_LOG) $(S_ASSERT) $(S_SORT) $(S_SEARCH)
@@ -253,11 +257,15 @@ define print_bin
 	$(if $(Q), @echo "[BIN]         $$(1)")
 endef
 
-all: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search selection sort stack tcp tls trie ufset final
+all: prepare array arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search selection sort stack tcp tls trie ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
 	$(Q)mkdir -p $(ODIR) && mkdir -p $(O_LIBS) && mkdir -p $(O_HEADERS)
+
+array: prepare
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 arraylist: prepare
 	$(call print_make,$@)
@@ -376,7 +384,7 @@ ufset: prepare
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 
-final: prepare arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search sort stack tcp tls trie ufset
+final: prepare array arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search sort stack tcp tls trie ufset
 	$(call print_info,Finalizing)
 	$(Q)$(CP) $(IDIR)/common.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/compiler.h $(O_HEADERS) && \
@@ -400,7 +408,8 @@ test:
 
 clean:
 	$(call print_info,Cleaning)
-	$(Q)$(MAKE) -f $(D_ARRAYLIST)/Makefile clean --no-print-directory && \
+	$(Q)$(MAKE) -f $(D_ARRAY)/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(D_ARRAYLIST)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_AVL)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_BASE64)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_BITSET)/Makefile clean --no-print-directory && \
