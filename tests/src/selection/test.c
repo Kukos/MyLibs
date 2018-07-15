@@ -75,6 +75,39 @@ test_f test_selection(size_t n)
     CHECK_SELECTION(select_kth, n, n - 1, MyStruct);
 }
 
+test_f test_distinct(void)
+{
+    int t[] = {1, 6, 3, 9, 8, 2, 4, 5, 7};
+    ssize_t index;
+
+    index = select_kth(t, ARRAY_SIZE(t), sizeof(*t), 0, cmp_int);
+    T_ASSERT(t[index], 1);
+
+    index = select_kth(t, ARRAY_SIZE(t), sizeof(*t), 1, cmp_int);
+    T_ASSERT(t[index], 2);
+
+    index = select_kth(t, ARRAY_SIZE(t), sizeof(*t), 2, cmp_int);
+    T_ASSERT(t[index], 3);
+
+    index = select_kth(t, ARRAY_SIZE(t), sizeof(*t), 3, cmp_int);
+    T_ASSERT(t[index], 4);
+
+    index = select_kth(t, ARRAY_SIZE(t), sizeof(*t), 4, cmp_int);
+    T_ASSERT(t[index], 5);
+
+    index = select_kth(t, ARRAY_SIZE(t), sizeof(*t), 5, cmp_int);
+    T_ASSERT(t[index], 6);
+
+    index = select_kth(t, ARRAY_SIZE(t), sizeof(*t), 6, cmp_int);
+    T_ASSERT(t[index], 7);
+
+    index = select_kth(t, ARRAY_SIZE(t), sizeof(*t), 7, cmp_int);
+    T_ASSERT(t[index], 8);
+
+    index = select_kth(t, ARRAY_SIZE(t), sizeof(*t), 8, cmp_int);
+    T_ASSERT(t[index], 9);
+}
+
 void test(void)
 {
     TEST(test_selection(1));
@@ -83,6 +116,8 @@ void test(void)
     TEST(test_selection(10000));
     TEST(test_selection(50000));
     TEST(test_selection(100000));
+
+    TEST(test_distinct());
 }
 
 int main(void)

@@ -8,13 +8,13 @@ CMP(int)
 CMP(char)
 CMP(double)
 
-typedef int (*partition)(void        *t,
-                      size_t      offset_left,
-                      size_t      offset_right,
-                      int         (*cmp)(const void *a, const void *b),
-                      int         size_of,
-                      size_t      *offset_left_index,
-                      size_t      *offset_right_index);
+typedef ssize_t (*partition)(void        *t,
+                             size_t      offset_left,
+                             size_t      offset_right,
+                             int         (*cmp)(const void *a, const void *b),
+                             int         size_of,
+                             size_t      *offset_left_index,
+                             size_t      *offset_right_index);
 
 typedef size_t (*get_pivot)(const void *t, size_t len, int size_of, int (*cmp)(const void *a, const void *b));
 
@@ -257,6 +257,7 @@ test_f test_pivot_tukey(void)
         size_t right; \
         type pivot; \
         size_t i; \
+        ssize_t p_index; \
         \
         t = (type *)malloc(sizeof(type) * n); \
         T_ERROR(t == NULL); \
@@ -264,7 +265,10 @@ test_f test_pivot_tukey(void)
         for (i = 0; i < n; ++i) \
             t[i] = (type){rand()}; \
         pivot = t[0]; \
-        T_EXPECT(part(t, 0, n - 1, concat(cmp_, type), sizeof(*t), &left, &right), 0); \
+        p_index = part(t, 0, n - 1, concat(cmp_, type), sizeof(*t), &left, &right); \
+        T_CHECK(p_index != -1); \
+        T_EXPECT(concat(cmp_, type)(&pivot, &t[p_index]), 0); \
+        T_CHECK(left <= right); \
         for (i = 0; i < left; ++i) \
             T_CHECK(concat(cmp_, type)(&pivot, &t[i]) >= 0); \
         for (i = right; i < n; ++i) \

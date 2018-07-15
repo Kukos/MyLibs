@@ -54,10 +54,7 @@ ssize_t select_kth(const void *t, size_t len, int size_of, size_t k, int (*cmp)(
         p_index = partition_get_pivot_median(_t + offset_left, range, size_of, cmp) *_size_of + offset_left;
         __SWAP__(_t[p_index], _t[offset_left], _size_of);
 
-        if (partition_hoare(_t, offset_left / _size_of, offset_right / _size_of, cmp, size_of, &left, &right))
-            ERROR("partition_hoare error\n", 1);
-
-        p_index = left + 1;
+        p_index = (size_t)partition_hoare(_t, offset_left / _size_of, offset_right / _size_of, cmp, size_of, &left, &right);
         ith = p_index - (offset_left / _size_of);
 
         if(k < ith)

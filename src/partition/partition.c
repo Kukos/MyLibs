@@ -183,13 +183,13 @@ size_t partition_get_pivot_median(const void *t, size_t len, int size_of, int (*
         return partition_get_pivot_rand(t, len, size_of, cmp);
 }
 
-int partition_bentley(void        *t,
-                      size_t      offset_left,
-                      size_t      offset_right,
-                      int         (*cmp)(const void *a, const void *b),
-                      int         size_of,
-                      size_t      *offset_left_index,
-                      size_t      *offset_right_index)
+ssize_t partition_bentley(void        *t,
+                          size_t      offset_left,
+                          size_t      offset_right,
+                          int         (*cmp)(const void *a, const void *b),
+                          int         size_of,
+                          size_t      *offset_left_index,
+                          size_t      *offset_right_index)
 {
 
     /* normal indexes for main loop */
@@ -209,19 +209,19 @@ int partition_bentley(void        *t,
     TRACE();
 
     if (t == NULL)
-        ERROR("t == NULL\n", 1);
+        ERROR("t == NULL\n", -1);
 
     if (cmp == NULL)
-        ERROR("cmp is needed\n", 1);
+        ERROR("cmp is needed\n", -1);
 
     if (offset_left_index == NULL)
-        ERROR("offset_left_index == NULL\n", 1);
+        ERROR("offset_left_index == NULL\n", -1);
 
     if (offset_right_index == NULL)
-        ERROR("offset_right_index == NULL\n", 1);
+        ERROR("offset_right_index == NULL\n", -1);
 
     if (offset_right < offset_left)
-        ERROR("offset_right < offset_left\n", 1);
+        ERROR("offset_right < offset_left\n", -1);
 
     offset_left *= (size_t)size_of;
     offset_right *= (size_t)size_of;
@@ -292,21 +292,22 @@ int partition_bentley(void        *t,
           offset_index1 += _size_of;
     }
 
+    /* move pivot to correct place (offset_index2) */
     __SWAP__(_t[offset_index2], _t[offset_left], _size_of);
 
     *offset_left_index = (size_t)MAX((ssize_t)(offset_index2 - size_of), (ssize_t)0) / (size_t)_size_of;
     *offset_right_index = (size_t)offset_index1 / (size_t)_size_of;
 
-    return 0;
+    return offset_index2 / (ssize_t)_size_of;
 }
 
-int partition_hoare(void        *t,
-                    size_t      offset_left,
-                    size_t      offset_right,
-                    int         (*cmp)(const void *a, const void *b),
-                    int         size_of,
-                    size_t      *offset_left_index,
-                    size_t      *offset_right_index)
+ssize_t partition_hoare(void        *t,
+                        size_t      offset_left,
+                        size_t      offset_right,
+                        int         (*cmp)(const void *a, const void *b),
+                        int         size_of,
+                        size_t      *offset_left_index,
+                        size_t      *offset_right_index)
 {
 
     /* normal indexes for main loop */
@@ -321,19 +322,19 @@ int partition_hoare(void        *t,
     TRACE();
 
     if (t == NULL)
-        ERROR("t == NULL\n", 1);
+        ERROR("t == NULL\n", -1);
 
     if (cmp == NULL)
-        ERROR("cmp is needed\n", 1);
+        ERROR("cmp is needed\n", -1);
 
     if (offset_left_index == NULL)
-        ERROR("offset_left_index == NULL\n", 1);
+        ERROR("offset_left_index == NULL\n", -1);
 
     if (offset_right_index == NULL)
-        ERROR("offset_right_index == NULL\n", 1);
+        ERROR("offset_right_index == NULL\n", -1);
 
     if (offset_right < offset_left)
-        ERROR("offset_right < offset_left\n", 1);
+        ERROR("offset_right < offset_left\n", -1);
 
     offset_left *= (size_t)size_of;
     offset_right *= (size_t)size_of;
@@ -364,21 +365,22 @@ int partition_hoare(void        *t,
         offset_index2 -= _size_of;
     }
 
+    /* move pivot to correct place (offset_index2) */
     __SWAP__(_t[offset_index2], _t[offset_left], _size_of);
 
     *offset_left_index = (size_t)MAX((ssize_t)(offset_index2 - size_of), (ssize_t)0) / (size_t)_size_of;
     *offset_right_index = (size_t)offset_index1 / (size_t)_size_of;
 
-    return 0;
+    return offset_index2 / (ssize_t)_size_of;
 }
 
-int partition_lomuto(void        *t,
-                     size_t      offset_left,
-                     size_t      offset_right,
-                     int         (*cmp)(const void *a, const void *b),
-                     int         size_of,
-                     size_t      *offset_left_index,
-                     size_t      *offset_right_index)
+ssize_t partition_lomuto(void        *t,
+                         size_t      offset_left,
+                         size_t      offset_right,
+                         int         (*cmp)(const void *a, const void *b),
+                         int         size_of,
+                         size_t      *offset_left_index,
+                         size_t      *offset_right_index)
 {
     size_t i;
     size_t j;
@@ -393,19 +395,19 @@ int partition_lomuto(void        *t,
     TRACE();
 
     if (t == NULL)
-        ERROR("t == NULL\n", 1);
+        ERROR("t == NULL\n", -1);
 
     if (cmp == NULL)
-        ERROR("cmp is needed\n", 1);
+        ERROR("cmp is needed\n", -1);
 
     if (offset_left_index == NULL)
-        ERROR("offset_left_index == NULL\n", 1);
+        ERROR("offset_left_index == NULL\n", -1);
 
     if (offset_right_index == NULL)
-        ERROR("offset_right_index == NULL\n", 1);
+        ERROR("offset_right_index == NULL\n", -1);
 
     if (offset_right < offset_left)
-        ERROR("offset_right < offset_left\n", 1);
+        ERROR("offset_right < offset_left\n", -1);
 
     _t = (BYTE *)t;
     __ASSIGN__(pivot[0], _t[offset_left], _size_of);
@@ -419,9 +421,10 @@ int partition_lomuto(void        *t,
             j += _size_of;
         }
 
+    /* move pivot to correct place (j) */
     __SWAP__(_t[offset_right], _t[j], _size_of);
     *offset_left_index = (size_t)MAX((ssize_t)(j - _size_of), (ssize_t)0) / _size_of;
     *offset_right_index = MIN(j + _size_of, offset_right) / _size_of;
 
-    return 0;
+    return (ssize_t)(j / _size_of);
 }

@@ -156,7 +156,7 @@ static int _quicksort(  void        *t,
         p_index = partition_get_pivot_median(_t + offset_left, range, size_of, cmp) *_size_of + offset_left;
         __SWAP__(_t[p_index], _t[offset_left], _size_of);
 
-        if (partition_bentley(_t, offset_left / _size_of, offset_right / _size_of, cmp, size_of, &offset_left_index, &offset_right_index))
+        if (partition_bentley(_t, offset_left / _size_of, offset_right / _size_of, cmp, size_of, &offset_left_index, &offset_right_index) == -1)
             ERROR("partition_bentley error\n", 1);
 
         offset_left_index *= _size_of;

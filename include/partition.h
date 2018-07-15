@@ -13,6 +13,7 @@
 */
 
 #include <stddef.h>
+#include <sys/types.h>
 
 /*
     Get index of pivot using trivial heuristic (first, middle, last)
@@ -69,16 +70,16 @@ size_t partition_get_pivot_median(const void *t, size_t len, int size_of, int (*
     @OUT offset_right_index - first index of right part of unsroted array
 
     RETURN:
-    %0 if success
-    %Non-zero value if failure
+    %Pivot position iff success
+    %-1 iff failure
 */
-int partition_bentley(void        *t,
-                      size_t      offset_left,
-                      size_t      offset_right,
-                      int         (*cmp)(const void *a, const void *b),
-                      int         size_of,
-                      size_t      *offset_left_index,
-                      size_t      *offset_right_index);
+ssize_t partition_bentley(void        *t,
+                          size_t      offset_left,
+                          size_t      offset_right,
+                          int         (*cmp)(const void *a, const void *b),
+                          int         size_of,
+                          size_t      *offset_left_index,
+                          size_t      *offset_right_index);
 
 /*
     Hoare partition
@@ -93,16 +94,16 @@ int partition_bentley(void        *t,
     @OUT offset_right_index - first index of right part of unsroted array
 
     RETURN:
-    %0 if success
-    %Non-zero value if failure
+    %Pivot position iff success
+    %-1 iff failure
 */
-int partition_hoare(void        *t,
-                    size_t      offset_left,
-                    size_t      offset_right,
-                    int         (*cmp)(const void *a, const void *b),
-                    int         size_of,
-                    size_t      *offset_left_index,
-                    size_t      *offset_right_index);
+ssize_t partition_hoare(void        *t,
+                        size_t      offset_left,
+                        size_t      offset_right,
+                        int         (*cmp)(const void *a, const void *b),
+                        int         size_of,
+                        size_t      *offset_left_index,
+                        size_t      *offset_right_index);
 
 /*
     Lomuto partition
@@ -117,16 +118,16 @@ int partition_hoare(void        *t,
     @OUT offset_right_index - first index of right part of unsroted array
 
     RETURN:
-    %0 if success
-    %Non-zero value if failure
+    %Pivot position iff success
+    %-1 iff failure
 */
-int partition_lomuto(void        *t,
-                     size_t      offset_left,
-                     size_t      offset_right,
-                     int         (*cmp)(const void *a, const void *b),
-                     int         size_of,
-                     size_t      *offset_left_index,
-                     size_t      *offset_right_index);
+ssize_t partition_lomuto(void        *t,
+                         size_t      offset_left,
+                         size_t      offset_right,
+                         int         (*cmp)(const void *a, const void *b),
+                         int         size_of,
+                         size_t      *offset_left_index,
+                         size_t      *offset_right_index);
 
 
 #endif
