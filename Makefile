@@ -106,8 +106,8 @@ I_ARRAY := $(IDIR)/array.h $(F_LIB) $(I_LOG) $(I_SORT) $(I_SEARCH) $(I_SELECTION
 S_ARRAY := $(wildcard $(D_ARRAY)/*.c) $(S_LOG) $(S_SORT) $(S_SEARCH) $(S_SELECTION)
 
 D_DARRAY := $(SDIR)/darray
-I_DARRAY := $(IDIR)/darray.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_SORT) $(I_SEARCH)
-S_DARRAY := $(wildcard $(D_DARRAY)/*.c) $(S_LOG) $(S_ASSERT) $(S_SORT) $(S_SEARCH)
+I_DARRAY := $(IDIR)/darray.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(I_ARRAY)
+S_DARRAY := $(wildcard $(D_DARRAY)/*.c) $(S_LOG) $(S_ASSERT) $(S_ARRAY)
 
 D_ARRAYLIST := $(SDIR)/arraylist
 I_ARRAYLIST := $(IDIR)/arraylist.h $(F_LIB) $(I_LOG) $(I_ASSERT) $(F_ULIST)

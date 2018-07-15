@@ -244,7 +244,7 @@ int darray_sort(Darray *darray);
     %-1 iff failure
     %Pos iff success
 */
-ssize_t darray_min(const Darray *darray, const void *val);
+ssize_t darray_min(const Darray *darray, void *val);
 
 /*
     Find Maximum and return pos
@@ -257,7 +257,7 @@ ssize_t darray_min(const Darray *darray, const void *val);
     %-1 iff failure
     %Pos iff success
 */
-ssize_t darray_max(const Darray *darray, const void *val);
+ssize_t darray_max(const Darray *darray, void *val);
 
 /*
     Get Array

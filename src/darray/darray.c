@@ -2,80 +2,13 @@
 #include <string.h>
 #include <darray.h>
 #include <generic.h>
-#include <sort.h>
+#include <array.h>
 #include <log.h>
 #include <common.h>
 #include <compiler.h>
 #include <assert.h>
-#include <search.h>
 
 #define INIT_SIZE (size_t)1024
-
-/*
-    PARAMS
-    @IN darray - pointer to darray
-    @IN val_in - val with key
-    @IN val_out - val from array or NULL
-
-    RETURN:
-    %-1 iff failure
-    %Pos iff success
-*/
-___inline___ static ssize_t darray_unsorted_search_first(const Darray *darray,
-                                                const void *val_in, void *val_out);
-
-/*
-    PARAMS
-    @IN darray - pointer to darray
-    @IN val_in - val with key
-    @IN val_out - val from array or NULL
-
-    RETURN:
-    %-1 iff failure
-    %Pos iff success
-*/
-___inline___ static ssize_t darray_unsorted_search_last(const Darray *darray,
-                                                const void *val_in, void *val_out);
-
-/*
-    PARAMS
-    @IN darray - pointer to darray
-    @IN val_in - val with key
-    @IN val_out - val from array or NULL
-
-    RETURN:
-    %-1 iff failure
-    %Pos iff success
-*/
-___inline___ static ssize_t darray_sorted_search_first(const Darray *darray,
-                                                const void *val_in, void *val_out);
-
-/*
-    PARAMS
-    @IN darray - pointer to darray
-    @IN val_in - val with key
-    @IN val_out - val from array or NULL
-
-    RETURN:
-    %-1 iff failure
-    %Pos iff success
-*/
-___inline___ static ssize_t darray_sorted_search_last(const Darray *darray,
-                                                const void *val_in, void *val_out);
-
-/*
-    Find pos where val i MAX ( <= val )
-
-    PARAMS
-    @IN darray - pointer to darray
-    @IN val - searched val
-
-    RETURN:
-    %-1 iff failure
-    %Pos iff success
-*/
-___inline___ static ssize_t upper_bound(const Darray *darray, const void *val);
-
 
 /*
     Insert an entry to array ( unsorted ) in array[pos]
@@ -118,158 +51,8 @@ static int __darray_delete_pos(Darray *darray, size_t pos, bool destroy);
 */
 static void __darray_destroy_with_entries(Darray *darray, bool destroy);
 
-___inline___ static ssize_t darray_unsorted_search_first(const Darray *darray,
-                                                    const void *val_in, void *val_out)
-{
-    BYTE *_t;
-    ssize_t index;
-
-    TRACE();
-
-    assert(darray != NULL);
-    assert(darray->____array != NULL);
-    assert(val_in != NULL);
-    assert(darray->____cmp != NULL);
-    assert(darray->____num_entries != 0);
-
-    index = find_first_unsorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, darray->____size_of);
-    if (index == -1)
-        return -1;
-
-    _t = (BYTE *)darray->____array;
-
-    if (val_out != NULL)
-         __ASSIGN__(*(BYTE *)val_out, _t[(size_t)index * darray->____size_of], darray->____size_of);
-
-    return index;
-}
-
-___inline___ static ssize_t darray_unsorted_search_last(const Darray *darray,
-                                                    const void *val_in, void *val_out)
-{
-    BYTE *_t;
-    ssize_t index;
-
-    TRACE();
-
-    assert(darray != NULL);
-    assert(darray->____array != NULL);
-    assert(val_in != NULL);
-    assert(darray->____cmp != NULL);
-    assert(darray->____num_entries != 0);
-
-    _t = (BYTE *)darray->____array;
-    index = find_last_unsorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, darray->____size_of);
-    if (index == -1)
-        return -1;
-
-    _t = (BYTE *)darray->____array;
-
-    if (val_out != NULL)
-         __ASSIGN__(*(BYTE *)val_out, _t[(size_t)index * darray->____size_of], darray->____size_of);
-
-    return index;
-}
-
-___inline___ static ssize_t darray_sorted_search_first(const Darray *darray,
-                                                    const void *val_in, void *val_out)
-{
-    BYTE *_t;
-    ssize_t index;
-
-    TRACE();
-
-    assert(darray != NULL);
-    assert(darray->____array != NULL);
-    assert(val_in != NULL);
-    assert(darray->____cmp != NULL);
-    assert(darray->____num_entries != 0);
-
-    _t = (BYTE *)darray->____array;
-    index = find_first_sorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, darray->____size_of);
-    if (index == -1)
-        return -1;
-
-    _t = (BYTE *)darray->____array;
-
-    if (val_out != NULL)
-         __ASSIGN__(*(BYTE *)val_out, _t[(size_t)index * darray->____size_of], darray->____size_of);
-
-    return index;
-}
-
-___inline___ static ssize_t darray_sorted_search_last(const Darray *darray,
-                                            const void *val_in, void *val_out)
-{
-    BYTE *_t;
-    ssize_t index;
-
-    TRACE();
-
-    assert(darray != NULL);
-    assert(darray->____array != NULL);
-    assert(val_in != NULL);
-    assert(darray->____cmp != NULL);
-    assert(darray->____num_entries != 0);
-
-    _t = (BYTE *)darray->____array;
-
-    index = find_last_sorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, darray->____size_of);
-    if (index == -1)
-        return -1;
-
-    _t = (BYTE *)darray->____array;
-
-    if (val_out != NULL)
-         __ASSIGN__(*(BYTE *)val_out, _t[(size_t)index * darray->____size_of], darray->____size_of);
-
-    return index;
-}
-
-___inline___ static ssize_t upper_bound(const Darray *darray, const void *val)
-{
-    ssize_t offset_left;
-    ssize_t offset_right;
-    ssize_t offset_middle;
-
-    BYTE *_t;
-
-    TRACE();
-
-    assert(darray != NULL);
-    assert(darray->____array != NULL);
-    assert(val != NULL);
-    assert(darray->____cmp != NULL);
-
-    offset_left = 0;
-    offset_right = ((ssize_t)darray->____num_entries - 1) * (ssize_t)darray->____size_of;
-    offset_middle = 0;
-
-    _t = (BYTE *)darray->____array;
-
-    /* normal upper bound */
-    while (offset_left <= offset_right)
-    {
-        offset_middle = ((offset_left / (ssize_t)darray->____size_of
-             + offset_right / (ssize_t)darray->____size_of) >> 1) * (ssize_t)darray->____size_of;
-
-        if (darray->____cmp((void *)&_t[offset_middle], val) >= 0)
-            offset_right = offset_middle - (ssize_t)darray->____size_of;
-        else
-            offset_left = offset_middle + (ssize_t)darray->____size_of;
-    }
-
-    if (darray->____cmp((void *)&_t[offset_middle], val) > 0)
-        offset_middle -= (ssize_t)darray->____size_of;
-
-    return offset_middle / (ssize_t)darray->____size_of;
-}
-
 static int _darray_insert_pos(Darray *darray, const void *entry, size_t pos, bool check)
 {
-    BYTE *_t;
-    BYTE *_entry;
-
     TRACE();
 
     assert(darray != NULL);
@@ -290,17 +73,8 @@ static int _darray_insert_pos(Darray *darray, const void *entry, size_t pos, boo
             ERROR("realloc error\n", 1);
     }
 
-    _t = (BYTE *)darray->____array;
-
-    /* make empty slot in pos and insert an entry */
-    if ((memmove(   (void *)(_t + ((pos + 1) * darray->____size_of)),
-                    (void *)(_t + (pos * darray->____size_of)),
-                    (darray->____num_entries - pos) * darray->____size_of )) == NULL)
-        ERROR("memmove error\n", 1);
-
-    _entry = (BYTE *)entry;
-
-    __ASSIGN__(_t[pos * darray->____size_of], *_entry, darray->____size_of);
+    if (array_unsorted_insert_pos(darray->____array, darray->____num_entries + 1, darray->____size_of, pos, entry))
+        ERROR("Insert error\n", 1);
 
     ++darray->____num_entries;
 
@@ -309,7 +83,7 @@ static int _darray_insert_pos(Darray *darray, const void *entry, size_t pos, boo
 
 static int __darray_delete_pos(Darray *darray, size_t pos, bool destroy)
 {
-    BYTE *_t;
+    int ret;
 
     TRACE();
 
@@ -322,26 +96,24 @@ static int __darray_delete_pos(Darray *darray, size_t pos, bool destroy)
 	if (darray->____num_entries == 0)
 		ERROR("Nothing to delete\n", 1);
 
-    _t = (BYTE *)darray->____array;
     if (destroy && darray->____destroy != NULL)
-        darray->____destroy(_t + (pos * darray->____size_of));
+        ret = array_delete_pos_with_entry(darray->____array, darray->____num_entries, darray->____size_of, pos, darray->____destroy);
+    else
+        ret = array_delete_pos(darray->____array, darray->____num_entries, darray->____size_of, pos);
 
-    if ((memmove( (void *)(_t + (pos * darray->____size_of)),
-                  (void *)(_t + ((pos + 1) * darray->____size_of)),
-                  (darray->____num_entries - pos - 1) * darray->____size_of )) == NULL)
-        ERROR("memmove error\n", 1);
+    if (ret)
+        ERROR("Deleting error\n", ret);
 
     --darray->____num_entries;
 
     /* resize array */
-    if ((double)darray->____num_entries <= ((double)darray->____size * 0.4)
-    && ((darray->____size >> 1) >= darray->____init_size))
+    if ((double)darray->____num_entries <= ((double)darray->____size * 0.4) && ((darray->____size >> 1) >= darray->____init_size))
     {
         darray->____size >>= 1;
 
         darray->____array = realloc(darray->____array, darray->____size * (darray->____size_of));
         if (darray->____array == NULL)
-            ERROR("realloc error\n",1);
+            ERROR("realloc error\n", 1);
     }
 
     return 0;
@@ -447,10 +219,12 @@ int darray_insert(Darray *darray, const void *entry)
         if (darray->____num_entries == 0)
             pos = 0;
         else
-            pos = upper_bound(darray, entry) + 1;
+            pos = array_upper_bound(darray->____array, darray->____num_entries, darray->____size_of, entry, darray->____cmp);
+
+        if (pos == -1)
+            ERROR("Upper bound error\n", 1);
 
         status = _darray_insert_pos(darray, entry, (size_t)pos, false);
-
     }
 
     if (status)
@@ -534,15 +308,13 @@ ssize_t darray_search_first(const Darray *darray, const void *val_in, void *val_
     if (darray->____num_entries == 0)
         ERROR("num_entries == 0\n", -1);
 
-    if (darray->____type == DARRAY_UNSORTED)
-        return darray_unsorted_search_first(darray, val_in, val_out);
-    else
-    {
-        if (darray->____cmp == NULL)
-            ERROR("CMP is needed\n", -1);
+    if (darray->____cmp == NULL)
+        ERROR("CMP is needed\n", -1);
 
-        return darray_sorted_search_first(darray, val_in, val_out);
-    }
+    if (darray->____type == DARRAY_UNSORTED)
+        return array_unsorted_find_first(darray->____array, darray->____num_entries, darray->____size_of, val_in, darray->____cmp, val_out);
+    else
+        return array_sorted_find_first(darray->____array, darray->____num_entries, darray->____size_of, val_in, darray->____cmp, val_out);
 }
 
 ssize_t darray_search_last(const Darray *darray, const void *val_in, void *val_out)
@@ -555,15 +327,13 @@ ssize_t darray_search_last(const Darray *darray, const void *val_in, void *val_o
     if (darray->____num_entries == 0)
         ERROR("num_entries == 0\n", -1);
 
-    if (darray->____type == DARRAY_UNSORTED)
-        return darray_unsorted_search_last(darray, val_in, val_out);
-    else
-    {
-        if (darray->____cmp == NULL)
-            ERROR("CMP is needed\n", -1);
+    if (darray->____cmp == NULL)
+        ERROR("CMP is needed\n", -1);
 
-       return darray_sorted_search_last(darray, val_in, val_out);
-    }
+    if (darray->____type == DARRAY_UNSORTED)
+        return array_unsorted_find_last(darray->____array, darray->____num_entries, darray->____size_of, val_in, darray->____cmp, val_out);
+    else
+        return array_sorted_find_last(darray->____array, darray->____num_entries, darray->____size_of, val_in, darray->____cmp, val_out);
 }
 
 int darray_sort(Darray *darray)
@@ -582,25 +352,20 @@ int darray_sort(Darray *darray)
     if (darray->____type == DARRAY_SORTED)
         return 0;
 
-    return sort(darray->____array, darray->____num_entries, darray->____cmp, darray->____size_of);
+    return array_sort(darray->____array, darray->____num_entries, darray->____size_of, darray->____cmp);
 }
 
-ssize_t darray_min(const Darray *darray, const void *val)
+ssize_t darray_min(const Darray *darray, void *val)
 {
-    size_t pos;
-
-    BYTE *min;
     BYTE *_t;
-
-    size_t offset_i;
-    size_t offset_max;
 
     TRACE();
 
     if (darray == NULL)
         ERROR("darray == NULL\n", -1);
 
-    min = alloc_on_stack(darray->____size_of);
+    if (darray->____cmp == NULL)
+        ERROR("CMP is needed\n", -1);
 
     _t = (BYTE *)darray->____array;
     if (darray->____type == DARRAY_SORTED)
@@ -614,45 +379,21 @@ ssize_t darray_min(const Darray *darray, const void *val)
         return 0;
     }
 
-    if (darray->____cmp == NULL)
-        ERROR("CMP is needed\n", -1);
-
-    pos = 0;
-
-    __ASSIGN__(min[0], _t[0], darray->____size_of);
-
-    offset_max = darray->____num_entries * darray->____size_of;
-
-    for (offset_i = darray->____size_of; offset_i < offset_max;
-         offset_i += darray->____size_of)
-        if (darray->____cmp((void *)min, (void *)&_t[offset_i]) > 0)
-        {
-            __ASSIGN__(min[0], _t[offset_i], darray->____size_of);
-            pos = offset_i;
-        }
-
-    if (val != NULL)
-        __ASSIGN__(*(BYTE *)val, _t[pos], darray->____size_of);
-
-    return (ssize_t)pos / (ssize_t)darray->____size_of;
+    return array_min(darray->____array, darray->____num_entries, darray->____size_of, darray->____cmp, val);
 }
 
-ssize_t darray_max(const Darray *darray, const void *val)
+ssize_t darray_max(const Darray *darray, void *val)
 {
-    size_t pos;
-
-    BYTE *max;
     BYTE *_t;
-
-    size_t offset_i;
-    size_t offset_max;
 
     TRACE();
 
     if (darray == NULL)
         ERROR("darray == NULL\n", -1);
 
-    max = alloc_on_stack(darray->____size_of);
+    if (darray->____cmp == NULL)
+        ERROR("CMP is needed\n", -1);
+
     _t = (BYTE *)darray->____array;
     if (darray->____type == DARRAY_SORTED)
     {
@@ -660,33 +401,12 @@ ssize_t darray_max(const Darray *darray, const void *val)
             return (ssize_t)-1;
 
         if (val != NULL)
-            __ASSIGN__(*(BYTE *)val, _t[(darray->____num_entries - 1) * darray->____size_of],
-                                darray->____size_of);
+            __ASSIGN__(*(BYTE *)val, _t[(darray->____num_entries - 1) * darray->____size_of], darray->____size_of);
 
         return (ssize_t)darray->____num_entries - 1;
     }
 
-    if (darray->____cmp == NULL)
-        ERROR("CMP is needed\n", -1);
-
-    pos = 0;
-
-    __ASSIGN__(max[0], _t[0], darray->____size_of);
-
-    offset_max = darray->____num_entries * darray->____size_of;
-
-    for (offset_i = darray->____size_of; offset_i < offset_max;
-         offset_i += darray->____size_of)
-        if (darray->____cmp((void *)max, (void *)&_t[offset_i]) <= 0)
-        {
-            __ASSIGN__(max[0], _t[offset_i], darray->____size_of);
-            pos = offset_i;
-        }
-
-    if (val != NULL)
-        __ASSIGN__(*(BYTE *)val, _t[pos], darray->____size_of);
-
-    return (ssize_t)pos / (ssize_t)darray->____size_of;
+    return array_max(darray->____array, darray->____num_entries, darray->____size_of, darray->____cmp, val);
 }
 
 void *darray_get_array(const Darray *darray)
@@ -831,8 +551,7 @@ int darray_iterator_get_data(const Darray_iterator *iterator, void *val)
         ERROR("iterator == NULL || val == NULL\n", 1);
 
     t = (BYTE *)iterator->____array;
-    __ASSIGN__(*(BYTE *)val, t[iterator->____index * (ssize_t)iterator->____size_of],
-        iterator->____size_of);
+    __ASSIGN__(*(BYTE *)val, t[iterator->____index * (ssize_t)iterator->____size_of], iterator->____size_of);
 
     return 0;
 }
