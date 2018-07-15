@@ -20,13 +20,13 @@
 
 #define ARRAY_IT_NAME concat(__i, __LINE__)
 
-/* foreach */
-#define for_each_array(t, len, ptr, data)           for (size_t ARRAY_IT_NAME = 0; ARRAY_IT_NAME < len && ((data = t[ARRAY_IT_NAME]) || true) && ((ptr = &((typeof(ptr))t)[ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
-#define for_each_prev_array(t, len, ptr, data)      for (size_t ARRAY_IT_NAME = 1; ARRAY_IT_NAME <= len && ((data = t[len - ARRAY_IT_NAME]) || true) && ((ptr = &((typeof(ptr))t)[len - ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
-#define for_each_data_array(t, len, data)           for (size_t ARRAY_IT_NAME = 0; ARRAY_IT_NAME < len && ((data = t[ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
-#define for_each_data_prev_array(t, len, data)      for (size_t ARRAY_IT_NAME = 1; ARRAY_IT_NAME <= len && ((data = t[len - ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
-#define for_each_ptr_array(t, len, ptr)             for (size_t ARRAY_IT_NAME = 0; ARRAY_IT_NAME < len && ((ptr = &((typeof(ptr))t)[ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
-#define for_each_ptr_prev_array(t, len, ptr)        for (size_t ARRAY_IT_NAME = 1; ARRAY_IT_NAME <= len && ((ptr = &((typeof(ptr))t)[len - ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
+/* foreach for simple type */
+#define for_each_array_stype(t, len, ptr, data)           for (size_t ARRAY_IT_NAME = 0; ARRAY_IT_NAME < len && ((data = t[ARRAY_IT_NAME]) || true) && ((ptr = &((typeof(ptr))t)[ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
+#define for_each_prev_array_stype(t, len, ptr, data)      for (size_t ARRAY_IT_NAME = 1; ARRAY_IT_NAME <= len && ((data = t[len - ARRAY_IT_NAME]) || true) && ((ptr = &((typeof(ptr))t)[len - ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
+#define for_each_data_array_stype(t, len, data)           for (size_t ARRAY_IT_NAME = 0; ARRAY_IT_NAME < len && ((data = t[ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
+#define for_each_data_prev_array_stype(t, len, data)      for (size_t ARRAY_IT_NAME = 1; ARRAY_IT_NAME <= len && ((data = t[len - ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
+#define for_each_ptr_array_stype(t, len, ptr)             for (size_t ARRAY_IT_NAME = 0; ARRAY_IT_NAME < len && ((ptr = &((typeof(ptr))t)[ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
+#define for_each_ptr_prev_array_stype(t, len, ptr)        for (size_t ARRAY_IT_NAME = 1; ARRAY_IT_NAME <= len && ((ptr = &((typeof(ptr))t)[len - ARRAY_IT_NAME]) || true); ++ARRAY_IT_NAME)
 
 /*
     Macro create static function for cmp whole array (type must by simple type)
@@ -123,7 +123,7 @@
         if (t == NULL || len == 0) \
             return 0; \
         \
-        for_each_data_array(t, len, data) \
+        for_each_data_array_stype(t, len, data) \
             sum += data; \
         \
         return sum; \
@@ -141,7 +141,7 @@
         if (t == NULL || len == 0) \
             return 0; \
         \
-        for_each_data_array(t, len, data) \
+        for_each_data_array_stype(t, len, data) \
             product *= data; \
         \
         return product; \
@@ -157,7 +157,7 @@
         if (t == NULL || len == 0) \
             return true; \
         \
-        for_each_ptr_array(t, len - 1, ptr) \
+        for_each_ptr_array_stype(t, len - 1, ptr) \
             if (*(ptr + 1) < *ptr) \
                 return false; \
         \
@@ -174,7 +174,7 @@
         if (t == NULL || len == 0) \
             return true; \
         \
-        for_each_ptr_array(t, len - 1, ptr) \
+        for_each_ptr_array_stype(t, len - 1, ptr) \
             if (*(ptr + 1) > *ptr) \
                 return false; \
         \

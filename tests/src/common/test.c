@@ -496,163 +496,218 @@ test_f test_array_foreach(void)
     char data3;
 
     int i;
+    size_t counter;
 
     i = 0;
-    for_each_array(t1, ARRAY_SIZE(t1), ptr1, data1)
+    counter = 0;
+    for_each_array_stype(t1, ARRAY_SIZE(t1), ptr1, data1)
     {
         T_ASSERT(t1[i], data1);
         T_ASSERT(t1[i], *ptr1);
         T_ASSERT(t1 + i, ptr1);
 
-       ++i;
+        ++i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t1));
 
     i = 0;
-    for_each_array(t2, ARRAY_SIZE(t2), ptr2, data2)
+    counter = 0;
+    for_each_array_stype(t2, ARRAY_SIZE(t2), ptr2, data2)
     {
         T_ASSERT(t2[i], data2);
         T_ASSERT(t2[i], *ptr2);
         T_ASSERT(t2 + i, ptr2);
 
-       ++i;
+        ++i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t2));
 
     i = 0;
-    for_each_array(t3, ARRAY_SIZE(t3), ptr3, data3)
+    counter = 0;
+    for_each_array_stype(t3, ARRAY_SIZE(t3), ptr3, data3)
     {
         T_ASSERT(t3[i], data3);
         T_ASSERT(t3[i], *ptr3);
         T_ASSERT(t3 + i, ptr3);
 
-       ++i;
+        ++i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t3));
 
     i = ARRAY_SIZE(t1) - 1;
-    for_each_prev_array(t1, ARRAY_SIZE(t1), ptr1, data1)
+    counter = 0;
+    for_each_prev_array_stype(t1, ARRAY_SIZE(t1), ptr1, data1)
     {
         T_ASSERT(t1[i], data1);
         T_ASSERT(t1[i], *ptr1);
         T_ASSERT(t1 + i, ptr1);
 
-       --i;
+        --i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t1));
 
     i = ARRAY_SIZE(t2) - 1;
-    for_each_prev_array(t2, ARRAY_SIZE(t2), ptr2, data2)
+    counter = 0;
+    for_each_prev_array_stype(t2, ARRAY_SIZE(t2), ptr2, data2)
     {
         T_ASSERT(t2[i], data2);
         T_ASSERT(t2[i], *ptr2);
         T_ASSERT(t2 + i, ptr2);
 
-       --i;
+        --i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t2));
 
     i = ARRAY_SIZE(t3) - 1;
-    for_each_prev_array(t3, ARRAY_SIZE(t3), ptr3, data3)
+    counter = 0;
+    for_each_prev_array_stype(t3, ARRAY_SIZE(t3), ptr3, data3)
     {
         T_ASSERT(t3[i], data3);
         T_ASSERT(t3[i], *ptr3);
         T_ASSERT(t3 + i, ptr3);
 
-       --i;
+        --i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t3));
 
     i = 0;
-    for_each_data_array(t1, ARRAY_SIZE(t1), data1)
+    counter = 0;
+    for_each_data_array_stype(t1, ARRAY_SIZE(t1), data1)
     {
         T_ASSERT(t1[i], data1);
-       ++i;
+        ++i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t1));
 
     i = 0;
-    for_each_data_array(t2, ARRAY_SIZE(t2), data2)
+    counter = 0;
+    for_each_data_array_stype(t2, ARRAY_SIZE(t2), data2)
     {
         T_ASSERT(t2[i], data2);
-       ++i;
+        ++i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t2));
 
     i = 0;
-    for_each_data_array(t3, ARRAY_SIZE(t3), data3)
+    counter = 0;
+    for_each_data_array_stype(t3, ARRAY_SIZE(t3), data3)
     {
         T_ASSERT(t3[i], data3);
-       ++i;
+        ++i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t3));
 
     i = ARRAY_SIZE(t1) - 1;
-    for_each_data_prev_array(t1, ARRAY_SIZE(t1), data1)
+    counter = 0;
+    for_each_data_prev_array_stype(t1, ARRAY_SIZE(t1), data1)
     {
         T_ASSERT(t1[i], data1);
-       --i;
+        --i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t1));
 
     i = ARRAY_SIZE(t2) - 1;
-    for_each_data_prev_array(t2, ARRAY_SIZE(t2), data2)
+    counter = 0;
+    for_each_data_prev_array_stype(t2, ARRAY_SIZE(t2), data2)
     {
         T_ASSERT(t2[i], data2);
-       --i;
+        --i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t2));
 
     i = ARRAY_SIZE(t3) - 1;
-    for_each_data_prev_array(t3, ARRAY_SIZE(t3), data3)
+    counter = 0;
+    for_each_data_prev_array_stype(t3, ARRAY_SIZE(t3), data3)
     {
         T_ASSERT(t3[i], data3);
-       --i;
+        --i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t3));
 
 
     i = 0;
-    for_each_ptr_array(t1, ARRAY_SIZE(t1), ptr1)
+    counter = 0;
+    for_each_ptr_array_stype(t1, ARRAY_SIZE(t1), ptr1)
     {
         T_ASSERT(t1[i], *ptr1);
         T_ASSERT(t1 + i, ptr1);
 
-       ++i;
+        ++i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t1));
 
     i = 0;
-    for_each_ptr_array(t2, ARRAY_SIZE(t2), ptr2)
+    counter = 0;
+    for_each_ptr_array_stype(t2, ARRAY_SIZE(t2), ptr2)
     {
         T_ASSERT(t2[i], *ptr2);
         T_ASSERT(t2 + i, ptr2);
 
-       ++i;
+        ++i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t2));
 
     i = 0;
-    for_each_ptr_array(t3, ARRAY_SIZE(t3), ptr3)
+    counter = 0;
+    for_each_ptr_array_stype(t3, ARRAY_SIZE(t3), ptr3)
     {
         T_ASSERT(t3[i], *ptr3);
         T_ASSERT(t3 + i, ptr3);
 
-       ++i;
+        ++i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t3));
 
     i = ARRAY_SIZE(t1) - 1;
-    for_each_ptr_prev_array(t1, ARRAY_SIZE(t1), ptr1)
+    counter = 0;
+    for_each_ptr_prev_array_stype(t1, ARRAY_SIZE(t1), ptr1)
     {
         T_ASSERT(t1[i], *ptr1);
         T_ASSERT(t1 + i, ptr1);
 
-       --i;
+        --i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t1));
 
     i = ARRAY_SIZE(t2) - 1;
-    for_each_ptr_prev_array(t2, ARRAY_SIZE(t2), ptr2)
+    counter = 0;
+    for_each_ptr_prev_array_stype(t2, ARRAY_SIZE(t2), ptr2)
     {
         T_ASSERT(t2[i], *ptr2);
         T_ASSERT(t2 + i, ptr2);
 
-       --i;
+        --i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t2));
 
     i = ARRAY_SIZE(t3) - 1;
-    for_each_ptr_prev_array(t3, ARRAY_SIZE(t3), ptr3)
+    counter = 0;
+    for_each_ptr_prev_array_stype(t3, ARRAY_SIZE(t3), ptr3)
     {
         T_ASSERT(t3[i], *ptr3);
         T_ASSERT(t3 + i, ptr3);
 
-       --i;
+        --i;
+        ++counter;
     }
+    T_ASSERT(counter, ARRAY_SIZE(t3));
 }
 
 ARRAY_MIN(char)
