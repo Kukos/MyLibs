@@ -63,7 +63,7 @@ IT_FUNC(Bst, bst)
     NULL iff failure
     Pointer to Tree iff success
 */
-Tree *tree_bst_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+Tree *tree_bst_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
 /*
     Create BST
@@ -77,7 +77,7 @@ Tree *tree_bst_create(int size_of, int (*cmp)(const void *a, const void *b), voi
     NULL iff failure
     Pointer to bst iff success
 */
-Bst* bst_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+Bst* bst_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
 #define BST_CREATE(PTR, TYPE, CMP, DESTROY) \
     do { \
@@ -247,7 +247,7 @@ ssize_t bst_get_num_entries(const Bst *tree);
     -1 iff failure
     Size of data
 */
-int bst_get_data_size(const Bst *tree);
+ssize_t bst_get_data_size(const Bst *tree);
 
 /*
     RECURSIVE getter with O(n) complexity

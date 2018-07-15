@@ -32,7 +32,7 @@ int cmp_mystruct(const void *a, const void *b)
     return 0;
 }
 
-bool check_array_is_sorted(void *array, size_t n, int size_of, int (*cmp)(const void *a, const void *b))
+bool check_array_is_sorted(void *array, size_t n, size_t size_of, int (*cmp)(const void *a, const void *b))
 {
     size_t i;
     size_t size;

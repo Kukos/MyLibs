@@ -29,7 +29,7 @@
     -1 iff key doesn't exist in array
     Index in array where is key
 */
-ssize_t find_first_unsorted(const void * ___restrict___ key, const void * ___restrict___ t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
+ssize_t find_first_unsorted(const void * ___restrict___ key, const void * ___restrict___ t, size_t num_elements, int(*cmp)(const void *a, const void *b), size_t size_of);
 
 /*
     Find Last occurrence of @key in array @t
@@ -46,7 +46,7 @@ ssize_t find_first_unsorted(const void * ___restrict___ key, const void * ___res
     -1 iff key doesn't exist in array
     Index in array where is key
 */
-ssize_t find_last_unsorted(const void * ___restrict___ key, const void * ___restrict___ t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
+ssize_t find_last_unsorted(const void * ___restrict___ key, const void * ___restrict___ t, size_t num_elements, int(*cmp)(const void *a, const void *b), size_t size_of);
 
 /*
     Find First occurrence of @key in array @t
@@ -63,7 +63,7 @@ ssize_t find_last_unsorted(const void * ___restrict___ key, const void * ___rest
     -1 iff key doesn't exist in array
     Index in array where is key
 */
-ssize_t find_first_sorted(const void * ___restrict___ key, const void * ___restrict___ t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
+ssize_t find_first_sorted(const void * ___restrict___ key, const void * ___restrict___ t, size_t num_elements, int(*cmp)(const void *a, const void *b), size_t size_of);
 
 /*
     Find Last occurrence of @key in array @t
@@ -80,7 +80,7 @@ ssize_t find_first_sorted(const void * ___restrict___ key, const void * ___restr
     -1 iff key doesn't exist in array
     Index in array where is key
 */
-ssize_t find_last_sorted(const void * ___restrict___ key, const void * ___restrict___ t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of);
+ssize_t find_last_sorted(const void * ___restrict___ key, const void * ___restrict___ t, size_t num_elements, int(*cmp)(const void *a, const void *b), size_t size_of);
 
 
 #endif

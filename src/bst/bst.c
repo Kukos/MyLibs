@@ -19,7 +19,7 @@
     NULL iff failure
     Pointer to node iff success
 */
-static ___inline___ Bst_node *bst_node_create(const void *data, int size_of, const Bst_node *parent);
+static ___inline___ Bst_node *bst_node_create(const void *data, size_t size_of, const Bst_node *parent);
 
 /*
     Deallocate bst node
@@ -155,7 +155,7 @@ static void __bst_destroy(Bst *tree, bool destroy);
 */
 static int __bst_delete(Bst *tree, const void *data_key, bool destroy);
 
-static ___inline___ Bst_node *bst_node_create(const void *data, int size_of, const Bst_node *parent)
+static ___inline___ Bst_node *bst_node_create(const void *data, size_t size_of, const Bst_node *parent)
 {
     Bst_node *node;
 
@@ -164,7 +164,7 @@ static ___inline___ Bst_node *bst_node_create(const void *data, int size_of, con
     assert(data != NULL);
     assert(size_of >= 1);
 
-    node = (Bst_node *)malloc(sizeof(Bst_node) + (size_t)size_of);
+    node = (Bst_node *)malloc(sizeof(Bst_node) + size_of);
     if (node == NULL)
         ERROR("malloc error\n", NULL);
 
@@ -526,13 +526,13 @@ static int __bst_delete(Bst *tree, const void *data_key, bool destroy)
 
     if (destroy && tree->____destroy != NULL)
         tree->____destroy((void *)node->____data);
-        
+
     bst_node_destroy(node);
 
     return 0;
 }
 
-Bst* bst_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
+Bst* bst_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
 {
     Bst *tree;
 
@@ -552,7 +552,7 @@ Bst* bst_create(int size_of, int (*cmp)(const void *a, const void *b), void (*de
 
     tree->____cmp = cmp;
     tree->____destroy = destroy;
-    tree->____size_of = (size_t)size_of;
+    tree->____size_of = size_of;
 
     tree->____nodes = 0;
 
@@ -590,7 +590,7 @@ int bst_insert(Bst *tree, const void *data)
     /* special case - empty tree */
     if (tree->____root == NULL)
     {
-        node = bst_node_create(data, (int)tree->____size_of, NULL);
+        node = bst_node_create(data, tree->____size_of, NULL);
 		if (node == NULL)
 			ERROR("bst_node_create\n", 1);
 
@@ -615,7 +615,7 @@ int bst_insert(Bst *tree, const void *data)
                 node = node->____right_son;
         }
 
-        new_node = bst_node_create(data, (int)tree->____size_of, parent);
+        new_node = bst_node_create(data, tree->____size_of, parent);
 		if (new_node == NULL)
 			ERROR("bst_node_create\n", 1);
 
@@ -868,14 +868,14 @@ ssize_t bst_get_num_entries(const Bst *tree)
     return (ssize_t)tree->____nodes;
 }
 
-int bst_get_data_size(const Bst *tree)
+ssize_t bst_get_data_size(const Bst *tree)
 {
     TRACE();
 
     if (tree == NULL)
         ERROR("tree == NULL\n", -1);
 
-    return (int)tree->____size_of;
+    return (ssize_t)tree->____size_of;
 }
 
 int bst_get_hight(const Bst *tree)
@@ -1029,7 +1029,7 @@ bool bst_iterator_end(const Bst_iterator *iterator)
 
 TREE_WRAPPERS_CREATE(Bst, bst)
 
-Tree *tree_bst_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
+Tree *tree_bst_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
 {
     Tree *tree;
 

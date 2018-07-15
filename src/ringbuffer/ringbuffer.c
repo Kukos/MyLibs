@@ -251,7 +251,7 @@ ssize_t ring_buffer_get_num_entries(const Ring_buffer *rb)
     return (ssize_t)rb->____num_entries;
 }
 
-int ring_buffer_get_data_size(const Ring_buffer *rb)
+ssize_t ring_buffer_get_data_size(const Ring_buffer *rb)
 {
     TRACE();
 
@@ -259,5 +259,5 @@ int ring_buffer_get_data_size(const Ring_buffer *rb)
         ERROR("rb == NULL\n", -1);
 
 
-    return (int)rb->____data_size;
+    return (ssize_t)rb->____data_size;
 }

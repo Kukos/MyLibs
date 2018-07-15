@@ -65,7 +65,7 @@ IT_FUNC(Rbt, rbt)
     NULL iff failure
     Pointer to RBT iff success
 */
-Tree *tree_rbt_create(int size_of, int (*cmp)(const void* a, const void *b), void (*destroy)(void *entry));
+Tree *tree_rbt_create(size_t size_of, int (*cmp)(const void* a, const void *b), void (*destroy)(void *entry));
 
 /*
     Create RBT
@@ -82,7 +82,7 @@ Tree *tree_rbt_create(int size_of, int (*cmp)(const void* a, const void *b), voi
     NULL iff failure
     Pointer to RBT iff success
 */
-Rbt* rbt_create(int size_of,int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+Rbt* rbt_create(size_t size_of,int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
 #define RBT_CREATE(PTR, TYPE, CMP, DESTROY) \
     do { \
@@ -240,7 +240,7 @@ ssize_t rbt_get_num_entries(const Rbt *tree);
     -1 iff failure
     Size of data
 */
-int rbt_get_data_size(const Rbt *tree);
+ssize_t rbt_get_data_size(const Rbt *tree);
 
 /*
     RECURSIVE getter with O(n) complexity

@@ -27,6 +27,6 @@
     -1 iff failure
     Index of kth element in array iff success
 */
-ssize_t select_kth(const void *t, size_t len, int size_of, size_t k, int (*cmp)(const void *a, const void *b));
+ssize_t select_kth(const void *t, size_t len, size_t size_of, size_t k, int (*cmp)(const void *a, const void *b));
 
 #endif

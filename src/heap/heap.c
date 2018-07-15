@@ -334,7 +334,7 @@ ___inline___ static int __heap_change_key(Heap *heap, size_t index, const void *
     return 0;
 }
 
-Heap_entry *heap_entry_create(const void *data, int size_of)
+Heap_entry *heap_entry_create(const void *data, size_t size_of)
 {
     Heap_entry *entry;
 
@@ -352,7 +352,7 @@ Heap_entry *heap_entry_create(const void *data, int size_of)
 
     entry->____pos = OUT_OF_HEAP;
 
-    entry->____data = malloc((size_t)size_of);
+    entry->____data = malloc(size_of);
     if (entry->____data == NULL)
     {
         FREE(entry);
@@ -409,7 +409,7 @@ void *heap_entry_get_data(const Heap_entry *entry)
 
     return entry->____data;
 }
-Heap* heap_create(heap_type type, int size_of, int ary,
+Heap* heap_create(heap_type type, size_t size_of, int ary,
      int (*cmp)(const void *a, const void *b),
      void (*destroy)(void *entry))
 {
@@ -594,12 +594,12 @@ ssize_t heap_get_num_entries(const Heap *heap)
     return darray_get_num_entries(heap->____darray);
 }
 
-int heap_get_data_size(const Heap *heap)
+ssize_t heap_get_data_size(const Heap *heap)
 {
     TRACE();
 
     if (heap == NULL)
         ERROR("heap == NULL\n", -1);
 
-    return heap->____size_of;
+    return (ssize_t)heap->____size_of;
 }

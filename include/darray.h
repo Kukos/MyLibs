@@ -85,7 +85,7 @@ IT_FUNC(Darray, darray)
     %NULL iff failure
     %Pointer to Darray iff success
 */
-Darray *darray_create(DARRAY_TYPE type, size_t size, int size_of,
+Darray *darray_create(DARRAY_TYPE type, size_t size, size_t size_of,
                 int (*cmp)(const void *a, const void *b),
                 void (*destroy)(void *entry));
 
@@ -305,6 +305,6 @@ DARRAY_TYPE darray_get_type(const Darray *darray);
     %-1 iff failure
     %sizeof iff success
 */
-int darray_get_data_size(const Darray *darray);
+ssize_t darray_get_data_size(const Darray *darray);
 
 #endif

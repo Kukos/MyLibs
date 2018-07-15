@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <common.h>
 
-Stack *stack_create(int size_of, void (*destroy)(void *entry))
+Stack *stack_create(size_t size_of, void (*destroy)(void *entry))
 {
     Stack *s;
 
@@ -160,7 +160,7 @@ ssize_t stack_get_num_entries(const Stack *stack)
     return darray_get_num_entries(stack->____darray);
 }
 
-int stack_get_data_size(const Stack *stack)
+ssize_t stack_get_data_size(const Stack *stack)
 {
     TRACE();
 

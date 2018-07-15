@@ -54,7 +54,7 @@ typedef struct Fifo
     %NULL iff failure
     %Pointer to fifo iff success
 */
-Fifo *fifo_create(int size_of, void (*destroy)(void *entry));
+Fifo *fifo_create(size_t size_of, void (*destroy)(void *entry));
 
 /*
     Destroy fifo
@@ -165,6 +165,6 @@ ssize_t fifo_get_num_entries(const Fifo *fifo);
     %-1 iff failure
     %sizeof iff success
 */
-int fifo_get_data_size(const Fifo *fifo);
+ssize_t fifo_get_data_size(const Fifo *fifo);
 
 #endif

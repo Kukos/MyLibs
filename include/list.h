@@ -74,7 +74,7 @@ IT_FUNC(List, list)
     NULL if failure
     Pointer if success
 */
-SList *slist_list_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+SList *slist_list_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
 
 /*
@@ -89,7 +89,7 @@ SList *slist_list_create(int size_of, int (*cmp)(const void *a, const void *b), 
     NULL iff failure
     Pointer iff success
 */
-List *list_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+List *list_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
 /*
     Destroy list
@@ -141,7 +141,7 @@ int list_insert(List *list, const void *entry);
 int list_delete(List *list, const void *entry);
 
 /*
-    Delete the first entry which cmp(list->entry, entry) == 
+    Delete the first entry which cmp(list->entry, entry) ==
     and call destructor
 
     PARAMS
@@ -248,7 +248,7 @@ int list_to_array(const List *list, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-int list_get_data_size(const List *list);
+ssize_t list_get_data_size(const List *list);
 
 /*
     Get number of entries in List

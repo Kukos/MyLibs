@@ -102,7 +102,7 @@ IT_FUNC(List2D, list2d)
     NULL iff failure
     Pointer iff success
 */
-SList *slist_list2d_create(int size_of, int (*cmp)(const void *a, const void *b),
+SList *slist_list2d_create(size_t size_of, int (*cmp)(const void *a, const void *b),
     int (*diff)(const void *a, const void *b), void (*destroy)(void *entry));
 
 /*
@@ -113,13 +113,13 @@ SList *slist_list2d_create(int size_of, int (*cmp)(const void *a, const void *b)
     @IN cmp - compare function
     @IN diff - diff function
     @IN destroy - your data destructor
-    
+
 
     RETURN:
     NULL iff failure
     Pointer iff success
 */
-List2D *list2d_create(int size_of, int (*cmp)(const void *a, const void *b),
+List2D *list2d_create(size_t size_of, int (*cmp)(const void *a, const void *b),
     int (*diff)(const void *a, const void *b), void (*destroy)(void *entry));
 
 /*
@@ -278,7 +278,7 @@ int list2d_to_array(const List2D *list, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-int list2d_get_data_size(const List2D *list);
+ssize_t list2d_get_data_size(const List2D *list);
 
 /*
     Get number of entries in List

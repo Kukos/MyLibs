@@ -22,7 +22,7 @@
 ___inline___ static Arraylist_node *arraylist_node_create( const Arraylist_node  *prev,
                                                            const Arraylist_node  *next,
                                                            const void            *data,
-                                                           int             size_of);
+                                                           size_t                size_of);
 /*
     Destory node
 
@@ -89,7 +89,7 @@ static void __arraylist_destroy_with_entries(Arraylist *alist, bool destroy);
 ___inline___ static Arraylist_node *arraylist_node_create(  const Arraylist_node  *prev,
                                                             const Arraylist_node  *next,
                                                             const void            *data,
-                                                            int size_of)
+                                                            size_t size_of)
 {
     Arraylist_node *node;
 
@@ -98,13 +98,13 @@ ___inline___ static Arraylist_node *arraylist_node_create(  const Arraylist_node
     assert(data != NULL);
     assert(size_of >= 1);
 
-    node = (Arraylist_node *)malloc(sizeof(Arraylist_node) + (size_t)size_of);
+    node = (Arraylist_node *)malloc(sizeof(Arraylist_node) + size_of);
     if (node == NULL)
         ERROR("malloc error\n", NULL);
 
     node->____next = (Arraylist_node *)next;
     node->____prev = (Arraylist_node *)prev;
-    node->____size_of = (size_t)size_of;
+    node->____size_of = size_of;
     __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data,size_of);
 
     return node;
@@ -267,7 +267,7 @@ static void __arraylist_destroy_with_entries(Arraylist *alist, bool destroy)
         next = ptr->____next;
         if (destroy && alist->____destroy != NULL)
             alist->____destroy((void *)ptr->____data);
-        
+
         arraylist_node_destroy(ptr);
 
         ptr = next;
@@ -278,7 +278,7 @@ static void __arraylist_destroy_with_entries(Arraylist *alist, bool destroy)
     return;
 }
 
-Arraylist *arraylist_create(int size_of, void (*destroy)(void *data))
+Arraylist *arraylist_create(size_t size_of, void (*destroy)(void *data))
 {
     Arraylist *alist;
 
@@ -291,7 +291,7 @@ Arraylist *arraylist_create(int size_of, void (*destroy)(void *data))
     if (alist == NULL)
         ERROR("malloc error\n", NULL);
 
-    alist->____size_of = (size_t)size_of;
+    alist->____size_of = size_of;
 
     alist->____length = 0;
     alist->____head = NULL;
@@ -325,7 +325,7 @@ int arraylist_insert_first(Arraylist *alist, const void *data)
         ERROR("alist == NULL || data == NULL\n", 1);
 
     /* create node and insert at begining */
-    node = arraylist_node_create(NULL, alist->____head, data, (int)alist->____size_of);
+    node = arraylist_node_create(NULL, alist->____head, data, alist->____size_of);
     if (node == NULL)
         ERROR("arraylist_node_create error\n", 1);
 
@@ -356,7 +356,7 @@ int arraylist_insert_last(Arraylist *alist, const void *data)
         ERROR("alist == NULL || data == NULL\n", 1);
 
     /* create node and insert at the end */
-    node = arraylist_node_create(alist->____tail, NULL, data, (int)alist->____size_of);
+    node = arraylist_node_create(alist->____tail, NULL, data, alist->____size_of);
     if(node == NULL)
         ERROR("arraylist_node_create error\n", 1);
 
@@ -416,7 +416,7 @@ int arraylist_insert_pos(Arraylist *alist, size_t pos, const void *data)
             ptr = ptr->____prev;
     }
 
-    node = arraylist_node_create(ptr->____prev, ptr, data, (int)alist->____size_of);
+    node = arraylist_node_create(ptr->____prev, ptr, data, alist->____size_of);
     if (node == NULL)
         ERROR("arraylist_node_create error\n", 1);
 
@@ -506,7 +506,7 @@ Arraylist *arraylist_merge(const Arraylist  * ___restrict___ alist1, const Array
     if (alist1 == NULL || alist2 == NULL)
         ERROR("alist1 == NULL || alist2 == NULL\n", NULL);
 
-    result = arraylist_create((int)alist1->____size_of, alist1->____destroy);
+    result = arraylist_create(alist1->____size_of, alist1->____destroy);
     if (result == NULL)
         ERROR("arraylist_create error\n", NULL);
 
@@ -563,14 +563,14 @@ int arraylist_to_array(const Arraylist *alist, void *array, size_t *size)
     return 0;
 }
 
-int arraylist_get_data_size(const Arraylist *alist)
+ssize_t arraylist_get_data_size(const Arraylist *alist)
 {
     TRACE();
 
     if (alist == NULL)
         ERROR("alist == NULL\n", -1);
 
-    return (int)alist->____size_of;
+    return (ssize_t)alist->____size_of;
 }
 
 ssize_t arraylist_get_num_entries(const Arraylist *alist)
@@ -718,7 +718,7 @@ bool arraylist_iterator_end(const Arraylist_iterator *iterator)
 
 ULIST_WRAPPERS_CREATE(Arraylist, arraylist)
 
-UList *ulist_arraylist_create(int size_of, void (*destroy)(void *entry))
+UList *ulist_arraylist_create(size_t size_of, void (*destroy)(void *entry))
 {
     UList *list;
 

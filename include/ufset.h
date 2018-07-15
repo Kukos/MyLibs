@@ -88,7 +88,7 @@ void ufs_master_destroy_with_entries(UFSMaster *master);
 	%NULL iff failure
 	%Pointer to UFS Entry iff success
 */
-UFSentry *ufs_entry_create(const void *data, int size_of, void (*destroy)(void *entry));
+UFSentry *ufs_entry_create(const void *data, size_t size_of, void (*destroy)(void *entry));
 
 /*
 	Deallocate mem

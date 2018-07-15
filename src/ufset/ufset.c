@@ -58,7 +58,7 @@ void ufs_master_destroy_with_entries(UFSMaster *master)
     FREE(master);
 }
 
-UFSentry *ufs_entry_create(const void *data, int size_of, void (*destroy)(void *entry))
+UFSentry *ufs_entry_create(const void *data, size_t size_of, void (*destroy)(void *entry))
 {
     UFSentry *entry;
 
@@ -67,7 +67,7 @@ UFSentry *ufs_entry_create(const void *data, int size_of, void (*destroy)(void *
     if (data == NULL || size_of < 1)
         ERROR("data == NULL || size_of < 1\n", NULL);
 
-    entry = (UFSentry *)malloc(sizeof(UFSentry) + (size_t)size_of);
+    entry = (UFSentry *)malloc(sizeof(UFSentry) + size_of);
     if(entry == NULL)
         ERROR("malloc error\n", NULL);
 

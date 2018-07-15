@@ -132,7 +132,7 @@ ___inline___ static ssize_t darray_unsorted_search_first(const Darray *darray,
     assert(darray->____cmp != NULL);
     assert(darray->____num_entries != 0);
 
-    index = find_first_unsorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, (int)darray->____size_of);
+    index = find_first_unsorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, darray->____size_of);
     if (index == -1)
         return -1;
 
@@ -159,7 +159,7 @@ ___inline___ static ssize_t darray_unsorted_search_last(const Darray *darray,
     assert(darray->____num_entries != 0);
 
     _t = (BYTE *)darray->____array;
-    index = find_last_unsorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, (int)darray->____size_of);
+    index = find_last_unsorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, darray->____size_of);
     if (index == -1)
         return -1;
 
@@ -186,7 +186,7 @@ ___inline___ static ssize_t darray_sorted_search_first(const Darray *darray,
     assert(darray->____num_entries != 0);
 
     _t = (BYTE *)darray->____array;
-    index = find_first_sorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, (int)darray->____size_of);
+    index = find_first_sorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, darray->____size_of);
     if (index == -1)
         return -1;
 
@@ -214,7 +214,7 @@ ___inline___ static ssize_t darray_sorted_search_last(const Darray *darray,
 
     _t = (BYTE *)darray->____array;
 
-    index = find_last_sorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, (int)darray->____size_of);
+    index = find_last_sorted(val_in, darray->____array, darray->____num_entries, darray->____cmp, darray->____size_of);
     if (index == -1)
         return -1;
 
@@ -368,7 +368,7 @@ static void __darray_destroy_with_entries(Darray *darray, bool destroy)
     FREE(darray);
 }
 
-Darray *darray_create(DARRAY_TYPE type, size_t size, int size_of,
+Darray *darray_create(DARRAY_TYPE type, size_t size, size_t size_of,
         int (*cmp)(const void *a, const void *b),
         void (*destroy)(void *entry))
 {
@@ -395,7 +395,7 @@ Darray *darray_create(DARRAY_TYPE type, size_t size, int size_of,
         da->____size = size;
 
     da->____init_size = da->____size;
-    da->____size_of = (size_t)size_of;
+    da->____size_of = size_of;
     da->____type = type;
     da->____cmp = cmp;
     da->____destroy = destroy;
@@ -582,7 +582,7 @@ int darray_sort(Darray *darray)
     if (darray->____type == DARRAY_SORTED)
         return 0;
 
-    return sort(darray->____array, darray->____num_entries, darray->____cmp, (int)darray->____size_of);
+    return sort(darray->____array, darray->____num_entries, darray->____cmp, darray->____size_of);
 }
 
 ssize_t darray_min(const Darray *darray, const void *val)
@@ -719,14 +719,14 @@ DARRAY_TYPE darray_get_type(const Darray *darray)
     return darray->____type;
 }
 
-int darray_get_data_size(const Darray *darray)
+ssize_t darray_get_data_size(const Darray *darray)
 {
     TRACE();
 
     if (darray == NULL)
         ERROR("darray == NULL\n", -1);
 
-    return (int)darray->____size_of;
+    return (ssize_t)darray->____size_of;
 }
 
 Darray_iterator *darray_iterator_create(const Darray *darray, iti_mode_t mode)

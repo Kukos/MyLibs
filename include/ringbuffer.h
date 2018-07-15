@@ -181,6 +181,6 @@ ssize_t ring_buffer_get_num_entries(const Ring_buffer *rb);
     -1 iff failure
     sizeof iff success
 */
-int ring_buffer_get_data_size(const Ring_buffer *rb);
+ssize_t ring_buffer_get_data_size(const Ring_buffer *rb);
 
 #endif

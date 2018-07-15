@@ -38,7 +38,7 @@ typedef struct Heap
     int         (*____cmp)(const void *a, const void *b);   /* compare function */
     void        (*____destroy)(void *entry); /* data destructor */
 
-    int         ____size_of;                    /* size of data */
+    size_t      ____size_of;                    /* size of data */
     int         ____ary;                        /* heap ary */
 
     heap_type   ____type;
@@ -55,7 +55,7 @@ typedef struct Heap
     %NULL iff failure
     %pointer iff success
 */
-Heap_entry *heap_entry_create(const void *data, int size_of);
+Heap_entry *heap_entry_create(const void *data, size_t size_of);
 
 #define HEAP_ENTRY_CREATE(PTR, DATA, TYPE) \
     do { \
@@ -123,7 +123,7 @@ void *heap_entry_get_data(const Heap_entry *entry);
     %NULL iff failure
     %pointer iff success
 */
-Heap *heap_create(heap_type type, int size_of, int ary,
+Heap *heap_create(heap_type type, size_t size_of, int ary,
      int (*cmp)(const void *a, const void *b),
      void (*destroy)(void *entry));
 
@@ -259,6 +259,6 @@ ssize_t heap_get_num_entries(const Heap *heap);
     -1 iff failure
     Data size iff success
 */
-int heap_get_data_size(const Heap *heap);
+ssize_t heap_get_data_size(const Heap *heap);
 
 #endif

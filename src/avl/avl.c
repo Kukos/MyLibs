@@ -22,7 +22,7 @@
     NULL iff failure
     Pointer to node iff success
 */
-___inline___ static Avl_node *avl_node_create(const void *data, int size_of, const Avl_node *parent);
+___inline___ static Avl_node *avl_node_create(const void *data, size_t size_of, const Avl_node *parent);
 
 /*
     Deallocate Avl node
@@ -233,7 +233,7 @@ static int avl_balance(Avl *tree)
     return 0;
 }
 
-___inline___ static Avl_node *avl_node_create(const void *data, int size_of, const Avl_node *parent)
+___inline___ static Avl_node *avl_node_create(const void *data, size_t size_of, const Avl_node *parent)
 {
     Avl_node *node;
 
@@ -242,7 +242,7 @@ ___inline___ static Avl_node *avl_node_create(const void *data, int size_of, con
     assert(data != NULL);
     assert(size_of >= 1);
 
-    node = (Avl_node *)malloc(sizeof(Avl_node) + (size_t)size_of);
+    node = (Avl_node *)malloc(sizeof(Avl_node) + size_of);
     if (node == NULL)
         ERROR("malloc error\n", NULL);
 
@@ -953,7 +953,7 @@ static int __avl_delete(Avl *tree, const void *data_key, bool destroy)
 }
 
 
-Avl *avl_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
+Avl *avl_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
 {
     Avl *tree;
 
@@ -970,7 +970,7 @@ Avl *avl_create(int size_of, int (*cmp)(const void *a, const void *b), void (*de
         ERROR("malloc error\n", NULL);
 
     tree->____root = NULL;
-    tree->____size_of = (size_t)size_of;
+    tree->____size_of = size_of;
     tree->____cmp = cmp;
     tree->____destroy = destroy;
 
@@ -1010,7 +1010,7 @@ int avl_insert(Avl *tree, const void *data)
     /* special case - empty tree */
     if (tree->____root == NULL)
     {
-        node = avl_node_create(data, (int)tree->____size_of, NULL);
+        node = avl_node_create(data, tree->____size_of, NULL);
 		if (node == NULL)
 			ERROR("avl_node_create error\n", 1);
 
@@ -1035,7 +1035,7 @@ int avl_insert(Avl *tree, const void *data)
                 node = node->____right_son;
         }
 
-        new_node = avl_node_create(data, (int)tree->____size_of, parent);
+        new_node = avl_node_create(data, tree->____size_of, parent);
 		if (new_node == NULL)
 			ERROR("avl_node_create error\n", 1);
 
@@ -1212,14 +1212,14 @@ ssize_t avl_get_num_entries(const Avl *tree)
     return (ssize_t)tree->____nodes;
 }
 
-int avl_get_data_size(const Avl *tree)
+ssize_t avl_get_data_size(const Avl *tree)
 {
     TRACE();
 
     if (tree == NULL)
         ERROR("tree == NULL\n", -1);
 
-    return (int)tree->____size_of;
+    return (ssize_t)tree->____size_of;
 }
 
 int avl_get_hight(const Avl *tree)
@@ -1374,7 +1374,7 @@ bool avl_iterator_end(const Avl_iterator *iterator)
 
 TREE_WRAPPERS_CREATE(Avl, avl)
 
-Tree *tree_avl_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
+Tree *tree_avl_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
 {
     Tree *tree;
 

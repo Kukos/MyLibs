@@ -36,7 +36,7 @@ ___inline___ static int merge(  void        *t,
                                 size_t      offset_middle,
                                 size_t      offset_right,
                                 int         (*cmp)(const void *a, const void *b),
-                                int         size_of,
+                                size_t      size_of,
                                 void        *buffer);
 
 
@@ -59,7 +59,7 @@ static int _quicksort(  void        *t,
                         size_t      offset_left,
                         size_t      offset_right,
                         int         (*cmp)(const void *a, const void *b),
-                        int         size_of);
+                        size_t      size_of);
 
 
 ___inline___ static int merge(  void        *t,
@@ -67,7 +67,7 @@ ___inline___ static int merge(  void        *t,
                                 size_t      offset_middle,
                                 size_t      offset_right,
                                 int         (*cmp)(const void *a, const void *b),
-                                int         size_of,
+                                size_t      size_of,
                                 void        *buffer)
 {
 
@@ -79,6 +79,7 @@ ___inline___ static int merge(  void        *t,
     ssize_t offset_i; /* counter of 1st subarray */
     ssize_t offset_j; /* counter of 2nd subarray */
     ssize_t offset_k; /* counter of buffer */
+    ssize_t _size_of = (ssize_t)size_of;
 
     TRACE();
 
@@ -93,7 +94,7 @@ ___inline___ static int merge(  void        *t,
     _buffer = (BYTE *)buffer;
 
     offset_i = (ssize_t)offset_left;
-    offset_j = (ssize_t)(offset_middle + (size_t)size_of);
+    offset_j = (ssize_t)(offset_middle + size_of);
     offset_k = (ssize_t)offset_left;
 
     /* merge 2 subarray until both have entries to merge */
@@ -101,26 +102,26 @@ ___inline___ static int merge(  void        *t,
     {
         if (cmp((void *)&_t[offset_i], (void *)&_t[offset_j]) < 0)
         {
-            __ASSIGN__(_buffer[offset_k], _t[offset_i], size_of);
-            offset_k += size_of;
-            offset_i += size_of;
+            __ASSIGN__(_buffer[offset_k], _t[offset_i], _size_of);
+            offset_k += _size_of;
+            offset_i += _size_of;
         }
         else
         {
-            __ASSIGN__(_buffer[offset_k], _t[offset_j], size_of);
-            offset_k += size_of;
-            offset_j += size_of;
+            __ASSIGN__(_buffer[offset_k], _t[offset_j], _size_of);
+            offset_k += _size_of;
+            offset_j += _size_of;
         }
 
     }
 
     if (offset_i <= (ssize_t)offset_middle)
-        if (memcpy((void *)(_buffer + offset_k), (void *)(_t + offset_i), offset_middle - (size_t)offset_i + (size_t)size_of) == NULL)
+        if (memcpy((void *)(_buffer + offset_k), (void *)(_t + offset_i), offset_middle - (size_t)offset_i + size_of) == NULL)
             ERROR("memcpy error\n", 1);
 
 
     if (offset_j <= (ssize_t)offset_right)
-        if (memcpy((void *)(_buffer + offset_k), (void *)(_t + offset_j), offset_right - (size_t)offset_j + (size_t)size_of) == NULL)
+        if (memcpy((void *)(_buffer + offset_k), (void *)(_t + offset_j), offset_right - (size_t)offset_j + size_of) == NULL)
             ERROR("memcpy error\n", 1);
 
     return 0;
@@ -130,7 +131,7 @@ static int _quicksort(  void        *t,
                         size_t      offset_left,
                         size_t      offset_right,
                         int         (*cmp)(const void *a, const void *b),
-                        int         size_of)
+                        size_t      size_of)
 {
     BYTE *_t;
     size_t p_index;
@@ -139,7 +140,7 @@ static int _quicksort(  void        *t,
     size_t offset_right_index;
     size_t range;
 
-    size_t _size_of = (size_t)size_of;
+    size_t _size_of = size_of;
 
     TRACE();
 
@@ -185,7 +186,7 @@ static int _quicksort(  void        *t,
     return 0;
 }
 
-int insort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
+int insort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), size_t size_of)
 {
     /* we use buffer instead of temporary variable */
     BYTE buffer[size_of];
@@ -211,7 +212,7 @@ int insort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b)
     /* cast TYPE *t on BYTE*, so we can pick 1 byte */
     _t = (BYTE *)t;
 
-    offset_i = size_of;
+    offset_i = _size_of;
     max = num_elements * (size_t)_size_of;
 
     for (offset_i = _size_of; offset_i < (ssize_t)max; offset_i += _size_of)
@@ -240,7 +241,7 @@ int insort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b)
     return 0;
 }
 
-int binsort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
+int binsort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), size_t size_of)
 {
     size_t size;
 
@@ -338,7 +339,7 @@ int binsort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b
     return 0;
 }
 
-int mergesort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
+int mergesort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), size_t size_of)
 {
     ssize_t i;
     ssize_t offset_i;
@@ -348,6 +349,7 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(const void *a, const void 
 
     ssize_t offset_k;
     ssize_t d_offset_k;
+    ssize_t _size_of = (ssize_t)size_of;
 
     int k;
     int dk;
@@ -369,12 +371,12 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(const void *a, const void 
     if (num_elements < INSORT_TRESHOLD)
         return insort(t, num_elements, cmp, size_of);
 
-    size = num_elements * (size_t)size_of;
+    size = num_elements * size_of;
     _t = (BYTE *)t;
 
     /* sort small subarrays using insort */
     for (i = 0; i < (ssize_t)num_elements; i += MERGESORT_CUTOFF)
-        if (insort(_t + (i * size_of), MIN((size_t)(MERGESORT_CUTOFF), (num_elements - (size_t)i)), cmp, size_of))
+        if (insort(_t + (i * _size_of), MIN((size_t)(MERGESORT_CUTOFF), (num_elements - (size_t)i)), cmp, size_of))
             ERROR("insort error\n", 1);
 
     buffer = (BYTE *)malloc(size);
@@ -384,7 +386,7 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(const void *a, const void 
     loop_counter = 0;
 
     /* loop for every power of 2 less than size */
-    for (offset_k = MERGESORT_CUTOFF * size_of; offset_k < (ssize_t)size; offset_k <<= 1)
+    for (offset_k = (ssize_t)(MERGESORT_CUTOFF * size_of); offset_k < (ssize_t)size; offset_k <<= 1)
     {
         d_offset_k = offset_k << 1;
         k = (int)(offset_k / (ssize_t)size_of);
@@ -392,8 +394,8 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(const void *a, const void 
 
         for (offset_i = 0; offset_i < (ssize_t)size; offset_i += d_offset_k)
             if (merge( _t, (size_t)offset_i,
-                     (size_t)MIN(((offset_i / size_of + k - 1) * size_of), (ssize_t)(size - (size_t)size_of)),
-                     (size_t)MIN(((offset_i / size_of + dk - 1) * size_of), (ssize_t)(size - (size_t)size_of)),
+                     (size_t)MIN(((offset_i / _size_of + k - 1) * _size_of), (ssize_t)(size - size_of)),
+                     (size_t)MIN(((offset_i / _size_of + dk - 1) * _size_of), (ssize_t)(size - size_of)),
                      cmp, size_of, buffer))
                 ERROR("merge error\n", 1);
 
@@ -415,7 +417,7 @@ int mergesort(void *t, size_t num_elements, int(*cmp)(const void *a, const void 
     return 0;
 }
 
-int quicksort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
+int quicksort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), size_t size_of)
 {
     TRACE();
 
@@ -431,10 +433,10 @@ int quicksort(void *t, size_t num_elements, int(*cmp)(const void *a, const void 
     if (num_elements < INSORT_TRESHOLD)
         return insort(t, num_elements, cmp, size_of);
 
-    return _quicksort(t, 0, (num_elements - 1) * (size_t)size_of, cmp, size_of);
+    return _quicksort(t, 0, (num_elements - 1) * size_of, cmp, size_of);
 }
 
-int sort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of)
+int sort(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), size_t size_of)
 {
     TRACE();
 

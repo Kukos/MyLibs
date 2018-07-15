@@ -8,7 +8,7 @@
 
 #define INIT_SIZE (size_t)1024
 
-Fifo *fifo_create(int size_of, void (*destroy)(void *entry))
+Fifo *fifo_create(size_t size_of, void (*destroy)(void *entry))
 {
     Fifo *fifo;
 
@@ -21,7 +21,7 @@ Fifo *fifo_create(int size_of, void (*destroy)(void *entry))
     if (fifo == NULL)
         ERROR("malloc error\n", NULL);
 
-    fifo->____array = malloc(INIT_SIZE * (size_t)size_of);
+    fifo->____array = malloc(INIT_SIZE * size_of);
     if (fifo->____array == NULL)
     {
         FREE(fifo);
@@ -31,7 +31,7 @@ Fifo *fifo_create(int size_of, void (*destroy)(void *entry))
 
     fifo->____head = 0;
     fifo->____tail = 0;
-    fifo->____size_of = (size_t)size_of;
+    fifo->____size_of = size_of;
     fifo->____size = INIT_SIZE;
     fifo->____destroy = destroy;
 
@@ -311,14 +311,14 @@ int fifo_to_array(const Fifo *fifo, void *array, size_t *size)
     return 0;
 }
 
-int fifo_get_data_size(const Fifo *fifo)
+ssize_t fifo_get_data_size(const Fifo *fifo)
 {
     TRACE();
 
     if (fifo == NULL)
         ERROR("fifo == NULL\n", -1);
 
-    return (int)fifo->____size_of;
+    return (ssize_t)fifo->____size_of;
 }
 
 ssize_t fifo_get_num_entries(const Fifo *fifo)

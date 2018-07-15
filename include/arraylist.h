@@ -78,7 +78,7 @@ IT_FUNC(Arraylist, arraylist)
     NULL if failure
     Pointer if success
 */
-UList *ulist_arraylist_create(int size_of, void (*destroy)(void *data));
+UList *ulist_arraylist_create(size_t size_of, void (*destroy)(void *data));
 
 /*
     Create alist
@@ -91,7 +91,7 @@ UList *ulist_arraylist_create(int size_of, void (*destroy)(void *data));
     NULL if failure
     Pointer if success
 */
-Arraylist *arraylist_create(int size_of, void (*destroy)(void *data));
+Arraylist *arraylist_create(size_t size_of, void (*destroy)(void *data));
 
 /*
     Destroy alist
@@ -197,7 +197,7 @@ int arraylist_delete_pos(Arraylist *alist, size_t pos);
     Delete first data from alist and call destructor
 
     PARAMS
-    @IN alist - pointer to 
+    @IN alist - pointer to
 
     RETURN:
     0 iff success
@@ -282,7 +282,7 @@ int arraylist_to_array(const Arraylist *alist, void *array, size_t *size);
     -1 iff failure
     Num of entries iff success
 */
-int arraylist_get_data_size(const Arraylist *alist);
+ssize_t arraylist_get_data_size(const Arraylist *alist);
 
 /*
     Get number of entries in arraylist

@@ -50,7 +50,7 @@ typedef struct Stack
     %NULL iff failure
     %Pointer iff success
 */
-Stack *stack_create(int size_of, void (*destroy)(void *entry));
+Stack *stack_create(size_t size_of, void (*destroy)(void *entry));
 
 /*
     Destroy stack
@@ -172,6 +172,6 @@ ssize_t stack_get_num_entries(const Stack *stack);
     %-1 iff failure
     %sizeof iff success
 */
-int stack_get_data_size(const Stack *stack);
+ssize_t stack_get_data_size(const Stack *stack);
 
 #endif

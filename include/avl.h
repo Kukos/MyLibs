@@ -66,7 +66,7 @@ IT_FUNC(Avl, avl)
     NULL iff failure
     Pointer to Tree iff success
 */
-Tree *tree_avl_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+Tree *tree_avl_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
 /*
     Create AVL
@@ -83,7 +83,7 @@ Tree *tree_avl_create(int size_of, int (*cmp)(const void *a, const void *b), voi
     NULL iff failure
     Pointer to Avl iff success
 */
-Avl *avl_create(int size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+Avl *avl_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
 
 #define AVL_CREATE(PTR,TYPE,CMP, DESTROY) \
     do { \
@@ -241,7 +241,7 @@ ssize_t avl_get_num_entries(const Avl *tree);
     -1 iff failure
     Size of data
 */
-int avl_get_data_size(const Avl *tree);
+ssize_t avl_get_data_size(const Avl *tree);
 
 /*
     RECURSIVE getter with O(n) complexity

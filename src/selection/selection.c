@@ -8,11 +8,11 @@
 #include <string.h>
 #include <search.h>
 
-ssize_t select_kth(const void *t, size_t len, int size_of, size_t k, int (*cmp)(const void *a, const void *b))
+ssize_t select_kth(const void *t, size_t len, size_t size_of, size_t k, int (*cmp)(const void *a, const void *b))
 {
     size_t offset_left;
     size_t offset_right;
-    size_t _size_of = (size_t)size_of;
+    size_t _size_of = size_of;
     size_t left;
     size_t right;
     size_t p_index;
@@ -30,8 +30,8 @@ ssize_t select_kth(const void *t, size_t len, int size_of, size_t k, int (*cmp)(
     if (len == 0)
         ERROR("len == 0\n", -1);
 
-    if (size_of <= 0)
-        ERROR("size_of <= 0\n", -1);
+    if (size_of == 0)
+        ERROR("size_of == 0\n", -1);
 
     if (cmp == NULL)
         ERROR("cmp is needed\n", -1);

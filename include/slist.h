@@ -52,13 +52,13 @@ typedef struct SList
     void        (*____destroy_with_entries)(void *list);
     int         (*____insert)(void *list, const void *data);
     int         (*____delete)(void *list, const void *data);
-    int         (*____delete_with_entry)(void *list, const void *data);    
+    int         (*____delete_with_entry)(void *list, const void *data);
     int         (*____delete_all)(void *list, const void *data);
     int         (*____delete_all_with_entry)(void *list, const void *data);
     int         (*____search)(const void *list, const void *in, void *out);
     void*       (*____merge)(const void * ___restrict___ list1, const void * ___restrict___ list2);
     int         (*____to_array)(const void *list, void *array, size_t *size);
-    int         (*____get_data_size)(const void *list);
+    ssize_t     (*____get_data_size)(const void *list);
     ssize_t     (*____get_num_entries)(const void *list);
 
     /* to create iterator */
@@ -113,7 +113,7 @@ ___inline___ int slist_iterator_init(const SList *list, SList_iterator *it, iti_
     static ___unused___ int ____search(const void *list, const void *in, void *out); \
     static ___unused___ void *____merge(const void * ___restrict___ list1, const void * ___restrict___ list2); \
     static ___unused___ int ____to_array(const void *list, void *array, size_t *size); \
-    static ___unused___ int ____get_data_size(const void *list); \
+    static ___unused___ ssize_t ____get_data_size(const void *list); \
     static ___unused___ ssize_t ____get_num_entries(const void *list); \
     static ___unused___ void ____destroy(void *list) \
     { \
@@ -165,7 +165,7 @@ ___inline___ int slist_iterator_init(const SList *list, SList_iterator *it, iti_
         return concat(prefix, _to_array)((const type *)list, array, size); \
     } \
     \
-    static ___unused___ int ____get_data_size(const void *list) \
+    static ___unused___ ssize_t ____get_data_size(const void *list) \
     { \
         return concat(prefix, _get_data_size)((const type *)list); \
     } \
@@ -383,7 +383,7 @@ ___inline___ int slist_to_array(const SList *list, void *array, size_t *size);
     -1 iff failure
     SList data size of iff success
 */
-___inline___ int slist_get_data_size(const SList *list);
+___inline___ ssize_t slist_get_data_size(const SList *list);
 
 /*
     Get SList num of entries
@@ -558,7 +558,7 @@ ___inline___ int slist_to_array(const SList *list, void *array, size_t *size)
     return list->____to_array(slist_get_list(list), array, size);
 }
 
-___inline___ int slist_get_data_size(const SList *list)
+___inline___ ssize_t slist_get_data_size(const SList *list)
 {
     if (list == NULL)
         return 1;

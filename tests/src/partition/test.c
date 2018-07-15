@@ -12,11 +12,11 @@ typedef ssize_t (*partition)(void        *t,
                              size_t      offset_left,
                              size_t      offset_right,
                              int         (*cmp)(const void *a, const void *b),
-                             int         size_of,
+                             size_t      size_of,
                              size_t      *offset_left_index,
                              size_t      *offset_right_index);
 
-typedef size_t (*get_pivot)(const void *t, size_t len, int size_of, int (*cmp)(const void *a, const void *b));
+typedef size_t (*get_pivot)(const void *t, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b));
 
 typedef struct MyStruct
 {
@@ -27,7 +27,7 @@ typedef struct MyStruct
     long d;
 } MyStruct;
 
-static bool check_array_is_sorted(void *array, size_t n, int size_of, int (*cmp)(const void *a, const void *b))
+static bool check_array_is_sorted(void *array, size_t n, size_t size_of, int (*cmp)(const void *a, const void *b))
 {
     size_t i;
     size_t size;
@@ -58,7 +58,7 @@ static void _quicksort_for_test(void      *t,
                                 size_t    offset_left,
                                 size_t    offset_right,
                                 int       (*cmp)(const void *a, const void *b),
-                                int       size_of,
+                                size_t    size_of,
                                 partition part,
                                 get_pivot gpivot)
 {
@@ -69,7 +69,7 @@ static void _quicksort_for_test(void      *t,
     size_t offset_right_index;
     size_t range;
 
-    size_t _size_of = (size_t)size_of;
+    size_t _size_of = size_of;
 
     _t = (BYTE *)t;
 
@@ -89,9 +89,9 @@ static void _quicksort_for_test(void      *t,
     _quicksort_for_test(_t, offset_left, offset_left_index, cmp, size_of, part, gpivot);
 }
 
-static void quicksort_for_test(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), int size_of, partition part, get_pivot gpivot)
+static void quicksort_for_test(void *t, size_t num_elements, int(*cmp)(const void *a, const void *b), size_t size_of, partition part, get_pivot gpivot)
 {
-    _quicksort_for_test(t, 0, (num_elements - 1) * (size_t)size_of, cmp, size_of, part, gpivot);
+    _quicksort_for_test(t, 0, (num_elements - 1) * size_of, cmp, size_of, part, gpivot);
 }
 
 #define CHECK_PIVOT_1_ROUND(get_pivot) \

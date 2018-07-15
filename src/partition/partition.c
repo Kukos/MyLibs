@@ -28,7 +28,7 @@ ___inline___ static size_t medians_of_3(const void   *t,
                                         size_t       offset_index2,
                                         size_t       offset_index3,
                                         int          (*cmp)(const void *a, const void *b),
-                                        int          size_of);
+                                        size_t       size_of);
 
 /*
     Count tukey median using cmp funcion to compare
@@ -50,14 +50,14 @@ ___inline___ static size_t tukey_medians(const void        *t,
                                          size_t            offset_right,
                                          size_t            epsilon,
                                          int               (*cmp)(const void *a, const void *b),
-                                         int               size_of);
+                                         size_t            size_of);
 
 ___inline___ static size_t medians_of_3(const void        *t,
                                         size_t            offset_index1,
                                         size_t            offset_index2,
                                         size_t            offset_index3,
                                         int               (*cmp)(const void *a, const void *b),
-                                        int               size_of)
+                                        size_t            size_of)
 {
     BYTE *_t;
 
@@ -66,34 +66,34 @@ ___inline___ static size_t medians_of_3(const void        *t,
     assert(t != NULL);
     assert(cmp != NULL);
 
-    offset_index1 *= (size_t)size_of;
-    offset_index2 *= (size_t)size_of;
-    offset_index3 *= (size_t)size_of;
+    offset_index1 *= size_of;
+    offset_index2 *= size_of;
+    offset_index3 *= size_of;
 
     _t = (BYTE *)t;
 
     if (cmp((void *)&_t[offset_index1], (void *)&_t[offset_index2]) < 0)
     {
         if (cmp((void *)&_t[offset_index2], (void *)&_t[offset_index3]) < 0)
-            return offset_index2 / (size_t)size_of;
+            return offset_index2 / size_of;
         else
         {
             if (cmp((void *)&_t[offset_index1], (void *)&_t[offset_index3]) < 0)
-                return offset_index3 / (size_t)size_of;
+                return offset_index3 / size_of;
             else
-                return offset_index1 / (size_t)size_of;
+                return offset_index1 / size_of;
         }
     }
     else
     {
         if (cmp((void *)&_t[offset_index3], (void *)&_t[offset_index2]) < 0)
-            return offset_index2 / (size_t)size_of;
+            return offset_index2 / size_of;
         else
         {
             if (cmp((void *)&_t[offset_index3], (void *)&_t[offset_index1]) < 0)
-                return offset_index3 / (size_t)size_of;
+                return offset_index3 / size_of;
             else
-                return offset_index1 / (size_t)size_of;
+                return offset_index1 / size_of;
         }
     }
 }
@@ -103,7 +103,7 @@ ___inline___ static size_t tukey_medians(const void  *t,
                                          size_t      offset_right,
                                          size_t      epsilon,
                                          int         (*cmp)(const void *a, const void *b),
-                                         int         size_of)
+                                         size_t      size_of)
 {
     size_t offset_middle;
     size_t m1;
@@ -125,7 +125,7 @@ ___inline___ static size_t tukey_medians(const void  *t,
     return medians_of_3(t, m1 ,m2, m3, cmp, size_of);
 }
 
-size_t partition_get_pivot_trivial(const void *t, size_t len, int size_of, int (*cmp)(const void *a, const void *b))
+size_t partition_get_pivot_trivial(const void *t, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b))
 {
     int r;
     (void)size_of;
@@ -149,7 +149,7 @@ size_t partition_get_pivot_trivial(const void *t, size_t len, int size_of, int (
     }
 }
 
-size_t partition_get_pivot_rand(const void *t, size_t len, int size_of, int (*cmp)(const void *a, const void *b))
+size_t partition_get_pivot_rand(const void *t, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b))
 {
     (void)size_of;
     (void)cmp;
@@ -165,7 +165,7 @@ size_t partition_get_pivot_rand(const void *t, size_t len, int size_of, int (*cm
     return (size_t)((size_t)rand() % len);
 }
 
-size_t partition_get_pivot_median(const void *t, size_t len, int size_of, int (*cmp)(const void *a, const void *b))
+size_t partition_get_pivot_median(const void *t, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b))
 {
     TRACE();
 
@@ -187,7 +187,7 @@ ssize_t partition_bentley(void        *t,
                           size_t      offset_left,
                           size_t      offset_right,
                           int         (*cmp)(const void *a, const void *b),
-                          int         size_of,
+                          size_t      size_of,
                           size_t      *offset_left_index,
                           size_t      *offset_right_index)
 {
@@ -223,8 +223,8 @@ ssize_t partition_bentley(void        *t,
     if (offset_right < offset_left)
         ERROR("offset_right < offset_left\n", -1);
 
-    offset_left *= (size_t)size_of;
-    offset_right *= (size_t)size_of;
+    offset_left *= size_of;
+    offset_right *= size_of;
 
     offset_index1 = (ssize_t)offset_left + _size_of;
     offset_index2 = (ssize_t)offset_right;
@@ -295,8 +295,8 @@ ssize_t partition_bentley(void        *t,
     /* move pivot to correct place (offset_index2) */
     __SWAP__(_t[offset_index2], _t[offset_left], _size_of);
 
-    *offset_left_index = (size_t)MAX((ssize_t)(offset_index2 - size_of), (ssize_t)0) / (size_t)_size_of;
-    *offset_right_index = (size_t)offset_index1 / (size_t)_size_of;
+    *offset_left_index = (size_t)MAX((ssize_t)(offset_index2 - _size_of), (ssize_t)0) / (size_t)_size_of;
+    *offset_right_index = (size_t)offset_index1 / size_of;
 
     return offset_index2 / (ssize_t)_size_of;
 }
@@ -305,7 +305,7 @@ ssize_t partition_hoare(void        *t,
                         size_t      offset_left,
                         size_t      offset_right,
                         int         (*cmp)(const void *a, const void *b),
-                        int         size_of,
+                        size_t      size_of,
                         size_t      *offset_left_index,
                         size_t      *offset_right_index)
 {
@@ -336,8 +336,8 @@ ssize_t partition_hoare(void        *t,
     if (offset_right < offset_left)
         ERROR("offset_right < offset_left\n", -1);
 
-    offset_left *= (size_t)size_of;
-    offset_right *= (size_t)size_of;
+    offset_left *= size_of;
+    offset_right *= size_of;
 
     offset_index1 = (ssize_t)offset_left + _size_of;
     offset_index2 = (ssize_t)offset_right;
@@ -368,7 +368,7 @@ ssize_t partition_hoare(void        *t,
     /* move pivot to correct place (offset_index2) */
     __SWAP__(_t[offset_index2], _t[offset_left], _size_of);
 
-    *offset_left_index = (size_t)MAX((ssize_t)(offset_index2 - size_of), (ssize_t)0) / (size_t)_size_of;
+    *offset_left_index = (size_t)MAX((ssize_t)(offset_index2 - _size_of), (ssize_t)0) / (size_t)_size_of;
     *offset_right_index = (size_t)offset_index1 / (size_t)_size_of;
 
     return offset_index2 / (ssize_t)_size_of;
@@ -378,13 +378,13 @@ ssize_t partition_lomuto(void        *t,
                          size_t      offset_left,
                          size_t      offset_right,
                          int         (*cmp)(const void *a, const void *b),
-                         int         size_of,
+                         size_t      size_of,
                          size_t      *offset_left_index,
                          size_t      *offset_right_index)
 {
     size_t i;
     size_t j;
-    size_t _size_of = (size_t)size_of;
+    size_t _size_of = size_of;
 
     BYTE *_t;
     BYTE pivot[_size_of];

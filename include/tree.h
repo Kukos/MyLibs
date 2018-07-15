@@ -59,7 +59,7 @@ typedef struct Tree
     int         (*____balance)(void *tree);
     int         (*____to_array)(const void *tree, void *array, size_t *size);
     ssize_t     (*____get_num_entries)(const void *tree);
-    int         (*____get_data_size)(const void *tree);
+    ssize_t     (*____get_data_size)(const void *tree);
     int         (*____get_hight)(const void *tree);
 
     /* to create iterator */
@@ -116,7 +116,7 @@ ___inline___ int tree_iterator_init(const Tree *tree, Tree_iterator *it, iti_mod
     static ___unused___ int ____balance(void *tree); \
     static ___unused___ int ____to_array(const void *tree, void *array, size_t *size); \
     static ___unused___ ssize_t ____get_num_entries(const void *tree); \
-    static ___unused___ int ____get_data_size(const void *tree); \
+    static ___unused___ ssize_t ____get_data_size(const void *tree); \
     static ___unused___ int ____get_hight(const void *tree); \
     static ___unused___ void ____destroy(void *tree) \
     { \
@@ -173,7 +173,7 @@ ___inline___ int tree_iterator_init(const Tree *tree, Tree_iterator *it, iti_mod
         return concat(prefix, _to_array)((const type *)tree, array, size); \
     } \
     \
-    static ___unused___ int ____get_data_size(const void *tree) \
+    static ___unused___ ssize_t ____get_data_size(const void *tree) \
     { \
         return concat(prefix, _get_data_size)((const type *)tree); \
     } \
@@ -388,7 +388,7 @@ ___inline___ ssize_t tree_get_num_entries(const Tree *tree);
     -1 iff failure
     %Data size iff success
 */
-___inline___ int tree_get_data_size(const Tree *tree);
+___inline___ ssize_t tree_get_data_size(const Tree *tree);
 
 /*
     Get Tree Hight
@@ -509,7 +509,7 @@ ___inline___ ssize_t tree_get_num_entries(const Tree *tree)
     return tree->____get_num_entries(tree_get_tree(tree));
 }
 
-___inline___ int tree_get_data_size(const Tree *tree)
+___inline___ ssize_t tree_get_data_size(const Tree *tree)
 {
     if (tree == NULL)
         return -1;
