@@ -32,7 +32,7 @@ int cmp_mystruct(const void *a, const void *b)
     return 0;
 }
 
-bool array_is_sorted(void *array, size_t n, int size_of, int (*cmp)(const void *a, const void *b))
+bool check_array_is_sorted(void *array, size_t n, int size_of, int (*cmp)(const void *a, const void *b))
 {
     size_t i;
     size_t size;
@@ -71,7 +71,7 @@ test_f test_insort(size_t n)
         t1[i] = rand();
 
     T_EXPECT(insort((void *)t1, n, cmp_int, sizeof(int)), 0);
-    T_EXPECT(array_is_sorted((void *)t1, n, sizeof(int), cmp_int), true);
+    T_EXPECT(check_array_is_sorted((void *)t1, n, sizeof(int), cmp_int), true);
 
     /* t2 */
     t2 = (char *)malloc(sizeof(char) * n);
@@ -81,7 +81,7 @@ test_f test_insort(size_t n)
         t2[i] = rand();
 
     T_EXPECT(insort((void *)t2, n, cmp_char, sizeof(char)), 0);
-    T_EXPECT(array_is_sorted((void *)t2, n, sizeof(char), cmp_char), true);
+    T_EXPECT(check_array_is_sorted((void *)t2, n, sizeof(char), cmp_char), true);
 
     /* t3 */
     t3 = (double *)malloc(sizeof(double) * n);
@@ -91,7 +91,7 @@ test_f test_insort(size_t n)
         t3[i] = rand() + (rand() % 1000 * 0.001);
 
     T_EXPECT(insort((void *)t3, n, cmp_double, sizeof(double)), 0);
-    T_EXPECT(array_is_sorted((void *)t3, n, sizeof(double), cmp_double), true);
+    T_EXPECT(check_array_is_sorted((void *)t3, n, sizeof(double), cmp_double), true);
 
     /* t4 */
     t4 = (MyStruct **)malloc(sizeof(MyStruct *) * n);
@@ -105,7 +105,7 @@ test_f test_insort(size_t n)
     }
 
     T_EXPECT(insort((void *)t4, n, cmp_mystruct, sizeof(MyStruct)), 0);
-    T_EXPECT(array_is_sorted((void *)t4, n, sizeof(MyStruct), cmp_mystruct), true);
+    T_EXPECT(check_array_is_sorted((void *)t4, n, sizeof(MyStruct), cmp_mystruct), true);
 
     FREE(t1);
     FREE(t2);
@@ -135,7 +135,7 @@ test_f test_binsort(size_t n)
         t1[i] = rand() % 100;
 
     T_EXPECT(binsort((void *)t1, n, cmp_int, sizeof(int)), 0);
-    T_EXPECT(array_is_sorted((void *)t1, n, sizeof(int), cmp_int), true);
+    T_EXPECT(check_array_is_sorted((void *)t1, n, sizeof(int), cmp_int), true);
 
     /* t2 */
     t2 = (char *)malloc(sizeof(char) * n);
@@ -145,7 +145,7 @@ test_f test_binsort(size_t n)
         t2[i] = rand();
 
     T_EXPECT(binsort((void *)t2, n, cmp_char, sizeof(char)), 0);
-    T_EXPECT(array_is_sorted((void *)t2, n, sizeof(char), cmp_char), true);
+    T_EXPECT(check_array_is_sorted((void *)t2, n, sizeof(char), cmp_char), true);
 
     /* t3 */
     t3 = (double *)malloc(sizeof(double) * n);
@@ -155,7 +155,7 @@ test_f test_binsort(size_t n)
         t3[i] = rand() + (rand() % 1000 * 0.001);
 
     T_EXPECT(binsort((void *)t3, n, cmp_double, sizeof(double)), 0);
-    T_EXPECT(array_is_sorted((void *)t3, n, sizeof(double), cmp_double), true);
+    T_EXPECT(check_array_is_sorted((void *)t3, n, sizeof(double), cmp_double), true);
 
     /* t4 */
     t4 = (MyStruct **)malloc(sizeof(MyStruct *) * n);
@@ -169,7 +169,7 @@ test_f test_binsort(size_t n)
     }
 
     T_EXPECT(binsort((void *)t4, n, cmp_mystruct, sizeof(MyStruct)), 0);
-    T_EXPECT(array_is_sorted((void *)t4, n, sizeof(MyStruct), cmp_mystruct), true);
+    T_EXPECT(check_array_is_sorted((void *)t4, n, sizeof(MyStruct), cmp_mystruct), true);
 
     FREE(t1);
     FREE(t2);
@@ -199,7 +199,7 @@ test_f test_mergesort(size_t n)
         t1[i] = rand();
 
     T_EXPECT(mergesort((void *)t1, n, cmp_int, sizeof(int)), 0);
-    T_EXPECT(array_is_sorted((void *)t1, n, sizeof(int), cmp_int), true);
+    T_EXPECT(check_array_is_sorted((void *)t1, n, sizeof(int), cmp_int), true);
 
     /* t2 */
     t2 = (char *)malloc(sizeof(char) * n);
@@ -209,7 +209,7 @@ test_f test_mergesort(size_t n)
         t2[i] = rand();
 
     T_EXPECT(mergesort((void *)t2, n, cmp_char, sizeof(char)), 0);
-    T_EXPECT(array_is_sorted((void *)t2, n, sizeof(char), cmp_char), true);
+    T_EXPECT(check_array_is_sorted((void *)t2, n, sizeof(char), cmp_char), true);
 
     /* t3 */
     t3 = (double *)malloc(sizeof(double) * n);
@@ -219,7 +219,7 @@ test_f test_mergesort(size_t n)
         t3[i] = rand() + (rand() % 1000 * 0.001);
 
     T_EXPECT(mergesort((void *)t3, n, cmp_double, sizeof(double)), 0);
-    T_EXPECT(array_is_sorted((void *)t3, n, sizeof(double), cmp_double), true);
+    T_EXPECT(check_array_is_sorted((void *)t3, n, sizeof(double), cmp_double), true);
 
     /* t4 */
     t4 = (MyStruct **)malloc(sizeof(MyStruct *) * n);
@@ -233,7 +233,7 @@ test_f test_mergesort(size_t n)
     }
 
     T_EXPECT(mergesort((void *)t4, n, cmp_mystruct, sizeof(MyStruct)), 0);
-    T_EXPECT(array_is_sorted((void *)t4, n, sizeof(MyStruct), cmp_mystruct), true);
+    T_EXPECT(check_array_is_sorted((void *)t4, n, sizeof(MyStruct), cmp_mystruct), true);
 
     FREE(t1);
     FREE(t2);
@@ -263,7 +263,7 @@ test_f test_quicksort(size_t n)
         t1[i] = rand();
 
     T_EXPECT(quicksort((void *)t1, n, cmp_int, sizeof(int)), 0);
-    T_EXPECT(array_is_sorted((void *)t1, n, sizeof(int), cmp_int), true);
+    T_EXPECT(check_array_is_sorted((void *)t1, n, sizeof(int), cmp_int), true);
 
     /* t2 */
     t2 = (char *)malloc(sizeof(char) * n);
@@ -273,7 +273,7 @@ test_f test_quicksort(size_t n)
         t2[i] = rand();
 
     T_EXPECT(quicksort((void *)t2, n, cmp_char, sizeof(char)), 0);
-    T_EXPECT(array_is_sorted((void *)t2, n, sizeof(char), cmp_char), true);
+    T_EXPECT(check_array_is_sorted((void *)t2, n, sizeof(char), cmp_char), true);
 
     /* t3 */
     t3 = (double *)malloc(sizeof(double) * n);
@@ -283,7 +283,7 @@ test_f test_quicksort(size_t n)
         t3[i] = rand() + (rand() % 1000 * 0.001);
 
     T_EXPECT(quicksort((void *)t3, n, cmp_double, sizeof(double)), 0);
-    T_EXPECT(array_is_sorted((void *)t3, n, sizeof(double), cmp_double), true);
+    T_EXPECT(check_array_is_sorted((void *)t3, n, sizeof(double), cmp_double), true);
 
     /* t4 */
     t4 = (MyStruct **)malloc(sizeof(MyStruct *) * n);
@@ -297,7 +297,7 @@ test_f test_quicksort(size_t n)
     }
 
     T_EXPECT(quicksort((void *)t4, n, cmp_mystruct, sizeof(MyStruct)), 0);
-    T_EXPECT(array_is_sorted((void *)t4, n, sizeof(MyStruct), cmp_mystruct), true);
+    T_EXPECT(check_array_is_sorted((void *)t4, n, sizeof(MyStruct), cmp_mystruct), true);
 
     FREE(t1);
     FREE(t2);

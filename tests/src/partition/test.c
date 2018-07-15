@@ -27,7 +27,7 @@ typedef struct MyStruct
     long d;
 } MyStruct;
 
-static bool array_is_sorted(void *array, size_t n, int size_of, int (*cmp)(const void *a, const void *b))
+static bool check_array_is_sorted(void *array, size_t n, int size_of, int (*cmp)(const void *a, const void *b))
 {
     size_t i;
     size_t size;
@@ -290,7 +290,7 @@ test_f test_pivot_tukey(void)
         for (i = 0; i < n; ++i) \
             t[i] = (type){rand()}; \
         quicksort_for_test(t, n, concat(cmp_, type), sizeof(type), part, gpivot); \
-        T_EXPECT(array_is_sorted(t, n, sizeof(type), concat(cmp_, type)), true); \
+        T_EXPECT(check_array_is_sorted(t, n, sizeof(type), concat(cmp_, type)), true); \
         \
         FREE(t); \
     } while (0)
