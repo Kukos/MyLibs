@@ -192,7 +192,8 @@ static ___unused___ test_t ________ret;
     })
 
 /*
-    Use this macro like assert, if expr is true then test failed
+    Use this macro to check your expression, like a <= b, f() != NULL ...
+    Macro failed iff @expr eval to false
 */
 #define T_CHECK(expr) \
     do { \
@@ -204,7 +205,7 @@ static ___unused___ test_t ________ret;
     } while (0);
 
 /*
-    Use this macro like assert, if expr is true then test failed and exit test
+    Use this macro like assert, if expr exal to true then test will fail and exit from test
 */
 #define T_ERROR(expr) \
     do { \
