@@ -2016,6 +2016,73 @@ test_f test_delete_with_entries_without_destructor(void)
     darray_destroy_with_entries(da);
 }
 
+test_f test_get_data(void)
+{
+    Darray *da;
+    const size_t size = 100;
+
+    int t1[size];
+    char t2[size];
+    double t3[size];
+
+    int val1;
+    char val2;
+    double val3;
+
+    size_t i;
+
+    for (i = 0; i < size; ++i)
+    {
+        t1[i] = (int)i;
+        t2[i] = (char)i;
+        t3[i] = (double)i;
+    }
+
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(int), NULL, NULL);
+    T_ERROR(da == NULL);
+
+    for (i = 0; i < size; ++i)
+        T_EXPECT(darray_insert(da, &t1[i]), 0);
+
+    for (i = 0; i < size; ++i)
+    {
+        T_EXPECT(darray_get_data(da, i, &val1), 0);
+        T_ASSERT(val1, t1[i]);
+    }
+
+    darray_destroy(da);
+
+
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(char), NULL, NULL);
+    T_ERROR(da == NULL);
+
+    for (i = 0; i < size; ++i)
+        T_EXPECT(darray_insert(da, &t2[i]), 0);
+
+    for (i = 0; i < size; ++i)
+    {
+        T_EXPECT(darray_get_data(da, i, &val2), 0);
+        T_ASSERT(val2, t2[i]);
+    }
+
+    darray_destroy(da);
+
+
+    da = darray_create(DARRAY_UNSORTED, 0, sizeof(double), NULL, NULL);
+    T_ERROR(da == NULL);
+
+    for (i = 0; i < size; ++i)
+        T_EXPECT(darray_insert(da, &t3[i]), 0);
+
+    for (i = 0; i < size; ++i)
+    {
+        T_EXPECT(darray_get_data(da, i, &val3), 0);
+        T_ASSERT(val3, t3[i]);
+    }
+
+    darray_destroy(da);
+}
+
 test_f test_empty(void)
 {
     Darray *da;
@@ -2059,6 +2126,7 @@ test_f test_empty(void)
     T_EXPECT(darray_min(da, (void *)&out), (ssize_t)-1);
     T_EXPECT(darray_max(da, (void *)&out), (ssize_t)-1);
     T_CHECK(darray_get_array(da) != NULL);
+    T_CHECK(darray_get_data(da, 0, &out) != 0);
 
     darray_destroy(da);
 }
@@ -2080,6 +2148,7 @@ void test(void)
     TEST(test_destroy_with_entries());
     TEST(test_delete_with_entries());
     TEST(test_delete_with_entries_without_destructor());
+    TEST(test_get_data());
     TEST(test_empty());
     TEST(test_empty_for_each());
 }

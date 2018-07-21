@@ -1,7 +1,7 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
-#include <compiler.h>   /* tostring */
+#include <common.h>   /* tostring */
 #include <stdlib.h>     /* exit */
 
 /*

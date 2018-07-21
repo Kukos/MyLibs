@@ -10,15 +10,11 @@
 	LICENCE: GPL 3.0
 */
 
-#ifndef _GNU_SOURCE
-	#define _GNU_SOURCE /* needed to use feature.h */
-#endif
-
 #include <sys/mman.h>
 #include <stddef.h> /* size_t */
 #include <sys/types.h> /* ssize_t */
 #include <fcntl.h>
-#include <stdbool.h>
+#include <common.h>
 
 /*
 	Buffer use mmap so you can pass those flags as protect_flag
@@ -40,17 +36,7 @@
 
 */
 
-typedef struct File_buffer
-{
-    char 			*____buffer;
-    size_t 			____size; /* size visible by user */
-	size_t			____mapped_size; /* mapped size including padding */
-    int 			____fd; /* file descriptor of buffered file */
-    int 			____protect_flag;
-    bool            ____has_private_file; /* when fb created by path, file is open by FB */
-    bool            ____mode64; /* mode 64 or not ? */
-
-}File_buffer;
+typedef struct File_buffer File_buffer;
 
 /*
     MAP file to RAM with flag
@@ -129,7 +115,7 @@ int file_buffer_destroy(File_buffer *fb);
 	%0 iff success
 	%Non-zero value iff failure
 */
-int file_buffer_append(File_buffer *fb, const char *data);
+int file_buffer_append(File_buffer * ___restrict___ fb, const char * ___restrict___ data);
 
 /*
     Add to end of mapped file the content data in 64 bits MODE
@@ -142,7 +128,7 @@ int file_buffer_append(File_buffer *fb, const char *data);
 	%0 iff success
 	%Non-zero value iff failure
 */
-int file_buffer64_append(File_buffer *fb, const char *data);
+int file_buffer64_append(File_buffer * ___restrict___ fb, const char * ___restrict___ data);
 
 /*
     Synchronized mapped file with true file on disk

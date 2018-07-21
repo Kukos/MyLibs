@@ -22,7 +22,7 @@
     0 iff success
     Non-zero value iff failure
 */
-static int __array_delete_pos(void *array, size_t len, size_t size_of, size_t pos, void (*destructor)(void *element));
+static int __array_delete_pos(void *array, size_t len, size_t size_of, size_t pos, destructor_f destructor);
 
 /*
     Insert @data at @pos in @array
@@ -38,9 +38,9 @@ static int __array_delete_pos(void *array, size_t len, size_t size_of, size_t po
     0 iff success
     Non-zero value iff failure
 */
-static int __array_insert_pos(void *array, size_t len, size_t size_of, size_t pos, const void *data);
+static int __array_insert_pos(void * ___restrict___ array, size_t len, size_t size_of, size_t pos, const void * ___restrict___ data);
 
-static int __array_delete_pos(void *array, size_t len, size_t size_of, size_t pos, void (*destructor)(void *element))
+static int __array_delete_pos(void *array, size_t len, size_t size_of, size_t pos, destructor_f destructor)
 {
     BYTE *_t;
 
@@ -69,7 +69,7 @@ static int __array_delete_pos(void *array, size_t len, size_t size_of, size_t po
     return 0;
 }
 
-static int __array_insert_pos(void *array, size_t len, size_t size_of, size_t pos, const void *data)
+static int __array_insert_pos(void * ___restrict___ array, size_t len, size_t size_of, size_t pos, const void * ___restrict___ data)
 {
     BYTE *_t;
 
@@ -117,7 +117,7 @@ void *array_create(size_t len, size_t size_of)
     return t;
 }
 
-bool array_equal(const void * array1, const void *array2, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b))
+bool array_equal(const void * array1, const void *array2, size_t len, size_t size_of, cmp_f cmp)
 {
     const BYTE *_t1;
     const BYTE *_t2;
@@ -224,7 +224,7 @@ void array_zeros(void *array, size_t len, size_t size_of)
     (void)memset(array, 0, len * size_of);
 }
 
-void array_set_all(void *array, size_t len, size_t size_of, const void *data)
+void array_set_all(void * ___restrict___ array, size_t len, size_t size_of, const void * ___restrict___ data)
 {
     size_t i;
     BYTE *t;
@@ -249,7 +249,7 @@ void array_destroy(void *array)
     FREE(array);
 }
 
-void array_destroy_with_entries(void *array, size_t len, size_t size_of, void (*destructor)(void *element))
+void array_destroy_with_entries(void *array, size_t len, size_t size_of, destructor_f destructor)
 {
     void *ptr;
     TRACE();
@@ -263,25 +263,25 @@ void array_destroy_with_entries(void *array, size_t len, size_t size_of, void (*
     FREE(array);
 }
 
-int array_unsorted_insert_first(void *array, size_t len, size_t size_of, const void *data)
+int array_unsorted_insert_first(void * ___restrict___ array, size_t len, size_t size_of, const void * ___restrict___ data)
 {
     TRACE();
     return __array_insert_pos(array, len, size_of, 0, data);
 }
 
-int array_unsorted_insert_last(void *array, size_t len, size_t size_of, const void *data)
+int array_unsorted_insert_last(void * ___restrict___ array, size_t len, size_t size_of, const void * ___restrict___ data)
 {
     TRACE();
     return __array_insert_pos(array, len, size_of, len - 1, data);
 }
 
-int array_unsorted_insert_pos(void *array, size_t len, size_t size_of, size_t pos, const void *data)
+int array_unsorted_insert_pos(void * ___restrict___ array, size_t len, size_t size_of, size_t pos, const void * ___restrict___ data)
 {
     TRACE();
     return __array_insert_pos(array, len, size_of, pos, data);
 }
 
-int array_sorted_insert(void *array, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b), const void *data)
+int array_sorted_insert(void * ___restrict___ array, size_t len, size_t size_of, cmp_f cmp, const void * ___restrict___ data)
 {
     ssize_t index;
     TRACE();
@@ -314,7 +314,7 @@ int array_delete_pos(void *array, size_t len, size_t size_of, size_t pos)
     return __array_delete_pos(array, len, size_of, pos, NULL);
 }
 
-int array_delete_first_with_entry(void *array, size_t len, size_t size_of, void (*destructor)(void *element))
+int array_delete_first_with_entry(void *array, size_t len, size_t size_of, destructor_f destructor)
 {
     TRACE();
     if (destructor == NULL)
@@ -323,7 +323,7 @@ int array_delete_first_with_entry(void *array, size_t len, size_t size_of, void 
     return __array_delete_pos(array, len, size_of, 0, destructor);
 }
 
-int array_delete_last_with_entry(void *array, size_t len, size_t size_of, void (*destructor)(void *element))
+int array_delete_last_with_entry(void *array, size_t len, size_t size_of, destructor_f destructor)
 {
     TRACE();
     if (destructor == NULL)
@@ -332,7 +332,7 @@ int array_delete_last_with_entry(void *array, size_t len, size_t size_of, void (
     return __array_delete_pos(array, len, size_of, len - 1, destructor);
 }
 
-int array_delete_pos_with_entry(void *array, size_t len, size_t size_of, size_t pos, void (*destructor)(void *element))
+int array_delete_pos_with_entry(void *array, size_t len, size_t size_of, size_t pos, destructor_f destructor)
 {
     TRACE();
     if (destructor == NULL)
@@ -341,13 +341,13 @@ int array_delete_pos_with_entry(void *array, size_t len, size_t size_of, size_t 
     return __array_delete_pos(array, len, size_of, pos, destructor);
 }
 
-int array_sort(void *array, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b))
+int array_sort(void *array, size_t len, size_t size_of, cmp_f cmp)
 {
     TRACE();
     return sort(array, len, cmp, size_of);
 }
 
-bool array_is_sorted(const void *array, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b))
+bool array_is_sorted(const void *array, size_t len, size_t size_of, cmp_f cmp)
 {
     size_t i;
     size_t size;
@@ -377,7 +377,7 @@ bool array_is_sorted(const void *array, size_t len, size_t size_of, int (*cmp)(c
     return true;
 }
 
-bool array_is_reverse_sorted(const void *array, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b))
+bool array_is_reverse_sorted(const void *array, size_t len, size_t size_of, cmp_f cmp)
 {
     size_t i;
     size_t size;
@@ -422,7 +422,7 @@ void array_reverse(void *array, size_t len, size_t size_of)
         __SWAP__(t[i * size_of], t[(len - i - 1) * size_of], size_of);
 }
 
-ssize_t array_lower_bound(const void *array, size_t len, size_t size_of, const void *data, int (*cmp)(const void *a, const void *b))
+ssize_t array_lower_bound(const void *array, size_t len, size_t size_of, const void *data, cmp_f cmp)
 {
     size_t offset_left;
     size_t offset_right;
@@ -461,7 +461,7 @@ ssize_t array_lower_bound(const void *array, size_t len, size_t size_of, const v
     return (ssize_t)(offset_left / _size_of);
 }
 
-ssize_t array_upper_bound(const void *array, size_t len, size_t size_of, const void *data, int (*cmp)(const void *a, const void *b))
+ssize_t array_upper_bound(const void *array, size_t len, size_t size_of, const void *data, cmp_f cmp)
 {
     size_t offset_left;
     size_t offset_right;
@@ -500,7 +500,7 @@ ssize_t array_upper_bound(const void *array, size_t len, size_t size_of, const v
     return (ssize_t)(offset_left / _size_of);
 }
 
-ssize_t array_min(const void *array, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b), void *min)
+ssize_t array_min(const void * ___restrict___ array, size_t len, size_t size_of, cmp_f cmp, void * ___restrict___ min)
 {
     size_t pos;
 
@@ -545,7 +545,7 @@ ssize_t array_min(const void *array, size_t len, size_t size_of, int (*cmp)(cons
     return (ssize_t)pos / (ssize_t)_size_of;
 }
 
-ssize_t array_max(const void *array, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b), void *max)
+ssize_t array_max(const void * ___restrict___ array, size_t len, size_t size_of, cmp_f cmp, void * ___restrict___ max)
 {
     size_t pos;
 
@@ -590,7 +590,7 @@ ssize_t array_max(const void *array, size_t len, size_t size_of, int (*cmp)(cons
     return (ssize_t)pos / (ssize_t)_size_of;
 }
 
-ssize_t array_select_kth(const void *array, size_t len, size_t size_of, size_t k, int (*cmp)(const void *a, const void *b), void *kth)
+ssize_t array_select_kth(const void * ___restrict___ array, size_t len, size_t size_of, size_t k, cmp_f cmp, void * ___restrict___ kth)
 {
     ssize_t index;
     const BYTE *_t;
@@ -608,13 +608,13 @@ ssize_t array_select_kth(const void *array, size_t len, size_t size_of, size_t k
     return index;
 }
 
-ssize_t array_median(const void *array, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b), void *median)
+ssize_t array_median(const void * ___restrict___ array, size_t len, size_t size_of, cmp_f cmp, void * ___restrict___ median)
 {
     TRACE();
     return array_select_kth(array, len, size_of, len >> 1, cmp, median);
 }
 
-ssize_t array_unsorted_find_first(const void * ___restrict___ array, size_t len, size_t size_of, const void * ___restrict___ key, int (*cmp)(const void *a, const void *b),  void *val)
+ssize_t array_unsorted_find_first(const void * ___restrict___ array, size_t len, size_t size_of, const void * ___restrict___ key, cmp_f cmp,  void *val)
 {
     ssize_t index;
     BYTE *t;
@@ -632,7 +632,7 @@ ssize_t array_unsorted_find_first(const void * ___restrict___ array, size_t len,
     return index;
 }
 
-ssize_t array_unsorted_find_last(const void * ___restrict___ array, size_t len, size_t size_of, const void * ___restrict___ key, int (*cmp)(const void *a, const void *b),  void *val)
+ssize_t array_unsorted_find_last(const void * ___restrict___ array, size_t len, size_t size_of, const void * ___restrict___ key, cmp_f cmp,  void *val)
 {
     ssize_t index;
     BYTE *t;
@@ -650,7 +650,7 @@ ssize_t array_unsorted_find_last(const void * ___restrict___ array, size_t len, 
     return index;
 }
 
-ssize_t array_sorted_find_first(const void * ___restrict___ array, size_t len, size_t size_of, const void * ___restrict___ key, int (*cmp)(const void *a, const void *b),  void *val)
+ssize_t array_sorted_find_first(const void * ___restrict___ array, size_t len, size_t size_of, const void * ___restrict___ key, cmp_f cmp,  void *val)
 {
     ssize_t index;
     BYTE *t;
@@ -668,7 +668,7 @@ ssize_t array_sorted_find_first(const void * ___restrict___ array, size_t len, s
     return index;
 }
 
-ssize_t array_sorted_find_last(const void * ___restrict___ array, size_t len, size_t size_of, const void * ___restrict___ key, int (*cmp)(const void *a, const void *b),  void *val)
+ssize_t array_sorted_find_last(const void * ___restrict___ array, size_t len, size_t size_of, const void * ___restrict___ key, cmp_f cmp,  void *val)
 {
     ssize_t index;
     BYTE *t;

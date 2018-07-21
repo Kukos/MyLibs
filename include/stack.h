@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stddef.h> /* size_t */
 #include <sys/types.h>
+#include <common.h>
 
 /*
     Author: Michal Kukowski
@@ -15,12 +16,7 @@
     LICENCE: GPL 3.0
 */
 
-typedef struct Stack
-{
-    Darray *____darray;
-
-}Stack;
-
+typedef Darray Stack;
 
 /*
     Create stack of type TYPE
@@ -50,7 +46,7 @@ typedef struct Stack
     %NULL iff failure
     %Pointer iff success
 */
-Stack *stack_create(size_t size_of, void (*destroy)(void *entry));
+Stack *stack_create(size_t size_of, destructor_f destroy);
 
 /*
     Destroy stack

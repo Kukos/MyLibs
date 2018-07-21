@@ -4,21 +4,10 @@
 #include <sys/types.h>
 #include <stdbool.h>
 #include <iterators.h>
+#include <common.h>
 
-typedef struct String
-{
-    char *____str;
-    size_t ____len;
-    size_t ____allocated;
-
-} String;
-
-typedef struct String_iterator
-{
-    char *____str;
-    ssize_t ____index;
-
-} String_iterator;
+typedef struct String String;
+typedef struct String_iterator String_iterator;
 
 IT_FUNC(String, string)
 
@@ -235,10 +224,10 @@ String *string_substr(const String *string, size_t begin, size_t end);
     position of begining pattern in string
 */
 ssize_t string_find_c_first(const String *string, char c);
-ssize_t string_find_str_first(const String *string, const char *str);
+ssize_t string_find_str_first(const String * ___restrict___ string, const char * ___restrict___ str);
 ssize_t string_find_string_first(const String *s1, const String *s2);
 ssize_t string_find_c_last(const String *string, char c);
-ssize_t string_find_str_last(const String *string, const char *str);
+ssize_t string_find_str_last(const String * ___restrict___ string, const char * ___restrict___ str);
 ssize_t string_find_string_last(const String *s1, const String *s2);
 
 /*
@@ -256,10 +245,10 @@ ssize_t string_find_string_last(const String *s1, const String *s2);
     position of begining pattern in string
 */
 ssize_t string_find_c_first_substr(const String *string, char c, size_t begin, size_t end);
-ssize_t string_find_str_first_substr(const String *string, const char *str, size_t begin, size_t end);
+ssize_t string_find_str_first_substr(const String * ___restrict___ string, const char * ___restrict___ str, size_t begin, size_t end);
 ssize_t string_find_string_first_substr(const String *s1, const String *s2, size_t begin, size_t end);
 ssize_t string_find_c_last_substr(const String *string, char c, size_t begin, size_t end);
-ssize_t string_find_str_last_substr(const String *string, const char *str, size_t begin, size_t end);
+ssize_t string_find_str_last_substr(const String * ___restrict___ string, const char * ___restrict___ str, size_t begin, size_t end);
 ssize_t string_find_string_last_substr(const String *s1, const String *s2, size_t begin, size_t end);
 
 /*
@@ -313,7 +302,7 @@ int string_cut(String *string, size_t chars);
     Non-zero value iff failure
 */
 int string_append_c(String *string, char c);
-int string_append_str(String *string, const char *str);
+int string_append_str(String * ___restrict___ string, const char * ___restrict___ str);
 int string_append_string(String *s1, const String *s2);
 
 /*
@@ -329,7 +318,7 @@ int string_append_string(String *s1, const String *s2);
     Non-zero value iff failure
 */
 int string_insert_c(String *string, char c, size_t pos);
-int string_insert_str(String *string, const char *str, size_t pos);
+int string_insert_str(String * ___restrict___ string, const char * ___restrict___ str, size_t pos);
 int string_insert_string(String *s1, const String *s2, size_t pos);
 
 /*
@@ -347,9 +336,9 @@ int string_insert_string(String *s1, const String *s2, size_t pos);
 int string_remove_c_first(String *string, char c);
 int string_remove_c_last(String *string, char c);
 int string_remove_c_all(String *string, char c);
-int string_remove_str_first(String *string, const char *str);
-int string_remove_str_last(String *string, const char *str);
-int string_remove_str_all(String *string, const char *str);
+int string_remove_str_first(String * ___restrict___ string, const char * ___restrict___ str);
+int string_remove_str_last(String * ___restrict___ string, const char * ___restrict___ str);
+int string_remove_str_all(String * ___restrict___ string, const char * ___restrict___ str);
 int string_remove_string_first(String *string, const String *pattern);
 int string_remove_string_last(String *string, const String *pattern);
 int string_remove_string_all(String *string, const String *pattern);
@@ -367,13 +356,13 @@ int string_remove_string_all(String *string, const String *pattern);
     Non-zero value iff failure
 */
 int string_replace_c_by_c_first(String *string, char c1, char c2);
-int string_replace_c_by_str_first(String *string, char c1, const char *str);
+int string_replace_c_by_str_first(String * ___restrict___ string, char c1, const char * ___restrict___ str);
 int string_replace_c_by_string_first(String *string, char c1, const String *string2);
 int string_replace_c_by_c_last(String *string, char c1, char c2);
-int string_replace_c_by_str_last(String *string, char c1, const char *str);
+int string_replace_c_by_str_last(String * ___restrict___ string, char c1, const char * ___restrict___ str);
 int string_replace_c_by_string_last(String *string, char c1, const String *string2);
 int string_replace_c_by_c_all(String *string, char c1, char c2);
-int string_replace_c_by_str_all(String *string, char c1, const char *str);
+int string_replace_c_by_str_all(String * ___restrict___ string, char c1, const char * ___restrict___ str);
 int string_replace_c_by_string_all(String *string, char c1, const String *string2);
 
 /*
@@ -388,15 +377,15 @@ int string_replace_c_by_string_all(String *string, char c1, const String *string
     0 iff success
     Non-zero value iff failure
 */
-int string_replace_str_by_c_first(String *string, const char *str1, char c);
-int string_replace_str_by_str_first(String *string, const char *str1, const char *str2);
-int string_replace_str_by_string_first(String *string, const char *str1, const String *string2);
-int string_replace_str_by_c_last(String *string, const char *str1, char c2);
-int string_replace_str_by_str_last(String *string, const char *str1, const char *str);
-int string_replace_str_by_string_last(String *string, const char *str1, const String *string2);
-int string_replace_str_by_c_all(String *string, const char *str1, char c2);
-int string_replace_str_by_str_all(String *string, const char *str1, const char *str);
-int string_replace_str_by_string_all(String *string, const char *str1, const String *string2);
+int string_replace_str_by_c_first(String * ___restrict___ string, const char * ___restrict___ str1, char c);
+int string_replace_str_by_str_first(String * ___restrict___ string, const char *str1, const char *str2);
+int string_replace_str_by_string_first(String *string, const char * ___restrict___ str1, const String *string2);
+int string_replace_str_by_c_last(String * ___restrict___ string, const char * ___restrict___ str1, char c2);
+int string_replace_str_by_str_last(String * ___restrict___ string, const char *str1, const char *str);
+int string_replace_str_by_string_last(String *string, const char * ___restrict___ str1, const String *string2);
+int string_replace_str_by_c_all(String * ___restrict___ string, const char * ___restrict___ str1, char c2);
+int string_replace_str_by_str_all(String * ___restrict___ string, const char *str1, const char *str);
+int string_replace_str_by_string_all(String *string, const char * ___restrict___ str1, const String *string2);
 
 
 /*
@@ -412,13 +401,13 @@ int string_replace_str_by_string_all(String *string, const char *str1, const Str
     Non-zero value iff failure
 */
 int string_replace_string_by_c_first(String *string, const String *string1, char c);
-int string_replace_string_by_str_first(String *string, const String *string1, const char *str);
+int string_replace_string_by_str_first(String *string, const String *string1, const char * ___restrict___ str);
 int string_replace_string_by_string_first(String *string, const String *string1, const String *string2);
 int string_replace_string_by_c_last(String *string, const String *string1, char c);
-int string_replace_string_by_str_last(String *string, const String *string1, const char *str);
+int string_replace_string_by_str_last(String *string, const String *string1, const char * ___restrict___ str);
 int string_replace_string_by_string_last(String *string, const String *string1, const String *string2);
 int string_replace_string_by_c_all(String *string, const String *string1, char c);
-int string_replace_string_by_str_all(String *string, const String *string1, const char *str);
+int string_replace_string_by_str_all(String *string, const String *string1, const char * ___restrict___ str);
 int string_replace_string_by_string_all(String *string, const String *string1, const String *string2);
 
 /*
@@ -435,7 +424,7 @@ int string_replace_string_by_string_all(String *string, const String *string1, c
     Pointer to array iff success
 */
 String **string_split_c(const String *string, char c, size_t *size);
-String **string_split_str(const String *string, const char *str, size_t *size);
+String **string_split_str(const String * ___restrict___ string, const char * ___restrict___ str, size_t * ___restrict___ size);
 String **string_split_string(const String *string, const String *string2, size_t *size);
 
 #endif

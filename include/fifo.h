@@ -13,18 +13,9 @@
 #include <stdbool.h>
 #include <stddef.h> /* size_t */
 #include <sys/types.h>
+#include <common.h>
 
-typedef struct Fifo
-{
-    void        *____array;     /* resizing array */
-
-    size_t      ____head;       /* head postion in array */
-    size_t      ____tail;       /* tail posiion in array */
-    size_t      ____size;       /* size of allocated array */
-    size_t      ____size_of;    /* size of element in array */
-
-    void        (*____destroy)(void *entry); /* data destructor */
-}Fifo;
+typedef struct Fifo Fifo;
 
 /*
     Create fifo with type TYPE
@@ -54,7 +45,7 @@ typedef struct Fifo
     %NULL iff failure
     %Pointer to fifo iff success
 */
-Fifo *fifo_create(size_t size_of, void (*destroy)(void *entry));
+Fifo *fifo_create(size_t size_of, destructor_f destroy);
 
 /*
     Destroy fifo
@@ -91,7 +82,7 @@ void fifo_destroy_with_entries(Fifo *fifo);
     %0 iff success
 	%Non-zero value iff failure
 */
-int fifo_enqueue(Fifo *fifo, const void *val);
+int fifo_enqueue(Fifo * ___restrict___ fifo, const void * ___restrict___ val);
 
 /*
     Get first element and delete from queue
@@ -104,7 +95,7 @@ int fifo_enqueue(Fifo *fifo, const void *val);
 	%0 iff success
 	%Non-zero value iff failure
 */
-int fifo_dequeue(Fifo *fifo, void *val);
+int fifo_dequeue(Fifo * ___restrict___ fifo, void * ___restrict___ val);
 
 /*
     Convert fifo to array
@@ -118,7 +109,7 @@ int fifo_dequeue(Fifo *fifo, void *val);
 	%0 iff success
 	%Non-zero value iff failure
 */
-int fifo_to_array(const Fifo *fifo, void *array, size_t *size);
+int fifo_to_array(const Fifo * ___restrict___ fifo, void * ___restrict___ array, size_t * ___restrict___ size);
 
 /*
     PARAMS
@@ -141,7 +132,7 @@ bool fifo_is_empty(const Fifo *fifo);
 	%0 iff success
 	%Non-zero value iff failure
 */
-int fifo_get_head(const Fifo *fifo, void *val);
+int fifo_get_head(const Fifo * ___restrict___ fifo, void * ___restrict___ val);
 
 /*
     Get number of entries in fifo

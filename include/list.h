@@ -15,36 +15,11 @@
 #include <stddef.h> /* size_t */
 #include <sys/types.h>
 #include <generic.h>
+#include <common.h>
 
-typedef struct List_node
-{
-    struct List_node    *____next;
-    __extension__ BYTE  ____data[]; /* placeholder for data */
-
-}List_node;
-
-typedef struct List
-{
-    size_t          ____size_of;    /* size of element */
-    size_t          ____length;     /* length of list */
-
-    List_node       *____head;
-    List_node       *____tail;      /* needed for insert guardian */
-
-    int (*____cmp)(const void* a, const void *b);
-    void (*____destroy)(void *entry);
-
-}List;
-
-/*
-   List_iterator
-*/
-typedef struct List_iterator
-{
-    List_node       *____node;
-    size_t          ____size_of;
-
-}List_iterator;
+typedef struct List_node List_node;
+typedef struct List List;
+typedef struct List_iterator List_iterator;
 
 IT_FUNC(List, list)
 
@@ -74,7 +49,7 @@ IT_FUNC(List, list)
     NULL if failure
     Pointer if success
 */
-SList *slist_list_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+SList *slist_list_create(size_t size_of, cmp_f cmp, destructor_f destroy);
 
 
 /*
@@ -89,7 +64,7 @@ SList *slist_list_create(size_t size_of, int (*cmp)(const void *a, const void *b
     NULL iff failure
     Pointer iff success
 */
-List *list_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+List *list_create(size_t size_of, cmp_f cmp, destructor_f destroy);
 
 /*
     Destroy list
@@ -125,7 +100,7 @@ void list_destroy_with_entries(List *list);
     0 iff success
 	Non-zero value iff failure
 */
-int list_insert(List *list, const void *entry);
+int list_insert(List * ___restrict___  list, const void * ___restrict___ entry);
 
 /*
     Delete the first entry which cmp(list->entry, entry) == 0
@@ -138,7 +113,7 @@ int list_insert(List *list, const void *entry);
 	0 iff success
 	Non-zero value iff failure (i.e entry doesn't exist in list )
 */
-int list_delete(List *list, const void *entry);
+int list_delete(List * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
     Delete the first entry which cmp(list->entry, entry) ==
@@ -152,7 +127,7 @@ int list_delete(List *list, const void *entry);
 	0 iff success
 	Non-zero value iff failure (i.e entry doesn't exist in list )
 */
-int list_delete_with_entry(List *list, const void *entry);
+int list_delete_with_entry(List * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
     Delete all entries which cmp(list->entry,entry) == 0
@@ -165,7 +140,7 @@ int list_delete_with_entry(List *list, const void *entry);
     -1 iff failure (i.e entry doesn't exist in list )
     Number of delete entries iff success
 */
-int list_delete_all(List *list, const void *entry);
+int list_delete_all(List * ___restrict___ list, const void * ___restrict___ entry);
 
 
 /*
@@ -180,7 +155,7 @@ int list_delete_all(List *list, const void *entry);
     -1 iff failure (i.e entry doesn't exist in list )
     Number of delete entries iff success
 */
-int list_delete_all_with_entry(List *list, const void *entry);
+int list_delete_all_with_entry(List * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
     Allocate new list and merge list1 & list2 to the new list
@@ -222,7 +197,7 @@ List *list_merge(const List * ___restrict___ list1, const List * ___restrict___ 
     0 iff success
 	Non-zero value iff failure
 */
-int list_search(const List *list, const void *val, void *entry);
+int list_search(const List * ___restrict___ list, const void *val, void *entry);
 
 /*
     Create array from list
@@ -236,7 +211,7 @@ int list_search(const List *list, const void *val, void *entry);
     0 iff success
 	Non-zero value iff failure
 */
-int list_to_array(const List *list, void *array, size_t *size);
+int list_to_array(const List * ___restrict___ list, void * ___restrict___ array, size_t * ___restrict___ size);
 
 /*
     Get size of data List
@@ -261,5 +236,18 @@ ssize_t list_get_data_size(const List *list);
     sizeof iff success
 */
 ssize_t list_get_num_entries(const List *list);
+
+/*
+    Get Node data
+
+    PARAMS
+    @IN node - pointer to list_node
+    @OUT data - node data
+
+    RETURN
+    Non-zero iff failure
+    0 iff success
+*/
+int list_node_get_data(const List_node *  ___restrict___ node, void * ___restrict___ data);
 
 #endif

@@ -13,40 +13,16 @@
 #include <iterators.h>
 #include <stddef.h> /* size_t */
 #include <sys/types.h>
+#include <common.h>
 
-#define DARRAY_TYPE         char
-#define DARRAY_SORTED       0
-#define DARRAY_UNSORTED     1
-
-/*
-    Dynamic array, use binary realloc
-*/
-typedef struct Darray
+typedef enum DARRAY_TYPE
 {
-    void    *____array;         /* main array */
+    DARRAY_SORTED = 0,
+    DARRAY_UNSORTED
+} DARRAY_TYPE;
 
-    size_t  ____size_of;        /* size of element */
-    size_t  ____size;           /* current allocated size ( num of entries ) */
-    size_t  ____num_entries;    /* num of entries in array */
-    size_t  ____init_size;      /* minimum size using on init ( num of entries ) */
-
-    void (*____destroy)(void *entry);
-    int (*____cmp)(const void *a, const void *b); /* pointer to compare function */
-    DARRAY_TYPE ____type;        /* type of array ( sorted or unsorted ) */
-
-}Darray;
-
-/*
-   Darray_iterator
-*/
-typedef struct Darray_iterator
-{
-    void        *____array;         /* pointer to array */
-    ssize_t     ____index;          /* index of array */
-    size_t      ____size_of;        /* sizeof element in array */
-    size_t      ____array_length;   /* array length */
-
-}Darray_iterator;
+typedef struct Darray Darray;
+typedef struct Darray_iterator Darray_iterator;
 
 IT_FUNC(Darray, darray)
 
@@ -86,8 +62,8 @@ IT_FUNC(Darray, darray)
     %Pointer to Darray iff success
 */
 Darray *darray_create(DARRAY_TYPE type, size_t size, size_t size_of,
-                int (*cmp)(const void *a, const void *b),
-                void (*destroy)(void *entry));
+                cmp_f cmp,
+                destructor_f destroy);
 
 /*
     Deallocate darray
@@ -122,7 +98,7 @@ void darray_destroy_with_entries(Darray *darray);
   	%0 iff success
     %Non-zero value iff failure
 */
-int darray_insert(Darray *darray, const void *entry);
+int darray_insert(Darray * ___restrict___ darray, const void * ___restrict___ entry);
 
 /*
     Insert an entry to array ( only unsorted ) in array[pos]
@@ -136,7 +112,7 @@ int darray_insert(Darray *darray, const void *entry);
     %0 iff success
     %Non-zero value iff failure
 */
-int darray_insert_pos(Darray *darray, const void *entry, size_t pos);
+int darray_insert_pos(Darray * ___restrict___ darray, const void * ___restrict___ entry, size_t pos);
 
 /*
     Delete the last entry from array
@@ -191,6 +167,20 @@ int darray_delete_pos(Darray *darray, size_t pos);
 int darray_delete_pos_with_entry(Darray *darray, size_t pos);
 
 /*
+    Get data from darray like data = darray[pos]
+
+    PARAMS
+    @IN darray - pointer to Darray
+    @IN pos - position
+    @OUT data - pointer where data will be copied
+
+    RETURN
+    %0 iff success
+    %Non-zero value iff failure
+*/
+int darray_get_data(const Darray *darray, size_t pos, void *data);
+
+/*
     Search for val in array
     (First of all values)
 
@@ -203,7 +193,7 @@ int darray_delete_pos_with_entry(Darray *darray, size_t pos);
     %-1 iff failure or value doesn't exists
     %position of value iff success
 */
-ssize_t darray_search_first(const Darray *darray, const void *val_in, void *val_out);
+ssize_t darray_search_first(const Darray * ___restrict___ darray, const void *val_in, void *val_out);
 
 
 /*
@@ -219,7 +209,7 @@ ssize_t darray_search_first(const Darray *darray, const void *val_in, void *val_
     %-1 iff failure or value doesn't exists
     %position of value iff success
 */
-ssize_t darray_search_last(const Darray *darray, const void *val_in, void *val_out);
+ssize_t darray_search_last(const Darray * ___restrict___ darray, const void *val_in, void *val_out);
 
 /*
     If array is unsorted sort the array
@@ -244,7 +234,7 @@ int darray_sort(Darray *darray);
     %-1 iff failure
     %Pos iff success
 */
-ssize_t darray_min(const Darray *darray, void *val);
+ssize_t darray_min(const Darray * ___restrict___ darray, void * ___restrict___ val);
 
 /*
     Find Maximum and return pos
@@ -257,7 +247,7 @@ ssize_t darray_min(const Darray *darray, void *val);
     %-1 iff failure
     %Pos iff success
 */
-ssize_t darray_max(const Darray *darray, void *val);
+ssize_t darray_max(const Darray * ___restrict___ darray, void * ___restrict___ val);
 
 /*
     Get Array

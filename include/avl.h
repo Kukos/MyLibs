@@ -14,40 +14,16 @@
     LICENCE: GPL 3.0
 */
 
-#include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
 #include <iterators.h>
 #include <sys/types.h>
 #include <tree.h>
-#include <generic.h>
+#include <common.h>
 
-typedef struct Avl_node
-{
-    struct Avl_node *____left_son;
-    struct Avl_node *____right_son;
-    struct Avl_node *____parent;
-
-    uint8_t         ____bf; /* balanced factor */
-
-    __extension__ BYTE ____data[]; /* placeholder for data */
-}Avl_node;
-
-typedef struct Avl_iterator
-{
-    size_t   ____size_of;
-    Avl_node *____node;
-}Avl_iterator;
-
-typedef struct Avl
-{
-    Avl_node    *____root;
-    size_t      ____nodes;
-    size_t      ____size_of;
-
-    int (*____cmp)(const void *a, const void *b);
-    void (*____destroy)(void *entry);
-}Avl;
+typedef struct Avl_node Avl_node;
+typedef struct Avl_iterator Avl_iterator;
+typedef struct Avl Avl;
 
 IT_FUNC(Avl, avl)
 
@@ -66,7 +42,7 @@ IT_FUNC(Avl, avl)
     NULL iff failure
     Pointer to Tree iff success
 */
-Tree *tree_avl_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+Tree *tree_avl_create(size_t size_of, cmp_f cmp, destructor_f destroy);
 
 /*
     Create AVL
@@ -83,7 +59,7 @@ Tree *tree_avl_create(size_t size_of, int (*cmp)(const void *a, const void *b), 
     NULL iff failure
     Pointer to Avl iff success
 */
-Avl *avl_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+Avl *avl_create(size_t size_of, cmp_f cmp, destructor_f destroy);
 
 #define AVL_CREATE(PTR,TYPE,CMP, DESTROY) \
     do { \
@@ -123,7 +99,7 @@ void avl_destroy_with_entries(Avl *tree);
     0 iff success
     Non-zero value iff failure
 */
-int avl_insert(Avl *tree, const void *data);
+int avl_insert(Avl * ___restrict___ tree, const void * ___restrict___ data);
 
 /*
     Getter of min value ( using cmp ) in tree
@@ -136,7 +112,7 @@ int avl_insert(Avl *tree, const void *data);
     0 iff success
     Non-zero value iff failure
 */
-int avl_min(const Avl *tree, void *data);
+int avl_min(const Avl * ___restrict___ tree, void * ___restrict___ data);
 
 /*
     Getter of max value ( using cmp ) in tree
@@ -149,7 +125,7 @@ int avl_min(const Avl *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int avl_max(const Avl *tree, void *data);
+int avl_max(const Avl * ___restrict___ tree, void * ___restrict___ data);
 
 /*
     Search for data with key equals key @data_key ( using cmp )
@@ -163,7 +139,7 @@ int avl_max(const Avl *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
- int avl_search(const Avl *tree, const void *data_key, void *data_out);
+ int avl_search(const Avl * ___restrict___ tree, const void *data_key, void *data_out);
 
  /*
  	Check existing of key in tree
@@ -176,7 +152,7 @@ int avl_max(const Avl *tree, void *data);
  	false iff key doesn't exist in tree
  	true iff key exists in tree
  */
- bool avl_key_exist(const Avl *tree, const void *data_key);
+ bool avl_key_exist(const Avl * ___restrict___ tree, const void * ___restrict___ data_key);
 
 /*
     Delete data with key equals @data_key ( using cmp )
@@ -189,7 +165,7 @@ int avl_max(const Avl *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int avl_delete(Avl *tree, const void *data_key);
+int avl_delete(Avl * ___restrict___ tree, const void * ___restrict___ data_key);
 
 /*
     Delete data with key equals @data_key ( using cmp )
@@ -203,7 +179,7 @@ int avl_delete(Avl *tree, const void *data_key);
     0 iff success
     Non-zero value iff failure
 */
-int avl_delete_with_entry(Avl *tree, const void *data_key);
+int avl_delete_with_entry(Avl * ___restrict___ tree, const void * ___restrict___ data_key);
 
 /*
     Convert bst to sorted array
@@ -217,7 +193,7 @@ int avl_delete_with_entry(Avl *tree, const void *data_key);
     0 iff success
     Non-zero value iff failure
 */
-int avl_to_array(const Avl *tree, void *array, size_t *size);
+int avl_to_array(const Avl * ___restrict___ tree, void * ___restrict___ array, size_t * ___restrict___ size);
 
 /*
     Get Num entries of AVL
@@ -254,5 +230,18 @@ ssize_t avl_get_data_size(const Avl *tree);
     Hight iff success
 */
 int avl_get_hight(const Avl *tree);
+
+/*
+    Get Node data
+
+    PARAMS
+    @IN node - pointer to Avl_node
+    @OUT data - node data
+
+    RETURN
+    Non-zero iff failure
+    0 iff success
+*/
+int avl_node_get_data(const Avl_node * ___restrict___ node, void * ___restrict___ data);
 
 #endif

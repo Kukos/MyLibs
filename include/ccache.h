@@ -15,13 +15,7 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
-typedef struct CCache
-{
-    int ____fd;
-    char *____cache;
-    size_t ____len;
-    size_t ____mmap_size;
-} CCache;
+typedef struct CCache CCache;
 
 /*
     Create CCache

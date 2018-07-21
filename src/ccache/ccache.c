@@ -14,6 +14,14 @@
 #include <ctype.h>
 #include <string.h>
 
+struct CCache
+{
+    int fd;
+    char *cache;
+    size_t len;
+    size_t mmap_size;
+};
+
 static const char * const PATH_TO_CACHE = "./.ccache";
 
 static ___inline___ bool is_aligned(size_t size);
@@ -105,14 +113,14 @@ CCache *ccache_create(size_t size)
 
     asize = (__off64_t)align_size(size);
 
-    cache->____fd = -1;
-    cache->____mmap_size = (size_t)asize;
-    cache->____len = size;
+    cache->fd = -1;
+    cache->mmap_size = (size_t)asize;
+    cache->len = size;
 
     if (size < get_available_memory())
     {
-        cache->____cache = mmap64(NULL, (size_t)asize, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-        if (cache->____cache == MAP_FAILED)
+        cache->cache = mmap64(NULL, (size_t)asize, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+        if (cache->cache == MAP_FAILED)
         {
             FREE(cache);
             ERROR("mmap64 error\n", NULL);
@@ -135,9 +143,9 @@ CCache *ccache_create(size_t size)
         ERROR("ftruncate64 error\n", NULL);
     }
 
-    cache->____fd = fd;
-    cache->____cache = mmap64(NULL, (size_t)asize, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if (cache->____cache == MAP_FAILED)
+    cache->fd = fd;
+    cache->cache = mmap64(NULL, (size_t)asize, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if (cache->cache == MAP_FAILED)
     {
         FREE(cache);
         close(fd);
@@ -155,11 +163,11 @@ void ccache_destroy(CCache *cache)
     if (cache == NULL)
         return;
 
-    munmap(cache->____cache, cache->____mmap_size);
+    munmap(cache->cache, cache->mmap_size);
 
-    if (cache->____fd != -1)
+    if (cache->fd != -1)
     {
-        close(cache->____fd);
+        close(cache->fd);
         remove(PATH_TO_CACHE);
     }
 
@@ -171,7 +179,7 @@ ssize_t ccache_get_size(CCache *cache)
     if (cache == NULL)
         ERROR("cache == NULL\n", -1);
 
-    return (ssize_t)cache->____len;
+    return (ssize_t)cache->len;
 }
 
 void *ccache_get_array(CCache *cache, size_t *size)
@@ -180,7 +188,7 @@ void *ccache_get_array(CCache *cache, size_t *size)
         ERROR("cache == NULL\n", NULL);
 
     if (size != NULL)
-        *size = cache->____len;
+        *size = cache->len;
 
-    return (void *)cache->____cache;
+    return (void *)cache->cache;
 }

@@ -14,6 +14,20 @@
 #define BITSET_WORD(bit) ((bit) / BITSET_SHIFT)
 #define BITSET_REAL_POS(bit) ((bit) & BITSET_MASK)
 
+struct Bitset
+{
+    DWORD *set;
+    size_t size;
+};
+
+struct Bitset_iterator
+{
+    DWORD  *set;
+    ssize_t index;
+    ssize_t bit;
+    size_t  size;
+};
+
 Bitset *bitset_create(size_t size)
 {
     Bitset *set;
@@ -27,15 +41,15 @@ Bitset *bitset_create(size_t size)
     if (set == NULL)
         ERROR("malloc error\n", NULL);
 
-    set->____set = (DWORD *)malloc(sizeof(DWORD) * BITSET_SIZE(size));
-    if (set->____set == NULL)
+    set->set = (DWORD *)malloc(sizeof(DWORD) * BITSET_SIZE(size));
+    if (set->set == NULL)
     {
         FREE(set);
         ERROR("malloc errro\n", NULL);
     }
-    (void)memset(set->____set, 0, sizeof(DWORD) * BITSET_SIZE(size));
+    (void)memset(set->set, 0, sizeof(DWORD) * BITSET_SIZE(size));
 
-    set->____size = size;
+    set->size = size;
 
     return set;
 }
@@ -47,7 +61,7 @@ void bitset_destroy(Bitset *bitset)
     if (bitset == NULL)
         return;
 
-    FREE(bitset->____set);
+    FREE(bitset->set);
     FREE(bitset);
 }
 
@@ -60,10 +74,10 @@ int bitset_get_bit(const Bitset *bitset, size_t pos)
     if (bitset == NULL)
         ERROR("bitset == NULL\n", -1);
 
-    if (pos > bitset->____size)
+    if (pos > bitset->size)
         ERROR("pos > bitset size\n", -1);
 
-    word = bitset->____set[BITSET_WORD(pos)];
+    word = bitset->set[BITSET_WORD(pos)];
 
     return (int)GET_BIT(word, BITSET_REAL_POS(pos));
 }
@@ -72,56 +86,56 @@ void bitset_set_bit(Bitset *bitset, size_t pos)
 {
     TRACE();
 
-    if (bitset == NULL || pos > bitset->____size)
+    if (bitset == NULL || pos > bitset->size)
        return;
 
-    SET_BIT(bitset->____set[BITSET_WORD(pos)], BITSET_REAL_POS(pos));
+    SET_BIT(bitset->set[BITSET_WORD(pos)], BITSET_REAL_POS(pos));
 }
 
 void bitset_clear_bit(Bitset *bitset, size_t pos)
 {
     TRACE();
 
-    if (bitset == NULL || pos > bitset->____size)
+    if (bitset == NULL || pos > bitset->size)
        return;
 
-    CLEAR_BIT(bitset->____set[BITSET_WORD(pos)], BITSET_REAL_POS(pos));
+    CLEAR_BIT(bitset->set[BITSET_WORD(pos)], BITSET_REAL_POS(pos));
 }
 
 void bitset_set_bit_value(Bitset *bitset, size_t pos, int value)
 {
     TRACE();
 
-    if (bitset == NULL || pos > bitset->____size)
+    if (bitset == NULL || pos > bitset->size)
        return;
 
-    SET_BIT_VALUE(bitset->____set[BITSET_WORD(pos)], BITSET_REAL_POS(pos), CAST_TO_BOOL(value));
+    SET_BIT_VALUE(bitset->set[BITSET_WORD(pos)], BITSET_REAL_POS(pos), CAST_TO_BOOL(value));
 }
 
 void bitset_flip_bit(Bitset *bitset, size_t pos)
 {
     TRACE();
 
-    if (bitset == NULL || pos > bitset->____size)
+    if (bitset == NULL || pos > bitset->size)
        return;
 
-    FLIP_BIT(bitset->____set[BITSET_WORD(pos)], BITSET_REAL_POS(pos));
+    FLIP_BIT(bitset->set[BITSET_WORD(pos)], BITSET_REAL_POS(pos));
 }
 
 void bitset_reverse_word(Bitset *bitset, size_t pos)
 {
     TRACE();
 
-    if (bitset == NULL || pos > BITSET_SIZE(bitset->____size))
+    if (bitset == NULL || pos > BITSET_SIZE(bitset->size))
        return;
 
-    bitset->____set[pos] = REVERSE_BITS(bitset->____set[pos]);
+    bitset->set[pos] = REVERSE_BITS(bitset->set[pos]);
 }
 
 void bitset_reverse(Bitset *bitset)
 {
     size_t i;
-    size_t size =  BITSET_SIZE(bitset->____size);
+    size_t size =  BITSET_SIZE(bitset->size);
 
     TRACE();
 
@@ -130,10 +144,10 @@ void bitset_reverse(Bitset *bitset)
 
     for (i = 0; i < size / 2; ++i)
     /* new gcc optimize it and guess that this i s pointer overflow, so to make him happy, do max with 0 */
-        SWAP(bitset->____set[i], bitset->____set[MAX((ssize_t)0, (ssize_t)(size - i - 1))]);
+        SWAP(bitset->set[i], bitset->set[MAX((ssize_t)0, (ssize_t)(size - i - 1))]);
 
     for (i = 0; i < size; ++i)
-        bitset->____set[i] = REVERSE_BITS(bitset->____set[i]);
+        bitset->set[i] = REVERSE_BITS(bitset->set[i]);
 }
 
 ssize_t bitset_get_size(const Bitset *bitset)
@@ -143,17 +157,17 @@ ssize_t bitset_get_size(const Bitset *bitset)
     if (bitset == NULL)
         ERROR("bitset == NULL\n", -1);
 
-    return (ssize_t)bitset->____size;
+    return (ssize_t)bitset->size;
 }
 
 DWORD bitset_get_word(const Bitset *bitset, size_t pos)
 {
     TRACE();
 
-    if (bitset == NULL || pos > BITSET_SIZE(bitset->____size))
+    if (bitset == NULL || pos > BITSET_SIZE(bitset->size))
         ERROR("bitset == NULL || pos > size\n", (DWORD)-1);
 
-    return bitset->____set[pos];
+    return bitset->set[pos];
 }
 
 DWORD *bitset_get_set(const Bitset *bitset, size_t *size)
@@ -164,9 +178,9 @@ DWORD *bitset_get_set(const Bitset *bitset, size_t *size)
         ERROR("bitset == NULL\n", NULL);
 
     if (size != NULL)
-        *size = BITSET_SIZE(bitset->____size);
+        *size = BITSET_SIZE(bitset->size);
 
-    return bitset->____set;
+    return bitset->set;
 }
 
 Bitset_iterator *bitset_iterator_create(const Bitset *bitset, iti_mode_t mode)
@@ -185,18 +199,18 @@ Bitset_iterator *bitset_iterator_create(const Bitset *bitset, iti_mode_t mode)
     if (iterator == NULL)
         ERROR("malloc error\n", NULL);
 
-    iterator->____set = bitset->____set;
-    iterator->____size = bitset->____size;
+    iterator->set = bitset->set;
+    iterator->size = bitset->size;
 
 	if (mode == ITI_BEGIN)
     {
-    	iterator->____index = 0;
-        iterator->____bit = 0;
+    	iterator->index = 0;
+        iterator->bit = 0;
     }
 	else
     {
-		iterator->____index = (ssize_t)(BITSET_SIZE(bitset->____size) - 1);
-        iterator->____bit = (sizeof(DWORD) << 3) - 1;
+		iterator->index = (ssize_t)(BITSET_SIZE(bitset->size) - 1);
+        iterator->bit = (sizeof(DWORD) << 3) - 1;
     }
 
     return iterator;
@@ -212,36 +226,6 @@ void bitset_iterator_destroy(Bitset_iterator *iterator)
     FREE(iterator);
 }
 
-int bitset_iterator_init(const Bitset *bitset, Bitset_iterator *iterator, iti_mode_t mode)
-{
-    TRACE();
-
-    if (bitset == NULL)
-        ERROR("bitset == NULL\n", 1);
-
-    if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1);
-
-    if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", 1);
-
-    iterator->____set = bitset->____set;
-    iterator->____size = bitset->____size;
-
-	if (mode == ITI_BEGIN)
-    {
-    	iterator->____index = 0;
-        iterator->____bit = 0;
-    }
-	else
-    {
-		iterator->____index = (ssize_t)(BITSET_SIZE(bitset->____size) - 1);
-        iterator->____bit = (sizeof(DWORD) << 3) - 1;
-    }
-
-    return 0;
-}
-
 bool bitset_iterator_end(const Bitset_iterator *iterator)
 {
     TRACE();
@@ -249,7 +233,7 @@ bool bitset_iterator_end(const Bitset_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", true);
 
-    return (iterator->____index < 0 || (size_t)iterator->____index >= BITSET_SIZE(iterator->____size));
+    return (iterator->index < 0 || (size_t)iterator->index >= BITSET_SIZE(iterator->size));
 }
 
 int bitset_iterator_get_data(const Bitset_iterator *iterator, void *val)
@@ -259,7 +243,7 @@ int bitset_iterator_get_data(const Bitset_iterator *iterator, void *val)
     if (iterator == NULL || val == NULL)
         ERROR("iterator == NULL || val == NULL\n", 1);
 
-    *(BYTE *)val = (BYTE)GET_BIT(iterator->____set[iterator->____index], iterator->____bit);
+    *(BYTE *)val = (BYTE)GET_BIT(iterator->set[iterator->index], iterator->bit);
 
     return 0;
 }
@@ -271,7 +255,7 @@ int bitset_iterator_get_node(const Bitset_iterator *iterator, void *node)
     if (iterator == NULL || node == NULL)
         ERROR("iterator == NULL || node == NULL\n", 1);
 
-    *(DWORD *)node = iterator->____set[iterator->____index];
+    *(DWORD *)node = iterator->set[iterator->index];
 
     return 0;
 }
@@ -283,11 +267,11 @@ int bitset_iterator_next(Bitset_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1);
 
-    ++iterator->____bit;
-    if (iterator->____bit >= (ssize_t)(sizeof(DWORD) << 3))
+    ++iterator->bit;
+    if (iterator->bit >= (ssize_t)(sizeof(DWORD) << 3))
     {
-        iterator->____bit = 0;
-        ++iterator->____index;
+        iterator->bit = 0;
+        ++iterator->index;
     }
 
     return 0;
@@ -300,11 +284,11 @@ int bitset_iterator_prev(Bitset_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1);
 
-    --iterator->____bit;
-    if (iterator->____bit < 0)
+    --iterator->bit;
+    if (iterator->bit < 0)
     {
-        iterator->____bit = (sizeof(DWORD) << 3) - 1;
-        --iterator->____index;
+        iterator->bit = (sizeof(DWORD) << 3) - 1;
+        --iterator->index;
     }
 
     return 0;

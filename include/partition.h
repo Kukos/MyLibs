@@ -14,6 +14,7 @@
 
 #include <stddef.h>
 #include <sys/types.h>
+#include <common.h>
 
 /*
     Get index of pivot using trivial heuristic (first, middle, last)
@@ -27,7 +28,7 @@
     RETURN
     Pivot index in t
 */
-size_t partition_get_pivot_trivial(const void *t, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b));
+size_t partition_get_pivot_trivial(const void *t, size_t len, size_t size_of, cmp_f cmp);
 
 /*
     Get index of pivot using rand
@@ -41,7 +42,7 @@ size_t partition_get_pivot_trivial(const void *t, size_t len, size_t size_of, in
     RETURN
     Pivot index in t
 */
-size_t partition_get_pivot_rand(const void *t, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b));
+size_t partition_get_pivot_rand(const void *t, size_t len, size_t size_of, cmp_f cmp);
 
 /*
     Get index of pivot using tukey heuristic (medians of 9)
@@ -55,7 +56,7 @@ size_t partition_get_pivot_rand(const void *t, size_t len, size_t size_of, int (
     RETURN
     Pivot index in t
 */
-size_t partition_get_pivot_median(const void *t, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b));
+size_t partition_get_pivot_median(const void *t, size_t len, size_t size_of, cmp_f cmp);
 
 /*
     Bentley McIlory partition
@@ -76,7 +77,7 @@ size_t partition_get_pivot_median(const void *t, size_t len, size_t size_of, int
 ssize_t partition_bentley(void        *t,
                           size_t      offset_left,
                           size_t      offset_right,
-                          int         (*cmp)(const void *a, const void *b),
+                          cmp_f       cmp,
                           size_t      size_of,
                           size_t      *offset_left_index,
                           size_t      *offset_right_index);
@@ -100,7 +101,7 @@ ssize_t partition_bentley(void        *t,
 ssize_t partition_hoare(void        *t,
                         size_t      offset_left,
                         size_t      offset_right,
-                        int         (*cmp)(const void *a, const void *b),
+                        cmp_f       cmp,
                         size_t      size_of,
                         size_t      *offset_left_index,
                         size_t      *offset_right_index);
@@ -124,7 +125,7 @@ ssize_t partition_hoare(void        *t,
 ssize_t partition_lomuto(void        *t,
                          size_t      offset_left,
                          size_t      offset_right,
-                         int         (*cmp)(const void *a, const void *b),
+                         cmp_f       cmp,
                          size_t      size_of,
                          size_t      *offset_left_index,
                          size_t      *offset_right_index);

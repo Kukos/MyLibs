@@ -6,6 +6,31 @@
 #include <compiler.h>
 #include <assert.h>
 
+struct List_node
+{
+    struct List_node    *next;
+    size_t              size_of;
+    __extension__ BYTE  data[]; /* placeholder for data */
+};
+
+struct List
+{
+    size_t          size_of;    /* size of element */
+    size_t          length;     /* length of list */
+
+    List_node       *head;
+    List_node       *tail;      /* needed for insert guardian */
+
+    cmp_f cmp;
+    destructor_f destroy;
+};
+
+struct List_iterator
+{
+    List_node       *node;
+    size_t          size_of;
+};
+
 /*
     Create new list node with ptr next and value val
 
@@ -18,7 +43,7 @@
     NULL iff failure
     Pointer to List_node iff success
 */
-___inline___ static List_node *list_node_create(const List_node *next, const void *data,
+___inline___ static List_node *list_node_create(const List_node * ___restrict___ next, const void * ___restrict___ data,
                 size_t size_of);
 
 
@@ -71,9 +96,9 @@ static int __list_delete(List *list, const void *entry, bool destroy);
     0 iff success
     Non-zero value iff failure
 */
-static int __list_delete_all(List *list, const void *entry, bool destroy);
+static int __list_delete_all(List * ___restrict___ list, const void * ___restrict___ entry, bool destroy);
 
-___inline___ static List_node *list_node_create(const List_node *next, const void *data,
+___inline___ static List_node *list_node_create(const List_node * ___restrict___ next, const void * ___restrict___ data,
      size_t size_of)
 {
     List_node *node;
@@ -87,8 +112,9 @@ ___inline___ static List_node *list_node_create(const List_node *next, const voi
     if (node == NULL)
         ERROR("malloc error\n", NULL);
 
-    node->____next = (List_node *)next;
-    __ASSIGN__(*(BYTE *)node->____data, *(BYTE *)data, size_of);
+    node->next = (List_node *)next;
+    node->size_of = size_of;
+    __ASSIGN__(*(BYTE *)node->data, *(BYTE *)data, size_of);
 
     return node;
 }
@@ -113,12 +139,12 @@ static void __list_destroy(List *list, bool destroy)
     if (list == NULL)
         return;
 
-    ptr = list->____head;
+    ptr = list->head;
     while (ptr != NULL)
     {
-        next = ptr->____next;
-        if (destroy && list->____destroy != NULL)
-            list->____destroy((void *)ptr->____data);
+        next = ptr->next;
+        if (destroy && list->destroy != NULL)
+            list->destroy((void *)ptr->data);
 
         list_node_destroy(ptr);
 
@@ -131,7 +157,7 @@ static void __list_destroy(List *list, bool destroy)
 }
 
 
-static int __list_delete(List *list, const void *entry, bool destroy)
+static int __list_delete(List * ___restrict___ list, const void * ___restrict___ entry, bool destroy)
 {
     List_node *ptr;
     List_node *prev;
@@ -142,52 +168,52 @@ static int __list_delete(List *list, const void *entry, bool destroy)
     if (list == NULL || entry == NULL)
         ERROR("list == NULL || entry == NULL\n", 1);
 
-	if (list->____head == NULL )
+	if (list->head == NULL )
 		ERROR("Nothing to delete\n", 1);
 
-    ptr = list->____head;
+    ptr = list->head;
     prev = NULL;
 
     /* we add guardian */
-    guard = list_node_create(NULL, entry, list->____size_of);
+    guard = list_node_create(NULL, entry, list->size_of);
     if (guard == NULL)
         ERROR("list_node_create error\n", 1);
 
-    list->____tail->____next = guard;
+    list->tail->next = guard;
 
     /* skip all entries with key < than entry */
-    while (list->____cmp(ptr->____data, entry) < 0)
+    while (list->cmp(ptr->data, entry) < 0)
     {
         prev = ptr;
-        ptr = ptr->____next;
+        ptr = ptr->next;
     }
 
     /* we find entry to delete */
-    if (ptr != guard && list->____cmp(ptr->____data, entry) == 0)
+    if (ptr != guard && list->cmp(ptr->data, entry) == 0)
     {
         /* we delete head node */
         if (prev ==  NULL)
         {
-            ptr = list->____head->____next;
+            ptr = list->head->next;
 
-            if (destroy && list->____destroy != NULL)
-                list->____destroy((void *)list->____head->____data);
+            if (destroy && list->destroy != NULL)
+                list->destroy((void *)list->head->data);
 
-            list_node_destroy(list->____head);
-            list->____head = ptr;
+            list_node_destroy(list->head);
+            list->head = ptr;
 
             if (ptr == guard)
-                list->____head = NULL;
+                list->head = NULL;
         }
         else
         {
-            prev->____next = ptr->____next;
+            prev->next = ptr->next;
 
-            if (ptr == list->____tail)
-                list->____tail = prev;
+            if (ptr == list->tail)
+                list->tail = prev;
 
-            if (destroy && list->____destroy != NULL)
-                list->____destroy((void *)ptr->____data);
+            if (destroy && list->destroy != NULL)
+                list->destroy((void *)ptr->data);
 
             list_node_destroy(ptr);
         }
@@ -195,25 +221,25 @@ static int __list_delete(List *list, const void *entry, bool destroy)
     else
 	{
 		list_node_destroy(guard);
-    	list->____tail->____next = NULL;
+    	list->tail->next = NULL;
         return 1;
 	}
 
     list_node_destroy(guard);
 
-    list->____tail->____next = NULL;
-    --list->____length;
+    list->tail->next = NULL;
+    --list->length;
 
-    if (list->____length == 0)
+    if (list->length == 0)
     {
-        list->____tail = NULL;
-        list->____head = NULL;
+        list->tail = NULL;
+        list->head = NULL;
     }
 
     return 0;
 }
 
-static int __list_delete_all(List *list, const void *entry, bool destroy)
+static int __list_delete_all(List * ___restrict___ list, const void * ___restrict___ entry, bool destroy)
 {
     List_node *ptr;
     List_node *prev;
@@ -226,65 +252,65 @@ static int __list_delete_all(List *list, const void *entry, bool destroy)
     if (list == NULL || entry == NULL)
         ERROR("list == NULL || entry == NULL\n", -1);
 
-	if (list->____head == NULL )
+	if (list->head == NULL )
 		ERROR("Nothing to delete\n", -1);
 
-    ptr = list->____head;
+    ptr = list->head;
     prev= NULL;
 
     /* we add guardian */
-    guard = list_node_create(NULL, entry, list->____size_of);
+    guard = list_node_create(NULL, entry, list->size_of);
     if (guard == NULL)
         ERROR("list_node_create error\n", -1);
 
-    list->____tail->____next = guard;
+    list->tail->next = guard;
 
     /* skip all entries with key < than entry */
-    while (list->____cmp(ptr->____data, entry) < 0)
+    while (list->cmp(ptr->data, entry) < 0)
     {
         prev = ptr;
-        ptr = ptr->____next;
+        ptr = ptr->next;
     }
 
     deleted = 0;
 
     /* we find entry to delete */
-    if (ptr != guard && list->____cmp(ptr->____data, entry) == 0)
+    if (ptr != guard && list->cmp(ptr->data, entry) == 0)
     {
         /* we delete head node */
         if (prev ==  NULL)
         {
-            while (list->____cmp(list->____head->____data, entry) == 0 && list->____head != guard)
+            while (list->cmp(list->head->data, entry) == 0 && list->head != guard)
             {
-                ptr = list->____head->____next;
+                ptr = list->head->next;
 
-                if (destroy && list->____destroy != NULL)
-                    list->____destroy((void *)list->____head->____data);
+                if (destroy && list->destroy != NULL)
+                    list->destroy((void *)list->head->data);
 
-                list_node_destroy(list->____head);
-                list->____head = ptr;
+                list_node_destroy(list->head);
+                list->head = ptr;
 
                 ++deleted;
             }
 
             if (ptr == guard)
-                list->____head = NULL;
+                list->head = NULL;
         }
         else
         {
-            while (list->____cmp(ptr->____data, entry) == 0 && ptr != guard)
+            while (list->cmp(ptr->data, entry) == 0 && ptr != guard)
             {
-                prev->____next = ptr->____next;
+                prev->next = ptr->next;
 
-                if (ptr == list->____tail)
-                    list->____tail = prev;
+                if (ptr == list->tail)
+                    list->tail = prev;
 
-                if (destroy && list->____destroy != NULL)
-                    list->____destroy((void *)ptr->____data);
+                if (destroy && list->destroy != NULL)
+                    list->destroy((void *)ptr->data);
 
                 list_node_destroy(ptr);
 
-                ptr = prev->____next;
+                ptr = prev->next;
 
                 ++deleted;
             }
@@ -293,20 +319,20 @@ static int __list_delete_all(List *list, const void *entry, bool destroy)
     else
 	{
 		list_node_destroy(guard);
-    	list->____tail->____next = NULL;
+    	list->tail->next = NULL;
 
         return 0;
 	}
 
     list_node_destroy(guard);
-    list->____tail->____next = NULL;
+    list->tail->next = NULL;
 
-    list->____length -= deleted;
+    list->length -= deleted;
 
-    if (list->____length == 0)
+    if (list->length == 0)
     {
-        list->____tail = NULL;
-        list->____head = NULL;
+        list->tail = NULL;
+        list->head = NULL;
     }
 
 
@@ -314,7 +340,7 @@ static int __list_delete_all(List *list, const void *entry, bool destroy)
 }
 
 
-List *list_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
+List *list_create(size_t size_of, cmp_f cmp, destructor_f destroy)
 {
     List *list;
 
@@ -330,13 +356,13 @@ List *list_create(size_t size_of, int (*cmp)(const void *a, const void *b), void
     if (list == NULL)
         ERROR("malloc error\n", NULL);
 
-    list->____cmp = cmp;
-    list->____destroy = destroy;
-    list->____size_of = size_of;
+    list->cmp = cmp;
+    list->destroy = destroy;
+    list->size_of = size_of;
 
-    list->____length = 0;
-    list->____head = NULL;
-    list->____tail = NULL;
+    list->length = 0;
+    list->head = NULL;
+    list->tail = NULL;
 
     return list;
 }
@@ -355,7 +381,7 @@ void list_destroy_with_entries(List *list)
     __list_destroy(list, true);
 }
 
-int list_insert(List *list, const void *entry)
+int list_insert(List * ___restrict___ list, const void * ___restrict___ entry)
 {
     List_node *node;
     List_node *ptr;
@@ -367,87 +393,87 @@ int list_insert(List *list, const void *entry)
     if (list == NULL || entry == NULL)
         ERROR("list == NULL || entry == NULL\n", 1);
 
-    if (list->____head == NULL)
+    if (list->head == NULL)
     {
-        node = list_node_create(NULL, entry, list->____size_of);
+        node = list_node_create(NULL, entry, list->size_of);
         if (node == NULL)
             ERROR("list_node_create error\n", 1);
 
-        list->____head = node;
-        list->____tail = node;
+        list->head = node;
+        list->tail = node;
 
-        ++list->____length;
+        ++list->length;
     }
     else
     {
-        ptr = list->____head;
+        ptr = list->head;
         prev = NULL;
 
         /* add guardian at the end of list */
-        guard = list_node_create(NULL, entry, list->____size_of);
+        guard = list_node_create(NULL, entry, list->size_of);
         if (guard == NULL)
             ERROR("list_node_create error\n", 1);
 
-        list->____tail->____next = guard;
+        list->tail->next = guard;
 
         /* skip all entries < than new entry */
-        while (list->____cmp(ptr->____data, entry) < 0)
+        while (list->cmp(ptr->data, entry) < 0)
         {
             prev = ptr;
-            ptr = ptr->____next;
+            ptr = ptr->next;
         }
 
         /* we need stable property so we skip all entries with the same key */
-        while (list->____cmp(ptr->____data, entry) == 0 && ptr != guard)
+        while (list->cmp(ptr->data, entry) == 0 && ptr != guard)
         {
             prev = ptr;
-            ptr = ptr->____next;
+            ptr = ptr->next;
         }
 
         /* now we insert new node ( we use our guard ) */
-        guard->____next = ptr;
+        guard->next = ptr;
 
         /* insert in middle or at the end */
         if (prev != NULL)
         {
-            prev->____next = guard;
+            prev->next = guard;
 
-            if (prev == list->____tail)
-                list->____tail = guard;
+            if (prev == list->tail)
+                list->tail = guard;
         }
         else
-            list->____head = guard;
+            list->head = guard;
 
-        ++list->____length;
+        ++list->length;
 
-        list->____tail->____next = NULL;
+        list->tail->next = NULL;
     }
 
     return 0;
 }
 
-int list_delete(List *list, const void *entry)
+int list_delete(List * ___restrict___ list, const void * ___restrict___ entry)
 {
     TRACE();
 
     return __list_delete(list, entry, false);
 }
 
-int list_delete_with_entry(List *list, const void *entry)
+int list_delete_with_entry(List * ___restrict___ list, const void * ___restrict___ entry)
 {
     TRACE();
 
     return __list_delete(list, entry, true);
 }
 
-int list_delete_all(List *list, const void *entry)
+int list_delete_all(List * ___restrict___ list, const void * ___restrict___ entry)
 {
     TRACE();
 
     return __list_delete_all(list, entry, false);
 }
 
-int list_delete_all_with_entry(List *list, const void *entry)
+int list_delete_all_with_entry(List * ___restrict___ list, const void * ___restrict___ entry)
 {
     TRACE();
 
@@ -466,90 +492,90 @@ List *list_merge(const List * ___restrict___ list1, const List * ___restrict___ 
     if (list1 == NULL || list2 == NULL)
         ERROR("list1 == NULL || list2 == NULL\n", NULL);
 
-    if (list1->____size_of != list2->____size_of)
+    if (list1->size_of != list2->size_of)
         ERROR("lists have diff entries types\n", NULL);
 
-    list3 = list_create(list1->____size_of, list1->____cmp, list1->____destroy);
+    list3 = list_create(list1->size_of, list1->cmp, list1->destroy);
     if(list3 == NULL)
         ERROR("list_create error\n", NULL);
 
-    ptr1 = list1->____head;
-    ptr2 = list2->____head;
+    ptr1 = list1->head;
+    ptr2 = list2->head;
 
     if (ptr1 == NULL && ptr2 == NULL)
         return list3;
 
     if (ptr1 != NULL && ptr2 != NULL)
     {
-        if (list3->____cmp(ptr1->____data, ptr2->____data) < 0)
+        if (list3->cmp(ptr1->data, ptr2->data) < 0)
         {
-            node = list_node_create(NULL, ptr1->____data, list3->____size_of);
-            list3->____head = node;
-            ptr1 = ptr1->____next;
+            node = list_node_create(NULL, ptr1->data, list3->size_of);
+            list3->head = node;
+            ptr1 = ptr1->next;
         }
         else
         {
-            node = list_node_create(NULL, ptr2->____data, list3->____size_of);
-            list3->____head = node;
-            ptr2 = ptr2->____next;
+            node = list_node_create(NULL, ptr2->data, list3->size_of);
+            list3->head = node;
+            ptr2 = ptr2->next;
         }
     }
     else if (ptr1 != NULL)
     {
-        node = list_node_create(NULL, ptr1->____data, list3->____size_of);
-        list3->____head = node;
-        ptr1 = ptr1->____next;
+        node = list_node_create(NULL, ptr1->data, list3->size_of);
+        list3->head = node;
+        ptr1 = ptr1->next;
     }
     else if (ptr2 != NULL)
     {
-        node = list_node_create(NULL, ptr2->____data, list3->____size_of);
-        list3->____head = node;
-        ptr2 = ptr2->____next;
+        node = list_node_create(NULL, ptr2->data, list3->size_of);
+        list3->head = node;
+        ptr2 = ptr2->next;
     }
 
-    list3->____tail = list3->____head;
-    list3->____tail->____next = NULL;
+    list3->tail = list3->head;
+    list3->tail->next = NULL;
 
     while (ptr1 != NULL && ptr2 != NULL)
     {
-        if (list3->____cmp(ptr1->____data, ptr2->____data) < 0)
+        if (list3->cmp(ptr1->data, ptr2->data) < 0)
         {
-            node = list_node_create(NULL, ptr1->____data, list3->____size_of);
-            list3->____tail->____next = node;
-            list3->____tail = node;
-            ptr1 = ptr1->____next;
+            node = list_node_create(NULL, ptr1->data, list3->size_of);
+            list3->tail->next = node;
+            list3->tail = node;
+            ptr1 = ptr1->next;
         }
         else
         {
-            node = list_node_create(NULL, ptr2->____data, list3->____size_of);
-            list3->____tail->____next = node;
-            list3->____tail = node;
-            ptr2 = ptr2->____next;
+            node = list_node_create(NULL, ptr2->data, list3->size_of);
+            list3->tail->next = node;
+            list3->tail = node;
+            ptr2 = ptr2->next;
         }
     }
 
     while (ptr1 != NULL)
     {
-        node = list_node_create(NULL, ptr1->____data, list3->____size_of);
-        list3->____tail->____next = node;
-        list3->____tail = node;
-        ptr1 = ptr1->____next;
+        node = list_node_create(NULL, ptr1->data, list3->size_of);
+        list3->tail->next = node;
+        list3->tail = node;
+        ptr1 = ptr1->next;
     }
 
     while (ptr2 != NULL)
     {
-        node = list_node_create(NULL, ptr2->____data, list3->____size_of);
-        list3->____tail->____next = node;
-        list3->____tail = node;
-        ptr2 = ptr2->____next;
+        node = list_node_create(NULL, ptr2->data, list3->size_of);
+        list3->tail->next = node;
+        list3->tail = node;
+        ptr2 = ptr2->next;
     }
 
-    list3->____length = list1->____length + list2->____length;
+    list3->length = list1->length + list2->length;
 
     return list3;
 }
 
-int list_search(const List *list, const void *val, void *entry)
+int list_search(const List * ___restrict___ list, const void *val, void *entry)
 {
     List_node *ptr;
     List_node *guard;
@@ -562,42 +588,42 @@ int list_search(const List *list, const void *val, void *entry)
     if (val == NULL || entry == NULL)
         ERROR("val == NULL || entry == NULL\n", 1);
 
-    if (list->____length == 0)
+    if (list->length == 0)
         ERROR("List is empty\n", 1);
 
-    ptr = list->____head;
+    ptr = list->head;
 
     /* we add guardian */
-    guard = list_node_create(NULL, val, list->____size_of);
+    guard = list_node_create(NULL, val, list->size_of);
     if (guard == NULL)
         ERROR("list_node_create error\n", 1);
 
-    list->____tail->____next = guard;
+    list->tail->next = guard;
 
     /* skip all entries with key < than entry */
-    while (list->____cmp(ptr->____data, val) < 0)
-        ptr = ptr->____next;
+    while (list->cmp(ptr->data, val) < 0)
+        ptr = ptr->next;
 
     /* we find entry */
-    if (ptr != guard && list->____cmp(ptr->____data, val) == 0)
+    if (ptr != guard && list->cmp(ptr->data, val) == 0)
     {
-        __ASSIGN__(*(BYTE *)entry, *(BYTE *)ptr->____data, list->____size_of);
+        __ASSIGN__(*(BYTE *)entry, *(BYTE *)ptr->data, list->size_of);
 
         list_node_destroy(guard);
-        list->____tail->____next = NULL;
+        list->tail->next = NULL;
 
         return 0;
     }
     else
     {
         list_node_destroy(guard);
-        list->____tail->____next = NULL;
+        list->tail->next = NULL;
 
         return 1;
     }
 }
 
-int list_to_array(const List *list, void *array, size_t *size)
+int list_to_array(const List * ___restrict___ list, void * ___restrict___ array, size_t * ___restrict___ size)
 {
     List_node *ptr;
     BYTE *t;
@@ -615,28 +641,28 @@ int list_to_array(const List *list, void *array, size_t *size)
     if (size == NULL)
         ERROR("size == NULL\n", 1);
 
-    if (list->____length == 0)
+    if (list->length == 0)
         ERROR("list is empty\n", 1);
 
-    t = (BYTE *)malloc(list->____length * list->____size_of);
+    t = (BYTE *)malloc(list->length * list->size_of);
     if (t == NULL)
         ERROR("malloc error\n", 1);
 
-    ptr = list->____head;
+    ptr = list->head;
 
     offset = 0;
 
     while (ptr != NULL)
     {
-        __ASSIGN__(t[offset], *(BYTE *)ptr->____data, list->____size_of);
-        offset += list->____size_of;
+        __ASSIGN__(t[offset], *(BYTE *)ptr->data, list->size_of);
+        offset += list->size_of;
 
-        ptr = ptr->____next;
+        ptr = ptr->next;
     }
 
     *(void **)array = t;
 
-    *size = list->____length;
+    *size = list->length;
 
     return 0;
 }
@@ -648,7 +674,7 @@ ssize_t list_get_data_size(const List *list)
     if (list == NULL)
         ERROR("list == NULL\n", -1);
 
-    return (ssize_t)list->____size_of;
+    return (ssize_t)list->size_of;
 }
 
 ssize_t list_get_num_entries(const List *list)
@@ -658,7 +684,19 @@ ssize_t list_get_num_entries(const List *list)
     if (list == NULL)
         ERROR("list == NULL\n", (ssize_t)-1);
 
-    return (ssize_t)list->____length;
+    return (ssize_t)list->length;
+}
+
+int list_node_get_data(const List_node * ___restrict___ node, void * ___restrict___ data)
+{
+    TRACE();
+
+    if (node == NULL || data == NULL)
+        ERROR("node == NULL || data == NULL\n", 1);
+
+    __ASSIGN__(*(BYTE *)data, *(BYTE *)node->data, node->size_of);
+
+    return 0;
 }
 
 List_iterator *list_iterator_create(const List *list, iti_mode_t mode)
@@ -673,15 +711,15 @@ List_iterator *list_iterator_create(const List *list, iti_mode_t mode)
     if (mode != ITI_BEGIN)
         ERROR("Incorrect mode\n", NULL);
 
-    if (list->____head == NULL)
+    if (list->head == NULL)
         return NULL;
 
     iterator = (List_iterator *)malloc(sizeof(List_iterator));
     if (iterator == NULL)
         ERROR("malloc error\n", NULL);
 
-    iterator->____node = list->____head;
-    iterator->____size_of = list->____size_of;
+    iterator->node = list->head;
+    iterator->size_of = list->size_of;
 
     return iterator;
 }
@@ -696,28 +734,6 @@ void list_iterator_destroy(List_iterator *iterator)
     FREE(iterator);
 }
 
-int list_iterator_init(const List *list, List_iterator *iterator, iti_mode_t mode)
-{
-    TRACE();
-
-    if (list == NULL)
-        ERROR("list == NULL\n", 1);
-
-    if (iterator == NULL)
-        ERROR("iterator == NULL\n", 1);
-
-    if (mode != ITI_BEGIN)
-        ERROR("Incorrect mode\n", 1);
-
-    if (list->____head == NULL)
-        return 1;
-
-    iterator->____node = list->____head;
-    iterator->____size_of = list->____size_of;
-
-    return 0;
-}
-
 int list_iterator_next(List_iterator *iterator)
 {
     TRACE();
@@ -725,7 +741,7 @@ int list_iterator_next(List_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1);
 
-    iterator->____node = iterator->____node->____next;
+    iterator->node = iterator->node->next;
 
     return 0;
 }
@@ -737,12 +753,12 @@ int list_iterator_prev(List_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1);
 
-    iterator->____node = NULL;
+    iterator->node = NULL;
 
     return 0;
 }
 
-int list_iterator_get_data(const List_iterator *iterator, void *val)
+int list_iterator_get_data(const List_iterator * ___restrict___ iterator, void * ___restrict___ val)
 {
     TRACE();
 
@@ -752,12 +768,12 @@ int list_iterator_get_data(const List_iterator *iterator, void *val)
     if (val == NULL)
         ERROR("val == NULL\n", 1);
 
-    __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->____node->____data, iterator->____size_of);
+    __ASSIGN__(*(BYTE *)val, *(BYTE *)iterator->node->data, iterator->size_of);
 
     return 0;
 }
 
-int list_iterator_get_node(const List_iterator *iterator, void *node)
+int list_iterator_get_node(const List_iterator * ___restrict___ iterator, void * ___restrict___ node)
 {
     TRACE();
 
@@ -767,7 +783,7 @@ int list_iterator_get_node(const List_iterator *iterator, void *node)
     if (node == NULL)
         ERROR("val == NULL\n", 1);
 
-    *(void **)node = iterator->____node;
+    *(void **)node = iterator->node;
 
     return 0;
 }
@@ -779,12 +795,12 @@ bool list_iterator_end(const List_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", true);
 
-    return iterator->____node == NULL;
+    return iterator->node == NULL;
 }
 
 SLIST_WRAPPERS_CREATE(List, list)
 
-SList *slist_list_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry))
+SList *slist_list_create(size_t size_of, cmp_f cmp, destructor_f destroy)
 {
     SList *list;
 

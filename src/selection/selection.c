@@ -8,7 +8,7 @@
 #include <string.h>
 #include <search.h>
 
-ssize_t select_kth(const void *t, size_t len, size_t size_of, size_t k, int (*cmp)(const void *a, const void *b))
+ssize_t select_kth(const void *t, size_t len, size_t size_of, size_t k, cmp_f cmp)
 {
     size_t offset_left;
     size_t offset_right;

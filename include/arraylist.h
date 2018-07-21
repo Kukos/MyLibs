@@ -15,38 +15,12 @@
 #include <iterators.h>
 #include <stddef.h> /* size_t */
 #include <sys/types.h>
-#include <generic.h>
+#include <common.h>
 
-typedef struct Arraylist_node
-{
-    struct Arraylist_node *____next;
-    struct Arraylist_node *____prev;
-    size_t                ____size_of;
-    __extension__ BYTE    ____data[]; /* placeholder for data */
-
-}Arraylist_node;
-
-
-typedef struct Arraylist
-{
-    size_t              ____size_of;    /* size of element */
-    size_t              ____length;     /* length of list */
-
-    Arraylist_node      *____head;
-    Arraylist_node      *____tail;
-    void                (*____destroy)(void *data);
-
-}Arraylist;
-
-/*
-   ArrayList_iterator
-*/
-typedef struct Arraylist_iterator
-{
-    Arraylist_node  *____node;
-    size_t          ____size_of;
-
-}Arraylist_iterator;
+/* Forward declaration */
+typedef struct Arraylist_node Arraylist_node;
+typedef struct Arraylist Arraylist;
+typedef struct Arraylist_iterator Arraylist_iterator;
 
 IT_FUNC(Arraylist, arraylist)
 
@@ -78,7 +52,7 @@ IT_FUNC(Arraylist, arraylist)
     NULL if failure
     Pointer if success
 */
-UList *ulist_arraylist_create(size_t size_of, void (*destroy)(void *data));
+UList *ulist_arraylist_create(size_t size_of, destructor_f destroy);
 
 /*
     Create alist
@@ -91,7 +65,7 @@ UList *ulist_arraylist_create(size_t size_of, void (*destroy)(void *data));
     NULL if failure
     Pointer if success
 */
-Arraylist *arraylist_create(size_t size_of, void (*destroy)(void *data));
+Arraylist *arraylist_create(size_t size_of, destructor_f destroy);
 
 /*
     Destroy alist
@@ -126,7 +100,7 @@ void arraylist_destroy_with_entries(Arraylist *alist);
     0 iff success
     Non-zero value of failure
 */
-int arraylist_insert_first(Arraylist *alist, const void *data);
+int arraylist_insert_first(Arraylist * ___restrict___ alist, const void * ___restrict___ data);
 
 /*
     Insert Data at the end of the alist
@@ -139,7 +113,7 @@ int arraylist_insert_first(Arraylist *alist, const void *data);
     0 iff success
     Non-zero value of failure
 */
-int arraylist_insert_last(Arraylist *alist, const void *data);
+int arraylist_insert_last(Arraylist * ___restrict___ alist, const void * ___restrict___ data);
 
 /*
     Insert Data at @pos
@@ -153,7 +127,7 @@ int arraylist_insert_last(Arraylist *alist, const void *data);
     0 iff success
     Non-zero value of failure
 */
-int arraylist_insert_pos(Arraylist *alist, size_t pos, const void *data);
+int arraylist_insert_pos(Arraylist * ___restrict___ alist, size_t pos, const void * ___restrict___ data);
 
 /*
     Delete first data od alist
@@ -243,7 +217,7 @@ int arraylist_delete_pos_with_entry(Arraylist *alist, size_t pos);
     0 iff success
     Non-zero value of failure
 */
-int arraylist_get_pos(const Arraylist *alist, size_t pos, void *data);
+int arraylist_get_pos(const Arraylist * ___restrict___ alist, size_t pos, void * ___restrict___ data);
 
 /*
     Allocate new alist and merge alist1 & alist2 to the new alist
@@ -270,7 +244,7 @@ Arraylist *arraylist_merge(const Arraylist * ___restrict___ alist1, const Arrayl
     0 if success
 	Non-zero value if failure
 */
-int arraylist_to_array(const Arraylist *alist, void *array, size_t *size);
+int arraylist_to_array(const Arraylist * ___restrict___ alist, void * ___restrict___ array, size_t * ___restrict___ size);
 
 /*
     Get size of
@@ -307,6 +281,6 @@ ssize_t arraylist_get_num_entries(const Arraylist *alist);
     Non-zero iff failure
     0 iff success
 */
-int arraylist_node_get_data(const Arraylist_node *node, void *data);
+int arraylist_node_get_data(const Arraylist_node *  ___restrict___ node, void * ___restrict___ data);
 
 #endif

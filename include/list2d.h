@@ -40,37 +40,11 @@
 #include <stdbool.h>
 #include <stddef.h> /* size_t */
 #include <generic.h>
+#include <common.h>
 
-typedef struct List2D_node
-{
-    struct List2D_node      *____prev;
-    struct List2D_node      *____next;
-    __extension__ BYTE      ____data[]; /* placeholder for data */
-
-}List2D_node;
-
-
-typedef struct List2D
-{
-    size_t          ____size_of;
-    size_t          ____length;
-
-    List2D_node     *____head;
-
-    int (*____cmp)(const void *a, const void *b);
-    int (*____diff)(const void *a, const void *b);
-    void (*____destroy)(void *entry);
-
-}List2D;
-
-typedef struct List2D_iterator
-{
-    List2D_node     *____node;
-    List2D_node     *____end_node;
-    size_t          ____size_of;
-    bool            ____first_time;
-
-}List2D_iterator;
+typedef struct List2D_node List2D_node;
+typedef struct List2D List2D;
+typedef struct List2D_iterator List2D_iterator;
 
 IT_FUNC(List2D, list2d)
 
@@ -102,8 +76,8 @@ IT_FUNC(List2D, list2d)
     NULL iff failure
     Pointer iff success
 */
-SList *slist_list2d_create(size_t size_of, int (*cmp)(const void *a, const void *b),
-    int (*diff)(const void *a, const void *b), void (*destroy)(void *entry));
+SList *slist_list2d_create(size_t size_of, cmp_f cmp,
+    diff_f diff, destructor_f destroy);
 
 /*
     Create list
@@ -119,8 +93,8 @@ SList *slist_list2d_create(size_t size_of, int (*cmp)(const void *a, const void 
     NULL iff failure
     Pointer iff success
 */
-List2D *list2d_create(size_t size_of, int (*cmp)(const void *a, const void *b),
-    int (*diff)(const void *a, const void *b), void (*destroy)(void *entry));
+List2D *list2d_create(size_t size_of, cmp_f cmp,
+    diff_f diff, destructor_f destroy);
 
 /*
     Destroy list
@@ -155,7 +129,7 @@ void list2d_destroy_with_entries(List2D *list);
     0 iff success
 	Non-zero value iff failure
 */
-int list2d_insert(List2D *list, const void *entry);
+int list2d_insert(List2D * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
     Delete the first entry which cmp(list->entry,entry) == 0
@@ -168,7 +142,7 @@ int list2d_insert(List2D *list, const void *entry);
 	0 iff success
 	Non-zero value iff failure ( i.e entry doesn't exist in list )
 */
-int list2d_delete(List2D *list, const void *entry);
+int list2d_delete(List2D * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
     Delete the first entry which cmp(list->entry,entry) == 0
@@ -182,7 +156,7 @@ int list2d_delete(List2D *list, const void *entry);
 	0 iff success
 	Non-zero value iff failure ( i.e entry doesn't exist in list )
 */
-int list2d_delete_with_entry(List2D *list, const void *entry);
+int list2d_delete_with_entry(List2D * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
     Delete all entries which cmp(list->entry,entry) == 0
@@ -195,7 +169,7 @@ int list2d_delete_with_entry(List2D *list, const void *entry);
     -1 iff failure ( i.e entry doesn't exist in list )
     Number of delete entries iff success
 */
-int list2d_delete_all(List2D *list, const void *entry);
+int list2d_delete_all(List2D * ___restrict___ list, const void * ___restrict___ entry);
 
 
 /*
@@ -210,7 +184,7 @@ int list2d_delete_all(List2D *list, const void *entry);
     -1 iff failure ( i.e entry doesn't exist in list )
     Number of delete entries iff success
 */
-int list2d_delete_all_with_entry(List2D *list, const void *entry);
+int list2d_delete_all_with_entry(List2D * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
     Allocate new list and merge list1 & list2 to the new list
@@ -252,7 +226,7 @@ List2D *list2d_merge(const List2D * ___restrict___ list1, const List2D * ___rest
     0 iff success
 	Non-zero value iff failure
 */
-int list2d_search(const List2D *list, const void *val, void *entry);
+int list2d_search(const List2D * ___restrict___ list, const void *val, void *entry);
 
 /*
     Create array from list
@@ -266,7 +240,7 @@ int list2d_search(const List2D *list, const void *val, void *entry);
     0 iff success
 	Non-zero value iff failure
 */
-int list2d_to_array(const List2D *list, void *array, size_t *size);
+int list2d_to_array(const List2D * ___restrict___ list, void * ___restrict___ array, size_t * ___restrict___ size);
 
 /*
     Get size of data List
@@ -291,5 +265,18 @@ ssize_t list2d_get_data_size(const List2D *list);
     sizeof iff success
 */
 ssize_t list2d_get_num_entries(const List2D *list);
+
+/*
+    Get Node data
+
+    PARAMS
+    @IN node - pointer to list2d_node
+    @OUT data - node data
+
+    RETURN
+    Non-zero iff failure
+    0 iff success
+*/
+int list2d_node_get_data(const List2D_node * ___restrict___ node, void * ___restrict___ data);
 
 #endif

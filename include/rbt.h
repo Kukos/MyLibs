@@ -20,33 +20,11 @@
 #include <sys/types.h>
 #include <tree.h>
 #include <generic.h>
+#include <common.h>
 
-typedef char rbt_color_t;
-
-typedef struct Rbt_node
-{
-    struct Rbt_node     *____left_son;
-    struct Rbt_node     *____right_son;
-    struct Rbt_node     *____parent;
-    rbt_color_t         ____color;
-    __extension__ BYTE  ____data[]; /* placeholder for data */
-}Rbt_node;
-
-typedef struct Rbt_iterator
-{
-    size_t      ____size_of;
-    Rbt_node    *____node;
-}Rbt_iterator;
-
-typedef struct Rbt
-{
-    Rbt_node    *____root;
-    size_t      ____nodes;
-    size_t      ____size_of;
-
-    int (*____cmp)(const void *a, const void *b);
-    void (*____destroy)(void *entry);
-}Rbt;
+typedef struct Rbt_node Rbt_node;
+typedef struct Rbt_iterator Rbt_iterator;
+typedef struct Rbt Rbt;
 
 IT_FUNC(Rbt, rbt)
 
@@ -65,7 +43,7 @@ IT_FUNC(Rbt, rbt)
     NULL iff failure
     Pointer to RBT iff success
 */
-Tree *tree_rbt_create(size_t size_of, int (*cmp)(const void* a, const void *b), void (*destroy)(void *entry));
+Tree *tree_rbt_create(size_t size_of, cmp_f cmp, destructor_f destroy);
 
 /*
     Create RBT
@@ -82,7 +60,7 @@ Tree *tree_rbt_create(size_t size_of, int (*cmp)(const void* a, const void *b), 
     NULL iff failure
     Pointer to RBT iff success
 */
-Rbt* rbt_create(size_t size_of,int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+Rbt* rbt_create(size_t size_of,cmp_f cmp, destructor_f destroy);
 
 #define RBT_CREATE(PTR, TYPE, CMP, DESTROY) \
     do { \
@@ -122,7 +100,7 @@ void rbt_destroy_with_entries(Rbt *tree);
     0 iff success
     Non-zero value iff failure
 */
-int rbt_insert(Rbt *tree, const void *data);
+int rbt_insert(Rbt * ___restrict___ tree, const void * ___restrict___ data);
 
 /*
     Getter of min value ( using cmp ) in tree
@@ -135,7 +113,7 @@ int rbt_insert(Rbt *tree, const void *data);
     0 iff success
     Non-zero value iff failure
 */
-int rbt_min(const Rbt *tree, void *data);
+int rbt_min(const Rbt * ___restrict___ tree, void * ___restrict___ data);
 
 /*
     Getter of max value ( using cmp ) in tree
@@ -148,7 +126,7 @@ int rbt_min(const Rbt *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int rbt_max(const Rbt *tree, void *data);
+int rbt_max(const Rbt * ___restrict___ tree, void * ___restrict___ data);
 
 /*
     Search for data with key equals key @data_key ( using cmp )
@@ -162,7 +140,7 @@ int rbt_max(const Rbt *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
- int rbt_search(const Rbt *tree, const void *data_key, void *data_out);
+ int rbt_search(const Rbt * ___restrict___ tree, const void *data_key, void *data_out);
 
  /*
  	Check existing of key in tree
@@ -175,7 +153,7 @@ int rbt_max(const Rbt *tree, void *data);
  	false iff key doesn't exist in tree
  	true iff key exists in tree
  */
- bool rbt_key_exist(const Rbt *tree, const void *data_key);
+ bool rbt_key_exist(const Rbt * ___restrict___ tree, const void * ___restrict___ data_key);
 
 /*
     Delete data with key equals @data_key ( using cmp )
@@ -188,7 +166,7 @@ int rbt_max(const Rbt *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int rbt_delete(Rbt *tree, const void *data_key);
+int rbt_delete(Rbt * ___restrict___ tree, const void * ___restrict___ data_key);
 
 /*
     Delete data with key equals @data_key ( using cmp )
@@ -202,7 +180,7 @@ int rbt_delete(Rbt *tree, const void *data_key);
     0 iff success
     Non-zero value iff failure
 */
-int rbt_delete_with_entry(Rbt *tree, const void *data_key);
+int rbt_delete_with_entry(Rbt * ___restrict___ tree, const void * ___restrict___ data_key);
 
 /*
     Convert rbt to sorted array
@@ -216,7 +194,7 @@ int rbt_delete_with_entry(Rbt *tree, const void *data_key);
     0 iff success
     Non-zero value iff failure
 */
-int rbt_to_array(const Rbt *tree, void *array, size_t *size);
+int rbt_to_array(const Rbt * ___restrict___ tree, void * ___restrict___ array, size_t * ___restrict___ size);
 
 /*
     Get Num entries of RBT
@@ -253,5 +231,18 @@ ssize_t rbt_get_data_size(const Rbt *tree);
     Hight iff success
 */
 int rbt_get_hight(const Rbt *tree);
+
+/*
+    Get Node data
+
+    PARAMS
+    @IN node - pointer to Rbt_node
+    @OUT data - node data
+
+    RETURN
+    Non-zero iff failure
+    0 iff success
+*/
+int rbt_node_get_data(const Rbt_node * ___restrict___ node, void * ___restrict___ data);
 
 #endif

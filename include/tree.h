@@ -37,8 +37,8 @@ typedef struct Tree_iterator
     void    (*____destroy)(void *iterator);
     int     (*____next)(void *iterator);
     int     (*____prev)(void *iterator);
-    int     (*____get_data)(const void *iterator, void *data);
-    int     (*____get_node)(const void *iterator, void *node);
+    int     (*____get_data)(const void * ___restrict___ iterator, void * ___restrict___ data);
+    int     (*____get_node)(const void * ___restrict___ iterator, void * ___restrict___ node);
     bool    (*____end)(const void *iterator);
 } Tree_iterator;
 
@@ -49,27 +49,26 @@ typedef struct Tree
     /* private functions */
     void        (*____destroy)(void *tree);
     void        (*____destroy_with_entries)(void *tree);
-    int         (*____insert)(void *tree, const void *data);
-    int         (*____delete)(void *tree, const void *data);
-    int         (*____delete_with_entry)(void *tree, const void *data);
-    int         (*____min)(const void *tree, void *data);
-    int         (*____max)(const void *tree, void *data);
-    int         (*____search)(const void *tree, const void *data_in, void *data_out);
-    bool        (*____key_exist)(const void *tree, const void *data);
+    int         (*____insert)(void * ___restrict___ tree, const void * ___restrict___ data);
+    int         (*____delete)(void * ___restrict___ tree, const void * ___restrict___ data);
+    int         (*____delete_with_entry)(void * ___restrict___ tree, const void * ___restrict___ data);
+    int         (*____min)(const void * ___restrict___ tree, void * ___restrict___ data);
+    int         (*____max)(const void * ___restrict___ tree, void * ___restrict___ data);
+    int         (*____search)(const void * ___restrict___ tree, const void *data_in, void *data_out);
+    bool        (*____key_exist)(const void * ___restrict___ tree, const void * ___restrict___ data);
     int         (*____balance)(void *tree);
-    int         (*____to_array)(const void *tree, void *array, size_t *size);
+    int         (*____to_array)(const void * ___restrict___ tree, void * ___restrict___ array, size_t * ___restrict___ size);
     ssize_t     (*____get_num_entries)(const void *tree);
     ssize_t     (*____get_data_size)(const void *tree);
     int         (*____get_hight)(const void *tree);
 
     /* to create iterator */
     void*       (*____it_create)(const void *tree, iti_mode_t mode);
-    int         (*____it_init)(const void *tree, void *it, iti_mode_t mode);
     void        (*____it_destroy)(void *iterator);
     int         (*____it_next)(void *iterator);
     int         (*____it_prev)(void *iterator);
-    int         (*____it_get_data)(const void *iterator, void *data);
-    int         (*____it_get_node)(const void *iterator, void *node);
+    int         (*____it_get_data)(const void * ___restrict___ iterator, void * ___restrict___ data);
+    int         (*____it_get_node)(const void * ___restrict___ iterator, void * ___restrict___ node);
     bool        (*____it_end)(const void *iterator);
 }Tree;
 
@@ -87,34 +86,21 @@ typedef struct Tree
 */
 ___inline___ Tree_iterator *tree_iterator_create(const Tree *tree, iti_mode_t mode);
 
-/*
-    Init Tree iterator
-
-    PARAMS
-    @IN tree - pointer to Tree
-    @IN it - pointer to iterator
-    @IN mode - Iterator mode
-
-    RETURN
-    0 iff success
-    Non-zero value iff failure
-*/
-___inline___ int tree_iterator_init(const Tree *tree, Tree_iterator *it, iti_mode_t mode);
 
 /* Macro to create wrappers to your struct to provide assignment to framework functions */
 #define TREE_WRAPPERS_CREATE(type, prefix) \
     TREE_ITERATOR_WRAPPERS_CREATE(concat(type, _iterator), concat(prefix, _iterator)) \
     static ___unused___ void ____destroy(void *tree); \
     static ___unused___ void ____destroy_with_entries(void *tree); \
-    static ___unused___ int ____insert(void *tree, const void *data); \
-    static ___unused___ int ____delete(void *tree, const void *data); \
-    static ___unused___ int ____delete_with_entry(void *tree, const void *data); \
-    static ___unused___ int ____min(const void *tree, void *data); \
-    static ___unused___ int ____max(const void *tree, void *data); \
-    static ___unused___ int ____search(const void *tree, const void *data_in, void *data_out); \
-    static ___unused___ bool ____key_exist(const void *tree, const void *data); \
+    static ___unused___ int ____insert(void * ___restrict___ tree, const void * ___restrict___ data); \
+    static ___unused___ int ____delete(void * ___restrict___ tree, const void * ___restrict___ data); \
+    static ___unused___ int ____delete_with_entry(void * ___restrict___ tree, const void * ___restrict___ data); \
+    static ___unused___ int ____min(const void * ___restrict___ tree, void * ___restrict___ data); \
+    static ___unused___ int ____max(const void * ___restrict___ tree, void * ___restrict___ data); \
+    static ___unused___ int ____search(const void * ___restrict___ tree, const void *data_in, void *data_out); \
+    static ___unused___ bool ____key_exist(const void * ___restrict___ tree, const void * ___restrict___ data); \
     static ___unused___ int ____balance(void *tree); \
-    static ___unused___ int ____to_array(const void *tree, void *array, size_t *size); \
+    static ___unused___ int ____to_array(const void * ___restrict___ tree, void * ___restrict___ array, size_t * ___restrict___ size); \
     static ___unused___ ssize_t ____get_num_entries(const void *tree); \
     static ___unused___ ssize_t ____get_data_size(const void *tree); \
     static ___unused___ int ____get_hight(const void *tree); \
@@ -128,37 +114,37 @@ ___inline___ int tree_iterator_init(const Tree *tree, Tree_iterator *it, iti_mod
         concat(prefix, _destroy_with_entries)((type *)tree); \
     } \
     \
-    static ___unused___ int ____insert(void *tree, const void *data) \
+    static ___unused___ int ____insert(void * ___restrict___ tree, const void * ___restrict___ data) \
     { \
         return concat(prefix, _insert)((type *)tree, data); \
     } \
     \
-    static ___unused___ int ____delete(void *tree, const void *data) \
+    static ___unused___ int ____delete(void * ___restrict___ tree, const void * ___restrict___ data) \
     { \
         return concat(prefix, _delete)((type *)tree, data); \
     } \
     \
-    static ___unused___ int ____delete_with_entry(void *tree, const void *data) \
+    static ___unused___ int ____delete_with_entry(void * ___restrict___ tree, const void * ___restrict___ data) \
     { \
         return concat(prefix, _delete_with_entry)((type *)tree, data); \
     } \
     \
-    static ___unused___ int ____min(const void *tree, void *data) \
+    static ___unused___ int ____min(const void * ___restrict___ tree, void * ___restrict___ data) \
     { \
         return concat(prefix, _min)((const type *)tree, data); \
     } \
     \
-    static ___unused___ int ____max(const void *tree, void *data) \
+    static ___unused___ int ____max(const void * ___restrict___ tree, void * ___restrict___ data) \
     { \
         return concat(prefix, _max)((const type *)tree, data); \
     } \
     \
-    static ___unused___ int ____search(const void *tree, const void *data_in, void* data_out) \
+    static ___unused___ int ____search(const void * ___restrict___ tree, const void *data_in, void* data_out) \
     { \
         return concat(prefix, _search)((const type *)tree, data_in, data_out); \
     } \
     \
-    static ___unused___ bool ____key_exist(const void *tree, const void *data) \
+    static ___unused___ bool ____key_exist(const void * ___restrict___ tree, const void * ___restrict___ data) \
     { \
         return concat(prefix, _key_exist)((const type *)tree, data); \
     } \
@@ -168,7 +154,7 @@ ___inline___ int tree_iterator_init(const Tree *tree, Tree_iterator *it, iti_mod
         return concat(prefix, _balance)((type *)tree); \
     } \
     \
-    static ___unused___ int ____to_array(const void *tree, void *array, size_t *size) \
+    static ___unused___ int ____to_array(const void * ___restrict___ tree, void * ___restrict___ array, size_t * ___restrict___ size) \
     { \
         return concat(prefix, _to_array)((const type *)tree, array, size); \
     } \
@@ -204,7 +190,6 @@ ___inline___ int tree_iterator_init(const Tree *tree, Tree_iterator *it, iti_mod
         (tree)->____get_num_entries       = ____get_num_entries; \
         (tree)->____get_hight             = ____get_hight; \
         (tree)->____it_create             = ____it_create; \
-        (tree)->____it_init               = ____it_init; \
         (tree)->____it_destroy            = ____it_destroy; \
         (tree)->____it_next               = ____it_next; \
         (tree)->____it_prev               = ____it_prev; \
@@ -257,7 +242,7 @@ ___inline___ void tree_destroy_with_entries(Tree *tree);
     0 iff success
     Non-zero value iff failed
 */
-___inline___ int tree_insert(Tree *tree, const void *data);
+___inline___ int tree_insert(Tree * ___restrict___ tree, const void * ___restrict___ data);
 
 /*
     Delete data from Tree
@@ -270,7 +255,7 @@ ___inline___ int tree_insert(Tree *tree, const void *data);
     0 iff success
     Non-zero value iff failed
 */
-___inline___ int tree_delete(Tree *tree, const void *data);
+___inline___ int tree_delete(Tree * ___restrict___ tree, const void * ___restrict___ data);
 
 
 /*
@@ -284,7 +269,7 @@ ___inline___ int tree_delete(Tree *tree, const void *data);
     0 iff success
     Non-zero value iff failed
 */
-___inline___ int tree_delete_with_entry(Tree *tree, const void *data);
+___inline___ int tree_delete_with_entry(Tree * ___restrict___ tree, const void * ___restrict___ data);
 
 /*
     Get data with min key
@@ -297,7 +282,7 @@ ___inline___ int tree_delete_with_entry(Tree *tree, const void *data);
     0 iff success
     Non-zero value iff failed
 */
-___inline___ int tree_min(const Tree *tree, void *data);
+___inline___ int tree_min(const Tree * ___restrict___ tree, void * ___restrict___ data);
 
 /*
     Get data with max key
@@ -310,7 +295,7 @@ ___inline___ int tree_min(const Tree *tree, void *data);
     0 iff success
     Non-zero value iff failed
 */
-___inline___ int tree_max(const Tree *tree, void *data);
+___inline___ int tree_max(const Tree * ___restrict___ tree, void * ___restrict___ data);
 
 /*
     Get data with key equal to fake @data
@@ -324,7 +309,7 @@ ___inline___ int tree_max(const Tree *tree, void *data);
     0 iff success
     Non-zero value iff failed
 */
-___inline___ int tree_search(const Tree *tree, const void *data_in, void *data_out);
+___inline___ int tree_search(const Tree * ___restrict___ tree, const void *data_in, void *data_out);
 
 /*
     Check existing of data with key in @data
@@ -337,7 +322,7 @@ ___inline___ int tree_search(const Tree *tree, const void *data_in, void *data_o
     true - iff data exist
     false iff data not exists
 */
-___inline___ bool tree_key_exist(const Tree *tree, const void *data);
+___inline___ bool tree_key_exist(const Tree * ___restrict___ tree, const void * ___restrict___ data);
 
 /*
     Balance Tree ( iff not balanced )
@@ -363,7 +348,7 @@ ___inline___ int tree_balance(Tree *tree);
     0 iff success
     Non-zero value iff failed
 */
-___inline___ int tree_to_array(const Tree *tree, void *array, size_t *size);
+___inline___ int tree_to_array(const Tree * ___restrict___ tree, void * ___restrict___ array, size_t * ___restrict___ size);
 
 /*
     Get Num of entries in Tree
@@ -429,7 +414,7 @@ ___inline___ void tree_destroy_with_entries(Tree *tree)
 }
 
 
-___inline___ int tree_insert(Tree *tree, const void *data)
+___inline___ int tree_insert(Tree * ___restrict___ tree, const void * ___restrict___ data)
 {
     if (tree == NULL || data == NULL)
         return 1;
@@ -437,7 +422,7 @@ ___inline___ int tree_insert(Tree *tree, const void *data)
     return tree->____insert(tree_get_tree(tree), data);
 }
 
-___inline___ int tree_delete(Tree *tree, const void *data)
+___inline___ int tree_delete(Tree * ___restrict___ tree, const void * ___restrict___ data)
 {
     if (tree == NULL || data == NULL)
         return 1;
@@ -445,7 +430,7 @@ ___inline___ int tree_delete(Tree *tree, const void *data)
     return tree->____delete(tree_get_tree(tree), data);
 }
 
-___inline___ int tree_delete_with_entry(Tree *tree, const void *data)
+___inline___ int tree_delete_with_entry(Tree * ___restrict___ tree, const void * ___restrict___ data)
 {
     if (tree == NULL || data == NULL)
         return 1;
@@ -453,7 +438,7 @@ ___inline___ int tree_delete_with_entry(Tree *tree, const void *data)
     return tree->____delete_with_entry(tree_get_tree(tree), data);
 }
 
-___inline___ int tree_min(const Tree *tree, void *data)
+___inline___ int tree_min(const Tree * ___restrict___ tree, void * ___restrict___ data)
 {
     if (tree == NULL || data == NULL)
         return 1;
@@ -461,7 +446,7 @@ ___inline___ int tree_min(const Tree *tree, void *data)
     return tree->____min(tree_get_tree(tree), data);
 }
 
-___inline___ int tree_max(const Tree *tree, void *data)
+___inline___ int tree_max(const Tree * ___restrict___ tree, void * ___restrict___ data)
 {
     if (tree == NULL || data == NULL)
         return 1;
@@ -469,7 +454,7 @@ ___inline___ int tree_max(const Tree *tree, void *data)
     return tree->____max(tree_get_tree(tree), data);
 }
 
-___inline___ int tree_search(const Tree *tree, const void *data_in, void *data_out)
+___inline___ int tree_search(const Tree * ___restrict___ tree, const void *data_in, void *data_out)
 {
     if (tree == NULL || data_in == NULL || data_out == NULL)
         return 1;
@@ -477,7 +462,7 @@ ___inline___ int tree_search(const Tree *tree, const void *data_in, void *data_o
     return tree->____search(tree_get_tree(tree), data_in, data_out);
 }
 
-___inline___ bool tree_key_exist(const Tree *tree, const void *data)
+___inline___ bool tree_key_exist(const Tree * ___restrict___ tree, const void * ___restrict___ data)
 {
     if (tree == NULL || data == NULL)
         return false;
@@ -493,7 +478,7 @@ ___inline___ int tree_balance(Tree *tree)
     return tree->____balance(tree_get_tree(tree));
 }
 
-___inline___ int tree_to_array(const Tree *tree, void *array, size_t *size)
+___inline___ int tree_to_array(const Tree * ___restrict___ tree, void * ___restrict___ array, size_t * ___restrict___ size)
 {
     if (tree == NULL || array == NULL || size == NULL)
         return 1;
@@ -559,53 +544,20 @@ ___inline___ Tree_iterator *tree_iterator_create(const Tree *tree, iti_mode_t mo
     return it;
 }
 
-___inline___ int tree_iterator_init(const Tree *tree, Tree_iterator *it, iti_mode_t mode)
-{
-    TRACE();
-
-    if (tree == NULL)
-        ERROR("tree == NULL\n", 1);
-
-    if (it == NULL)
-        ERROR("iterator == NULL\n", 1);
-
-    if (mode != ITI_BEGIN && mode != ITI_END && mode != ITI_ROOT)
-        ERROR("Incorrect mode\n", 1);
-
-    it->____iterator = tree->____it_create(tree, mode);
-    if (it->____iterator == NULL)
-        return 1;
-
-    /* FILL HOOKS */
-    it->____destroy    = tree->____it_destroy;
-    it->____next       = tree->____it_next;
-    it->____prev       = tree->____it_prev;
-    it->____get_data   = tree->____it_get_data;
-    it->____get_node   = tree->____it_get_node;
-    it->____end        = tree->____it_end;
-
-    return 0;
-}
-
 IT_FUNC_CONTAINER(Tree, tree)
 
 /* use this macro to create wrappers for iterator */
 #define TREE_ITERATOR_WRAPPERS_CREATE(type, prefix) \
     static ___unused___ void* ____it_create(const void *tree, iti_mode_t mode); \
-    static ___unused___ int ____it_init(const void *tree, void *it, iti_mode_t mode); \
     static ___unused___ void ____it_destroy(void *it); \
     static ___unused___ int ____it_next(void *it); \
     static ___unused___ int ____it_prev(void *it); \
-    static ___unused___ int ____it_get_data(const void *it, void *data); \
-    static ___unused___ int ____it_get_node(const void *it, void *node); \
+    static ___unused___ int ____it_get_data(const void * ___restrict___ it, void * ___restrict___ data); \
+    static ___unused___ int ____it_get_node(const void * ___restrict___ it, void * ___restrict___ node); \
     static ___unused___ bool ____it_end(const void *it); \
     static ___unused___ void* ____it_create(const void *tree, iti_mode_t mode) \
     { \
         return concat(prefix, _create)(tree_get_tree(tree), mode); \
-    } \
-    static ___unused___ int ____it_init(const void *tree, void *it, iti_mode_t mode) \
-    { \
-        return concat(prefix, _init)(tree_get_tree(tree), (type *)it, mode); \
     } \
     static ___unused___ void ____it_destroy(void *it) \
     { \
@@ -622,12 +574,12 @@ IT_FUNC_CONTAINER(Tree, tree)
         return concat(prefix, _prev)((type *)it); \
     } \
     \
-    static ___unused___ int ____it_get_data(const void *it, void *data) \
+    static ___unused___ int ____it_get_data(const void * ___restrict___ it, void *  ___restrict___ data) \
     { \
         return concat(prefix, _get_data)((const type *)it, data); \
     } \
     \
-    static ___unused___ int ____it_get_node(const void *it, void *node) \
+    static ___unused___ int ____it_get_node(const void * ___restrict___ it, void * ___restrict___ node) \
     { \
         return concat(prefix, _get_node)((const type *)it, node); \
     } \

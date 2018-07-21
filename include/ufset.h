@@ -16,31 +16,12 @@
     LICENCE: GPL3
 */
 
-#include <darray.h>
 #include <generic.h>
+#include <common.h>
 
-typedef struct UFSMaster
-{
-    Darray  *____set;
-    int     ____hight;
-}UFSMaster;
-
-typedef struct UFSentry
-{
-    struct UFset        *____ufs_ptr;
-    void                (*____destroy)(void *entry);
-    __extension__ BYTE  ____data[]; /* placeholder for data */
-
-}UFSentry;
-
-typedef struct UFset
-{
-    struct UFset    *____parent;
-    UFSentry        *____entry;
-    UFSMaster       *____master;
-
-    int             ____rank;
-}UFset;
+typedef struct UFSMaster UFSMaster;
+typedef struct UFSentry UFSentry;
+typedef struct UFset UFset;
 
 /*
     Create UFS Master
@@ -88,7 +69,7 @@ void ufs_master_destroy_with_entries(UFSMaster *master);
 	%NULL iff failure
 	%Pointer to UFS Entry iff success
 */
-UFSentry *ufs_entry_create(const void *data, size_t size_of, void (*destroy)(void *entry));
+UFSentry *ufs_entry_create(const void *data, size_t size_of, destructor_f destroy);
 
 /*
 	Deallocate mem
@@ -111,6 +92,32 @@ void ufs_entry_destroy(UFSentry *entry);
 	This is a void function
 */
 void ufs_entry_destroy_with_data(UFSentry *entry);
+
+/*
+    Get ufset where this entry is stored
+
+    PARAMS
+    @IN entry - ufset entry
+
+    RETURN
+    NULL iff failure
+    Pointer to ufset iff success
+*/
+UFset *ufset_entry_get_ufset(const UFSentry *entry);
+
+/*
+    Get data from ufset entry
+
+    PARAMS
+    @IN entry - ufset entry
+    @OUT data - data from entry
+
+    RETURN
+    0 iff success
+    Non-zero value iff failure
+*/
+int ufset_entry_get_data(const UFSentry * ___restrict___ entry, void * ___restrict___ data);
+
 /*
     Create new UF Set with UFS Entry
 
@@ -196,6 +203,44 @@ int ufset_get_hight(UFset *set);
 ssize_t ufset_get_num_entries(UFset *set);
 
 /*
+    Get master of this set
+
+    PARAMS
+    @IN set - pointer to set
+
+    RETURN
+    NULL iff failure
+    Pointer to master iff success
+*/
+UFSMaster *ufset_get_master(const UFset *set);
+
+/*
+    Get entry from this ufset
+
+    PARAMS
+    @IN set - pointer to set
+
+    RETURN
+    NULL iff failure
+    Pointer to entry iff success
+*/
+UFSentry *ufset_get_entry(const UFset *set);
+
+/*
+    Find root of this set and return all entries stored in whole set
+    NOTE: You must free array by yourself
+
+    PARAMS
+    @IN set - pointer to set
+    @OUT size - number of entries in array
+
+    RETURN
+    Pointer to Array of UFSentry * iff success
+    NULL iff failure
+*/
+UFSentry **ufset_get_entries(UFset *set, size_t *size);
+
+/*
     Get number of entries in UFS
 
     PARAMS
@@ -218,5 +263,19 @@ ssize_t ufs_master_get_num_entries(const UFSMaster *master);
     Hight iff success
 */
 int ufs_master_get_hight(const UFSMaster *master);
+
+/*
+    Get this master sets
+    Only ptr is return, so do not free it by youtself
+
+    PARAMS
+    @IN master- pointer to master
+    @OUT size - n of sets
+
+    RETURN
+    NULL iff failure
+    Pointer to array of sets iff success
+*/
+UFset **ufs_master_get_sets(const UFSMaster *master, size_t *size);
 
 #endif

@@ -6,9 +6,9 @@
 #include <time.h>
 
 #define DIFF(type) \
-    static ___unused___ int concat(diff_, type)(const void *a, const void *b) \
+    static ___unused___ long long concat(diff_, type)(const void *a, const void *b) \
     { \
-       return (int)ABS((*(type *)b - *(type *)a)); \
+       return (long long)ABS((*(type *)b - *(type *)a)); \
     }
 
 typedef struct MyStruct
@@ -39,12 +39,12 @@ int cmp_my_struct(const void *a, const void *b)
     return 0;
 }
 
-int diff_my_struct(const void *a, const void *b)
+long long diff_my_struct(const void *a, const void *b)
 {
     MyStruct *s1 = *(MyStruct **)a;
     MyStruct *s2 = *(MyStruct **)b;
 
-    return ABS(s1->a - s2->a);
+    return (long long)ABS(s1->a - s2->a);
 }
 
 CMP(char)

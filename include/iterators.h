@@ -43,7 +43,7 @@
     Struct is name of your struct pass to macros as "PREFIX"
 
     1)
-        Init iterator
+        Create iterator
 
         PARAMS
         @IN struct - pointer to struct
@@ -55,22 +55,7 @@
 
         Struct *Struct_iterator_create(Struct *struct, iti_mode_t mode);
 
-
     2)
-        Init iterator
-
-        PARAMS
-        @IN struct - pointer to struct
-        @IN iterator - pointer to iterator
-    	@IN mode - iterator init mode
-
-        RETURN:
-        %0 iff success
-        %Non-zero value iff failure
-
-        int Struct_iterator_init(Struct *struct, Struct_iterator *iterator, iti_mode_t mode);
-
-    3)
 
         Deallocate iterator memory
 
@@ -82,7 +67,7 @@
 
         void Struct_iterator_destroy(Struct_iterator *iterator);
 
-    4)
+    3)
 
         Go to the next value
 
@@ -95,7 +80,7 @@
 
         int Struct_iterator_next(Struct_iterator *iterator);
 
-    5)
+    4)
 
         Go to the prev value
 
@@ -108,7 +93,7 @@
 
         int Struct_iterator_prev(Struct_iterator *iterator);
 
-    6)
+    5)
 
         Check the end of iterator
 
@@ -121,7 +106,7 @@
 
         bool Struct_iterator_end(Struct_iterator *iterator);
 
-    7)
+    6)
 
         Get data from iterator (Pass addr of data as val)
 
@@ -135,7 +120,7 @@
 
         int Struct_iterator_get_data(Struct_iterator *iterator, void *val);
 
-    8)
+    7)
 
         Get node from iterator (Pass addr of node as node)
 
@@ -200,14 +185,15 @@
 
 #define IT_STRUCT_NAME(PREFIX) concat(PREFIX, _iterator)
 
-typedef char iti_mode_t;
-#define ITI_BEGIN   0
-#define ITI_END     1
-#define ITI_ROOT    2
+typedef enum iti_mode
+{
+    ITI_BEGIN = 0,
+    ITI_END,
+    ITI_ROOT
+} iti_mode_t;
 
 #define IT_FUNC(STRUCT, PREFIX) \
     IT_STRUCT_NAME(STRUCT) *concat(PREFIX, _iterator_create)(const STRUCT *, iti_mode_t); \
-    int concat(PREFIX, _iterator_init)(const STRUCT *, IT_STRUCT_NAME(STRUCT) *, iti_mode_t); \
     void concat(PREFIX, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *); \
     int concat(PREFIX, _iterator_next)(IT_STRUCT_NAME(STRUCT) *); \
     int concat(PREFIX, _iterator_prev)(IT_STRUCT_NAME(STRUCT) *); \
@@ -215,7 +201,6 @@ typedef char iti_mode_t;
     int concat(PREFIX, _iterator_get_data)(const IT_STRUCT_NAME(STRUCT) *, void *); \
     int concat(PREFIX, _iterator_get_node)(const IT_STRUCT_NAME(STRUCT) *, void *); \
     ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, _iterator_create)(const STRUCT *s, iti_mode_t mode); \
-    ___inline___ int concat(STRUCT, _iterator_init)(const STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, iti_mode_t mode); \
     ___inline___ void concat(STRUCT, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *s); \
     ___inline___ int concat(STRUCT, _iterator_destroy_gc)(IT_STRUCT_NAME(STRUCT) **s); \
     ___inline___ int concat(STRUCT, _iterator_next)(IT_STRUCT_NAME(STRUCT) *s); \
@@ -227,11 +212,6 @@ typedef char iti_mode_t;
     ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, _iterator_create)(const STRUCT *s, iti_mode_t mode) \
     { \
         return concat(PREFIX, _iterator_create)(s, mode); \
-    } \
-    \
-    ___inline___ int concat(STRUCT, _iterator_init)(const STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, iti_mode_t mode) \
-    { \
-        return concat(PREFIX, _iterator_init)(s, it, mode); \
     } \
     \
     ___inline___ void concat(STRUCT, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *s) \
@@ -420,7 +400,6 @@ typedef char iti_mode_t;
     ___inline___ int concat(PREFIX, _iterator_get_data)(const IT_STRUCT_NAME(STRUCT) *it, void *data); \
     ___inline___ int concat(PREFIX, _iterator_get_node)(const IT_STRUCT_NAME(STRUCT) *it, void *node); \
     ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, _iterator_create)(const STRUCT *s, iti_mode_t mode); \
-    ___inline___ int concat(STRUCT, _iterator_init)(const STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, iti_mode_t mode); \
     ___inline___ void concat(STRUCT, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *s); \
     ___inline___ int concat(STRUCT, _iterator_destroy_gc)(IT_STRUCT_NAME(STRUCT) **s); \
     ___inline___ int concat(STRUCT, _iterator_next)(IT_STRUCT_NAME(STRUCT) *s); \
@@ -488,11 +467,6 @@ typedef char iti_mode_t;
       ___inline___ IT_STRUCT_NAME(STRUCT) *concat(STRUCT, _iterator_create)(const STRUCT *s, iti_mode_t mode) \
     { \
         return concat(PREFIX, _iterator_create)(s, mode); \
-    } \
-    \
-    ___inline___ int concat(STRUCT, _iterator_init)(const STRUCT *s, IT_STRUCT_NAME(STRUCT) *it, iti_mode_t mode) \
-    { \
-        return concat(PREFIX, _iterator_init)(s, it, mode); \
     } \
     \
     ___inline___ void concat(STRUCT, _iterator_destroy)(IT_STRUCT_NAME(STRUCT) *s) \

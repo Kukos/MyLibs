@@ -14,35 +14,21 @@
     LICENCE: GPL 3.0
 */
 
-#include <darray.h>
 #include <stdbool.h>
 #include <stddef.h> /* size_t */
 #include <sys/types.h>
+#include <common.h>
 
-typedef char heap_type;
+typedef enum heap_type
+{
+    HEAP_MIN = 0,
+    HEAP_MAX = 1
+} heap_type;
 
-#define HEAP_MIN        0
-#define HEAP_MAX        1
 #define OUT_OF_HEAP    -1
 
-typedef struct Heap_entry
-{
-    void        *____data;
-    ssize_t      ____pos;    /* index in Heap */
-
-}Heap_entry;
-
-typedef struct Heap
-{
-    Darray      *____darray;                     /* dynamic array for heap */
-    int         (*____cmp)(const void *a, const void *b);   /* compare function */
-    void        (*____destroy)(void *entry); /* data destructor */
-
-    size_t      ____size_of;                    /* size of data */
-    int         ____ary;                        /* heap ary */
-
-    heap_type   ____type;
-}Heap;
+typedef struct Heap_entry Heap_entry;
+typedef struct Heap Heap;
 
 /*
     Create Heap entry
@@ -83,7 +69,7 @@ void heap_entry_destroy(Heap_entry *entry);
     RETURN:
     This is a void function
 */
-void heap_entry_destroy_with_data(Heap_entry *entry, void (*destructor)(void *entry));
+void heap_entry_destroy_with_data(Heap_entry *entry, destructor_f destructor);
 
 /*
     Get pos in Heap
@@ -102,12 +88,13 @@ ssize_t heap_entry_get_pos(const Heap_entry *entry);
 
     PARAMS
     @IN entry - heap entry
+    @OUT data - heap data
 
     RETURN
-    data iff success
-    NULL iff failure
+    0 iff success
+    Non-zero value iff failure
 */
-void *heap_entry_get_data(const Heap_entry *entry);
+int heap_entry_get_data(const Heap_entry *  ___restrict___ entry, void * ___restrict___ data);
 
 /*
     Create heap
@@ -124,8 +111,8 @@ void *heap_entry_get_data(const Heap_entry *entry);
     %pointer iff success
 */
 Heap *heap_create(heap_type type, size_t size_of, int ary,
-     int (*cmp)(const void *a, const void *b),
-     void (*destroy)(void *entry));
+     cmp_f cmp,
+     destructor_f destroy);
 
 #define HEAP_CREATE(HEAP, HTYPE, DTYPE, ARY, CMP, DESTROY) \
     do { \
@@ -223,7 +210,7 @@ Heap_entry *heap_get_top(const Heap *heap);
     %0 iff success
     %Non-zero value iff failure
 */
-int heap_change_key(Heap *heap, size_t index, const void *new_data);
+int heap_change_key(Heap *___restrict___ heap, size_t index, const void *___restrict___ new_data);
 
 /*
     Check heap capacity

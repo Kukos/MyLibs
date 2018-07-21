@@ -12,6 +12,7 @@
 
 #include <stddef.h>
 #include <sys/types.h>
+#include <common.h>
 
 /*
     Get index of kth positional statistic of array t
@@ -27,6 +28,6 @@
     -1 iff failure
     Index of kth element in array iff success
 */
-ssize_t select_kth(const void *t, size_t len, size_t size_of, size_t k, int (*cmp)(const void *a, const void *b));
+ssize_t select_kth(const void *t, size_t len, size_t size_of, size_t k, cmp_f cmp);
 
 #endif

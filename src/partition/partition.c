@@ -27,7 +27,7 @@ ___inline___ static size_t medians_of_3(const void   *t,
                                         size_t       offset_index1,
                                         size_t       offset_index2,
                                         size_t       offset_index3,
-                                        int          (*cmp)(const void *a, const void *b),
+                                        cmp_f        cmp,
                                         size_t       size_of);
 
 /*
@@ -49,14 +49,14 @@ ___inline___ static size_t tukey_medians(const void        *t,
                                          size_t            offset_left,
                                          size_t            offset_right,
                                          size_t            epsilon,
-                                         int               (*cmp)(const void *a, const void *b),
+                                         cmp_f             cmp,
                                          size_t            size_of);
 
 ___inline___ static size_t medians_of_3(const void        *t,
                                         size_t            offset_index1,
                                         size_t            offset_index2,
                                         size_t            offset_index3,
-                                        int               (*cmp)(const void *a, const void *b),
+                                        cmp_f             cmp,
                                         size_t            size_of)
 {
     BYTE *_t;
@@ -102,7 +102,7 @@ ___inline___ static size_t tukey_medians(const void  *t,
                                          size_t      offset_left,
                                          size_t      offset_right,
                                          size_t      epsilon,
-                                         int         (*cmp)(const void *a, const void *b),
+                                         cmp_f       cmp,
                                          size_t      size_of)
 {
     size_t offset_middle;
@@ -125,7 +125,7 @@ ___inline___ static size_t tukey_medians(const void  *t,
     return medians_of_3(t, m1 ,m2, m3, cmp, size_of);
 }
 
-size_t partition_get_pivot_trivial(const void *t, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b))
+size_t partition_get_pivot_trivial(const void *t, size_t len, size_t size_of, cmp_f cmp)
 {
     int r;
     (void)size_of;
@@ -149,7 +149,7 @@ size_t partition_get_pivot_trivial(const void *t, size_t len, size_t size_of, in
     }
 }
 
-size_t partition_get_pivot_rand(const void *t, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b))
+size_t partition_get_pivot_rand(const void *t, size_t len, size_t size_of, cmp_f cmp)
 {
     (void)size_of;
     (void)cmp;
@@ -165,7 +165,7 @@ size_t partition_get_pivot_rand(const void *t, size_t len, size_t size_of, int (
     return (size_t)((size_t)rand() % len);
 }
 
-size_t partition_get_pivot_median(const void *t, size_t len, size_t size_of, int (*cmp)(const void *a, const void *b))
+size_t partition_get_pivot_median(const void *t, size_t len, size_t size_of, cmp_f cmp)
 {
     TRACE();
 
@@ -186,7 +186,7 @@ size_t partition_get_pivot_median(const void *t, size_t len, size_t size_of, int
 ssize_t partition_bentley(void        *t,
                           size_t      offset_left,
                           size_t      offset_right,
-                          int         (*cmp)(const void *a, const void *b),
+                          cmp_f       cmp,
                           size_t      size_of,
                           size_t      *offset_left_index,
                           size_t      *offset_right_index)
@@ -304,7 +304,7 @@ ssize_t partition_bentley(void        *t,
 ssize_t partition_hoare(void        *t,
                         size_t      offset_left,
                         size_t      offset_right,
-                        int         (*cmp)(const void *a, const void *b),
+                        cmp_f       cmp,
                         size_t      size_of,
                         size_t      *offset_left_index,
                         size_t      *offset_right_index)
@@ -377,7 +377,7 @@ ssize_t partition_hoare(void        *t,
 ssize_t partition_lomuto(void        *t,
                          size_t      offset_left,
                          size_t      offset_right,
-                         int         (*cmp)(const void *a, const void *b),
+                         cmp_f       cmp,
                          size_t      size_of,
                          size_t      *offset_left_index,
                          size_t      *offset_right_index)

@@ -59,7 +59,7 @@ static MyStruct2 *my_struct2_create(int key)
     return ms;
 }
 
-static bool check_array_is_sorted(void *array, size_t n, size_t size_of, int (*cmp)(const void *a, const void *b))
+static bool check_array_is_sorted(void *array, size_t n, size_t size_of, cmp_f cmp)
 {
     size_t i;
     size_t size;

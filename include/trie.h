@@ -10,37 +10,15 @@
     LICENCE GPL3
 */
 
-#define ALPHABET_START_CODE  32
-#define ALPHABET_END_CODE    126
-#define ALPHABET_SIZE       (ALPHABET_END_CODE - ALPHABET_START_CODE + 1)
-
 #include <iterators.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <sys/types.h>
-#include <darray.h>
+#include <common.h>
 
-typedef struct Trie_node
-{
-    struct Trie_node    *____parent;
-    struct Trie_node    *____children[ALPHABET_SIZE];
-    bool                ____is_leaf; /* if TRUE then word from root to this node exist in trie */
-
-}Trie_node;
-
-typedef struct Trie
-{
-    Trie_node   *____root;
-    Darray      *____hight_array;
-    size_t      ____entries;
-}Trie;
-
-typedef struct Trie_iterator
-{
-    char        *____word;
-    Trie_node   *____node;
-
-}Trie_iterator;
+typedef struct Trie_node Trie_node;
+typedef struct Trie Trie;
+typedef struct Trie_iterator Trie_iterator;
 
 IT_FUNC(Trie, trie)
 
@@ -79,7 +57,7 @@ void trie_destroy(Trie *trie);
     %0 iff success
     %Non-zero value iff failure
 */
-int trie_insert(Trie *trie, const char *word);
+int trie_insert(Trie * ___restrict___ trie, const char * ___restrict___ word);
 
 /*
     Search word in trie
@@ -92,7 +70,7 @@ int trie_insert(Trie *trie, const char *word);
     %FALSE iff word doesn't exist in trie
     %TRUE iff word exists in trie
 */
-bool trie_find(const Trie *trie, const char *word);
+bool trie_find(const Trie * ___restrict___ trie, const char * ___restrict___ word);
 
 /*
     Delete word from trie
@@ -105,7 +83,7 @@ bool trie_find(const Trie *trie, const char *word);
     %0 iff success
     %Non-zero value iff failure
 */
-int trie_delete(Trie *trie, const char *word);
+int trie_delete(Trie * ___restrict___ trie, const char * ___restrict___ word);
 
 /*
     Get words from TRIE to array
@@ -118,7 +96,7 @@ int trie_delete(Trie *trie, const char *word);
     %NULL iff failure
     %Pointer to array iff success
 */
-char **trie_to_array(const Trie *trie, size_t *size);
+char **trie_to_array(const Trie * trie, size_t *size);
 
 /*
     Get Num entries in TRIE

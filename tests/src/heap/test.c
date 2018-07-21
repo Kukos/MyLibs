@@ -53,8 +53,14 @@ int cmp_heap_entry(const void *a, const void *b)
 {
     Heap_entry *e1 = *(Heap_entry **)a;
     Heap_entry *e2 = *(Heap_entry **)b;
+    int i;
+    int ii;
 
-    return cmp_int(heap_entry_get_data(e1), heap_entry_get_data(e2));
+    heap_entry_get_data(e1, &i);
+    heap_entry_get_data(e2, &ii);
+
+
+    return cmp_int(&i, &ii);
 }
 
 test_f test_create(heap_type type, int ary)
@@ -101,6 +107,9 @@ test_f test_build(heap_type type, int ary)
     size_t i;
     size_t r;
 
+    int data1;
+    int data2;
+
     heap = heap_create(type, sizeof(int), ary, cmp_int, NULL);
     T_EXPECT(heap_get_data_size(heap), sizeof(int));
     T_EXPECT(heap_get_num_entries(heap), 0);
@@ -137,29 +146,40 @@ test_f test_build(heap_type type, int ary)
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[i], &data2), 0);
+
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[size - i - 1], &data2), 0);
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
 
         top = heap_extract_top(heap);
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[i], &data2), 0);
+
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[size - i - 1], &data2), 0);
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
 
         ++i;
         heap_entry_destroy(top);
     }
+    T_EXPECT(heap_is_empty(heap), true);
 
     FREE(array);
     FREE(t);
@@ -176,6 +196,9 @@ test_f test_insert(heap_type type, int ary)
     size_t size = BIT(10);
     size_t i;
     size_t r;
+
+    int data1;
+    int data2;
 
     heap = heap_create(type, sizeof(int), ary, cmp_int, NULL);
     T_EXPECT(heap_get_data_size(heap), sizeof(int));
@@ -215,29 +238,40 @@ test_f test_insert(heap_type type, int ary)
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[i], &data2), 0);
+
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[size - i - 1], &data2), 0);
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
 
         top = heap_extract_top(heap);
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[i], &data2), 0);
+
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[size - i - 1], &data2), 0);
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
 
         ++i;
         heap_entry_destroy(top);
     }
+    T_EXPECT(heap_is_empty(heap), true);
 
     FREE(array);
     FREE(t);
@@ -374,6 +408,9 @@ test_f test_change_key(heap_type type, int ary)
     size_t i;
     size_t r;
 
+    int data1;
+    int data2;
+
     int pos[] = {0, 10, 20, 30, 40, 50, 100, 200, 300, 500};
     int factor = size << 1;
 
@@ -427,29 +464,40 @@ test_f test_change_key(heap_type type, int ary)
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[i], &data2), 0);
+
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[size - i - 1], &data2), 0);
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
 
         top = heap_extract_top(heap);
         if (type == HEAP_MIN)
         {
             T_ASSERT(top, array[i]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[i])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[i], &data2), 0);
+
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
         else
         {
             T_ASSERT(top, array[size - i - 1]);
-            T_EXPECT(cmp_int(heap_entry_get_data(top), heap_entry_get_data(array[size - i - 1])), 0);
+            T_EXPECT(heap_entry_get_data(top, &data1), 0);
+            T_EXPECT(heap_entry_get_data(array[size - i - 1], &data2), 0);
+            T_EXPECT(cmp_int(&data1, &data2), 0);
         }
 
         ++i;
         heap_entry_destroy(top);
     }
+    T_EXPECT(heap_is_empty(heap), true);
 
     FREE(array);
     FREE(t);

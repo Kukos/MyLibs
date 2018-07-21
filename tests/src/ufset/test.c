@@ -32,6 +32,7 @@ test_f test_create(void)
     UFSentry *entry;
 
     int val = 0;
+    int data;
 
     master = ufs_master_create();
     T_ERROR(master == NULL);
@@ -50,18 +51,28 @@ test_f test_create(void)
     T_EXPECT(ufs_master_get_hight(master), 1);
     T_EXPECT(ufs_master_get_num_entries(master), 1);
 
+    T_EXPECT(ufset_entry_get_ufset(entry), set);
+    T_EXPECT(ufset_entry_get_data(entry, &data), 0);
+    T_EXPECT(ufset_get_entry(set), entry);
+    T_EXPECT(ufset_get_master(set), master);
+    T_ASSERT(data, val);
+
     ufs_master_destroy(master);
 }
 
 test_f test_create_set(void)
 {
+    const size_t size = 100;
     UFSMaster *master;
-    UFset *set;
+    UFset *set[size];
     UFSentry *entry;
+    UFSentry **entries;
+    UFset **t;
 
     int val = 0;
-    int i;
-    int size = BIT(10);
+    size_t i;
+    int data;
+    size_t len;
 
     master = ufs_master_create();
     T_ERROR(master == NULL);
@@ -70,18 +81,37 @@ test_f test_create_set(void)
 
     for (i = 0; i < size; ++i)
     {
+        val = i + 1;
         entry = ufs_entry_create((void *)&val, sizeof(int), NULL);
         T_ERROR(entry == NULL);
 
-        set = ufset_create(entry, master);
-        T_ERROR(set == NULL);
+        set[i] = ufset_create(entry, master);
+        T_ERROR(set[i] == NULL);
 
-        T_EXPECT(ufset_get_hight(set), 1);
-        T_EXPECT(ufset_get_num_entries(set), 1);
+        T_EXPECT(ufset_get_hight(set[i]), 1);
+        T_EXPECT(ufset_get_num_entries(set[i]), 1);
 
         T_EXPECT(ufs_master_get_hight(master), 1);
         T_EXPECT(ufs_master_get_num_entries(master), i + 1);
+
+        T_EXPECT(ufset_entry_get_ufset(entry), set[i]);
+        T_EXPECT(ufset_entry_get_data(entry, &data), 0);
+
+        T_EXPECT(ufset_get_entry(set[i]), entry);
+        T_EXPECT(ufset_get_master(set[i]), master);
+
+        entries = ufset_get_entries(set[i], &len);
+        T_ERROR(entries == NULL);
+        T_ASSERT(len, 1);
+        T_ASSERT(entries[0], entry);
+        FREE(entries);
     }
+
+    t = ufs_master_get_sets(master, &len);
+    T_ERROR(t == NULL);
+    T_ASSERT(len, size);
+    for (i = 0; i < size; ++i)
+        T_ASSERT(t[i], set[i]);
 
     ufs_master_destroy(master);
 }

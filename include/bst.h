@@ -19,32 +19,11 @@
 #include <stddef.h>
 #include <sys/types.h>
 #include <tree.h>
-#include <generic.h>
+#include <common.h>
 
-typedef struct Bst_node
-{
-    struct Bst_node     *____left_son;
-    struct Bst_node     *____right_son;
-    struct Bst_node     *____parent;
-    __extension__ BYTE  ____data[]; /* placeholder for data */
-
-}Bst_node;
-
-typedef struct Bst_iterator
-{
-    size_t      ____size_of;
-    Bst_node    *____node;
-}Bst_iterator;
-
-typedef struct Bst
-{
-    Bst_node    *____root;
-    size_t      ____nodes;
-    size_t      ____size_of;
-
-    int (*____cmp)(const void* a, const void *b);
-    void (*____destroy)(void *entry);
-}Bst;
+typedef struct Bst_node Bst_node;
+typedef struct Bst_iterator Bst_iterator;
+typedef struct Bst Bst;
 
 IT_FUNC(Bst, bst)
 
@@ -63,7 +42,7 @@ IT_FUNC(Bst, bst)
     NULL iff failure
     Pointer to Tree iff success
 */
-Tree *tree_bst_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+Tree *tree_bst_create(size_t size_of, cmp_f cmp, destructor_f destroy);
 
 /*
     Create BST
@@ -77,7 +56,7 @@ Tree *tree_bst_create(size_t size_of, int (*cmp)(const void *a, const void *b), 
     NULL iff failure
     Pointer to bst iff success
 */
-Bst* bst_create(size_t size_of, int (*cmp)(const void *a, const void *b), void (*destroy)(void *entry));
+Bst* bst_create(size_t size_of, cmp_f cmp, destructor_f destroy);
 
 #define BST_CREATE(PTR, TYPE, CMP, DESTROY) \
     do { \
@@ -117,7 +96,7 @@ void bst_destroy_with_entries(Bst *tree);
     0 iff success
     Non-zero value iff failure
 */
-int bst_insert(Bst *tree, const void *data);
+int bst_insert(Bst * ___restrict___ tree, const void * ___restrict___ data);
 
 /*
     Getter of min value ( using cmp ) in tree
@@ -130,7 +109,7 @@ int bst_insert(Bst *tree, const void *data);
     0 iff success
     Non-zero value iff failure
 */
-int bst_min(const Bst *tree, void *data);
+int bst_min(const Bst * ___restrict___ tree, void * ___restrict___ data);
 
 /*
     Getter of max value ( using cmp ) in tree
@@ -143,7 +122,7 @@ int bst_min(const Bst *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int bst_max(const Bst *tree, void *data);
+int bst_max(const Bst * ___restrict___ tree, void * ___restrict___ data);
 
 /*
     Search for data with key equals key @data_key ( using cmp )
@@ -157,7 +136,7 @@ int bst_max(const Bst *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
- int bst_search(const Bst *tree, const void *data_key, void *data_out);
+ int bst_search(const Bst * ___restrict___ tree, const void *data_key, void *data_out);
 
  /*
  	Check existing of key in tree
@@ -170,7 +149,7 @@ int bst_max(const Bst *tree, void *data);
  	false iff key doesn't exist in tree
  	true iff key exists in tree
  */
- bool bst_key_exist(const Bst *tree, const void *data_key);
+ bool bst_key_exist(const Bst * ___restrict___ tree, const void * ___restrict___ data_key);
 
 /*
     Delete data with key equals @data_key ( using cmp )
@@ -183,7 +162,7 @@ int bst_max(const Bst *tree, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int bst_delete(Bst *tree, const void *data_key);
+int bst_delete(Bst * ___restrict___ tree, const void * ___restrict___ data_key);
 
 /*
     Delete data with key equals @data_key ( using cmp )
@@ -197,7 +176,7 @@ int bst_delete(Bst *tree, const void *data_key);
     0 iff success
     Non-zero value iff failure
 */
-int bst_delete_with_entry(Bst *tree, const void *data_key);
+int bst_delete_with_entry(Bst * ___restrict___ tree, const void * ___restrict___ data_key);
 
 /*
     Balance tree using DSW algorithm
@@ -223,7 +202,7 @@ int bst_balance(Bst *tree);
     0 iff success
     Non-zero value iff failure
 */
-int bst_to_array(const Bst *tree, void *array, size_t *size);
+int bst_to_array(const Bst * ___restrict___ tree, void * ___restrict___ array, size_t * ___restrict___ size);
 
 /*
     Get Num entries of BST
@@ -260,5 +239,18 @@ ssize_t bst_get_data_size(const Bst *tree);
     Hight iff success
 */
 int bst_get_hight(const Bst *tree);
+
+/*
+    Get Node data
+
+    PARAMS
+    @IN node - pointer to Bst_node
+    @OUT data - node data
+
+    RETURN
+    Non-zero iff failure
+    0 iff success
+*/
+int bst_node_get_data(const Bst_node * ___restrict___ node, void * ___restrict___ data);
 
 #endif

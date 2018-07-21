@@ -17,17 +17,9 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <sys/types.h> /* ssize_t */
+#include <common.h>
 
-typedef struct Ring_buffer
-{
-    void    *____buf;
-    size_t  ____data_size;
-    size_t  ____max_entries;
-    size_t  ____head;
-    size_t  ____tail;
-    size_t  ____num_entries;
-    void    (*____destructor)(void *data);
-}Ring_buffer;
+typedef struct Ring_buffer Ring_buffer;
 
 /*
     Create ring buffer
@@ -41,7 +33,7 @@ typedef struct Ring_buffer
     NULL iff failure
     Pointer to Ring Buffer iff success
 */
-Ring_buffer *ring_buffer_create(size_t data_size, size_t max_entries, void(*destructor)(void *data));
+Ring_buffer *ring_buffer_create(size_t data_size, size_t max_entries, destructor_f destructor);
 
 /*
     Create ring buffer for TYPE
@@ -90,7 +82,7 @@ void ring_buffer_destroy_with_entries(Ring_buffer *rb);
     0 iff success
     Non-zero value iff failure
 */
-int ring_buffer_enqueue(Ring_buffer *rb, const void *data);
+int ring_buffer_enqueue(Ring_buffer * ___restrict___ rb, const void * ___restrict___ data);
 
 
 /*
@@ -104,7 +96,7 @@ int ring_buffer_enqueue(Ring_buffer *rb, const void *data);
     0 iff success
     Non-zero value iff failure
 */
-int ring_buffer_get_head(const Ring_buffer *rb, void *data);
+int ring_buffer_get_head(const Ring_buffer * ___restrict___ rb, void * ___restrict___ data);
 
 /*
     Get and Delete data from head Ring buffer FIFO
@@ -117,7 +109,7 @@ int ring_buffer_get_head(const Ring_buffer *rb, void *data);
     0 iff success
     Non-zero value iff failure
 */
-int ring_buffer_dequeue(Ring_buffer *rb, void *data);
+int ring_buffer_dequeue(Ring_buffer * ___restrict___ rb, void * ___restrict___ data);
 
 /*
     Check ring buffer entries and full info
@@ -157,7 +149,7 @@ bool ring_buffer_is_empty(const Ring_buffer *rb);
 	0 iff success
 	Non-zero value iff failure
 */
-int ring_buffer_to_array(const Ring_buffer *rb, void *array, size_t *size);
+int ring_buffer_to_array(const Ring_buffer * ___restrict___ rb, void * ___restrict___ array, size_t * ___restrict___ size);
 
 /*
     Get number of entries in Ring Buffer

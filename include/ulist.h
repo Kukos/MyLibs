@@ -37,8 +37,8 @@ typedef struct UList_iterator
     void    (*____destroy)(void *iterator);
     int     (*____next)(void *iterator);
     int     (*____prev)(void *iterator);
-    int     (*____get_data)(const void *iterator, void *data);
-    int     (*____get_node)(const void *iterator, void *node);
+    int     (*____get_data)(const void * ___restrict___ iterator, void * ___restrict___ data);
+    int     (*____get_node)(const void * ___restrict___ iterator, void * ___restrict___ node);
     bool    (*____end)(const void *iterator);
 
 }UList_iterator;
@@ -50,29 +50,28 @@ typedef struct UList
     /* private functions */
     void        (*____destroy)(void *list);
     void        (*____destroy_with_entries)(void *list);
-    int         (*____insert_first)(void *list, const void *data);
-    int         (*____insert_last)(void *list, const void *data);
-    int         (*____insert_pos)(void *list, size_t pos, const void *data);
+    int         (*____insert_first)(void * ___restrict___ list, const void * ___restrict___ data);
+    int         (*____insert_last)(void * ___restrict___ list, const void * ___restrict___ data);
+    int         (*____insert_pos)(void * ___restrict___ list, size_t pos, const void * ___restrict___ data);
     int         (*____delete_first)(void *list);
     int         (*____delete_last)(void *list);
     int         (*____delete_pos)(void *list, size_t pos);
     int         (*____delete_first_with_entry)(void *list);
     int         (*____delete_last_with_entry)(void *list);
     int         (*____delete_pos_with_entry)(void *list, size_t pos);
-    int         (*____get_pos)(const void *list, size_t pos, void *data);
+    int         (*____get_pos)(const void * ___restrict___ list, size_t pos, void * ___restrict___ data);
     void*       (*____merge)(const void * ___restrict___ list1, const void * ___restrict___ list2);
-    int         (*____to_array)(const void *list, void *array, size_t *size);
+    int         (*____to_array)(const void * ___restrict___ list, void * ___restrict___ array, size_t * ___restrict___ size);
     ssize_t     (*____get_data_size)(const void *list);
     ssize_t     (*____get_num_entries)(const void *list);
 
     /* to create iterator */
     void*       (*____it_create)(const void *list, iti_mode_t mode);
-    int         (*____it_init)(const void *list, void *it, iti_mode_t mode);
     void        (*____it_destroy)(void *iterator);
     int         (*____it_next)(void *iterator);
     int         (*____it_prev)(void *iterator);
-    int         (*____it_get_data)(const void *iterator, void *data);
-    int         (*____it_get_node)(const void *iterator, void *node);
+    int         (*____it_get_data)(const void * ___restrict___ iterator, void * ___restrict___ data);
+    int         (*____it_get_node)(const void * ___restrict___ iterator, void * ___restrict___ node);
     bool        (*____it_end)(const void *iterator);
 
 }UList;
@@ -90,37 +89,24 @@ typedef struct UList
 */
 ___inline___ UList_iterator *ulist_iterator_create(const UList *list, iti_mode_t mode);
 
-/*
-    Init UList iterator
-
-    PARAMS
-    @IN list - pointer to list
-    @IN it - pointer to iterator
-    @IN mode - Iterator mode
-
-    RETURN
-    0 iff success
-    Non-zero value iff failure
-*/
-___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_mode_t mode);
 
 /* Macro to create wrappers to your struct to provide assignment to framework functions */
 #define ULIST_WRAPPERS_CREATE(type, prefix) \
     ULIST_ITERATOR_WRAPPERS_CREATE(concat(type, _iterator), concat(prefix, _iterator)) \
     static ___unused___ void ____destroy(void *list); \
     static ___unused___ void ____destroy_with_entries(void *list); \
-    static ___unused___ int ____insert_first(void *list, const void *data); \
-    static ___unused___ int ____insert_last(void *list, const void *data); \
-    static ___unused___ int ____insert_pos(void *list, size_t pos, const void *data); \
+    static ___unused___ int ____insert_first(void * ___restrict___ list, const void * ___restrict___ data); \
+    static ___unused___ int ____insert_last(void * ___restrict___ list, const void * ___restrict___ data); \
+    static ___unused___ int ____insert_pos(void * ___restrict___ list, size_t pos, const void * ___restrict___ data); \
     static ___unused___ int ____delete_first(void *list); \
     static ___unused___ int ____delete_last(void *list); \
     static ___unused___ int ____delete_pos(void *list, size_t pos); \
     static ___unused___ int ____delete_first_with_entry(void *list); \
     static ___unused___ int ____delete_last_with_entry(void *list); \
     static ___unused___ int ____delete_pos_with_entry(void *list, size_t pos); \
-    static ___unused___ int ____get_pos(const void *list, size_t pos, void *data); \
+    static ___unused___ int ____get_pos(const void * ___restrict___ list, size_t pos, void * ___restrict___ data); \
     static ___unused___ void *____merge(const void * ___restrict___ list1, const void * ___restrict___ list2); \
-    static ___unused___ int ____to_array(const void *list, void *array, size_t *size); \
+    static ___unused___ int ____to_array(const void * ___restrict___ list, void * ___restrict___ array, size_t * ___restrict___ size); \
     static ___unused___ ssize_t ____get_data_size(const void *list); \
     static ___unused___ ssize_t ____get_num_entries(const void *list); \
     static ___unused___ void ____destroy(void *list) \
@@ -133,17 +119,17 @@ ___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_
         concat(prefix, _destroy_with_entries)((type *)list); \
     } \
     \
-    static ___unused___ int ____insert_first(void *list, const void *data) \
+    static ___unused___ int ____insert_first(void * ___restrict___ list, const void * ___restrict___ data) \
     { \
         return concat(prefix, _insert_first)((type *)list, data); \
     } \
     \
-    static ___unused___ int ____insert_last(void *list, const void *data) \
+    static ___unused___ int ____insert_last(void * ___restrict___ list, const void * ___restrict___ data) \
     { \
         return concat(prefix, _insert_last)((type *)list, data); \
     } \
     \
-    static ___unused___ int ____insert_pos(void *list, size_t pos, const void *data) \
+    static ___unused___ int ____insert_pos(void * ___restrict___ list, size_t pos, const void * ___restrict___ data) \
     { \
         return concat(prefix, _insert_pos)((type *)list, pos, data); \
     } \
@@ -177,7 +163,7 @@ ___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_
         return concat(prefix, _delete_pos_with_entry)((type *)list, pos); \
     } \
     \
-    static ___unused___ int ____get_pos(const void *list, size_t pos, void *data) \
+    static ___unused___ int ____get_pos(const void * ___restrict___ list, size_t pos, void * ___restrict___ data) \
     { \
         return concat(prefix, _get_pos)((const type *)list, pos, data); \
     } \
@@ -187,7 +173,7 @@ ___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_
         return (void *)concat(prefix, _merge)((const type * ___restrict___)list1, (const type * ___restrict___)list2); \
     } \
     \
-    static ___unused___ int ____to_array(const void *list, void *array, size_t *size) \
+    static ___unused___ int ____to_array(const void * ___restrict___ list, void * ___restrict___ array, size_t * ___restrict___ size) \
     { \
         return concat(prefix, _to_array)((const type *)list, array, size); \
     } \
@@ -222,7 +208,6 @@ ___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_
         (list)->____get_data_size           = ____get_data_size; \
         (list)->____get_num_entries         = ____get_num_entries; \
         (list)->____it_create               = ____it_create; \
-        (list)->____it_init                 = ____it_init; \
         (list)->____it_destroy              = ____it_destroy; \
         (list)->____it_next                 = ____it_next; \
         (list)->____it_prev                 = ____it_prev; \
@@ -292,7 +277,7 @@ ___inline___ void ulist_destroy_with_entries(UList *list);
     0 - iff success
     Non-zero iff failure
 */
-___inline___ int ulist_insert_first(UList *list, const void *data);
+___inline___ int ulist_insert_first(UList * ___restrict___ list, const void * ___restrict___ data);
 
 /*
     Insert data at the end of list (this is useful for queue)
@@ -305,7 +290,7 @@ ___inline___ int ulist_insert_first(UList *list, const void *data);
     0 - iff success
     Non-zero iff failure
 */
-___inline___ int ulist_insert_last(UList *list, const void *data);
+___inline___ int ulist_insert_last(UList * ___restrict___ list, const void * ___restrict___ data);
 
 
 /*
@@ -320,7 +305,7 @@ ___inline___ int ulist_insert_last(UList *list, const void *data);
     0 - iff success
     Non-zero iff failure
 */
-___inline___ int ulist_insert_pos(UList *list, size_t pos, const void *data);
+___inline___ int ulist_insert_pos(UList * ___restrict___ list, size_t pos, const void * ___restrict___ data);
 
 /*
     Delete first data
@@ -357,7 +342,7 @@ ___inline___ int ulist_delete_last(UList *list);
     0 - iff success
     Non-zero iff failure
 */
-___inline___ int ulist_delete_pos(UList *list, size_t pos);
+___inline___ int ulist_delete_pos(UList * ___restrict___ list, size_t pos);
 
 /*
     Delete first data with data
@@ -369,7 +354,7 @@ ___inline___ int ulist_delete_pos(UList *list, size_t pos);
     0 - iff success
     Non-zero iff failure
 */
-___inline___ int ulist_delete_first_with_entry(UList *list);
+___inline___ int ulist_delete_first_with_entry(UList * ___restrict___ list);
 
 /*
     Delete last data with data
@@ -381,7 +366,7 @@ ___inline___ int ulist_delete_first_with_entry(UList *list);
     0 - iff success
     Non-zero iff failure
 */
-___inline___ int ulist_delete_last_with_entry(UList *list);
+___inline___ int ulist_delete_last_with_entry(UList * ___restrict___ list);
 
 /*
     Delete data from posision @pos with data
@@ -394,7 +379,7 @@ ___inline___ int ulist_delete_last_with_entry(UList *list);
     0 - iff success
     Non-zero iff failure
 */
-___inline___ int ulist_delete_pos_with_entry(UList *list, size_t pos);
+___inline___ int ulist_delete_pos_with_entry(UList * ___restrict___ list, size_t pos);
 
 /*
     Get data from node at @pos
@@ -408,7 +393,7 @@ ___inline___ int ulist_delete_pos_with_entry(UList *list, size_t pos);
     0 - iff success
     Non-zero iff failure
 */
-___inline___ int ulist_get_pos(const UList *list, size_t pos, void *data);
+___inline___ int ulist_get_pos(const UList * ___restrict___ list, size_t pos, void *  ___restrict___data);
 
 /*
     Merge 2 UList (IFF they have the same time)
@@ -435,7 +420,7 @@ ___inline___ UList *ulist_merge(const UList * ___restrict___ list1, const UList 
     0 iff success
     Non-zero iff failure
 */
-___inline___ int ulist_to_array(const UList *list, void *array, size_t *size);
+___inline___ int ulist_to_array(const UList * ___restrict___ list, void * ___restrict___ array, size_t *  ___restrict___ size);
 
 /*
     Get UList data size_of
@@ -483,7 +468,6 @@ ___inline___ bool ulist_the_same_type(const UList * ___restrict___ list1, const 
              list1->____get_data_size           != list2->____get_data_size             ||
              list1->____get_num_entries         != list2->____get_num_entries           ||
              list1->____it_create               != list2->____it_create                 ||
-             list1->____it_init                 != list2->____it_init                   ||
              list1->____it_destroy              != list2->____it_destroy                ||
              list1->____it_next                 != list2->____it_next                   ||
              list1->____it_prev                 != list2->____it_prev                   ||
@@ -519,7 +503,7 @@ ___inline___ void ulist_destroy_with_entries(UList *list)
     FREE(list);
 }
 
-___inline___ int ulist_insert_first(UList *list, const void *data)
+___inline___ int ulist_insert_first(UList * ___restrict___ list, const void * ___restrict___ data)
 {
     if (list == NULL)
         return 1;
@@ -527,7 +511,7 @@ ___inline___ int ulist_insert_first(UList *list, const void *data)
     return list->____insert_first(ulist_get_list(list), data);
 }
 
-___inline___ int ulist_insert_last(UList *list, const void *data)
+___inline___ int ulist_insert_last(UList * ___restrict___ list, const void * ___restrict___ data)
 {
     if (list == NULL)
         return 1;
@@ -535,7 +519,7 @@ ___inline___ int ulist_insert_last(UList *list, const void *data)
     return list->____insert_last(ulist_get_list(list), data);
 }
 
-___inline___ int ulist_insert_pos(UList *list, size_t pos, const void *data)
+___inline___ int ulist_insert_pos(UList * ___restrict___ list, size_t pos, const void * ___restrict___ data)
 {
     if (list == NULL)
         return 1;
@@ -591,7 +575,7 @@ ___inline___ int ulist_delete_pos_with_entry(UList *list, size_t pos)
     return list->____delete_pos_with_entry(ulist_get_list(list), pos);
 }
 
-___inline___ int ulist_get_pos(const UList *list, size_t pos, void *data)
+___inline___ int ulist_get_pos(const UList * ___restrict___ list, size_t pos, void * ___restrict___ data)
 {
     if (list == NULL)
         return 1;
@@ -642,7 +626,6 @@ ___inline___ UList *ulist_merge(const UList * ___restrict___ list1, const  UList
     list3->____get_num_entries          = list1->____get_num_entries;
 
     list3->____it_create                = list1->____it_create;
-    list3->____it_init                  = list1->____it_init;
     list3->____it_destroy               = list1->____it_destroy;
     list3->____it_next                  = list1->____it_next;
     list3->____it_prev                  = list1->____it_prev;
@@ -653,7 +636,7 @@ ___inline___ UList *ulist_merge(const UList * ___restrict___ list1, const  UList
     return list3;
 }
 
-___inline___ int ulist_to_array(const UList *list, void *array, size_t *size)
+___inline___ int ulist_to_array(const UList * ___restrict___ list, void * ___restrict___ array, size_t * ___restrict___ size)
 {
     if (list == NULL)
         return 1;
@@ -711,53 +694,20 @@ ___inline___ UList_iterator *ulist_iterator_create(const UList *list, iti_mode_t
     return it;
 }
 
-___inline___ int ulist_iterator_init(const UList *list, UList_iterator *it, iti_mode_t mode)
-{
-    TRACE();
-
-    if (list == NULL)
-        ERROR("list == NULL\n", 1);
-
-    if (it == NULL)
-        ERROR("iterator == NULL\n", 1);
-
-    if (mode != ITI_BEGIN && mode != ITI_END)
-        ERROR("Incorrect mode\n", 1);
-
-    it->____iterator = list->____it_create(list, mode);
-    if (it->____iterator == NULL)
-        return 1;
-
-    /* FILL HOOKS */
-    it->____destroy    = list->____it_destroy;
-    it->____next       = list->____it_next;
-    it->____prev       = list->____it_prev;
-    it->____get_data   = list->____it_get_data;
-    it->____get_node   = list->____it_get_node;
-    it->____end        = list->____it_end;
-
-    return 0;
-}
-
 IT_FUNC_CONTAINER(UList, ulist)
 
 /* use this macro to create wrappers for iterator */
 #define ULIST_ITERATOR_WRAPPERS_CREATE(type, prefix) \
     static ___unused___ void* ____it_create(const void *list, iti_mode_t mode); \
-    static ___unused___ int ____it_init(const void *list, void *it, iti_mode_t mode); \
     static ___unused___ void ____it_destroy(void *it); \
     static ___unused___ int ____it_next(void *it); \
     static ___unused___ int ____it_prev(void *it); \
-    static ___unused___ int ____it_get_data(const void *it, void *data); \
+    static ___unused___ int ____it_get_data(const void * ___restrict___ it, void * ___restrict___ data); \
     static ___unused___ int ____it_get_node(const void *it, void *node); \
     static ___unused___ bool ____it_end(const void *it); \
     static ___unused___ void* ____it_create(const void *list, iti_mode_t mode) \
     { \
         return concat(prefix, _create)(ulist_get_list(list), mode); \
-    } \
-    static ___unused___ int ____it_init(const void *list, void *it, iti_mode_t mode) \
-    { \
-        return concat(prefix, _init)(list, (type *)it, mode); \
     } \
     static ___unused___ void ____it_destroy(void *it) \
     { \
@@ -774,12 +724,12 @@ IT_FUNC_CONTAINER(UList, ulist)
         return concat(prefix, _prev)((type *)it); \
     } \
     \
-    static ___unused___ int ____it_get_data(const void *it, void *data) \
+    static ___unused___ int ____it_get_data(const void * ___restrict___ it, void * ___restrict___ data) \
     { \
         return concat(prefix, _get_data)((const type *)it, data); \
     } \
     \
-    static ___unused___ int ____it_get_node(const void *it, void *node) \
+    static ___unused___ int ____it_get_node(const void * ___restrict___ it, void * ___restrict___ node) \
     { \
         return concat(prefix, _get_node)((const type *)it, node); \
     } \

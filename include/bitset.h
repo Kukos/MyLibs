@@ -14,20 +14,10 @@
 #include <generic.h>
 #include <sys/types.h>
 #include <iterators.h>
+#include <common.h>
 
-typedef struct Bitset
-{
-    DWORD *____set;
-    size_t ____size;
-} Bitset;
-
-typedef struct Bitset_iterator
-{
-    DWORD  *____set;
-    ssize_t ____index;
-    ssize_t ____bit;
-    size_t  ____size;
-} Bitset_iterator;
+typedef struct Bitset Bitset;
+typedef struct Bitset_iterator Bitset_iterator;
 
 IT_FUNC(Bitset, bitset)
 

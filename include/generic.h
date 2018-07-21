@@ -54,6 +54,23 @@
 
 #endif
 
+/* A = B, A, B has size S, use SSE if possible */
+#define __ASSIGN__(A, B, S) \
+    do { \
+        _Pragma("GCC diagnostic push"); \
+        _Pragma("GCC diagnostic ignored \"-Wstrict-aliasing\""); \
+        (void)type_var_check(A, B); \
+        switch (S) \
+        { \
+            case 1: *(uint8_t *)&A = *(uint8_t *)&B; break; \
+            case 2: *(uint16_t *)&A = *(uint16_t *)&B; break; \
+            case 4: *(uint32_t *)&A = *(uint32_t *)&B; break; \
+            case 8: *(uint64_t *)&A = *(uint64_t *)&B; break; \
+            default: (void)memcpy((void *)&A, (void *)&B, (size_t)(S)); \
+        } \
+        _Pragma("GCC diagnostic pop"); \
+    } while (0)
+
 /* swap A and B with size = S, use SSE if possible */
 #define __SWAP__(A, B, S) \
     do { \
@@ -61,18 +78,10 @@
         if (&(A) != &(B)) \
         { \
             BYTE __buffer__[S]; \
-            (void)memcpy((void *)__buffer__, (void *)&(A), (size_t)(S)); \
-            (void)memcpy((void *)&(A), (void *)&(B), (size_t)(S)); \
-            (void)memcpy((void *)&(B), (void *)__buffer__, (size_t)(S)); \
+            __ASSIGN__(__buffer__[0], A, S); \
+            __ASSIGN__(A, B, S); \
+            __ASSIGN__(B, __buffer__[0], S); \
         } \
-    } while (0)
-
-/* A = B, A, B has size S, use SSE if possible */
-#define __ASSIGN__(A, B, S) \
-    do { \
-        (void)type_var_check(A, B); \
-        if (&(A) != &(B)) \
-            (void)memcpy((void *)&(A), (void *)&(B), (size_t)(S)); \
     } while (0)
 
 #endif

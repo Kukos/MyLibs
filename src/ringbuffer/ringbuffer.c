@@ -5,6 +5,17 @@
 #include <common.h>
 #include <generic.h>
 
+struct Ring_buffer
+{
+    void    *____buf;
+    size_t  ____data_size;
+    size_t  ____max_entries;
+    size_t  ____head;
+    size_t  ____tail;
+    size_t  ____num_entries;
+    void    (*____destructor)(void *data);
+};
+
 #define RB_NEXT_HEAD_TAIL(RB, field) \
     do { \
         RB->field += RB->____data_size; \
@@ -15,7 +26,7 @@
 #define RB_NEXT_HEAD(RB) RB_NEXT_HEAD_TAIL(RB, ____head)
 #define RB_NEXT_TAIL(RB) RB_NEXT_HEAD_TAIL(RB, ____tail)
 
-Ring_buffer *ring_buffer_create(size_t data_size, size_t max_entries, void(*destructor)(void *data))
+Ring_buffer *ring_buffer_create(size_t data_size, size_t max_entries, destructor_f destructor)
 {
     Ring_buffer *rb;
 
@@ -91,7 +102,7 @@ void ring_buffer_destroy_with_entries(Ring_buffer *rb)
     ring_buffer_destroy(rb);
 }
 
-int ring_buffer_enqueue(Ring_buffer *rb, const void *data)
+int ring_buffer_enqueue(Ring_buffer * ___restrict___ rb, const void * ___restrict___ data)
 {
     BYTE *_t;
     BYTE *_val;
@@ -123,7 +134,7 @@ int ring_buffer_enqueue(Ring_buffer *rb, const void *data)
     return 0;
 }
 
-int ring_buffer_get_head(const Ring_buffer *rb, void *data)
+int ring_buffer_get_head(const Ring_buffer * ___restrict___ rb, void * ___restrict___ data)
 {
     BYTE *_t;
 
@@ -145,7 +156,7 @@ int ring_buffer_get_head(const Ring_buffer *rb, void *data)
     return 0;
 }
 
-int ring_buffer_dequeue(Ring_buffer *rb, void *data)
+int ring_buffer_dequeue(Ring_buffer * ___restrict___ rb, void * ___restrict___ data)
 {
     TRACE();
 
@@ -161,7 +172,7 @@ int ring_buffer_dequeue(Ring_buffer *rb, void *data)
     return 0;
 }
 
-int ring_buffer_to_array(const Ring_buffer *rb, void *array, size_t *size)
+int ring_buffer_to_array(const Ring_buffer * ___restrict___ rb, void * ___restrict___ array, size_t * ___restrict___ size)
 {
     size_t bytes_to_move;
     size_t temp_bytes_to_move;

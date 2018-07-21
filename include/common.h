@@ -15,6 +15,10 @@
 #include <stdlib.h> /* free */
 #include <bits.h>
 #include <template_array.h>
+#include <stdint.h>
+#include <inttypes.h>
+#include <stddef.h>
+#include <stdbool.h>
 
 /* swap a with b IFF types are the same */
 #define SWAP(a ,b) \
@@ -119,6 +123,15 @@
 #define LOG2_int(n)             ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_int(n) - 1)
 #define LOG2_long(n)            ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_long(n) - 1)
 #define LOG2_longlong(n)        ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_longlong(n) - 1)
+
+/* comparator */
+typedef int (*cmp_f)(const void *a, const void *b);
+
+/* destructor */
+typedef void (*destructor_f)(void *a);
+
+/* differ */
+typedef long long (*diff_f)(const void *a, const void *b);
 
 /*
     Macro create static function for cmp 2 vars (type must by simple type)
