@@ -6,9 +6,9 @@ Because ANSI and c99 standarts are not enough to write a user friendly interface
 
 To keep code in good resist of static bugs, in this project I use a lot of gcc flags that check a lot of things analysed in compiled time.
 
-The main idea in this project is intoduce interfaces of common structrues that can be used to create polymorphism
+The main idea in this project is intoduce interfaces of common structrues that can be used to create polymorphism.
 So a lot of C++ features were implemented here, like iterators, constructors / destructors, RAII with gcc extenstions and abstract classes (like Tree interface).
-By using pointer to void and pointers to known functions we can obtain inheritance and polymorphism and a lot of absract levels in simple C code.
+By using pointer to void and pointers to known functions we can obtain inheritance and polymorphism and a lot of abstract levels in simple C code.
 
 To get a good performance (like c++ stl or better) the bodies of funtions are optimized on algorithms level.
 
@@ -93,7 +93,7 @@ GPL 3.0
 
     selection - selection of positional statistic
 
-    sort - implementation of few sort algorithms (very good quicksort implementation better that classic sort in C)
+    sort - implementation of few sort algorithms (very good quicksort implementation)
 
     stack - stack of dynamic array
 
