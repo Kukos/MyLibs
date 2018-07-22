@@ -93,30 +93,60 @@ test_f test_container_of(void)
 
 test_f test_init_variable(void)
 {
-    /* random values, "the same" behaviour as "random" val in RAM */
-    int a = 5;
-    double b = 5.0;
-    char c = 5;
-    int *d = (int *)0x12345;
-    void *e = (void *)0x12345;
-
-    int aa = a;
-    double bb = b;
-    char cc = c;
-    int *dd = d;
-    void *ee = e;
+    /* random values on stack */
+    int a;
+    double b;
+    char c;
+    int *d;
+    void *e;
+    MyStruct s;
+    MyStruct s2 = {0};
 
     init_var(a);
     init_var(b);
     init_var(c);
     init_var(d);
     init_var(e);
+    init_var(s);
 
-    T_ASSERT(a, aa);
-    T_ASSERT(b, bb);
-    T_ASSERT(c, cc);
-    T_ASSERT(d, dd);
-    T_ASSERT(e, ee);
+    T_ASSERT(a, (int)0);
+    T_ASSERT(b, (double)0);
+    T_ASSERT(c, (char)0);
+    T_ASSERT(d, (int *)0);
+    T_ASSERT(e, (void *)0);
+    T_ASSERT(memcmp(&s, &s2, sizeof(MyStruct)), 0);
+}
+
+test_f test_likely(void)
+{
+    int a = 0;
+    int volatile c1 = 5;
+    int volatile c2 = 10;
+
+    if (likely(c1 < c2))
+        a = 5;
+
+    T_ASSERT(a, 5);
+
+    if (unlikely(c1 != c2))
+        a = 10;
+
+    T_ASSERT(a, 10);
+
+    if (likely(c1 + 100 == c2))
+        a = 100;
+
+    T_ASSERT(a, 10);
+
+    if (unlikely(c1 > c2))
+        a = 50;
+
+    T_ASSERT(a, 10);
+}
+
+test_f test_static_assert(void)
+{
+    static_assert(sizeof(char) == 1);
 }
 
 test_f test_least_one(void)
@@ -336,11 +366,11 @@ test_f test_barrier(void)
 
     a = 0;
     T_ASSERT(a, 0);
-    sw_mem_barrier;
+    sw_mem_barrier();
     b = 1;
     T_ASSERT(a, 0);
     T_ASSERT(b, 1);
-    hw_mem_barrier;
+    hw_mem_barrier();
     a = 1;
     T_ASSERT(a, 1);
     T_ASSERT(b, 1);
@@ -354,11 +384,231 @@ test_f test_atomic(void)
     T_ASSERT(a, 1);
 }
 
+test_f test_alloc_on_stack(void)
+{
+    const size_t size = 100;
+    char *t = alloc_on_stack(size);
+    char *t2 = alloc_on_stack_align(size, 16);
+    size_t i;
+
+    for (i = 0; i < size; ++i)
+        t[i] = t2[i] = (char)i;
+
+    for (i = 0; i < size; ++i)
+    {
+        T_ASSERT(t[i], i);
+        T_ASSERT(t2[i], i);
+    }
+
+}
+
+test_f test_cache(void)
+{
+    const size_t size = BIT(12); /* 4KB */
+    char *t;
+    size_t i;
+
+    t = malloc(size);
+    T_ERROR(t == NULL);
+
+    /* high prio */
+    load_to_cache(t, CACHE_WRITE, CACHE_SAVE_HIGH_PRIO);
+    for (i = 0; i < size; ++i)
+        t[i] = 'a' + (i % ('z' - 'a' + 1));
+
+    clear_cache(t, t + size);
+    hw_mem_barrier();
+
+    load_to_cache(t, CACHE_READ, CACHE_NO_SAVE);
+    for (i = 0; i < size; ++i)
+        T_ASSERT(t[i], 'a' + (i % ('z' - 'a' + 1)));
+
+    /*  normal prio */
+    load_to_cache(t, CACHE_WRITE, CACHE_SAVE_NORMAL_PRIO);
+    for (i = 0; i < size; ++i)
+        t[i] = 'a' + (i % ('z' - 'a' + 1));
+
+    clear_cache(t, t + size);
+    hw_mem_barrier();
+
+    load_to_cache(t, CACHE_READ, CACHE_NO_SAVE);
+    for (i = 0; i < size; ++i)
+        T_ASSERT(t[i], 'a' + (i % ('z' - 'a' + 1)));
+
+    /* low prio */
+    load_to_cache(t, CACHE_WRITE, CACHE_SAVE_LOW_PRIO);
+    for (i = 0; i < size; ++i)
+        t[i] = 'a' + (i % ('z' - 'a' + 1));
+
+    clear_cache(t, t + size);
+    hw_mem_barrier();
+
+    load_to_cache(t, CACHE_READ, CACHE_NO_SAVE);
+    for (i = 0; i < size; ++i)
+        T_ASSERT(t[i], 'a' + (i % ('z' - 'a' + 1)));
+
+    FREE(t);
+}
+
+test_f test_write_once(void)
+{
+    int i;
+    char c;
+    double d;
+    uint8_t t[10];
+
+    int ii = 10;
+    char cc = 'a';
+    double dd = 3.14;
+    uint8_t tt[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    WRITE_ONCE(i, ii);
+    WRITE_ONCE(c, cc);
+    WRITE_ONCE(d, dd);
+    WRITE_ONCE(t, tt);
+
+    T_ASSERT(i, i);
+    T_ASSERT(c, cc);
+    T_ASSERT(d, dd);
+    T_ASSERT(memcmp(t, tt, sizeof(t)), 0);
+}
+
+test_f test_read_once(void)
+{
+    int i;
+    char c;
+    double d;
+    uint8_t t[10];
+
+    int ii = 10;
+    char cc = 'a';
+    double dd = 3.14;
+    uint8_t tt[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    READ_ONCE(i, ii);
+    READ_ONCE(c, cc);
+    READ_ONCE(d, dd);
+    READ_ONCE(t, tt);
+
+    T_ASSERT(i, i);
+    T_ASSERT(c, cc);
+    T_ASSERT(d, dd);
+    T_ASSERT(memcmp(t, tt, sizeof(t)), 0);
+}
+
+test_f test_write_once_sync(void)
+{
+    int i;
+    char c;
+    double d;
+    uint8_t t[10];
+
+    int ii = 10;
+    char cc = 'a';
+    double dd = 3.14;
+    uint8_t tt[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    WRITE_ONCE_SYNC(i, ii);
+    WRITE_ONCE_SYNC(c, cc);
+    WRITE_ONCE_SYNC(d, dd);
+    WRITE_ONCE_SYNC(t, tt);
+
+    T_ASSERT(i, i);
+    T_ASSERT(c, cc);
+    T_ASSERT(d, dd);
+    T_ASSERT(memcmp(t, tt, sizeof(t)), 0);
+}
+
+test_f test_read_once_sync(void)
+{
+    int i;
+    char c;
+    double d;
+    uint8_t t[10];
+
+    int ii = 10;
+    char cc = 'a';
+    double dd = 3.14;
+    uint8_t tt[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    READ_ONCE_SYNC(i, ii);
+    READ_ONCE_SYNC(c, cc);
+    READ_ONCE_SYNC(d, dd);
+    READ_ONCE_SYNC(t, tt);
+
+    T_ASSERT(i, i);
+    T_ASSERT(c, cc);
+    T_ASSERT(d, dd);
+    T_ASSERT(memcmp(t, tt, sizeof(t)), 0);
+}
+
+test_f test_write_once_val(void)
+{
+    int i;
+    char c;
+    double d;
+
+    WRITE_ONCE_VAL(i, 10);
+    WRITE_ONCE_VAL(c, (char)'a');
+    WRITE_ONCE_VAL(d, 3.14);
+
+    T_ASSERT(i, 10);
+    T_ASSERT(c, 'a');
+    T_ASSERT(d, 3.14);
+}
+
+test_f test_read_once_val(void)
+{
+    int i;
+    char c;
+    double d;
+
+    READ_ONCE_VAL(i, 10);
+    READ_ONCE_VAL(c, (char)'a');
+    READ_ONCE_VAL(d, 3.14);
+
+    T_ASSERT(i, 10);
+    T_ASSERT(c, 'a');
+    T_ASSERT(d, 3.14);
+}
+
+test_f test_write_once_val_sync(void)
+{
+    int i;
+    char c;
+    double d;
+
+    WRITE_ONCE_VAL_SYNC(i, 10);
+    WRITE_ONCE_VAL_SYNC(c, (char)'a');
+    WRITE_ONCE_VAL_SYNC(d, 3.14);
+
+    T_ASSERT(i, 10);
+    T_ASSERT(c, 'a');
+    T_ASSERT(d, 3.14);
+}
+
+test_f test_read_once_val_sync(void)
+{
+    int i;
+    char c;
+    double d;
+
+    READ_ONCE_VAL_SYNC(i, 10);
+    READ_ONCE_VAL_SYNC(c, (char)'a');
+    READ_ONCE_VAL_SYNC(d, 3.14);
+
+    T_ASSERT(i, 10);
+    T_ASSERT(c, 'a');
+    T_ASSERT(d, 3.14);
+}
+
 void test(void)
 {
     TEST(test_to_string());
     TEST(test_concat());
     TEST(test_unique_var_name());
+    TEST(test_likely());
+    TEST(test_static_assert());
     TEST(test_container_of());
     TEST(test_init_variable());
     TEST(test_least_one());
@@ -369,6 +619,16 @@ void test(void)
     TEST(test_swap_bytes());
     TEST(test_barrier());
     TEST(test_atomic());
+    TEST(test_alloc_on_stack());
+    TEST(test_cache());
+    TEST(test_write_once());
+    TEST(test_read_once());
+    TEST(test_write_once_sync());
+    TEST(test_read_once_sync());
+    TEST(test_write_once_val());
+    TEST(test_read_once_val());
+    TEST(test_write_once_val_sync());
+    TEST(test_read_once_val_sync());
 }
 
 int main(void)

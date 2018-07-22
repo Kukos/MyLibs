@@ -1,10 +1,8 @@
 # C Libraries Set (CLS)
 
 #### Overview
-CLS is a set of basic libraries which can be found in C++, java etc. Unfortunately stdlib in C lang is quite poor, so new library set was created.
+CLS is a set of basic libraries which can be found in C++, java etc. Unfortunately stdlib in C lang is quite poor, so new libraries set was created.
 Because ANSI and c99 standarts are not enough to write a user friendly interface, I chose std gnu99 and I created interface (compiler.h / common.h) to provide compiler extensions in code as macros.
-
-To keep code in good resist of static bugs, in this project I use a lot of gcc flags that check a lot of things analysed in compiled time.
 
 The main idea in this project is intoduce interfaces of common structrues that can be used to create polymorphism.
 So a lot of C++ features were implemented here, like iterators, constructors / destructors, RAII with gcc extenstions and abstract classes (like Tree interface).
@@ -24,7 +22,7 @@ GPL 3.0
 
 ##### Interfaces:
 
-    assert.h - standart assert but with simple backtrace
+    assert.h - standart assert but with simple stack backtrace
 
     common.h - set of common defines, macros, functions like abs, min
 
@@ -32,7 +30,7 @@ GPL 3.0
 
     generic.h - interface to read architecture (32 / 64) and set "types like asm" BYTE, WORD etc
 
-    iterators.h - interface for iteratos for your structure
+    iterators.h - interface of iteratos for your structure
 
     slist.h - abstract class of sorted lists
 
@@ -122,6 +120,8 @@ To build / developing CLS you need:
     wc
 
     bc
+
+    openssl
 
 If you have linux based on debian (like ubuntu) you can run ./scripts/install_tools.sh to install what you need.
 

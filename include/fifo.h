@@ -33,10 +33,6 @@ typedef struct Fifo Fifo;
 /*
     Create fifo
 
-    destructor by void * pass addr i.e in array we have MyStruct *,
-    so your destructor data = (void *)&ms
-
-
     PARAMS
     @IN size_of - size of element
     @IN destroy - your data destructor
@@ -60,7 +56,6 @@ void fifo_destroy(Fifo *fifo);
 
 /*
     Destroy Fifo with all entries ( call destructor for each entries )
-
 
     PARAMS
     @IN fifo - pointer Fifo
@@ -112,6 +107,8 @@ int fifo_dequeue(Fifo * ___restrict___ fifo, void * ___restrict___ val);
 int fifo_to_array(const Fifo * ___restrict___ fifo, void * ___restrict___ array, size_t * ___restrict___ size);
 
 /*
+    Check if fifo is empty
+
     PARAMS
     @IN fifo - pointer to fifo
 
@@ -147,7 +144,7 @@ int fifo_get_head(const Fifo * ___restrict___ fifo, void * ___restrict___ val);
 ssize_t fifo_get_num_entries(const Fifo *fifo);
 
 /*
-    Get size of
+    Get size of data
 
     PARAMS
     @IN fifo - pointer to Fifo

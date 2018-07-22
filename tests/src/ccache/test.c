@@ -13,7 +13,7 @@ static size_t get_available_memory(void)
 {
     const char * const meminfo = "/proc/meminfo";
     const char * const token = "MemAvailable:";
-    char buffer [BIT(12)] = {0}; /* 1KB buffer */
+    char buffer [BIT(12)] = {0}; /* 4KB buffer */
     String *string;
     int fd;
     size_t line;

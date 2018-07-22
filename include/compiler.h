@@ -12,15 +12,17 @@
 
 #include <stddef.h> /* offsetof */
 #include <stdint.h>
+#include <string.h> /* memcpy */
 
-/* use thic macro to convert to string  */
+/* use thic macro to convert non-Clang "word" to string  */
 #define ____tostring____(s) #s
 #define tostring(s) ____tostring____(s)
 
-/* CONCAT use this macro to concat words in one string */
+/* CONCAT use this macro to concat non-Clang "words" in one string */
 #define ____concat____(x, y) x ## y
 #define concat(x, y) ____concat____(x, y)
 
+/* use this macro, to get unique name for your temporary variable */
 #define unique_var_name(name) concat(concat(UNIQUE_VAR_, name), __COUNTER__)
 
 /* set if () { } at the begining of pipeline */
@@ -30,7 +32,7 @@
 #define unlikely(x) __builtin_expect(!!(x), 0)
 
 /* to avoid warning about uninit var */
-#define init_var(x) ((x) = *(&(x)))
+#define init_var(x) ((x) = ((typeof(x)){0}))
 
 /* use this macro to get parent struct from member struct */
 #define container_of(ptr, type, member) \
@@ -48,6 +50,7 @@
 
 #define __unused(x) (void)(x)
 
+/* use this macros if casting to (void) is ugly for you */
 #define unused_param(x)  __unused(x)
 #define unused_retval(x) __unused(x)
 #define unused_value(x)  __unused(x)
@@ -263,8 +266,8 @@
 /* clear cache */
 #define clear_cache(begin, end) __builtin___clear_cache((char *)begin, (char *)end)
 
-#define WRITE_CACHE 1
-#define READ_CACHE  0
+#define CACHE_WRITE 1
+#define CACHE_READ  0
 
 #define CACHE_NO_SAVE           0
 #define CACHE_SAVE_LOW_PRIO     1
@@ -273,24 +276,75 @@
 
 #define load_to_cache(addr, rw, prio)  __builtin_prefetch(addr, rw, prio)
 
-#define sw_mem_barrier  asm volatile ("" : : : "memory")
-#define hw_mem_barrier  __sync_synchronize()
+#define sw_mem_barrier()  asm volatile ("" : : : "memory")
+#define hw_mem_barrier()  __sync_synchronize()
+
+/* atomic in sense of HW read / write not in thread sense */
 #define atomic(x) \
     do { \
-        hw_mem_barrier; \
+        hw_mem_barrier(); \
         x; \
-        hw_mem_barrier; \
+        hw_mem_barrier(); \
     } while (0)
+
+/* use thic macro if you want to write data of @size from  @src to @dst */
+#define WRITE_ONCE_SIZE(dst, src, size) \
+    do{ \
+        _Pragma("GCC diagnostic push"); \
+        _Pragma("GCC diagnostic ignored \"-Wstrict-aliasing\""); \
+        (void)type_var_check(dst, src); \
+        switch (size) \
+        { \
+            case 1: *(uint8_t *)&dst = *(uint8_t *)&src; break; \
+            case 2: *(uint16_t *)&dst = *(uint16_t *)&src; break; \
+            case 4: *(uint32_t *)&dst = *(uint32_t *)&src; break; \
+            case 8: *(uint64_t *)&dst = *(uint64_t *)&src; break; \
+            default: (void)memcpy((void *)&dst, (void *)&src, (size_t)(size)); \
+        } \
+        _Pragma("GCC diagnostic pop"); \
+    } while (0)
+
+/* write once when variables have strict types, like int, struct s, not *(int *)char[20] */
+#define WRITE_ONCE(dst, src) WRITE_ONCE_SIZE(dst, src, sizeof(dst))
+
+/* use thic macro if you want to read data of @size from  @src to @dst  */
+#define READ_ONCE_SIZE(dst, src, size) WRITE_ONCE_SIZE(dst, src, size)
+#define READ_ONCE(dst, src) READ_ONCE_SIZE(dst, src, sizeof(dst))
+
+/* writing in  HW sync mode */
+#define WRITE_ONCE_SIZE_SYNC(dst, src, size) atomic(WRITE_ONCE_SIZE(dst, src, size))
+#define WRITE_ONCE_SYNC(dst, src) WRITE_ONCE_SIZE_SYNC(dst, src, sizeof(dst))
+
+/* reading in HW sync mode */
+#define READ_ONCE_SIZE_SYNC(dst, src, size) atomic(READ_ONCE_SIZE(dst, src, size))
+#define READ_ONCE_SYNC(dst, src) READ_ONCE_SIZE_SYNC(dst, src, sizeof(dst))
+
+/* writing val like 3, 8ULL */
+#define WRITE_ONCE_VAL(dst, val) \
+    do { \
+        typeof(val) ________val = (val); \
+        WRITE_ONCE(dst, ________val); \
+    } while (0)
+
+#define WRITE_ONCE_VAL_SYNC(dst, val) \
+    do { \
+        typeof(val) ________val = (val); \
+        WRITE_ONCE_SYNC(dst, ________val); \
+    } while (0)
+
+/* reading val like 3, 8ULL */
+#define READ_ONCE_VAL(dst, val) WRITE_ONCE_VAL(dst, val)
+#define READ_ONCE_VAL_SYNC(dst, val) WRITE_ONCE_VAL_SYNC(dst, val)
 
 /* FUNCTION ATTR */
 
 /* use this macro instead of inline */
 #define ___inline___ inline __attribute__(( always_inline ))
 
-/* function can't return, it exit immediately  */
+/* function can't return, it's exit immediately  */
 #define ___no_return___ __attribute__(( noreturn ))
 
-/* f args can be null */
+/* f args can't be null */
 #define ___nonull___(...) __attribute__(( nonnull(__VA_ARGS__) ))
 
 /* f is used very few times, so put it in special part of text */
@@ -310,7 +364,7 @@
 /* this function could be compiled in few version with smid support */
 #define ___simd___ __attribute__(( simd ))
 
-/* tell compiler that this f or var could be nt used */
+/* tell compiler that this f or var could be not used */
 #define ___unused___ __attribute__(( unused ))
 
 /* tell compiler that function is weak and can be overwrite */
@@ -322,9 +376,13 @@
 #undef static_assert
 #endif
 
+/* use this macro to get compile time error when function will be used */
 #define ___error___(msg) __attribute__(( error(msg) ));
+
+/* use this macro to get compile time warning when function will be used */
 #define ___warning___(msg) __attribute__(( warning(msg) ));
 
+/* use this macro to make check in compile time (like assert, but works during commpilation on compile time known conds) */
 #define static_assert(cond) __static_assert(cond, __LINE__)
 #define __static_assert(cond, name) \
     do { \
@@ -349,6 +407,7 @@
 /* garbage_collected by function with only 1 arg: pointer to this variable */
 #define ___garbage_collector___(func) __attribute__(( cleanup(func) ))
 
+/* use this instead of restrict */
 #define ___restrict___ restrict
 
 #endif

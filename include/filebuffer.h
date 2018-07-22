@@ -93,7 +93,7 @@ File_buffer *file_buffer_create_from_path(const char *path, int protect_flag, in
 File_buffer *file_buffer64_create_from_path(const char *path, int protect_flag, int open_flag);
 
 /*
-    Detached file and destroy structure
+    Detach file and destroy structure
 
 	PARAMS
 	@IN fb - pointer to file buffer
@@ -105,7 +105,7 @@ File_buffer *file_buffer64_create_from_path(const char *path, int protect_flag, 
 int file_buffer_destroy(File_buffer *fb);
 
 /*
-    Add to end of mapped file the content data
+    Add to the end of mapped file the content data
 
 	PARAMS
 	@IN File_buffer - pointer to file buffer
@@ -118,7 +118,7 @@ int file_buffer_destroy(File_buffer *fb);
 int file_buffer_append(File_buffer * ___restrict___ fb, const char * ___restrict___ data);
 
 /*
-    Add to end of mapped file the content data in 64 bits MODE
+    Add to the end of mapped file the content data in 64 bits MODE
 
 	PARAMS
 	@IN File_buffer - pointer to file buffer
@@ -131,7 +131,7 @@ int file_buffer_append(File_buffer * ___restrict___ fb, const char * ___restrict
 int file_buffer64_append(File_buffer * ___restrict___ fb, const char * ___restrict___ data);
 
 /*
-    Synchronized mapped file with true file on disk
+    Synchronize mapped file with true file on disk
 
 	PARAMS
 	@IN fb - pointer to file buffer

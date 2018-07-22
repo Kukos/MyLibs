@@ -40,10 +40,6 @@ IT_FUNC(Arraylist, arraylist)
 /*
     Create alist as UList
 
-    destructor by void * pass addr i.e in list we have MyStruct *,
-    so your destructor data = (void *)&ms
-
-
     PARAMS
     @IN size_of - size of element in list
     @IN destroy - your data destructor or NULL
@@ -130,7 +126,7 @@ int arraylist_insert_last(Arraylist * ___restrict___ alist, const void * ___rest
 int arraylist_insert_pos(Arraylist * ___restrict___ alist, size_t pos, const void * ___restrict___ data);
 
 /*
-    Delete first data od alist
+    Delete first data from alist
 
     PARAMS
     @IN alist - pointer to alist
@@ -142,7 +138,7 @@ int arraylist_insert_pos(Arraylist * ___restrict___ alist, size_t pos, const voi
 int arraylist_delete_first(Arraylist *alist);
 
 /*
-    Delete last data od alist
+    Delete last data from alist
 
     PARAMS
     @IN alist - pointer to alist
@@ -247,7 +243,7 @@ Arraylist *arraylist_merge(const Arraylist * ___restrict___ alist1, const Arrayl
 int arraylist_to_array(const Arraylist * ___restrict___ alist, void * ___restrict___ array, size_t * ___restrict___ size);
 
 /*
-    Get size of
+    Get size of data
 
     PARAMS
     @IN alist - pointer to Arraylist

@@ -3,6 +3,7 @@
 
 #include <common.h>   /* tostring */
 #include <stdlib.h>     /* exit */
+#include <string.h>
 
 /*
     Print stack trace on stderr
@@ -16,27 +17,13 @@
 */
 void stack_trace(void);
 
-/* private simple strlen to avoid including string.h */
-___inline___ long ______assert_strlen______(const char *str);
-
-___inline___ long ______assert_strlen______(const char *str)
-{
-    long len = 0;
-    while (*str++ != '\0')
-        ++len;
-
-    return len;
-}
-
 #define ASSERT_MAX_FUNC_SPACE   20
 
 extern void __assert_msg(const char *msg, ...);
 
-#include <string.h>
-
 #define ASSERT_MSG \
     "[ASSERT]\tFILE: %s\n\tFUNC: %s%*.sLINE: %d\n", __FILE__, __func__, \
-             (int)(ASSERT_MAX_FUNC_SPACE - ______assert_strlen______(__func__)), "", __LINE__
+             (int)(ASSERT_MAX_FUNC_SPACE - strlen(__func__)), "", __LINE__
 
 #ifdef ASSERT
     #define assert(expr) \

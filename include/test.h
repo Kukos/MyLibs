@@ -15,32 +15,22 @@
 #include <compiler.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #define __TEST_COLOR_INFO__     COLOR_CYAN
 #define __TEST_COLOR_PASSED__   COLOR_GREEN
 #define __TEST_COLOR_FAILED__   COLOR_RED
 #define __TEST_SUMMARY_TEXT__   " TEST SUMMARY "
 
-/* private simple strlen to avoid including string.h */
-static ___inline___ long ______test_strlen______(const char *str);
-static ___inline___ long ______test_strlen______(const char *str)
-{
-    long len = 0;
-    while (*str++ != '\0')
-        ++len;
-
-    return len;
-}
-
 /* PRIVATE MACRO */
 #define ____TEST_SUMMARY(COLOR, STR_RESULT) \
     do { \
         (void)printf( COLOR "%.*s" __TEST_SUMMARY_TEXT__ "%.*s\n", \
                 ((int)(__TEST_MAX_STRING_LENGTH__ - \
-                    ______test_strlen______(__TEST_SUMMARY_TEXT__)) >> 1), \
+                    strlen(__TEST_SUMMARY_TEXT__)) >> 1), \
                 ________chars, \
                 ((int)(__TEST_MAX_STRING_LENGTH__ - \
-                    ______test_strlen______(__TEST_SUMMARY_TEXT__) + 1) >> 1), \
+                    strlen(__TEST_SUMMARY_TEXT__) + 1) >> 1), \
                 ________chars \
                ); \
         (void)printf("TESTS EXECUTED:\t%ld\n", ________passed_counter + ________failed_counter); \
@@ -84,11 +74,11 @@ static ___unused___ test_t ________ret;
         srand((unsigned)time(NULL)); \
         (void)printf( __TEST_COLOR_INFO__ "%.*s %s %.*s\n" COLOR_RESET, \
                 ((int)(__TEST_MAX_STRING_LENGTH__ - \
-                    ______test_strlen______(fmt) - 2) >> 1), \
+                    strlen(fmt) - 2) >> 1), \
                 ________chars, \
                 fmt, \
                 ((int)(__TEST_MAX_STRING_LENGTH__ - \
-                    ______test_strlen______(fmt) - 1) >> 1), \
+                    strlen(fmt) - 1) >> 1), \
                 ________chars \
                ); \
     } while (0);
@@ -117,7 +107,7 @@ static ___unused___ test_t ________ret;
                     __TEST_COLOR_FAILED__ "FAILED" COLOR_RESET "\n", \
                         tostring(func), \
                         (int)(__TEST_MAX_STRING_LENGTH__ - \
-                            ______test_strlen______(tostring(func))), \
+                            strlen(tostring(func))), \
                         ________spaces); \
             ++________failed_counter; \
         } \
@@ -127,7 +117,7 @@ static ___unused___ test_t ________ret;
                     __TEST_COLOR_PASSED__ "PASSED" COLOR_RESET "\n", \
                         tostring(func), \
                         (int)( __TEST_MAX_STRING_LENGTH__ - \
-                            ______test_strlen______(tostring(func))), \
+                            strlen(tostring(func))), \
                         ________spaces); \
             ++________passed_counter; \
         } \

@@ -46,9 +46,6 @@ IT_FUNC(Darray, darray)
 /*
     Create new instance of dynamic array
 
-    destructor by void * pass addr i.e in array we have MyStruct *,
-    so your destructor data = (void *)&ms
-
     PARAMS
     @IN type - type of array ( sorted or unsorted )
     @IN size - begining size, if 0 array will be create with default size

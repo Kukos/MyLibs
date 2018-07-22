@@ -76,8 +76,7 @@ IT_FUNC(List2D, list2d)
     NULL iff failure
     Pointer iff success
 */
-SList *slist_list2d_create(size_t size_of, cmp_f cmp,
-    diff_f diff, destructor_f destroy);
+SList *slist_list2d_create(size_t size_of, cmp_f cmp, diff_f diff, destructor_f destroy);
 
 /*
     Create list
@@ -93,8 +92,7 @@ SList *slist_list2d_create(size_t size_of, cmp_f cmp,
     NULL iff failure
     Pointer iff success
 */
-List2D *list2d_create(size_t size_of, cmp_f cmp,
-    diff_f diff, destructor_f destroy);
+List2D *list2d_create(size_t size_of, cmp_f cmp, diff_f diff, destructor_f destroy);
 
 /*
     Destroy list
@@ -132,7 +130,7 @@ void list2d_destroy_with_entries(List2D *list);
 int list2d_insert(List2D * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
-    Delete the first entry which cmp(list->entry,entry) == 0
+    Delete the first entry for which cmp(list->entry,entry) == 0
 
     PARAMS
     @IN list - pointer to list
@@ -145,7 +143,7 @@ int list2d_insert(List2D * ___restrict___ list, const void * ___restrict___ entr
 int list2d_delete(List2D * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
-    Delete the first entry which cmp(list->entry,entry) == 0
+    Delete the first entry for which cmp(list->entry,entry) == 0
     and call data destructor
 
     PARAMS
@@ -159,7 +157,7 @@ int list2d_delete(List2D * ___restrict___ list, const void * ___restrict___ entr
 int list2d_delete_with_entry(List2D * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
-    Delete all entries which cmp(list->entry,entry) == 0
+    Delete all entries for which cmp(list->entry,entry) == 0
 
     PARAMS
     @IN list - pointer to list
@@ -173,7 +171,7 @@ int list2d_delete_all(List2D * ___restrict___ list, const void * ___restrict___ 
 
 
 /*
-    Delete all entries which cmp(list->entry,entry) == 0
+    Delete all entries for which cmp(list->entry,entry) == 0
     and call destructor
 
     PARAMS
@@ -201,7 +199,7 @@ List2D *list2d_merge(const List2D * ___restrict___ list1, const List2D * ___rest
 
 /*
     Search for entry which cmp(list.entry,val) == 0,
-    so if you have your own struct, val must be fake struct with corect key
+    so if you have your own struct, val must be fake struct with correct key
     i.e
     struct Entry
     {

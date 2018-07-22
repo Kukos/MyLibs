@@ -124,18 +124,16 @@
 #define LOG2_long(n)            ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_long(n) - 1)
 #define LOG2_longlong(n)        ((sizeof(typeof(n)) << 3) - (unsigned long)leading_0_longlong(n) - 1)
 
-/* comparator */
+/* comparator  (takes addr of variable, so instead of int _a = (int)a, it will take int _a - *(int *)a) */
 typedef int (*cmp_f)(const void *a, const void *b);
 
-/* destructor */
+/* destructor (takes addr of variable, so instead of int *_a = (int *)a, it will take int *_a = *(int **)a) */
 typedef void (*destructor_f)(void *a);
 
-/* differ */
+/* differ (takes addr of variable, so instead of int _a = (int)a, it will take int _a - *(int *)a) */
 typedef long long (*diff_f)(const void *a, const void *b);
 
-/*
-    Macro create static function for cmp 2 vars (type must by simple type)
-*/
+/*  Macro create static function for cmp 2 vars (type must by simple type) */
 #define CMP(type) \
     static ___unused___ int concat(cmp_, type)(const void *a, const void *b) \
     { \

@@ -38,10 +38,6 @@ typedef Darray Stack;
     @IN size_of - size of element of stack
     @IN destroy - your data destructor or NULL
 
-    destructor by void * pass addr i.e in array we have MyStruct *,
-    so your destructor data = (void *)&ms
-
-
     RETURN:
     %NULL iff failure
     %Pointer iff success
@@ -111,6 +107,8 @@ int stack_pop(Stack *stack, void *val);
 int stack_get_top(const Stack *stack, void *val);
 
 /*
+    Check if stack is empty
+
     PARAMS
     @IN stack - pointer to stack
 

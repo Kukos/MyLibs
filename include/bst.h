@@ -30,9 +30,6 @@ IT_FUNC(Bst, bst)
 /*
     Create Bst as TREE
 
-    destructor by void * pass addr i.e in list we have MyStruct *,
-    so your destructor data = (void *)&ms
-
     PARAMS
     @IN size_of - size_of data in tree
     @IN cmp - cmp function

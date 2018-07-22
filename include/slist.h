@@ -248,7 +248,7 @@ ___inline___ void slist_destroy_with_entries(SList *list);
 ___inline___ int slist_insert(SList * ___restrict___ list, const void * ___restrict___ data);
 
 /*
-    Delete the first data which cmp(list->data, data) == 0
+    Delete the first data for which cmp(list->data, data) == 0
 
     PARAMS
     @IN list - pointer to SList
@@ -261,7 +261,7 @@ ___inline___ int slist_insert(SList * ___restrict___ list, const void * ___restr
 ___inline___ int slist_delete(SList * ___restrict___ list, const void * ___restrict___ data);
 
 /*
-    Delete the first data which cmp(list->data, data) == 0
+    Delete the first for data which cmp(list->data, data) == 0
     and call destructor
 
     PARAMS
@@ -275,7 +275,7 @@ ___inline___ int slist_delete(SList * ___restrict___ list, const void * ___restr
 ___inline___ int slist_delete_with_entry(SList * ___restrict___ list, const void * ___restrict___ data);
 
 /*
-    Delete all entries which cmp(list->data, data) == 0
+    Delete all entries for which cmp(list->data, data) == 0
 
     PARAMS
     @IN list - pointer to SList
@@ -288,7 +288,7 @@ ___inline___ int slist_delete_with_entry(SList * ___restrict___ list, const void
 ___inline___ int slist_delete_all(SList * ___restrict___ list, const void * ___restrict___ data);
 
 /*
-    Delete all entries which cmp(list->data, data) == 0
+    Delete all entries for which cmp(list->data, data) == 0
     and call destructor
 
     PARAMS
@@ -302,7 +302,7 @@ ___inline___ int slist_delete_all(SList * ___restrict___ list, const void * ___r
 ___inline___ int slist_delete_all_with_entry(SList * ___restrict___ list, const void * ___restrict___ data);
 
 /*
-    Search for data which cmp(list->data, in) == 0,
+    Search for data for which cmp(list->data, in) == 0,
     so if you have your own struct, val must be fake struct with corect key
     e.i
     struct Entry

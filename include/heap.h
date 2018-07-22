@@ -5,7 +5,7 @@
     Simple D-ary heap
     Please note that heap is "generic" and storing only pointers to structures
     ( if data is not simple type )
-    So you must deallocate your data manually, heap only dealoate own memory,
+    So you must deallocate your data manually
     or you can call heap_destroy_with_entries and pass destructor function
 
     Author: Michal Kukowski
@@ -60,7 +60,7 @@ Heap_entry *heap_entry_create(const void *data, size_t size_of);
 void heap_entry_destroy(Heap_entry *entry);
 
 /*
-    Destroy heap entry
+    Destroy heap entry with data
 
     PARAMS
     @IN entry - heap entry
@@ -197,9 +197,8 @@ Heap_entry *heap_extract_top(Heap *heap);
 Heap_entry *heap_get_top(const Heap *heap);
 
 /*
-    Change the key value, create before new entry with changed,
+    Change the key value,
     Old entry will be destroy
-
 
     PARAMS
     @IN heap - pointer to heap

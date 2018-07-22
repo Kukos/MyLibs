@@ -2,7 +2,7 @@
 #define TRIE_H
 
 /*
-    Implementation of popular TRIE (prefix tree on defined ASCII)
+    Implementation of popular TRIE (prefix tree on defined ASCII (only printable characters))
 
     Author:Michal Kukowski
     email: michalkukowski10@gmail.com

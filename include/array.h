@@ -128,7 +128,7 @@ void array_shuffle(void *array, size_t len, size_t size_of);
 void array_copy(void * ___restrict___ dst, const void * ___restrict___ src, size_t len, size_t size_of);
 
 /*
-    Move array from src pointer to dsr pointer (Can overlap)
+    Move array from src pointer to dst pointer (Can overlap)
 
     PARAMS
     @IN dst - dest array
@@ -271,7 +271,7 @@ int array_unsorted_insert_pos(void * ___restrict___ array, size_t len, size_t si
 int array_sorted_insert(void * ___restrict___ array, size_t len, size_t size_of, cmp_f cmp, const void * ___restrict___ data);
 
 /*
-    Delete first entry (move array so at first pos will be 2 entry etc (last will be empty))
+    Delete first entry (move array, so at first pos will be 2nd entry etc (last will be empty))
 
     PARAMS
     @IN array - array
@@ -299,7 +299,7 @@ int array_delete_first(void *array, size_t len, size_t size_of);
 int array_delete_last(void *array, size_t len, size_t size_of);
 
 /*
-    Delete  entry at @pos (move array so at pos will be pos + 1 entry etc (last will be empty))
+    Delete  entry at @pos (move array, so at pos will be (pos + 1)th entry etc (last will be empty))
 
     PARAMS
     @IN array - array
@@ -313,7 +313,7 @@ int array_delete_last(void *array, size_t len, size_t size_of);
 int array_delete_pos(void *array, size_t len, size_t size_of, size_t pos);
 
 /*
-    Delete first entry (move array so at first pos will be 2 entry etc (last will be empty))
+    Delete first entry (move array, so at first pos will be 2nd entry etc (last will be empty))
     Also call destructor and destroy member
 
     PARAMS
@@ -344,7 +344,7 @@ int array_delete_first_with_entry(void *array, size_t len, size_t size_of, destr
 int array_delete_last_with_entry(void *array, size_t len, size_t size_of, destructor_f destructor);
 
 /*
-    Delete  entry at @pos (move array so at pos will be pos + 1 entry etc (last will be empty))
+    Delete  entry at @pos (move array, so at pos will be (pos + 1)th entry etc (last will be empty))
     Also call destructor and destroy member
 
     PARAMS

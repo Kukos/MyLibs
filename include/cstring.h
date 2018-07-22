@@ -1,6 +1,15 @@
 #ifndef CSTRING_H
 #define CSTRING_H
 
+/*
+    Implementation of string from char *, like std :: string
+
+    Author: Michal Kukowski
+    email: michalkukowski10@gmail.com
+
+    LICENCE: GPL 3.0
+*/
+
 #include <sys/types.h>
 #include <stdbool.h>
 #include <iterators.h>
@@ -59,7 +68,7 @@ char *string_get_str(const String *string);
 ssize_t string_get_length(const String *string);
 
 /*
-    Test if test is empty
+    Test if string is empty
 
     PARAMS
     @IN string - pointer to String
@@ -120,7 +129,7 @@ String *string_create_from_ld(long double n);
 String *string_concat(const String *s1, const String *s2);
 
 /*
-    Get char from index @index
+    Get char from @index
 
     PARAMS
     @IN string - pointer to String
@@ -134,7 +143,7 @@ String *string_concat(const String *s1, const String *s2);
 char string_get_char(const String *string, size_t index);
 
 /*
-    Set char on index @index
+    Set char at @index
 
     PARAMS
     @IN string - pointer to String

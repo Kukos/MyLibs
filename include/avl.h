@@ -4,7 +4,7 @@
 /*
     AVL tree implementation without recursive function[^1], but with parent pointer
 
-    ^1 -> only 1 function is recursive: bst_get_hight, because function is rarely use
+    ^1 -> only 1 function is recursive: avl_get_hight, because function is rarely using
     it's better to have O(n) recursive getter instead of additional O(log(n)) operation
     during insert and delete
 
@@ -30,9 +30,6 @@ IT_FUNC(Avl, avl)
 /*
     Create AVL as TREE
 
-    destructor by void * pass addr i.e in list we have MyStruct *,
-    so your destructor data = (void *)&ms
-
     PARAMS
     @IN size_of - size_of data in tree
     @IN cmp - cmp function
@@ -46,9 +43,6 @@ Tree *tree_avl_create(size_t size_of, cmp_f cmp, destructor_f destroy);
 
 /*
     Create AVL
-
-    destructor by void * pass addr i.e in list we have MyStruct *,
-    so your destructor data = (void *)&ms
 
     PARAMS
     @IN size_of - size_of data in tree

@@ -103,7 +103,7 @@ void list_destroy_with_entries(List *list);
 int list_insert(List * ___restrict___  list, const void * ___restrict___ entry);
 
 /*
-    Delete the first entry which cmp(list->entry, entry) == 0
+    Delete the first entry for which cmp(list->entry, entry) == 0
 
     PARAMS
     @IN list - pointer to list
@@ -116,7 +116,7 @@ int list_insert(List * ___restrict___  list, const void * ___restrict___ entry);
 int list_delete(List * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
-    Delete the first entry which cmp(list->entry, entry) ==
+    Delete the first entry for which cmp(list->entry, entry) == 0
     and call destructor
 
     PARAMS
@@ -130,7 +130,7 @@ int list_delete(List * ___restrict___ list, const void * ___restrict___ entry);
 int list_delete_with_entry(List * ___restrict___ list, const void * ___restrict___ entry);
 
 /*
-    Delete all entries which cmp(list->entry,entry) == 0
+    Delete all entries for which cmp(list->entry,entry) == 0
 
     PARAMS
     @IN list - pointer to list
@@ -144,7 +144,7 @@ int list_delete_all(List * ___restrict___ list, const void * ___restrict___ entr
 
 
 /*
-    Delete all entries which cmp(list->entry,entry) == 0
+    Delete all entries for which cmp(list->entry,entry) == 0
     and call destructor
 
     PARAMS
