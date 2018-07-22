@@ -205,6 +205,10 @@ D_TLS := $(SDIR)/tls
 I_TLS := $(IDIR)/tls.h $(F_LIB) $(I_LOG)
 S_TLS := $(wildcard $(D_TLS)/*.c) $(S_LOG)
 
+D_TUPLE := $(SDIR)/tuple
+I_TUPLE := $(IDIR)/tuple.h $(F_LIB) $(I_LOG)
+S_TUPLE := $(wildcard $(D_TUPLE)/*.c) $(S_LOG)
+
 # Needed to testting
 TEST_COMMON_INC := $(F_TEST) $(I_COMPILER) $(I_COMMON) $(I_SORT) $(I_SEARCH)
 TEST_COMMON_SRC := $(S_COMPILER) $(S_COMMON) $(S_SORT) $(S_SEARCH)
@@ -257,7 +261,7 @@ define print_bin
 	$(if $(Q), @echo "[BIN]         $$(1)")
 endef
 
-all: prepare array arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search selection sort stack tcp tls trie ufset final
+all: prepare array arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search selection sort stack tcp tls trie tuple ufset final
 
 prepare:
 	$(call print_info,Preparing dirs)
@@ -379,12 +383,16 @@ trie: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
+tuple: prepare
+	$(call print_make,$@)
+	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
+
 ufset: prepare
 	$(call print_make,$@)
 	$(Q)$(MAKE) -f $(SDIR)/$@/Makefile --no-print-directory
 
 
-final: prepare array arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search sort stack tcp tls trie ufset
+final: prepare array arraylist avl base64 bitset bst ccache crc cstring darray fifo filebuffer getch hash heap histogram klist list list2d partition rbt ringbuffer search sort stack tcp tls trie tuple ufset
 	$(call print_info,Finalizing)
 	$(Q)$(CP) $(IDIR)/common.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/compiler.h $(O_HEADERS) && \
@@ -437,6 +445,7 @@ clean:
 	$(MAKE) -f $(D_TCP)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_TLS)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_TRIE)/Makefile clean --no-print-directory && \
+	$(MAKE) -f $(D_TUPLE)/Makefile clean --no-print-directory && \
 	$(MAKE) -f $(D_UFSET)/Makefile clean --no-print-directory
 	$(Q)$(MAKE) -f $(TEST_DIR)/Makefile clean --no-print-directory
 	$(Q)$(RM) $(ODIR)

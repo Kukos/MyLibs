@@ -101,6 +101,8 @@ GPL 3.0
 
     trie - special tree for strings
 
+    tuple - generic tuple and pair (like std::tuple, std::pair)
+
     ufset - union find set with master -> slaves feature
 
 ### How to configure env

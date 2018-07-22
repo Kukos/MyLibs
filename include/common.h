@@ -19,6 +19,7 @@
 #include <inttypes.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <nargs.h>
 
 /* swap a with b IFF types are the same */
 #define SWAP(a ,b) \
