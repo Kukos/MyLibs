@@ -407,6 +407,7 @@ final: prepare array arraylist avl base64 bitset bst ccache crc cstring darray f
 	$(CP) $(IDIR)/tree.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/ulist.h $(O_HEADERS) && \
 	$(CP) $(IDIR)/slist.h $(O_HEADERS) && \
+	$(CP) $(IDIR)/nargs.h $(O_HEADERS) && \
 	$(CP) $(SDIR)/log.c $(O_LIBS) && \
 	$(CP) $(SDIR)/assert.c $(O_LIBS)
 
