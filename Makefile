@@ -451,7 +451,9 @@ clean:
 	$(Q)$(RM) $(ODIR)
 
 install:
-	$(Q)$(SCRIPT_DIR)/$(INSTALL_SCRIPT_NAME) $(INSTALL_PATH)
+	$(Q)cd $(SCRIPT_DIR) && \
+	./$(INSTALL_SCRIPT_NAME) $(INSTALL_PATH) && \
+	cd -
 
 memcheck:
 	$(Q)$(MAKE) -f $(TEST_DIR)/Makefile --no-print-directory && \
@@ -472,6 +474,6 @@ help:
 	@echo "    install[P = Path] - install libs to path P or default Path"
 	@echo "    memcheck          - make mem check using valgrind for tests"
 	@echo "    memusage          - prepare mem measurements"
-	@echo "    regression        - regression tests use it before commit to master
+	@echo "    regression        - regression tests use it before commit to master"
 	@echo -e
 	@echo "Makefile supports Verbose mode when V=1"
