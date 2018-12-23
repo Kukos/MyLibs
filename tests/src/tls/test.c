@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <string.h>
+#include <compiler.h>
 
 #define MIN_PORT  6000
 #define RANGE     2000
@@ -19,12 +20,14 @@ static int verify_callback(int preverify, X509_STORE_CTX* ctx);
 
 static ___before_main___(1) void init(void)
 {
-    (void)system("echo $'\n\n\n\n\n\n\n\n' | openssl req -x509 -newkey rsa:4096 -nodes -keyout " key_file " -out " cert_file " -days 365 >/dev/null 2>&1");
+    tls_once_init();
+    unused_retval(system("echo $'\n\n\n\n\n\n\n\n' | openssl req -x509 -newkey rsa:4096 -nodes -keyout " key_file " -out " cert_file " -days 365 >/dev/null 2>&1"));
 }
 
 static ___after_main___(1) void deinit(void)
 {
-    (void)system("rm -rf " key_file " " cert_file);
+    tls_once_cleanup();
+    unused_retval(system("rm -rf " key_file " " cert_file));
 }
 
 static int verify_callback(int preverify, X509_STORE_CTX* ctx)
@@ -123,6 +126,7 @@ test_f test_connection_request(void)
     pid = fork();
     if (pid == 0) /* child accept */
     {
+        tls_once_init();
         tls_init();
         ctx = tls_server_context_create(cert_file, key_file, verify_callback);
         T_CHECK(ctx != NULL);
@@ -142,6 +146,7 @@ test_f test_connection_request(void)
         tcp_socket_destroy(socket);
 
         tls_clenup();
+        tls_once_cleanup();
         _Exit(0);
     }
     else /* parent request */
@@ -177,6 +182,7 @@ test_f test_connection_accept(void)
     pid = fork();
     if (pid == 0) /* child request */
     {
+        tls_once_init();
         tls_init();
         ctx = tls_client_context_create(cert_file, key_file,verify_callback);
         T_CHECK(ctx != NULL);
@@ -193,6 +199,7 @@ test_f test_connection_accept(void)
         tcp_socket_destroy(socket);
 
         tls_clenup();
+        tls_once_cleanup();
 
         _Exit(0);
     }
@@ -239,6 +246,7 @@ test_f test_full_connection(void)
     pid = fork();
     if (pid == 0) /* child accept */
     {
+        tls_once_init();
         tls_init();
         ctx = tls_server_context_create(cert_file, key_file, verify_callback);
         T_CHECK(ctx != NULL);
@@ -278,6 +286,7 @@ test_f test_full_connection(void)
         tcp_socket_destroy(socket);
 
         tls_clenup();
+        tls_once_cleanup();
         _Exit(0);
     }
     else /* parent request */

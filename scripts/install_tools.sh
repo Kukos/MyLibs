@@ -13,7 +13,7 @@ DIR=`dirname "${THIS_DIR}"`
 source $DIR/log.sh
 
 # C / C++
-C_PACKAGES=("gcc" "make" "openssl" "libssl-dev" "libssl" "libssl1.0.0")
+C_PACKAGES=("gcc" "make" "openssl" "libssl-dev")
 
 # MISC TOOLS
 TOOLS=("valgrind" "sed" "gawk" "bc")

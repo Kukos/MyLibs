@@ -3,6 +3,7 @@
 #include <log.h>
 #include <openssl/engine.h>
 #include <openssl/conf.h>
+#include <openssl/ssl.h>
 
 /*
     Create tls context for server / client (based on get_method function)
@@ -99,6 +100,16 @@ static SSL_CTX *__tls_context_create(const char *cert, const char *key, int (*ve
     return ctx;
 }
 
+void tls_once_init(void)
+{
+    /* for now do nothing, this is placeholder for newest lib releases */
+}
+
+void tls_once_cleanup(void)
+{
+    sk_SSL_COMP_free(SSL_COMP_get_compression_methods());
+}
+
 void tls_init(void)
 {
     TRACE();
@@ -114,14 +125,32 @@ void tls_clenup(void)
 {
     TRACE();
 
+/*
+    This was the old way to cleanup openssl 1.0.0
+
     FIPS_mode_set(0);
     CRYPTO_cleanup_all_ex_data();
     CONF_modules_unload(1);
     EVP_cleanup();
     ERR_remove_state(0);
+    ERR_remove_thread_state(NULL);
     ERR_free_strings();
     ENGINE_cleanup();
     SSL_COMP_free_compression_methods();
+*/
+
+    /* new way from 1.1.0 */
+    FIPS_mode_set(0);
+    CRYPTO_set_locking_callback(NULL);
+    CRYPTO_set_id_callback(NULL);
+    ERR_remove_state(0);
+    ENGINE_cleanup();
+    CONF_modules_free();
+    CONF_modules_unload(1);
+    COMP_zlib_cleanup();
+    ERR_free_strings();
+    EVP_cleanup();
+    CRYPTO_cleanup_all_ex_data();
 
     LOG("SSL libary cleaned\n");
 }

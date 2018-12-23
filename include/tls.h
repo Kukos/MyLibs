@@ -12,9 +12,34 @@
 
 #include <openssl/ssl.h>
 
+
+/*
+    INIT OPENSSL library
+    DO IT ONLY ONCE PER PROCESS
+
+    PARAMS
+    NO PARAMS
+
+    RETURN
+    This is a void function
+*/
+void tls_once_init(void);
+
+/*
+    CLEANUP OPENSSL library
+    DO IT ONLY ONCE PER PROCESS
+
+    PARAMS
+    NO PARAMS
+
+    RETURN
+    This is a void function
+*/
+void tls_once_cleanup(void);
+
 /*
     Init openssl for TLS connection
-    Do it only once per program
+    Do it only once per thead
 
     PARAMS
     NO PARAMS
@@ -26,7 +51,7 @@ void tls_init(void);
 
 /*
     Clean openssl for TLS connection
-    Do it only once per program
+    Do it only once per thread
 
     PARAMS
     NO PARAMS

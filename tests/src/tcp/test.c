@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <string.h>
+#include <sys/types.h>
 
 #define MIN_PORT  6000
 #define RANGE     2000
@@ -104,12 +105,12 @@ test_f test_full_connection(void)
         T_CHECK(select(fd + 1, &copy, NULL, NULL, NULL) >= 0);
         T_EXPECT(FD_ISSET(fd, &copy), true);
 
-        read(fd, buffer, sizeof(buffer));
+        unused_retval(read(fd, buffer, sizeof(buffer)));
         T_EXPECT(strcmp(buffer, text), 0);
 
         usleep(100);
         /* write msg */
-        write(fd, text2, sizeof(text2));
+        unused_retval(write(fd, text2, sizeof(text2)));
         usleep(100);
 
         close(fd);
@@ -129,13 +130,13 @@ test_f test_full_connection(void)
 
         copy = set;
         usleep(100);
-        write(fd, text, sizeof(text));
+        unused_retval(write(fd, text, sizeof(text)));
 
         /* wait for msg */
         T_CHECK(select(fd + 1, &copy, NULL, NULL, NULL) >= 0);
         T_EXPECT(FD_ISSET(fd, &copy), true);
 
-        read(fd, buffer, sizeof(buffer));
+        unused_retval(read(fd, buffer, sizeof(buffer)));
         T_EXPECT(strcmp(buffer, text2), 0);
 
         usleep(100);

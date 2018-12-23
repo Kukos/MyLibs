@@ -52,7 +52,7 @@
 
 /* use this macros if casting to (void) is ugly for you */
 #define unused_param(x)  __unused(x)
-#define unused_retval(x) __unused(x)
+#define unused_retval(x) do { if (unlikely((x))) { } } while (0)
 #define unused_value(x)  __unused(x)
 #define unused(x)        __unused(x)
 
