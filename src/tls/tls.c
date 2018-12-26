@@ -144,6 +144,12 @@ void tls_clenup(void)
     CRYPTO_set_locking_callback(NULL);
     CRYPTO_set_id_callback(NULL);
     ENGINE_cleanup();
+#if OPENSSL_VERSION_NUMBER < 0x10000000L
+	ERR_remove_state(0);
+#endif
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+	ERR_remove_thread_state(NULL);
+#endif
     CONF_modules_free();
     CONF_modules_unload(1);
     COMP_zlib_cleanup();
