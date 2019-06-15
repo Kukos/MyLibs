@@ -423,6 +423,8 @@ static void __bst_destroy(Bst *tree, bool destroy)
 {
     Bst_node *node;
     Bst_node *temp;
+    Bst_node **nodes;
+    size_t i = 0;
 
     TRACE();
 
@@ -432,6 +434,13 @@ static void __bst_destroy(Bst *tree, bool destroy)
     if (tree->root == NULL)
     {
         FREE(tree);
+        return;
+    }
+
+    nodes = malloc(sizeof(Bst_node *) * tree->nodes);
+    if (nodes == NULL)
+    {
+        LOG("Malloc error\n");
         return;
     }
 
@@ -445,9 +454,13 @@ static void __bst_destroy(Bst *tree, bool destroy)
         if (destroy && tree->destroy != NULL)
             tree->destroy((void *)temp->data);
 
-        bst_node_destroy(temp);
+        nodes[i++] = temp;
     }
 
+    for (i = 0; i < tree->nodes; ++i)
+        bst_node_destroy(nodes[i]);
+
+    FREE(nodes);
     FREE(tree);
 }
 

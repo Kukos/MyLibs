@@ -644,6 +644,8 @@ static void __rbt_destroy(Rbt *tree, bool destroy)
 {
     Rbt_node *node;
     Rbt_node *temp;
+    Rbt_node **nodes;
+    size_t i = 0;
 
     TRACE();
 
@@ -653,6 +655,13 @@ static void __rbt_destroy(Rbt *tree, bool destroy)
     if (tree->root == NULL || tree->root == sentinel)
     {
         FREE(tree);
+        return;
+    }
+
+    nodes = malloc(sizeof(Rbt_node *) * tree->nodes);
+    if (nodes == NULL)
+    {
+        LOG("Malloc error\n");
         return;
     }
 
@@ -666,9 +675,13 @@ static void __rbt_destroy(Rbt *tree, bool destroy)
         if (destroy && tree->destroy)
             tree->destroy((void *)temp->data);
 
-        rbt_node_destroy(temp);
+        nodes[i++] = temp;
     }
 
+    for (i = 0; i < tree->nodes; ++i)
+        rbt_node_destroy(nodes[i]);
+
+    FREE(nodes);
     FREE(tree);
 }
 

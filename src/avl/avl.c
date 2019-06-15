@@ -820,6 +820,8 @@ static void __avl_destroy(Avl *tree, bool destroy)
 {
     Avl_node *node;
     Avl_node *temp;
+    Avl_node **nodes;
+    size_t i = 0;
 
     TRACE();
 
@@ -833,6 +835,13 @@ static void __avl_destroy(Avl *tree, bool destroy)
         return;
     }
 
+    nodes = malloc(sizeof(Avl_node *) * tree->nodes);
+    if (nodes == NULL)
+    {
+        LOG("Malloc error\n");
+        return;
+    }
+
     /* destroy tree using inorder */
     node = avl_min_node(tree->root);
     while(node != NULL)
@@ -843,9 +852,13 @@ static void __avl_destroy(Avl *tree, bool destroy)
         if (destroy && tree->destroy != NULL)
             tree->destroy((void *)temp->data);
 
-        avl_node_destroy(temp);
+        nodes[i++] = temp;
     }
 
+    for (i = 0; i < tree->nodes; ++i)
+        avl_node_destroy(nodes[i]);
+
+    FREE(nodes);
     FREE(tree);
 }
 

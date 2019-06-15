@@ -11,7 +11,7 @@
 /* 1MB buffer */
 #define BUFFER_SIZE BIT(20)
 
-const char const *test_dir = "./files";
+const char* const test_dir = "./files";
 
 ___before_main___(1) void test_init(void)
 {

@@ -410,4 +410,6 @@
 /* use this instead of restrict */
 #define ___restrict___ restrict
 
+#define ___nobreak___ __attribute__(( fallthrough ))
+
 #endif

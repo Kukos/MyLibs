@@ -102,11 +102,13 @@ static SSL_CTX *__tls_context_create(const char *cert, const char *key, int (*ve
 
 void tls_once_init(void)
 {
+    TRACE();
     /* for now do nothing, this is placeholder for newest lib releases */
 }
 
 void tls_once_cleanup(void)
 {
+    TRACE();
     sk_SSL_COMP_free(SSL_COMP_get_compression_methods());
 }
 
@@ -172,6 +174,8 @@ SSL_CTX *tls_client_context_create(const char *cert, const char *key, int (*veri
 
 void tls_context_destroy(SSL_CTX *ctx)
 {
+    TRACE();
+
     if (ctx == NULL)
         return;
 
@@ -181,6 +185,8 @@ void tls_context_destroy(SSL_CTX *ctx)
 SSL *tls_accept(SSL_CTX *ctx, int fd)
 {
     SSL *ssl;
+
+    TRACE();
 
     ssl = SSL_new(ctx);
     if (ssl == NULL)
@@ -203,6 +209,8 @@ SSL *tls_accept(SSL_CTX *ctx, int fd)
 SSL *tls_request_connection(SSL_CTX *ctx, int fd)
 {
     SSL *ssl;
+
+    TRACE();
 
     ssl = SSL_new(ctx);
     if (ssl == NULL)

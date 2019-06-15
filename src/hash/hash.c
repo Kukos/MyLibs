@@ -230,15 +230,18 @@ uint32_t hash_murmur(const void *data, size_t size)
         case 3:
         {
             hash ^= (uint32_t)key[2] << 16;
+            ___nobreak___;
         }
 	    case 2:
         {
             hash ^= (uint32_t)key[1] << 8;
+            ___nobreak___;
         }
 	    case 1:
         {
             hash ^= key[0];
-	    hash *= const_m;
+	        hash *= const_m;
+            ___nobreak___;
         }
         case 0:
         {

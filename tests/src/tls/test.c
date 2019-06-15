@@ -161,6 +161,9 @@ test_f test_connection_request(void)
         ssl = tls_request_connection(ctx, socket);
         T_CHECK(ssl != NULL);
 
+        // just wait for accept
+        sleep(1);
+
         tls_ssl_destroy(ssl);
         tls_context_destroy(ctx);
 
@@ -192,6 +195,8 @@ test_f test_connection_accept(void)
 
         ssl = tls_request_connection(ctx, socket);
         T_CHECK(ssl != NULL);
+
+        sleep(1); // just wait for accept
 
         tls_ssl_destroy(ssl);
         tls_context_destroy(ctx);
@@ -306,6 +311,9 @@ test_f test_full_connection(void)
 
         ssl = tls_request_connection(ctx, fd);
         T_CHECK(ssl != NULL);
+
+        // just wait for accept
+        sleep(1);
 
         copy = set;
         usleep(100);

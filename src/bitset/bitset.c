@@ -267,8 +267,7 @@ int bitset_iterator_next(Bitset_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1);
 
-    ++iterator->bit;
-    if (iterator->bit >= (ssize_t)(sizeof(DWORD) << 3))
+    if (iterator->bit++ >= (ssize_t)(sizeof(DWORD) << 3) - 1)
     {
         iterator->bit = 0;
         ++iterator->index;
@@ -284,8 +283,7 @@ int bitset_iterator_prev(Bitset_iterator *iterator)
     if (iterator == NULL)
         ERROR("iterator == NULL\n", 1);
 
-    --iterator->bit;
-    if (iterator->bit < 0)
+    if (iterator->bit-- < 1)
     {
         iterator->bit = (sizeof(DWORD) << 3) - 1;
         --iterator->index;
