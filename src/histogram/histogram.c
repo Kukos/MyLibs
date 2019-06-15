@@ -30,7 +30,7 @@
 
 #define print_spaces(x) \
     do { \
-        (void)printf("%*s", (int)(x), ""); \
+        printf("%*s", (int)(x), ""); \
     } while (0)
 
 /*
