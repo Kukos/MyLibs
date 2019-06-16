@@ -4,6 +4,7 @@
 #include <common.h>   /* tostring */
 #include <stdlib.h>     /* exit */
 #include <string.h>
+#include <log.h>
 
 /*
     Print stack trace on stderr
@@ -17,25 +18,18 @@
 */
 void stack_trace(void);
 
-#define ASSERT_MAX_FUNC_SPACE   20
-
 extern void __assert_msg(const char *msg, ...);
-
-#define ASSERT_MSG \
-    "[ASSERT]\tFILE: %s\n\tFUNC: %s%*.sLINE: %d\n", __FILE__, __func__, \
-             (int)(ASSERT_MAX_FUNC_SPACE - strlen(__func__)), "", __LINE__
 
 #ifdef ASSERT
     #define assert(expr) \
         do { \
             if ((expr) == 0) \
             { \
-                __assert_msg(ASSERT_MSG); \
-                __assert_msg("FAILED:\t" tostring(expr) "\n" "%s", ""); \
+                __assert_msg("[ASSRT]\t%s:%s.%d\tFAILED: " tostring(expr) "\n" "%s", PATH_TO_FILE, __func__, __LINE__, ""); \
                 stack_trace(); \
                 exit(1); \
             } \
-        } while (0);
+        } while (0)
 #else
     #define assert(expr)
 #endif

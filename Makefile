@@ -78,8 +78,8 @@ I_LOG := $(IDIR)/log.h $(F_COMMON) $(F_COMPILER)
 S_LOG := $(D_LOG)/log.c
 
 D_ASSERT := $(SDIR)
-I_ASSER := $(IDIR)/assert.h $(F_COMMON) $(F_COMPILER)
-S_ASSERT := $(D_ASSERT)/assert.c
+I_ASSER := $(IDIR)/assert.h $(F_COMMON) $(F_COMPILER) $(I_LOG)
+S_ASSERT := $(D_ASSERT)/assert.c $(S_LOG)
 
 # For each target put here
 # D_X -> directory for libX

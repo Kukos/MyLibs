@@ -11,6 +11,16 @@ static ___unused___ FILE *logfd = NULL;
 static ___unused___ FILE *logfile = NULL;
 static ___unused___ const char * const logdir = "./logs";
 
+FILE *log_get_fd(void)
+{
+	return logfd;
+}
+
+FILE *log_get_file(void)
+{
+	return logfile;
+}
+
 #define LOGBUF_SIZE	128
 
 #ifdef DEBUG_MODE
@@ -21,14 +31,14 @@ void __log__(const char *msg, ...)
 	if (logfd != NULL)
 	{
     	va_start(args, msg);
-		(void)vfprintf(logfd, msg, args);
+		vfprintf(logfd, msg, args);
 		va_end(args);
 	}
 
 	if (logfile != NULL)
 	{
 		va_start (args, msg);
-		(void)vfprintf(logfile, msg, args);
+		vfprintf(logfile, msg, args);
 		va_end(args);
 	}
 }
@@ -44,14 +54,14 @@ void __trace_call__(const char *msg, ...)
 	if (logfd != NULL)
 	{
     	va_start(args, msg);
-		(void)vfprintf(logfd, msg, args);
+		vfprintf(logfd, msg, args);
 		va_end(args);
 	}
 
 	if (logfile != NULL)
 	{
 		va_start (args, msg);
-		(void)vfprintf(logfile, msg, args);
+		vfprintf(logfile, msg, args);
 		va_end(args);
 	}
 }
@@ -67,26 +77,51 @@ void __error__(const char *msg, ...)
 	if (logfd == NULL)
 	{
     	va_start(args, msg);
-		(void)vfprintf(stderr, msg, args);
+		vfprintf(stderr, msg, args);
 		va_end(args);
 	}
 	else
 	{
 		va_start(args, msg);
-		(void)vfprintf(logfd, msg, args);
+		vfprintf(logfd, msg, args);
 		va_end(args);
 	}
 
 	if (logfile != NULL)
 	{
 		va_start (args, msg);
-		(void)vfprintf(logfile, msg, args);
+		vfprintf(logfile, msg, args);
 		va_end(args);
 	}
 }
 #else
 void __error__(const char *msg, ...) { (void)msg; }
 #endif
+
+void __fatal__(const char *msg, ...)
+{
+	va_list args;
+
+	if (logfd == NULL)
+	{
+    	va_start(args, msg);
+		vfprintf(stderr, msg, args);
+		va_end(args);
+	}
+	else
+	{
+		va_start(args, msg);
+		vfprintf(logfd, msg, args);
+		va_end(args);
+	}
+
+	if (logfile != NULL)
+	{
+		va_start (args, msg);
+		vfprintf(logfile, msg, args);
+		va_end(args);
+	}
+}
 
 #ifdef DEBUG_MODE
 int log_init(const FILE *fd, int to_file)

@@ -32,45 +32,109 @@
 
 */
 
-#define LOG_MAX_FUNC_SPACE 40
+#include <stdio.h> /* FILE* */
+#include <string.h>
+
+#define PATH_TO_FILE (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+
+#define LOG_LEVEL_ALWAYS  0
+#define LOG_LEVEL_CRIT    1
+#define LOG_LEVEL_WARNING 2
+#define LOG_LEVEL_INFO    3
+#define LOG_LEVEL_NOTICE  4
+#define LOG_LEVEL_DEBUG   5
+
+#ifndef DEBUG_MODE
+    #define DEBUG_LVL 0
+#else
+    #define DEBUG_LVL DEBUG_MODE
+#endif
+
 #define FATAL_EXIT_CODE 1
 
-#define __TRACE__   "[TRACE]\tFUNC: %s\n", __func__
-#define __ERROR__   "[ERROR]\tFILE: %s\n\tFUNC: %s%*.sLINE: %d\n", __FILE__, __func__, \
-              (int)(LOG_MAX_FUNC_SPACE - strlen(__func__)), "", __LINE__
-#define __LOG__     "[LOG]\tFUNC: %s%*.sLINE: %d\n", __func__, \
-                 (int)(LOG_MAX_FUNC_SPACE - strlen(__func__)), "", __LINE__
+/* PRIVATE MACROS TO GET [H | T ] from __VA_ARGS__ */
+#define LOG_ARGS_HEAD(...) _LOG_ARGS_HEAD(__VA_ARGS__, "")
+#define _LOG_ARGS_HEAD(H, ...) H
 
-#define TRACE() \
-    do { \
-        __trace_call__(__TRACE__); \
-    } while (0)
+#define LOG_ARGS_TAIL(...) _LOG_ARGS_TAIL(__VA_ARGS__, "")
+#define _LOG_ARGS_TAIL(H, ...) __VA_ARGS__
 
-#define LOG(...) __LOG(__VA_ARGS__, "")
-#define __LOG(msg, ...) \
-    do { \
-        __log__(__LOG__); \
-        __log__("\t" msg "%s", ##__VA_ARGS__); \
-    } while (0)
+/* PRIVATE LOG MACROS */
+#define LOG_LEVEL(LVL, ...) _LOG_LEVEL(LVL, LOG_ARGS_HEAD(__VA_ARGS__), LOG_ARGS_TAIL(__VA_ARGS__))
+#define _LOG_LEVEL(LVL, msg, ...) __LOG("[LOG %d]\t%s:%s.%d\t" msg "%s", (int)LVL, PATH_TO_FILE, __func__,  __LINE__, __VA_ARGS__)
+#define __LOG(msg, ...) __log__(msg, __VA_ARGS__)
 
-#define ERROR(...) __ERROR(__VA_ARGS__, "")
+/* PRIVATE TRACE MACROS */
+#define _TRACE() __trace_call__("[TRACE]\t%s:%s\n", PATH_TO_FILE, __func__)
+
+/* PRIVATE ERROR MACROS */
+#define ERROR_LOG(...) _ERROR_LOG(LVL, LOG_ARGS_HEAD(__VA_ARGS__), LOG_ARGS_TAIL(__VA_ARGS__))
+#define _ERROR_LOG(LVL, msg, ...) __ERROR_LOG("[ERROR]\t%s:%s.%d\t" msg "%s%s", PATH_TO_FILE, __func__, __LINE__, __VA_ARGS__)
+#define __ERROR_LOG(msg, ...) __error__(msg, __VA_ARGS__)
+
+#define _ERROR(msg, ...) __ERROR(msg, __VA_ARGS__, "")
 #define __ERROR(msg, errno, ...) \
     do { \
-        __error__(__ERROR__); \
-        __error__("\t" msg "%s", ##__VA_ARGS__); \
-        \
+        ERROR_LOG(msg, __VA_ARGS__); \
         return errno; \
     } while (0)
 
-#define FATAL(...) __FATAL(__VA_ARGS__, "")
+/* PRIVATE FATAL MACROS */
+#define FATAL_LOG(...) _FATAL_LOG(LVL, LOG_ARGS_HEAD(__VA_ARGS__), LOG_ARGS_TAIL(__VA_ARGS__))
+#define _FATAL_LOG(LVL, msg, ...) __FATAL_LOG("[FATAL]\t%s:%s.%d\t" msg "%s%s", PATH_TO_FILE, __func__, __LINE__, __VA_ARGS__)
+#define __FATAL_LOG(msg, ...) __fatal__(msg, __VA_ARGS__)
+
+#define _FATAL(...) __FATAL(__VA_ARGS__, "")
 #define __FATAL(msg, ...) \
     do { \
-        __error__(__ERROR__); \
-        __error__("\t" msg "%s", ##__VA_ARGS__); \
+        FATAL_LOG(msg, __VA_ARGS__); \
         stack_trace(); \
-        \
         exit(FATAL_EXIT_CODE); \
     } while (0)
+
+static ___inline___ void __attribute__(( format(printf,1, 2) )) __trash__(const char *msg, ...)
+{
+    unused_param(msg);
+}
+
+/* **************************************************** */
+/* USE MACROS BELOW TO LOG YOUR CODE */
+#define TRACE() _TRACE()
+#define LOG(...) LOG_LEVEL(LOG_LEVEL_ALWAYS, __VA_ARGS__)
+#define ERROR(msg, ...) _ERROR(msg, __VA_ARGS__)
+#define FATAL(...) _FATAL(__VA_ARGS__)
+
+#if DEBUG_LVL >= LOG_LEVEL_CRIT
+    #define LOG_CRIT(...) LOG_LEVEL(LOG_LEVEL_CRIT, __VA_ARGS__)
+#else
+    #define LOG_CRIT(...) __trash__(__VA_ARGS__)
+#endif
+
+#if DEBUG_LVL >= LOG_LEVEL_WARNING
+    #define LOG_WARN(...) LOG_LEVEL(LOG_LEVEL_WARNING, __VA_ARGS__)
+#else
+    #define LOG_WARN(...) __trash__(__VA_ARGS__)
+#endif
+
+#if DEBUG_LVL >= LOG_LEVEL_INFO
+    #define LOG_INFO(...) LOG_LEVEL(LOG_LEVEL_INFO, __VA_ARGS__)
+#else
+    #define LOG_INFO(...) __trash__(__VA_ARGS__)
+#endif
+
+#if DEBUG_LVL >= LOG_LEVEL_NOTICE
+    #define LOG_NTCE(...) LOG_LEVEL(LOG_LEVEL_NOTICE, __VA_ARGS__)
+#else
+    #define LOG_NTCE(...) __trash__(__VA_ARGS__)
+#endif
+
+#if DEBUG_LVL >= LOG_LEVEL_DEBUG
+    #define LOG_DEBG(...) LOG_LEVEL(LOG_LEVEL_DEBUG, __VA_ARGS__)
+#else
+    #define LOG_DEBG(...) __trash__(__VA_ARGS__)
+#endif
+
+/* **************************************************** */
 
 #define NO_LOG_TO_FILE  0
 #define LOG_TO_FILE     1
@@ -113,6 +177,19 @@ void __attribute__(( format(printf,1, 2) ))  __trace_call__(const char *msg, ...
 void __attribute__(( format(printf,1, 2) ))  __error__(const char *msg, ...);
 
 /*
+	Simple log fatal function
+	FUNCTION works always
+
+	PARAMS
+	@IN msg - log message
+
+	RETURN:
+	This is a void function
+*/
+void __attribute__(( format(printf,1, 2) ))  __fatal__(const char *msg, ...);
+
+
+/*
     initialize log system
 
     PARAMS
@@ -135,5 +212,27 @@ int log_init(const FILE *fd, int to_file);
     This is a void function
 */
 void log_deinit(void);
+
+/*
+    GET FD connected with logger
+
+    PARAMS
+    @NO PARAMS
+
+    RETURN
+    FD connected with logger or NULL
+*/
+FILE *log_get_fd(void);
+
+/*
+    GET FILE connected with logger
+
+    PARAMS
+    @NO PARAMS
+
+    RETURN
+    FILE connected with logger or NULL
+*/
+FILE *log_get_file(void);
 
 #endif
