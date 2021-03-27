@@ -33,11 +33,11 @@ CCWARNINGS := 	-Wall -Wextra -pedantic -Wcast-align \
 				-Wmissing-prototypes -Wswitch-default -Wbad-function-cast \
 				-Wnested-externs -Wconversion -Wunreachable-code
 
-CFLAGS := -std=gnu99 $(CCWARNINGS) -Werror -O3 -DASSERT -rdynamic
+CFLAGS := -std=gnu99 $(CCWARNINGS) -O3 -DASSERT -rdynamic
 
 CC_TEST_WARNINGS := -Wall -pedantic
 
-C_TEST_FLAGS := -std=gnu99 $(CC_TEST_WARNINGS) -Werror -O3 -DASSERT -DSILENT_ERROR -rdynamic -D_GNU_SOURCE
+C_TEST_FLAGS := -std=gnu99 $(CC_TEST_WARNINGS) -O3 -DASSERT -DSILENT_ERROR -rdynamic -D_GNU_SOURCE
 
 PROJECT_DIR := $(shell pwd)
 
